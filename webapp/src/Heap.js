@@ -31,7 +31,7 @@ export function Heap(comparator) {
 
     let nextToSwap = index;
 
-    if(leftChild !== undefined) {
+    if(leftChild !== undefined && leftChild !== null) {
       if(this.comparator(root, leftChild) > 0) {
         this.swap(index, leftChildIndex);
         nextToSwap = leftChildIndex;
@@ -39,7 +39,7 @@ export function Heap(comparator) {
       }
     }
 
-    if(rightChild !== undefined) {
+    if(rightChild !== undefined && rightChild !== null) {
       if(this.comparator(root, rightChild) > 0) {
         this.swap(index, rightChildIndex);
         nextToSwap = rightChildIndex;
@@ -56,10 +56,10 @@ export function Heap(comparator) {
     let temp = this.data[indexOne];
     this.data[indexOne] = this.data[indexTwo];
     this.data[indexTwo] = temp;
-  }
+  };
 
   this.heapify = function() {
-    for(var i = Math.floor(this.data.length/2); i >= 0; i--) {
+    for(let i = Math.floor(this.data.length/2); i >= 0; i--) {
       this.bubbleDown(i);
     }
   };
@@ -71,12 +71,27 @@ export function Heap(comparator) {
     this.data[this.size] = null;
     this.heapify();
     return root;
-  }
+  };
 
   this.add = function(newElement) {
     this.data.push(newElement);
     this.size += 1;
     this.heapify();
+  };
+
+  this.peek = function() {
+    return this.data[0];
+  };
+
+  this.isEmpty = function() {
+    return this.size === 0;
+  };
+
+  this.copy = function() {
+    let copyHeap = new Heap(comparator);
+    copyHeap.data = this.data.slice();
+    copyHeap.size = this.size;
+    return copyHeap;
   };
 
   this.print = function() {

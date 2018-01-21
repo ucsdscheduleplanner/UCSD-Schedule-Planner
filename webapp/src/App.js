@@ -3,6 +3,8 @@ import {Class} from './ClassUtils.js';
 import logo from './logo.svg';
 import './App.css';
 import {Heap} from './Heap.js';
+import {TimeHeuristic} from './TimeHeuristic.js';
+import {getSchedule} from "./ClassSelector.js";
 
 class App extends Component {
   constructor(props) {
@@ -30,21 +32,20 @@ class App extends Component {
         this.dirtyClassData=res;
         callback();
       })
-      .catch(error=>console.log(`Error occured ${error}`));
-  }
-
-  compareClasses(class1, class2) {
-    return -1;
+    //  .catch(error=>console.log(`Error occured ${error}`));
   }
 
   handleData() {
-    this.classData = {}
+    this.classData = {};
     this.selectedClasses['classes'].forEach((classGroup)=> {
       this.dirtyClassData[classGroup].forEach((class_data)=> {
         let new_class = new Class(class_data);
-        console.log(new_class.getTimeIntervals());
         if(this.classData[classGroup] === undefined) {
-          this.classData[classGroup] = new Heap(this.compareClasses);
+          let tH = new TimeHeuristic({
+            "start": new Date("Mon, 01 Jan 1900 10:00:00"),
+            "end": new Date("Mon, 01 Jan 1900 17:00:00")
+          });
+          this.classData[classGroup] = new Heap(tH.getOutput);
         }
         this.classData[classGroup].add(new_class);
       });
@@ -53,6 +54,9 @@ class App extends Component {
       console.log(key);
       val.print()
     });
+
+    console.log("Results");
+    console.log(getSchedule(this.classData));
   }
 
   doStuff() {

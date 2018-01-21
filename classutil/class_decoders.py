@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from classutil.classutils import Class, Subclass
 from flask import jsonify
 import json
@@ -22,3 +24,10 @@ class SubClassDecoder(json.JSONEncoder):
             return ValueError("Not the correct type")
 
         return o.data
+
+
+class CustomJSONEncoder(json.JSONEncoder):
+    def default(self, o):
+        if not isinstance(o, datetime):
+            return
+        return o.isoformat()

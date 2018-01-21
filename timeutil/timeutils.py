@@ -1,6 +1,7 @@
 from datetime import datetime, date
 from datetime import time as time
 from collections import namedtuple
+import pytz
 
 DAY_INDEX = 0
 TIME_INDEX = 1
@@ -141,6 +142,8 @@ class TimeIntervalCollection:
                 # Add 'm' to convert it to Python recognizable format
                 hour_time += 'm'
                 formatted_interval = datetime.strptime(hour_time, '%I:%M%p')
+                # Converting to my timezone
+                formatted_interval = pytz.utc.localize(formatted_interval)
                 # Add the interval to the returned interval
                 temp_time_storage.append(formatted_interval)
             # Add interval to the list of intervals

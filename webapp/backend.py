@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify
 import sqlite3
 import classpicker
-from classutil.class_decoders import ClassDecoder
+from classutil.class_decoders import ClassDecoder, CustomJSONEncoder
 from settings import DATABASE_PATH
 
 cp = classpicker.ClassPicker()
