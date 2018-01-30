@@ -1,25 +1,28 @@
+import TimeHeuristic from "./TimeHeuristic.js";
+
 
 function isValid(newClass, schedule) {
-    schedule.forEach((classInSchedule) => {
-        if(classInSchedule.overlaps(newClass)) return false;
-    });
+    for (let classInSchedule of schedule) {
+        if (classInSchedule.overlaps(newClass)) return false;
+    }
     return true;
 }
 
-function swap(index1, index2, l) {
-    let temp = l[index1];
-    l[index1] = l[index2];
-    l[index2] = temp;
+function swap(index1, index2, myList) {
+    let temp = myList[index1];
+    myList[index1] = myList[index2];
+    myList[index2] = temp;
 }
 
 export function getSchedule(classHeaps) {
     let workingClassHeaps = Object.values(classHeaps);
-    let retSchedule = {};
+    let retSchedule = [];
     for (let curStart = 0; curStart < workingClassHeaps.length; curStart++) {
         let curSchedule = [];
         workingClassHeaps = Object.values(classHeaps);
 
-        workingClassHeaps.forEach((heap, index)=> {
+        // copying the heap each time
+        workingClassHeaps.forEach((heap, index) => {
             workingClassHeaps[index] = heap.copy();
         });
 
@@ -28,7 +31,7 @@ export function getSchedule(classHeaps) {
 
         let curIndex = 0;
         while (curSchedule.length < workingClassHeaps.length) {
-            if(workingClassHeaps[curIndex].isEmpty()) throw new TypeError("No schedule is possible");
+            if (workingClassHeaps[curIndex].isEmpty()) throw new TypeError("No schedule is possible");
             if (isValid(workingClassHeaps[curIndex].peek(), curSchedule)) {
                 curSchedule.push(workingClassHeaps[curIndex].removeRoot());
                 curIndex++;
@@ -36,7 +39,10 @@ export function getSchedule(classHeaps) {
                 workingClassHeaps[curIndex].removeRoot();
             }
         }
-        retSchedule = curSchedule;
+        if (TimeHeuristic.prototype.evaluateSchedule(curSchedule) >
+            TimeHeuristic.prototype.evaluateSchedule(retSchedule)) {
+            retSchedule = curSchedule;
+        }
     }
     return retSchedule;
 }

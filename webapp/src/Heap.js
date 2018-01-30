@@ -100,9 +100,3 @@ export function Heap(comparator) {
     });
   }
 }
-
-/*
-module.exports = {
-  'Heap': Heap
-}
-*/

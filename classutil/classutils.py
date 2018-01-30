@@ -25,8 +25,9 @@ class Class:
         for subclass_key, ID in self.data.items():
             if 'KEY' not in subclass_key or not ID:
                 continue
-            # self.subclasses[subclass_key] = Subclass(cursor, ID)
-            self.subclasses[subclass_key] = self.make_subclasses(cursor, ID)
+            subclass = self.make_subclasses(cursor, ID)
+            if subclass:
+                self.subclasses[subclass_key] = subclass
 
     def make_subclasses(self, cursor, ID):
         """
@@ -44,6 +45,9 @@ class Class:
 
         days = TimeIntervalCollection.get_days(data['DAYS'])
         times = TimeIntervalCollection.get_times(data['TIME'])
+
+        if not days or not times:
+            return None
 
         day_time_pairs = list(itertools.zip_longest(days, times,
                                                     fillvalue=times[len(times) - 1] if len(days) > len(times) else days[

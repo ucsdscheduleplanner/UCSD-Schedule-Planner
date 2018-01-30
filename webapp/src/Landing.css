@@ -1,0 +1,22 @@
+#root {
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+}
+
+#landing-intro-text {
+    font-size: 5em;
+    color: white;
+    font-weight: normal;
+}
+
+.landing-image {
+    height: 100%;
+    width: 100%;
+
+    background: url('./Geisel.jpg') no-repeat center center fixed !important;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover !important;
+}

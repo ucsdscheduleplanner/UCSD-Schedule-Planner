@@ -11,7 +11,6 @@ db_cursor = db_connection.cursor()
 
 app = Flask(__name__)
 
-
 @app.route('/')
 def hello_world():
     return 'Hello World!'

@@ -1,6 +1,16 @@
 import moment from 'moment';
 import momenttz from 'moment-timezone';
-import {overlaps} from './TimeHeuristic.js';
+import TimeHeuristic from './TimeHeuristic.js';
+
+const dayToNum = {
+    "M": 1,
+    "Tu": 2,
+    "W": 3,
+    "Th": 4,
+    "F": 5,
+    "Sa": 6,
+    "Su": 7
+};
 
 momenttz().tz("America/Los_Angeles").format();
 
@@ -9,7 +19,9 @@ const date_string = "ddd, DD MMM YYYY HH:mm:ss";
 export function Subclass(data) {
     this.data = data;
     this.timeInterval = makeTimeInterval.call(this);
-
+    this.day = data['DAYS'];
+    this.timeInterval['start'].setDate(dayToNum[this.day]);
+    this.timeInterval['end'].setDate(dayToNum[this.day]);
 
     function makeTimeInterval() {
         let timeInterval = {};
@@ -26,8 +38,8 @@ export function Subclass(data) {
         return this.timeInterval;
     };
 
-    this.overlaps = function(other) {
-        return overlaps(this.getTimeInterval(), other.getTimeInterval());
+    this.overlaps = function (other) {
+        return TimeHeuristic.prototype.overlaps(this.getTimeInterval(), other.getTimeInterval());
     }
 }
 
@@ -55,17 +67,15 @@ export function Class(data) {
         return this.timeIntervals;
     };
 
-    this.overlaps = function(other) {
-        Object.values(this.subclasses).forEach((subclasses) => {
-            // could have error here
-          Object.values(other.subclasses).forEach((otherSubclasses) => {
-              subclasses.forEach((subclass)=> {
-                 otherSubclasses.forEach((otherSubclass) => {
-                     if(subclass.overlaps(otherSubclass)) return true;
-                 });
-              });
-          });
-        });
+    this.overlaps = function (other) {
+        for (let this_time of this.timeIntervals) {
+            for (let other_time of other.timeIntervals) {
+                if (TimeHeuristic.prototype.overlaps(this_time, other_time)) {
+                    console.log(this_time, other_time);
+                    return true;
+                }
+            }
+        }
         return false;
     };
 }
