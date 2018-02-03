@@ -2,23 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="9cc305e8-99df-4966-b9e9-4573ac908d53" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/TODO" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/webapp/src/Heuristic.js" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/webapp/src/IntroAnimation.js" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/webapp/src/Landing.css" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/webapp/src/Landing.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/classutil/classutils.py" afterPath="$PROJECT_DIR$/classutil/classutils.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/webapp/backend.py" afterPath="$PROJECT_DIR$/webapp/backend.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/webapp/package-lock.json" afterPath="$PROJECT_DIR$/webapp/package-lock.json" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/webapp/package.json" afterPath="$PROJECT_DIR$/webapp/package.json" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/webapp/public/index.html" afterPath="$PROJECT_DIR$/webapp/public/index.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/webapp/src/App.js" afterPath="$PROJECT_DIR$/webapp/src/App.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/webapp/src/ClassSelector.js" afterPath="$PROJECT_DIR$/webapp/src/ClassSelector.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/webapp/src/ClassUtils.js" afterPath="$PROJECT_DIR$/webapp/src/ClassUtils.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/webapp/src/Heap.js" afterPath="$PROJECT_DIR$/webapp/src/Heap.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/webapp/src/TimeHeuristic.js" afterPath="$PROJECT_DIR$/webapp/src/TimeHeuristic.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/webapp/src/index.js" afterPath="$PROJECT_DIR$/webapp/src/index.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/webapp/src/Landing.css" afterPath="$PROJECT_DIR$/webapp/src/Landing.css" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/webapp/src/Landing.js" afterPath="$PROJECT_DIR$/webapp/src/Landing.js" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -29,7 +15,7 @@
   </component>
   <component name="CoverageDataManager">
     <SUITE FILE_PATH="coverage/UCSD_Backend$UCSD_Backend.coverage" NAME="UCSD_Backend Coverage Results" MODIFIED="1516770405920" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
-    <SUITE FILE_PATH="coverage/UCSD_Backend$Backend_Server.coverage" NAME="Backend Server Coverage Results" MODIFIED="1517277595013" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/webapp" />
+    <SUITE FILE_PATH="coverage/UCSD_Backend$Backend_Server.coverage" NAME="Backend Server Coverage Results" MODIFIED="1517679809298" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/webapp" />
   </component>
   <component name="DatabaseView">
     <option name="SHOW_INTERMEDIATE" value="true" />
@@ -57,8 +43,8 @@
       <file leaf-file-name="Landing.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/webapp/src/Landing.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="100">
-              <caret line="105" column="78" lean-forward="false" selection-start-line="105" selection-start-column="78" selection-end-line="105" selection-end-column="78" />
+            <state relative-caret-position="300">
+              <caret line="92" column="31" lean-forward="false" selection-start-line="92" selection-start-column="31" selection-end-line="92" selection-end-column="31" />
               <folding>
                 <element signature="e#0#39#0" expanded="true" />
               </folding>
@@ -129,8 +115,8 @@
         <option value="$PROJECT_DIR$/webapp/src/index.js" />
         <option value="$PROJECT_DIR$/webapp/src/Test.js" />
         <option value="$PROJECT_DIR$/webapp/src/App.js" />
-        <option value="$PROJECT_DIR$/webapp/src/Landing.css" />
         <option value="$PROJECT_DIR$/webapp/src/IntroAnimation.js" />
+        <option value="$PROJECT_DIR$/webapp/src/Landing.css" />
         <option value="$PROJECT_DIR$/webapp/src/Landing.js" />
       </list>
     </option>
@@ -144,7 +130,7 @@
   <component name="NodeModulesDirectoryManager">
     <handled-path value="$PROJECT_DIR$/webapp/node_modules" />
   </component>
-  <component name="ProjectFrameBounds" extendedState="6">
+  <component name="ProjectFrameBounds">
     <option name="x" value="-10" />
     <option name="width" value="980" />
     <option name="height" value="1030" />
@@ -351,7 +337,7 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-11" y="-11" width="1942" height="1042" extended-state="6" />
+    <frame x="-10" y="0" width="980" height="1030" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.45027027" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
@@ -360,7 +346,7 @@
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3296875" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32818073" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.33293125" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
@@ -614,17 +600,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="300">
           <caret line="12" column="35" lean-forward="false" selection-start-line="12" selection-start-column="35" selection-end-line="12" selection-end-column="35" />
-          <folding>
-            <marker date="1516904578162" expanded="true" signature="87:219" ph="{...}" />
-            <marker date="1516904578162" expanded="true" signature="131:200" ph="{...}" />
-            <marker date="1516904578162" expanded="true" signature="259:357" ph="{...}" />
-            <marker date="1516904578162" expanded="true" signature="558:1581" ph="{...}" />
-            <marker date="1516904578162" expanded="true" signature="735:798" ph="{...}" />
-            <marker date="1516904578162" expanded="true" signature="1002:1389" ph="{...}" />
-            <marker date="1516904578162" expanded="true" signature="1181:1300" ph="{...}" />
-            <marker date="1516904578162" expanded="true" signature="1306:1379" ph="{...}" />
-            <marker date="1516904578162" expanded="true" signature="1525:1575" ph="{...}" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -726,19 +701,19 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/webapp/src/Landing.css">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="150">
-          <caret line="6" column="1" lean-forward="false" selection-start-line="6" selection-start-column="1" selection-end-line="6" selection-end-column="1" />
+        <state relative-caret-position="275">
+          <caret line="11" column="0" lean-forward="true" selection-start-line="11" selection-start-column="0" selection-end-line="11" selection-end-column="0" />
           <folding>
-            <marker date="1517183207081" expanded="true" signature="6:66" ph="{...}" />
-            <marker date="1517183207081" expanded="true" signature="88:154" ph="{...}" />
+            <marker date="1517622326516" expanded="true" signature="6:68" ph="{...}" />
+            <marker date="1517622326516" expanded="true" signature="90:156" ph="{...}" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/webapp/src/Landing.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="100">
-          <caret line="105" column="78" lean-forward="false" selection-start-line="105" selection-start-column="78" selection-end-line="105" selection-end-column="78" />
+        <state relative-caret-position="300">
+          <caret line="92" column="31" lean-forward="false" selection-start-line="92" selection-start-column="31" selection-end-line="92" selection-end-column="31" />
           <folding>
             <element signature="e#0#39#0" expanded="true" />
           </folding>

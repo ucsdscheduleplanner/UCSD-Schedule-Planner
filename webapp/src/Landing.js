@@ -81,6 +81,10 @@ export default class Landing extends Component {
         }, 2000);
     }
 
+    handleClick() {
+        console.log("click!");
+    }
+
     render() {
         let {textVisible, fadeOut, animationComplete} = this.state;
         /* if (!animationComplete) {
@@ -126,7 +130,7 @@ export default class Landing extends Component {
                                     </Grid.Column>
                                 </Grid>
 
-                                <Button style={{marginTop: "1em"}} floated="right" color="teal">
+                                <Button onClick={this.handleClick} style={{marginTop: "1em"}} floated="right" color="teal">
                                     Add Class
                                 </Button>
 
