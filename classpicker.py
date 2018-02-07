@@ -18,6 +18,7 @@ class ClassPicker():
         self.database = sqlite3.connect(DATABASE_PATH)
         self.database.row_factory = sqlite3.Row
         self.cursor = self.database.cursor()
+        self.departments = []
 
         # Preparing for DFS
         # List of possible classes with given course nums
@@ -26,6 +27,7 @@ class ClassPicker():
         self.pref_classes = []
         # List of possible schedules
         self.candidates = []
+
 
         # DP buffer for top down memoization
         self.dp_buffer = {}
@@ -69,6 +71,17 @@ class ClassPicker():
         my_input = input('Enter the classes that you want like so (CSE 3, CSE 8A, CSE 8B)')
         self.pref_classes = my_input.split(', ')
         self.validate_inputs()
+
+    def get_classes_in_department(self, department):
+        # Must order this one separately because doing it lexically won't work
+        self.cursor.execute("SELECT DISTINCT COURSE_NUM FROM CLASS_LEGEND WHERE DEPARTMENT = ?", (department,))
+        return [dict(row) for row in self.cursor.fetchall()]
+
+    def get_departments(self):
+        if not self.departments:
+            self.cursor.execute("SELECT DISTINCT DEPT_CODE FROM DEPARTMENT ORDER BY DEPT_CODE")
+            self.departments = [dict(row) for row in self.cursor.fetchall()]
+        return self.departments
 
     def format_inputs(self, inputs):
         return [i.upper().rstrip() for i in inputs]

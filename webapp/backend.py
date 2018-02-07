@@ -11,9 +11,6 @@ db_cursor = db_connection.cursor()
 
 app = Flask(__name__)
 
-@app.route('/')
-def hello_world():
-    return 'Hello World!'
 
 
 @app.route('/data', methods=['POST'])
@@ -31,6 +28,19 @@ def return_db_data():
         ret_dict[classes[index]] = temp_list
         index += 1
     return jsonify(ret_dict)
+
+
+@app.route('/department', methods={'POST'})
+def return_department_list():
+    var = cp.get_departments()
+    return jsonify(var)
+
+
+@app.route('/classes', methods={'POST'})
+def return_classes():
+    department = request.args.get('department')
+    classes = cp.get_classes_in_department(department)
+    return jsonify(classes)
 
 
 if __name__ == '__main__':

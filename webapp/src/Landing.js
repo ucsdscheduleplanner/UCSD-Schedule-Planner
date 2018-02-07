@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import ClassView from './ClassView.js';
 import './Landing.css'
 import {
     Container,
@@ -22,8 +23,14 @@ import {
     Visibility
 } from 'semantic-ui-react'
 
+
 import {IntroAnimation} from "./IntroAnimation.js";
 import {Heap} from "./Heap";
+
+const options = [
+    {key: 'm', text: 'Male', value: 'male'},
+    {key: 'f', text: 'Female', value: 'female'},
+];
 
 
 export default class Landing extends Component {
@@ -33,36 +40,74 @@ export default class Landing extends Component {
             fadeOut: false,
             animationComplete: false,
             textVisible: false,
+            selectedClass: undefined,
+            departmentOptions: [],
+            classOptions: [],
+            selectedClasses: []
         };
-        this.list = [
-            {
-                text: "hello world",
-                value: "Jenny hess",
+    }
+
+    changeState(key, value) {
+        let newState = {};
+        newState[key] = value;
+        this.setState(newState);
+    }
+
+
+    handleSubmit() {
+        console.log('hi');
+        this.setState({
+            selectedClasses: [...this.state.selectedClasses, this.state.selectedClass]
+        });
+    }
+
+    handleDepartmentChange(key, value) {
+        console.log(key);
+        console.log(value);
+
+        fetch(`/classes?department=${value}`, {
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
             },
-            {
-                text: "hello world",
-                value: "Jenny hess",
+            method: 'post'
+        })
+            .then(res => res.json())
+            .then(res => {
+                let classes = [];
+                for (let dict of res) {
+                    let new_dict = {"key": dict["COURSE_NUM"], "text": dict["COURSE_NUM"], "value": dict["COURSE_NUM"]}
+                    classes.push(new_dict);
+                }
+                this.setState({
+                    "classOptions": classes
+                });
+            });
+    }
+
+    getDepartments() {
+        fetch('/department', {
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
             },
-            {
-                text: "hello world",
-                value: "Jenny hess",
-            },
-            {
-                text: "hello world",
-                value: "Jenny hess",
-            },
-            {
-                text: "hello world",
-                value: "Jenny hess",
-            },
-            {
-                text: "hello world",
-                value: "Jenny hess",
-            }
-        ];
+            method: 'post'
+        })
+            .then(res => res.json())
+            .then(res => {
+                let departments = [];
+                for (let dict of res) {
+                    let new_dict = {"key": dict["DEPT_CODE"], "text": dict["DEPT_CODE"], "value": dict["DEPT_CODE"]};
+                    departments.push(new_dict);
+                }
+                this.setState({
+                    "departmentOptions": departments,
+                });
+            });
     }
 
     componentDidMount() {
+        this.getDepartments();
         let that = this;
         setTimeout(function () {
             that.setState({
@@ -81,92 +126,51 @@ export default class Landing extends Component {
         }, 2000);
     }
 
-    handleClick() {
-        console.log("click!");
-    }
-
     render() {
-        let {textVisible, fadeOut, animationComplete} = this.state;
-        /* if (!animationComplete) {
-             return (
-                 <React.Fragment>
-                     <IntroAnimation fadeOut={fadeOut} textVisible={textVisible}/>
-                 </React.Fragment>
-             );
-         } else { */
+        let selectedClasses = this.state.selectedClasses.map((data, index) => {
+            if(data !== undefined && data !== null) return <ClassView key={index} class={data}/>
+        });
+
+        const {value} = this.state;
+
         return (
             <React.Fragment>
-                <Grid stackable={true}
-                      columns={2}
-                      textAlign='center'
-                      style={{height: '100%', margin: '2em'}}>
-
+                <Grid columns={2} padded>
                     <Grid.Column>
-                        <Container style={{clear: "both"}}>
-                            <Header as='h1' color='red' inverted textAlign='left'>
-                                Enter your classes below!
-                            </Header>
-
-                            <Segment style={{width: "100%", display: "table"}}>
-
-                                <Grid columns={2}>
-
-                                    <Grid.Column>
-                                        <Header as="h4" color="red" textAlign="left" content="Department"/>
-
-                                        <Dropdown style={{width: "100%"}}
-                                                  placeholder="Department"
-                                                  search selection options={this.list}/>
-
-                                        <Header as="h4" color="red" textAlign="left" content="Class"/>
-                                        <Dropdown style={{width: "100%"}}
-                                                  placeholder="Class"
-                                                  search selection options={this.list}/>
-
-                                    </Grid.Column>
-
-                                    <Grid.Column>
-                                        <Header as="h4" color="red" textAlign="left" content="Options"/>
-                                    </Grid.Column>
-                                </Grid>
-
-                                <Button onClick={this.handleClick} style={{marginTop: "1em"}} floated="right" color="teal">
-                                    Add Class
-                                </Button>
-
+                        <Container>
+                            <Segment color="teal" raised>
+                                <Form onSubmit={this.handleSubmit.bind(this)} style={{display: "table", width: "100%  "}}>
+                                    <Form.Group widths='equal'>
+                                        <Form.Select search fluid
+                                                     onChange={(e, {value}) => this.handleDepartmentChange('department', value)}
+                                                     label='Department'
+                                                     options={this.state.departmentOptions}
+                                                     placeholder='Department'/>
+                                        <Form.Select search fluid
+                                                     onChange={(e, {value}) => this.changeState('selectedClass', value)}
+                                                     label='Classes' placeholder='Classes'
+                                                     options={this.state.classOptions}/>
+                                    </Form.Group>
+                                    <Form.Group inline>
+                                        <label>Ignore Overlaps: </label>
+                                        <Form.Radio label='Lecture' value='sm' checked={value === 'sm'}
+                                                    onChange={this.handleChange}/>
+                                        <Form.Radio label='Final' value='md' checked={value === 'md'}
+                                                    onChange={this.handleChange}/>
+                                        <Form.Radio label='Other' value='lg' checked={value === 'lg'}
+                                                    onChange={this.handleChange}/>
+                                    </Form.Group>
+                                    <Form.Button positive floated="right" content="Submit"/>
+                                </Form>
                             </Segment>
                         </Container>
                     </Grid.Column>
-
                     <Grid.Column>
-                        <Container id="classes">
-                            <Header as='h1' color='red' inverted textAlign='left'>
-                               Classes
-                            </Header>
-
-                            <Segment style={{width: "100%", height: "100%"}}>
-
-                            </Segment>
-                        </Container>
+                        {selectedClasses}
                     </Grid.Column>
                 </Grid>
             </React.Fragment>
         );
-        //  }
-
-        /*
-        return (
-
-            <React.Fragment>
-                <Segment vertical ui padded="left" className="landing-image" style={{minHeight: "100%"}}>
-                    <Header as="h1"
-                            style={{fontSize: '3em', fontWeight: 'normal'}}>
-                        UCSD Web Registration Scraper</Header>
-                    <p>Going to try and do stuff here</p>
-                </Segment>
-            </React.Fragment>
-        );
-        */
     }
 }
 

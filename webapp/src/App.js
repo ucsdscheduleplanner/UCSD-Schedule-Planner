@@ -70,14 +70,14 @@ class App extends Component {
     }
 
     componentDidMount() {
-        /*this.intervalID = setInterval(
+        this.intervalID = setInterval(
           this.requestData(),
           1000
-        );*/
+        );
     }
 
     componentWillUnmount() {
-        //clearInterval(this.intervalID);
+        clearInterval(this.intervalID);
     }
 
     render() {
