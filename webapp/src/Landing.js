@@ -55,9 +55,17 @@ export default class Landing extends Component {
 
 
     handleSubmit() {
-        console.log('hi');
+        if(!this.state.selectedClass || !this.state.selectedClasses) return;
+        let newObj = {};
+        newObj['class'] = this.state.selectedClass;
         this.setState({
-            selectedClasses: [...this.state.selectedClasses, this.state.selectedClass]
+            selectedClasses: [...this.state.selectedClasses, newObj]
+        });
+    }
+
+    deleteClassView(deletedClass) {
+        this.setState({
+            selectedClasses: this.state.selectedClasses.filter(selectedClass => selectedClass !== deletedClass)
         });
     }
 
@@ -128,7 +136,8 @@ export default class Landing extends Component {
 
     render() {
         let selectedClasses = this.state.selectedClasses.map((data, index) => {
-            if(data !== undefined && data !== null) return <ClassView key={index} class={data}/>
+            if (data !== undefined && data !== null) return <ClassView key={index} data={data}
+                                                                       deleteClassView={this.deleteClassView.bind(this)}/>
         });
 
         const {value} = this.state;
@@ -139,7 +148,8 @@ export default class Landing extends Component {
                     <Grid.Column>
                         <Container>
                             <Segment color="teal" raised>
-                                <Form onSubmit={this.handleSubmit.bind(this)} style={{display: "table", width: "100%  "}}>
+                                <Form onSubmit={this.handleSubmit.bind(this)}
+                                      style={{display: "table", width: "100%  "}}>
                                     <Form.Group widths='equal'>
                                         <Form.Select search fluid
                                                      onChange={(e, {value}) => this.handleDepartmentChange('department', value)}
@@ -153,11 +163,11 @@ export default class Landing extends Component {
                                     </Form.Group>
                                     <Form.Group inline>
                                         <label>Ignore Overlaps: </label>
-                                        <Form.Radio label='Lecture' value='sm' checked={value === 'sm'}
+                                        <Form.Radio toggle label='Lecture' value='ignoreLecture'
                                                     onChange={this.handleChange}/>
-                                        <Form.Radio label='Final' value='md' checked={value === 'md'}
+                                        <Form.Radio toggle label='Final' value='ignoreFinal'
                                                     onChange={this.handleChange}/>
-                                        <Form.Radio label='Other' value='lg' checked={value === 'lg'}
+                                        <Form.Radio toggle label='Other' value='ignoreOther'
                                                     onChange={this.handleChange}/>
                                     </Form.Group>
                                     <Form.Button positive floated="right" content="Submit"/>
