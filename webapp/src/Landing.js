@@ -126,8 +126,15 @@ export default class Landing extends Component {
     }
 
     generateSchedule() {
-        console.log('hi');
-        console.log(generateSchedule(this.state.selectedClasses));
+        let that = this;
+        generateSchedule(this.state.selectedClasses)
+            .then(schedule => {
+                console.log(schedule);
+                that.setState({
+                    schedule: schedule[0]['score']
+                })
+            })
+            .catch(error => console.log(error));
     }
 
     componentDidMount() {
@@ -198,6 +205,8 @@ export default class Landing extends Component {
                             <Button positive floated="right"
                                     onClick={this.generateSchedule.bind(this)}
                                     content="Generate Schedule"/>}
+
+                            {this.state.schedule}
                         </Container>
                     </Grid.Column>
                 </Grid>

@@ -2,12 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="9cc305e8-99df-4966-b9e9-4573ac908d53" name="Default" comment="">
-      <change type="MOVED" beforePath="$PROJECT_DIR$/webapp/src/App.js" afterPath="$PROJECT_DIR$/webapp/src/ScheduleGenerator.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/webapp/backend.py" afterPath="$PROJECT_DIR$/webapp/backend.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/webapp/src/ClassView.js" afterPath="$PROJECT_DIR$/webapp/src/ClassView.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/webapp/src/Landing.js" afterPath="$PROJECT_DIR$/webapp/src/Landing.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/webapp/src/index.js" afterPath="$PROJECT_DIR$/webapp/src/index.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/webapp/src/ScheduleGenerator.js" afterPath="$PROJECT_DIR$/webapp/src/ScheduleGenerator.js" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -18,7 +14,7 @@
   </component>
   <component name="CoverageDataManager">
     <SUITE FILE_PATH="coverage/UCSD_Backend$UCSD_Backend.coverage" NAME="UCSD_Backend Coverage Results" MODIFIED="1516770405920" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
-    <SUITE FILE_PATH="coverage/UCSD_Backend$Backend_Server.coverage" NAME="Backend Server Coverage Results" MODIFIED="1518144379683" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/webapp" />
+    <SUITE FILE_PATH="coverage/UCSD_Backend$Backend_Server.coverage" NAME="Backend Server Coverage Results" MODIFIED="1518146807579" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/webapp" />
   </component>
   <component name="DatabaseView">
     <option name="SHOW_INTERMEDIATE" value="true" />
@@ -43,11 +39,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="ScheduleGenerator.js" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/webapp/src/ScheduleGenerator.js">
+      <file leaf-file-name="Landing.js" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/webapp/src/Landing.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="410">
-              <caret line="64" column="12" lean-forward="false" selection-start-line="64" selection-start-column="12" selection-end-line="64" selection-end-column="12" />
+            <state relative-caret-position="226">
+              <caret line="132" column="11" lean-forward="false" selection-start-line="132" selection-start-column="11" selection-end-line="132" selection-end-column="11" />
               <folding>
                 <element signature="e#0#39#0" expanded="true" />
               </folding>
@@ -125,13 +121,13 @@
         <option value="$PROJECT_DIR$/webapp/src/Landing.css" />
         <option value="$PROJECT_DIR$/classpicker.py" />
         <option value="$PROJECT_DIR$/webapp/src/Class.js" />
-        <option value="localhost:3000/static/js/bundle.js" />
         <option value="$PROJECT_DIR$/webapp/src/ClassView.js" />
         <option value="$PROJECT_DIR$/webapp/src/App.js" />
         <option value="$PROJECT_DIR$/webapp/src/index.js" />
-        <option value="$PROJECT_DIR$/webapp/src/Landing.js" />
         <option value="$PROJECT_DIR$/webapp/backend.py" />
+        <option value="localhost:3000/static/js/bundle.js" />
         <option value="$PROJECT_DIR$/webapp/src/ScheduleGenerator.js" />
+        <option value="$PROJECT_DIR$/webapp/src/Landing.js" />
       </list>
     </option>
   </component>
@@ -151,8 +147,8 @@
   <component name="NodeModulesDirectoryManager">
     <handled-path value="$PROJECT_DIR$/webapp/node_modules" />
   </component>
-  <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="950" />
+  <component name="ProjectFrameBounds">
+    <option name="x" value="-10" />
     <option name="width" value="980" />
     <option name="height" value="1030" />
   </component>
@@ -205,7 +201,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.Backend Server">
+  <component name="RunManager" selected="JavaScript Debug.DebugReactServer">
     <configuration name="Backend Server" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -273,7 +269,7 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-11" y="-11" width="1942" height="1042" extended-state="6" />
+    <frame x="-10" y="0" width="980" height="1030" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4560811" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
@@ -286,7 +282,7 @@
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.35434008" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.35946923" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Data View" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3296875" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -306,29 +302,10 @@
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/webapp/src/ScheduleGenerator.js</url>
-          <line>13</line>
-          <option name="timeStamp" value="128" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/webapp/src/ScheduleGenerator.js</url>
-          <line>23</line>
-          <properties />
-          <option name="timeStamp" value="163" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/webapp/src/ScheduleGenerator.js</url>
-          <line>57</line>
-          <properties />
-          <option name="timeStamp" value="164" />
-        </line-breakpoint>
-      </breakpoints>
       <breakpoints-dialog>
         <breakpoints-dialog />
       </breakpoints-dialog>
-      <option name="time" value="167" />
+      <option name="time" value="179" />
     </breakpoint-manager>
     <watches-manager>
       <configuration name="JavascriptDebugType">
@@ -607,11 +584,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="http://localhost:3000/static/js/bundle.js">
-      <provider selected="true" editor-type-id="httpFileEditor">
-        <state />
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/webapp/node_modules/lodash/_baseInvoke.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="292">
@@ -627,15 +599,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="250">
           <caret line="17" column="24" lean-forward="false" selection-start-line="17" selection-start-column="24" selection-end-line="17" selection-end-column="24" />
-          <folding>
-            <marker date="1518143398166" expanded="true" signature="7:120" ph="..." />
-            <marker date="1518143398166" expanded="true" signature="171:678" ph="{...}" />
-            <marker date="1518143398166" expanded="true" signature="196:255" ph="{...}" />
-            <marker date="1518143398166" expanded="true" signature="270:676" ph="{...}" />
-            <marker date="1518143398166" expanded="true" signature="301:659" ph="&lt;React.Fragment/&gt;" />
-            <marker date="1518143398166" expanded="true" signature="334:629" ph="&lt;Segment/&gt;" />
-            <marker date="1518143398166" expanded="true" signature="457:602" ph="&lt;Label/&gt;" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -653,56 +616,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="239">
           <caret line="128" column="0" lean-forward="false" selection-start-line="128" selection-start-column="0" selection-end-line="128" selection-end-column="0" />
-          <folding>
-            <marker date="1517967715685" expanded="false" signature="0:200" ph="import ..." />
-            <marker date="1517967715685" expanded="true" signature="202:252" ph="&quot;&quot;&quot;...&quot;&quot;&quot;" />
-            <marker date="1517967715685" expanded="true" signature="275:9805" ph="..." />
-            <marker date="1517967715685" expanded="true" signature="299:1065" ph="..." />
-            <marker date="1517967715685" expanded="true" signature="546:623" ph="..." />
-            <marker date="1517967715685" expanded="true" signature="1176:1907" ph="..." />
-            <marker date="1517967715685" expanded="true" signature="1294:1357" ph="..." />
-            <marker date="1517967715685" expanded="true" signature="1367:1448" ph="..." />
-            <marker date="1517967715685" expanded="true" signature="1933:2193" ph="..." />
-            <marker date="1517967715685" expanded="true" signature="1942:2021" ph="&quot;&quot;&quot;...&quot;&quot;&quot;" />
-            <marker date="1517967715685" expanded="true" signature="2247:2499" ph="..." />
-            <marker date="1517967715685" expanded="true" signature="2356:2421" ph="SELECT DISTI... CLASS_LEGEND" />
-            <marker date="1517967715685" expanded="true" signature="2531:2769" ph="..." />
-            <marker date="1517967715685" expanded="true" signature="2564:2737" ph="..." />
-            <marker date="1517967715685" expanded="true" signature="2598:2658" ph="SELECT DISTI... DEPARTMENT" />
-            <marker date="1517967715685" expanded="true" signature="2807:2859" ph="..." />
-            <marker date="1517967715685" expanded="true" signature="2894:2973" ph="..." />
-            <marker date="1517967715685" expanded="true" signature="3005:3274" ph="..." />
-            <marker date="1517967715685" expanded="true" signature="3050:3274" ph="..." />
-            <marker date="1517967715685" expanded="true" signature="3084:3127" ph="SELECT rowid... DATA" />
-            <marker date="1517967715685" expanded="true" signature="3307:3527" ph="..." />
-            <marker date="1517967715685" expanded="true" signature="3316:3413" ph="&quot;&quot;&quot;...&quot;&quot;&quot;" />
-            <marker date="1517967715685" expanded="true" signature="3573:4089" ph="..." />
-            <marker date="1517967715685" expanded="true" signature="3582:3807" ph="&quot;&quot;&quot;...&quot;&quot;&quot;" />
-            <marker date="1517967715685" expanded="true" signature="4139:4903" ph="..." />
-            <marker date="1517967715685" expanded="true" signature="4148:4420" ph="&quot;&quot;&quot;...&quot;&quot;&quot;" />
-            <marker date="1517967715685" expanded="true" signature="4450:4493" ph="SELECT ROWID... DATA" />
-            <marker date="1517967715685" expanded="true" signature="4637:4873" ph="..." />
-            <marker date="1517967715685" expanded="true" signature="4930:5120" ph="..." />
-            <marker date="1517967715685" expanded="true" signature="5151:5187" ph="..." />
-            <marker date="1517967715685" expanded="true" signature="5231:6814" ph="..." />
-            <marker date="1517967715685" expanded="true" signature="5240:5997" ph="&quot;&quot;&quot;...&quot;&quot;&quot;" />
-            <marker date="1517967715685" expanded="true" signature="6007:6087" ph="..." />
-            <marker date="1517967715685" expanded="true" signature="6126:6465" ph="..." />
-            <marker date="1517967715685" expanded="true" signature="6334:6446" ph="..." />
-            <marker date="1517967715685" expanded="true" signature="6611:6814" ph="..." />
-            <marker date="1517967715685" expanded="true" signature="6702:6814" ph="..." />
-            <marker date="1517967715685" expanded="true" signature="6853:9262" ph="..." />
-            <marker date="1517967715685" expanded="true" signature="6862:7339" ph="&quot;&quot;&quot;...&quot;&quot;&quot;" />
-            <marker date="1517967715685" expanded="true" signature="7349:7472" ph="..." />
-            <marker date="1517967715685" expanded="true" signature="7504:7987" ph="..." />
-            <marker date="1517967715685" expanded="true" signature="7596:7962" ph="..." />
-            <marker date="1517967715685" expanded="true" signature="7699:7852" ph="..." />
-            <marker date="1517967715685" expanded="true" signature="8389:8517" ph="..." />
-            <marker date="1517967715685" expanded="true" signature="8560:8841" ph="..." />
-            <marker date="1517967715685" expanded="true" signature="8851:8985" ph="..." />
-            <marker date="1517967715685" expanded="true" signature="9302:9805" ph="..." />
-            <marker date="1517967715685" expanded="true" signature="9311:9590" ph="&quot;&quot;&quot;Will return the score based on the times and intervals given....&quot;&quot;&quot;" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -710,13 +623,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="189">
           <caret line="17" column="0" lean-forward="false" selection-start-line="17" selection-start-column="0" selection-end-line="17" selection-end-column="0" />
-          <folding>
-            <marker date="1517967647056" expanded="false" signature="0:179" ph="import ..." />
-            <marker date="1517967647056" expanded="true" signature="380:762" ph="..." />
-            <marker date="1517967647056" expanded="true" signature="574:733" ph="..." />
-            <marker date="1517967647056" expanded="true" signature="838:893" ph="..." />
-            <marker date="1517967647056" expanded="true" signature="958:1089" ph="..." />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -744,7 +650,6 @@
             <marker date="1516904578162" expanded="true" signature="87:219" ph="{...}" />
             <marker date="1516904578162" expanded="true" signature="131:200" ph="{...}" />
             <marker date="1516904578162" expanded="true" signature="259:357" ph="{...}" />
-            <marker date="1516904578162" expanded="true" signature="399:1607" ph="{...}" />
             <marker date="1516904578162" expanded="true" signature="558:1581" ph="{...}" />
             <marker date="1516904578162" expanded="true" signature="735:798" ph="{...}" />
             <marker date="1516904578162" expanded="true" signature="1002:1389" ph="{...}" />
@@ -755,69 +660,40 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/webapp/src/Landing.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="226">
-          <caret line="132" column="24" lean-forward="false" selection-start-line="132" selection-start-column="24" selection-end-line="132" selection-end-column="24" />
-          <folding>
-            <marker date="1518143998317" expanded="true" signature="7:483" ph="..." />
-            <marker date="1518143998317" expanded="true" signature="501:598" ph="[...]" />
-            <marker date="1518143998317" expanded="true" signature="649:7131" ph="{...}" />
-            <marker date="1518143998317" expanded="true" signature="674:970" ph="{...}" />
-            <marker date="1518143998317" expanded="true" signature="719:963" ph="{&quot;selectedClass&quot;: undefined...}" />
-            <marker date="1518143998317" expanded="true" signature="1000:1098" ph="{...}" />
-            <marker date="1518143998317" expanded="true" signature="1127:1364" ph="{...}" />
-            <marker date="1518143998317" expanded="true" signature="1250:1290" ph="{...}" />
-            <marker date="1518143998317" expanded="true" signature="1385:1652" ph="{...}" />
-            <marker date="1518143998317" expanded="true" signature="1564:1644" ph="{...}" />
-            <marker date="1518143998317" expanded="true" signature="1688:1843" ph="{...}" />
-            <marker date="1518143998317" expanded="true" signature="1712:1835" ph="{...}" />
-            <marker date="1518143998317" expanded="true" signature="1884:2600" ph="{...}" />
-            <marker date="1518143998317" expanded="true" signature="1987:2160" ph="{&quot;method&quot;: 'post'...}" />
-            <marker date="1518143998317" expanded="true" signature="2010:2122" ph="{&quot;Accept&quot;: 'application/json'...}" />
-            <marker date="1518143998317" expanded="true" signature="2224:2592" ph="{...}" />
-            <marker date="1518143998317" expanded="true" signature="2298:2482" ph="{...}" />
-            <marker date="1518143998317" expanded="true" signature="2513:2576" ph="{&quot;classOptions&quot;: classes...}" />
-            <marker date="1518143998317" expanded="true" signature="2623:3282" ph="{...}" />
-            <marker date="1518143998317" expanded="true" signature="2654:2827" ph="{&quot;method&quot;: 'post'...}" />
-            <marker date="1518143998317" expanded="true" signature="2677:2789" ph="{&quot;Accept&quot;: 'application/json'...}" />
-            <marker date="1518143998317" expanded="true" signature="2891:3274" ph="{...}" />
-            <marker date="1518143998317" expanded="true" signature="2969:3154" ph="{...}" />
-            <marker date="1518143998317" expanded="true" signature="3185:3258" ph="{&quot;departmentOptions&quot;: departments...}" />
-            <marker date="1518143998317" expanded="true" signature="3307:3408" ph="{...}" />
-            <marker date="1518143998317" expanded="true" signature="3434:3886" ph="{...}" />
-            <marker date="1518143998317" expanded="true" signature="3523:3612" ph="{...}" />
-            <marker date="1518143998317" expanded="true" signature="3551:3600" ph="{...}" />
-            <marker date="1518143998317" expanded="true" signature="3652:3737" ph="{...}" />
-            <marker date="1518143998317" expanded="true" signature="3680:3725" ph="{...}" />
-            <marker date="1518143998317" expanded="true" signature="3777:3872" ph="{...}" />
-            <marker date="1518143998317" expanded="true" signature="3805:3860" ph="{...}" />
-            <marker date="1518143998317" expanded="true" signature="3901:7129" ph="{...}" />
-            <marker date="1518143998317" expanded="true" signature="3981:4210" ph="{...}" />
-            <marker date="1518143998317" expanded="true" signature="4043:4200" ph="&lt;ClassView/&gt;" />
-            <marker date="1518143998317" expanded="true" signature="4280:7112" ph="&lt;React.Fragment/&gt;" />
-            <marker date="1518143998317" expanded="true" signature="4313:7082" ph="&lt;Grid/&gt;" />
-            <marker date="1518143998317" expanded="true" signature="4359:6581" ph="&lt;Grid.Column/&gt;" />
-            <marker date="1518143998317" expanded="true" signature="4397:6546" ph="&lt;Container/&gt;" />
-            <marker date="1518143998317" expanded="true" signature="4437:6509" ph="&lt;Segment/&gt;" />
-            <marker date="1518143998317" expanded="true" signature="4499:6470" ph="&lt;Form/&gt;" />
-            <marker date="1518143998317" expanded="true" signature="4664:5547" ph="&lt;Form.Group/&gt;" />
-            <marker date="1518143998317" expanded="true" signature="4732:5130" ph="&lt;Form.Select/&gt;" />
-            <marker date="1518143998317" expanded="true" signature="5171:5497" ph="&lt;Form.Select/&gt;" />
-            <marker date="1518143998317" expanded="true" signature="5584:6334" ph="&lt;Form.Group/&gt;" />
-            <marker date="1518143998317" expanded="true" signature="5717:5983" ph="&lt;Form.Radio/&gt;" />
-            <marker date="1518143998317" expanded="true" signature="6024:6284" ph="&lt;Form.Radio/&gt;" />
-            <marker date="1518143998317" expanded="true" signature="6602:7058" ph="&lt;Grid.Column/&gt;" />
-            <marker date="1518143998317" expanded="true" signature="6640:7023" ph="&lt;Container/&gt;" />
-            <marker date="1518143998317" expanded="true" signature="6808:6985" ph="&lt;Button/&gt;" />
-          </folding>
-        </state>
+    <entry file="http://localhost:3000/static/js/bundle.js">
+      <provider selected="true" editor-type-id="httpFileEditor">
+        <state />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/webapp/src/ScheduleGenerator.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="410">
-          <caret line="64" column="12" lean-forward="false" selection-start-line="64" selection-start-column="12" selection-end-line="64" selection-end-column="12" />
+        <state relative-caret-position="405">
+          <caret line="74" column="6" lean-forward="false" selection-start-line="74" selection-start-column="6" selection-end-line="74" selection-end-column="6" />
+          <folding>
+            <marker date="1518147321203" expanded="true" signature="7:324" ph="..." />
+            <marker date="1518147321203" expanded="true" signature="375:834" ph="{...}" />
+            <marker date="1518147321203" expanded="true" signature="421:830" ph="{...}" />
+            <marker date="1518147321203" expanded="true" signature="446:670" ph="{&quot;method&quot;: 'post'...}" />
+            <marker date="1518147321203" expanded="true" signature="469:581" ph="{&quot;Accept&quot;: 'application/json'...}" />
+            <marker date="1518147321203" expanded="true" signature="734:779" ph="{...}" />
+            <marker date="1518147321203" expanded="true" signature="889:1752" ph="{...}" />
+            <marker date="1518147321203" expanded="true" signature="970:1511" ph="{...}" />
+            <marker date="1518147321203" expanded="true" signature="1031:1503" ph="{...}" />
+            <marker date="1518147321203" expanded="true" signature="1137:1443" ph="{...}" />
+            <marker date="1518147321203" expanded="true" signature="1192:1344" ph="{...}" />
+            <marker date="1518147321203" expanded="true" signature="1575:1628" ph="{...}" />
+            <marker date="1518147321203" expanded="true" signature="1804:2453" ph="{...}" />
+            <marker date="1518147321203" expanded="true" signature="2025:2133" ph="//..." />
+            <marker date="1518147321203" expanded="true" signature="2178:2449" ph="{...}" />
+            <marker date="1518147321203" expanded="true" signature="2269:2399" ph="{...}" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/webapp/src/Landing.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="226">
+          <caret line="132" column="11" lean-forward="false" selection-start-line="132" selection-start-column="11" selection-end-line="132" selection-end-column="11" />
           <folding>
             <element signature="e#0#39#0" expanded="true" />
           </folding>

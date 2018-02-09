@@ -9,22 +9,22 @@ import LoginForm from "./Test";
 import Landing from "./Landing.js"
 
 
-
 function requestData(selectedClasses, callback) {
-    fetch('/data', {
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-        },
-        method: 'post',
-        body: JSON.stringify(selectedClasses)
-    })
-        .then(res => res.json())
-        .then(res => {
-            console.log(res);
-            callback(selectedClasses, res);
+    return new Promise((resolve, reject) => {
+        fetch('/data', {
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            method: 'post',
+            body: JSON.stringify(selectedClasses)
         })
-    //  .catch(error=>console.log(`Error occured ${error}`));
+            .then(res => res.json())
+            .then(res => {
+                resolve(res);
+            })
+            .catch(error => reject(error));
+    });
 }
 
 function handleData(selectedClasses, dirtyClassData) {
@@ -51,18 +51,27 @@ function handleData(selectedClasses, dirtyClassData) {
     });
 
     console.log("Results");
-    console.log(getSchedule(classData));
+    let schedule = getSchedule(classData);
+    console.log(schedule);
+    return schedule;
 }
 
 export function generateSchedule(selectedClasses) {
     let selectedClassesJSON = {};
     let stringSelectedClasses = [];
-    for(let Class of selectedClasses) stringSelectedClasses.push(Class['class']);
+    for (let Class of selectedClasses) stringSelectedClasses.push(Class['class']);
 
     selectedClassesJSON['classes'] = stringSelectedClasses;
 
     // TODO Figure out a way to return the result of this to the caller of this function
     // TODO PROMISE????
-    requestData(selectedClassesJSON, handleData);
+    return new Promise((resolve, reject) => {
+        requestData(selectedClassesJSON, handleData)
+            .then(dirtyClassData => {
+                let schedule = handleData(selectedClassesJSON, dirtyClassData);
+                resolve(schedule);
+            })
+            .catch(error => reject(error))
+    });
 }
 
