@@ -15,7 +15,7 @@ export default class ClassView extends Component {
     render() {
         return (
             <React.Fragment>
-                <Segment style={{width: "90%"}} color="teal" raised>
+                <Segment color="teal" raised>
                     <Header as="h1" content={this.props.data['class']}/>
                     <Label color='red' floating onClick={this.deleteClassView.bind(this)}>
                         <Icon name="delete"/>

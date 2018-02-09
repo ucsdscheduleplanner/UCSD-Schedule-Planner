@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import ClassView from './ClassView.js';
 import './Landing.css'
+import {generateSchedule} from "./ScheduleGenerator";
 import {
     Container,
     Divider,
@@ -53,9 +54,19 @@ export default class Landing extends Component {
         this.setState(newState);
     }
 
+    changeStateToggle(key) {
+        let newBool = this.state[key];
+        let newState = {};
+        if (newBool === undefined || newBool === null) {
+            newBool = false;
+        }
+        newState[key] = !newBool;
+
+        this.setState(newState);
+    }
 
     handleSubmit() {
-        if(!this.state.selectedClass || !this.state.selectedClasses) return;
+        if (!this.state.selectedClass || !this.state.selectedClasses) return;
         let newObj = {};
         newObj['class'] = this.state.selectedClass;
         this.setState({
@@ -84,7 +95,7 @@ export default class Landing extends Component {
             .then(res => {
                 let classes = [];
                 for (let dict of res) {
-                    let new_dict = {"key": dict["COURSE_NUM"], "text": dict["COURSE_NUM"], "value": dict["COURSE_NUM"]}
+                    let new_dict = {"key": dict["COURSE_NUM"], "text": dict["COURSE_NUM"], "value": dict["COURSE_NUM"]};
                     classes.push(new_dict);
                 }
                 this.setState({
@@ -112,6 +123,11 @@ export default class Landing extends Component {
                     "departmentOptions": departments,
                 });
             });
+    }
+
+    generateSchedule() {
+        console.log('hi');
+        console.log(generateSchedule(this.state.selectedClasses));
     }
 
     componentDidMount() {
@@ -163,20 +179,26 @@ export default class Landing extends Component {
                                     </Form.Group>
                                     <Form.Group inline>
                                         <label>Ignore Overlaps: </label>
-                                        <Form.Radio toggle label='Lecture' value='ignoreLecture'
-                                                    onChange={this.handleChange}/>
-                                        <Form.Radio toggle label='Final' value='ignoreFinal'
-                                                    onChange={this.handleChange}/>
-                                        <Form.Radio toggle label='Other' value='ignoreOther'
-                                                    onChange={this.handleChange}/>
+                                        <Form.Radio slider label='Lecture' value='ignoreLecture'
+                                                    checked={this.state['ignoreLecture'] === true}
+                                                    onChange={(e, {value}) => this.changeStateToggle(value)}/>
+                                        <Form.Radio slider label='Other' value='ignoreOther'
+                                                    checked={this.state['ignoreOther'] === true}
+                                                    onChange={(e, {value}) => this.changeStateToggle(value)}/>
                                     </Form.Group>
-                                    <Form.Button positive floated="right" content="Submit"/>
+                                    <Form.Button positive floated="right" content="Add Class"/>
                                 </Form>
                             </Segment>
                         </Container>
                     </Grid.Column>
                     <Grid.Column>
-                        {selectedClasses}
+                        <Container style={{width: "90%"}}>
+                            {selectedClasses}
+                            {selectedClasses.length > 0 &&
+                            <Button positive floated="right"
+                                    onClick={this.generateSchedule.bind(this)}
+                                    content="Generate Schedule"/>}
+                        </Container>
                     </Grid.Column>
                 </Grid>
             </React.Fragment>
