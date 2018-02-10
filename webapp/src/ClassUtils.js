@@ -40,6 +40,10 @@ export function Subclass(data) {
 
     this.overlaps = function (other) {
         return TimeHeuristic.prototype.overlaps(this.getTimeInterval(), other.getTimeInterval());
+    };
+
+    this.toString = function() {
+        return this.data['COURSE_NUM'] + " " + this.data['TYPE'];
     }
 }
 

@@ -39,6 +39,7 @@ export default class Landing extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            enableCalendar: false,
             schedule: [],
             fadeOut: false,
             animationComplete: false,
@@ -129,6 +130,8 @@ export default class Landing extends Component {
 
     generateSchedule() {
         let that = this;
+        this.setState({enableCalendar:true});
+        this.state.schedule = [];
         generateSchedule(this.state.selectedClasses)
             .then(schedule => {
                 console.log(schedule);
@@ -137,6 +140,10 @@ export default class Landing extends Component {
                 })
             })
             .catch(error => console.log(error));
+    }
+
+    clearSchedule() {
+        this.setState({enableCalendar: false});
     }
 
     componentDidMount() {
@@ -211,9 +218,11 @@ export default class Landing extends Component {
                         </Container>
                     </Grid.Column>
                 </Grid>
-                <Container>
-                    {this.state.schedule.length > 0 &&
-                    <Calendar schedule={this.state.schedule}/>}
+                <Container style={{marginBottom: "5em"}}>
+                    <Calendar enabled={this.state.enableCalendar}
+                              schedule={this.state.schedule}
+                              clearSchedule={this.clearSchedule.bind(this)}
+                    />
                 </Container>
             </React.Fragment>
         );
