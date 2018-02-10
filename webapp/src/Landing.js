@@ -27,6 +27,7 @@ import {
 
 import {IntroAnimation} from "./IntroAnimation.js";
 import {Heap} from "./Heap";
+import Calendar from "./Calendar";
 
 const options = [
     {key: 'm', text: 'Male', value: 'male'},
@@ -38,6 +39,7 @@ export default class Landing extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            schedule: [],
             fadeOut: false,
             animationComplete: false,
             textVisible: false,
@@ -131,7 +133,7 @@ export default class Landing extends Component {
             .then(schedule => {
                 console.log(schedule);
                 that.setState({
-                    schedule: schedule[0]['score']
+                    schedule: schedule
                 })
             })
             .catch(error => console.log(error));
@@ -172,7 +174,7 @@ export default class Landing extends Component {
                         <Container>
                             <Segment color="teal" raised>
                                 <Form onSubmit={this.handleSubmit.bind(this)}
-                                      style={{display: "table", width: "100%  "}}>
+                                      style={{display: "table", width: "100%", zIndex: 1}}>
                                     <Form.Group widths='equal'>
                                         <Form.Select search fluid
                                                      onChange={(e, {value}) => this.handleDepartmentChange('department', value)}
@@ -206,10 +208,13 @@ export default class Landing extends Component {
                                     onClick={this.generateSchedule.bind(this)}
                                     content="Generate Schedule"/>}
 
-                            {this.state.schedule}
                         </Container>
                     </Grid.Column>
                 </Grid>
+                <Container>
+                    {this.state.schedule.length > 0 &&
+                    <Calendar schedule={this.state.schedule}/>}
+                </Container>
             </React.Fragment>
         );
     }
