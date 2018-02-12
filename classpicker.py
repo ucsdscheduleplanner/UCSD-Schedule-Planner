@@ -15,7 +15,7 @@ class ClassPicker():
     def __init__(self):
         # Initializing database
         os.chdir(HOME_DIR)
-        self.database = sqlite3.connect(DATABASE_PATH)
+        self.database = sqlite3.connect(DATABASE_PATH, check_same_thread=False)
         self.database.row_factory = sqlite3.Row
         self.cursor = self.database.cursor()
         self.departments = []
