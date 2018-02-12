@@ -38,3 +38,8 @@ cmake-build-debug/
 # Cursive Clojure plugin
 .idea/replstate.xml
 
+
+# Elastic Beanstalk Files
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml
