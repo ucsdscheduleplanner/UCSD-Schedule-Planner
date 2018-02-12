@@ -1,3 +1,5 @@
 from webapp import backend
 
-backend.application.run()
+application = backend.application
+
+application.run()
