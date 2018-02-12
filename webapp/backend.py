@@ -9,10 +9,10 @@ cp = classpicker.ClassPicker()
 db_connection = sqlite3.connect(DATABASE_PATH)
 db_cursor = db_connection.cursor()
 
-app = Flask(__name__)
+application = Flask(__name__)
 
 
-@app.route('/data', methods=['POST'])
+@application.route('/data', methods=['POST'])
 def return_db_data():
     classes = request.json['classes']
     ret_classes = [cp.generate_class_versions(i) for i in classes]
@@ -29,13 +29,13 @@ def return_db_data():
     return jsonify(ret_dict)
 
 
-@app.route('/department', methods={'POST'})
+@application.route('/department', methods={'POST'})
 def return_department_list():
     var = cp.get_departments()
     return jsonify(var)
 
 
-@app.route('/classes', methods={'POST'})
+@application.route('/classes', methods={'POST'})
 def return_classes():
     department = request.args.get('department')
     classes = cp.get_classes_in_department(department)
@@ -43,4 +43,5 @@ def return_classes():
 
 
 if __name__ == '__main__':
-    app.run()
+    application.debug = True
+    application.run()
