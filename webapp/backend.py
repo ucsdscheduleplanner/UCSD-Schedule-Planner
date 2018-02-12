@@ -12,7 +12,6 @@ db_cursor = db_connection.cursor()
 app = Flask(__name__)
 
 
-
 @app.route('/data', methods=['POST'])
 def return_db_data():
     classes = request.json['classes']

@@ -1,39 +1,10 @@
 import React, {Component} from 'react';
 import ClassView from './ClassView.js';
+import ClassInput from './ClassInput.js'
 import './Landing.css'
 import {generateSchedule} from "./ScheduleGenerator";
-import {
-    Container,
-    Divider,
-    Dropdown,
-    Form,
-    Button,
-    Message,
-    Grid,
-    Header,
-    Transition,
-
-
-    Icon,
-    Image,
-    List,
-    Label,
-    Input,
-    Menu,
-    Segment,
-    Visibility
-} from 'semantic-ui-react'
-
-
-import {IntroAnimation} from "./IntroAnimation.js";
-import {Heap} from "./Heap";
+import {Button, Container, Grid} from 'semantic-ui-react'
 import Calendar from "./Calendar";
-
-const options = [
-    {key: 'm', text: 'Male', value: 'male'},
-    {key: 'f', text: 'Female', value: 'female'},
-];
-
 
 export default class Landing extends Component {
     constructor(props) {
@@ -130,7 +101,7 @@ export default class Landing extends Component {
 
     generateSchedule() {
         let that = this;
-        this.setState({enableCalendar:true});
+        this.setState({enableCalendar: true});
         this.state.schedule = [];
         generateSchedule(this.state.selectedClasses)
             .then(schedule => {
@@ -172,39 +143,17 @@ export default class Landing extends Component {
                                                                        deleteClassView={this.deleteClassView.bind(this)}/>
         });
 
-        const {value} = this.state;
-
         return (
             <React.Fragment>
                 <Grid columns={2} padded>
                     <Grid.Column>
                         <Container>
-                            <Segment color="teal" raised>
-                                <Form onSubmit={this.handleSubmit.bind(this)}
-                                      style={{display: "table", width: "100%", zIndex: 1}}>
-                                    <Form.Group widths='equal'>
-                                        <Form.Select search fluid
-                                                     onChange={(e, {value}) => this.handleDepartmentChange('department', value)}
-                                                     label='Department'
-                                                     options={this.state.departmentOptions}
-                                                     placeholder='Department'/>
-                                        <Form.Select search fluid
-                                                     onChange={(e, {value}) => this.changeState('selectedClass', value)}
-                                                     label='Classes' placeholder='Classes'
-                                                     options={this.state.classOptions}/>
-                                    </Form.Group>
-                                    <Form.Group inline>
-                                        <label>Ignore Overlaps: </label>
-                                        <Form.Radio slider label='Lecture' value='ignoreLecture'
-                                                    checked={this.state['ignoreLecture'] === true}
-                                                    onChange={(e, {value}) => this.changeStateToggle(value)}/>
-                                        <Form.Radio slider label='Other' value='ignoreOther'
-                                                    checked={this.state['ignoreOther'] === true}
-                                                    onChange={(e, {value}) => this.changeStateToggle(value)}/>
-                                    </Form.Group>
-                                    <Form.Button positive floated="right" content="Add Class"/>
-                                </Form>
-                            </Segment>
+                            <ClassInput handleSubmit={this.handleSubmit.bind(this)}
+                                        classOptions={this.state.classOptions}
+                                        departmentOptions={this.state.departmentOptions}
+                                        handleDepartmentChange={this.handleDepartmentChange.bind(this)}
+                                        changeState={this.changeState.bind(this)}
+                            />
                         </Container>
                     </Grid.Column>
                     <Grid.Column>

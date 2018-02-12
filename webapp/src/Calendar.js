@@ -50,7 +50,6 @@ export default class Calendar extends Component {
     }
 
     render() {
-        let that = this;
         if (this.props.enabled) {
             this.initIntervals(this.props.schedule);
             return (

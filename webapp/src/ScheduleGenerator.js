@@ -1,12 +1,7 @@
-import React, {Component} from 'react';
 import {Class} from './ClassUtils.js';
-import logo from './logo.svg';
-import './App.css';
 import {Heap} from './Heap.js';
 import TimeHeuristic from './TimeHeuristic.js';
 import {getSchedule} from "./ClassSelector.js";
-import LoginForm from "./Test";
-import Landing from "./Landing.js"
 
 
 function requestData(selectedClasses, callback) {
