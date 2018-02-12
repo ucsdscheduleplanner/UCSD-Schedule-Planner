@@ -1,34 +1,47 @@
-from flask import Flask
+from flask import Flask, request, jsonify
+import sqlite3
+import classpicker
+from classutil.class_decoders import ClassDecoder, CustomJSONEncoder
+from settings import DATABASE_PATH
 
-# print a nice greeting.
-def say_hello(username = "World"):
-    return '<p>Hello %s!</p>\n' % username
+cp = classpicker.ClassPicker()
 
-# some bits of text for the page.
-header_text = '''
-    <html>\n<head> <title>EB Flask Test</title> </head>\n<body>'''
-instructions = '''
-    <p><em>Hint</em>: This is a RESTful web service! Append a username
-    to the URL (for example: <code>/Thelonious</code>) to say hello to
-    someone specific.</p>\n'''
-home_link = '<p><a href="/">Back</a></p>\n'
-footer_text = '</body>\n</html>'
+db_connection = sqlite3.connect(DATABASE_PATH)
+db_cursor = db_connection.cursor()
 
-# EB looks for an 'application' callable by default.
 application = Flask(__name__)
 
-# add a rule for the index page.
-application.add_url_rule('/', 'index', (lambda: header_text +
-    say_hello() + instructions + footer_text))
 
-# add a rule when the page is accessed with a name appended to the site
-# URL.
-application.add_url_rule('/<username>', 'hello', (lambda username:
-    header_text + say_hello(username) + home_link + footer_text))
+@application.route('/data', methods=['POST'])
+def return_db_data():
+    classes = request.json['classes']
+    ret_classes = [cp.generate_class_versions(i) for i in classes]
 
-# run the app.
-if __name__ == "__main__":
-    # Setting debug to True enables debug output. This line should be
-    # removed before deploying a production app.
+    cd = ClassDecoder()
+    ret_dict = {}
+    index = 0
+    for cl_list in ret_classes:
+        temp_list = []
+        for cl in cl_list:
+            temp_list.append(cd.default(cl))
+        ret_dict[classes[index]] = temp_list
+        index += 1
+    return jsonify(ret_dict)
+
+
+@application.route('/department', methods={'POST'})
+def return_department_list():
+    var = cp.get_departments()
+    return jsonify(var)
+
+
+@application.route('/classes', methods={'POST'})
+def return_classes():
+    department = request.args.get('department')
+    classes = cp.get_classes_in_department(department)
+    return jsonify(classes)
+
+
+if __name__ == '__main__':
     application.debug = True
     application.run()
