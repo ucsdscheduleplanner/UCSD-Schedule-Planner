@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="9cc305e8-99df-4966-b9e9-4573ac908d53" name="Default" comment="" />
+    <list default="true" id="9cc305e8-99df-4966-b9e9-4573ac908d53" name="Default" comment="">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application.py" afterPath="$PROJECT_DIR$/application.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/requirements.txt" afterPath="$PROJECT_DIR$/requirements.txt" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -37,12 +40,17 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="application.py" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/application.py">
+      <file leaf-file-name="classpicker.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/classpicker.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="50">
-              <caret line="2" column="17" lean-forward="false" selection-start-line="2" selection-start-column="17" selection-end-line="2" selection-end-column="17" />
-              <folding />
+            <state relative-caret-position="25">
+              <caret line="1" column="13" lean-forward="false" selection-start-line="1" selection-start-column="13" selection-end-line="1" selection-end-column="13" />
+              <folding>
+                <marker date="1518481846460" expanded="true" signature="2381:2446" ph="SELECT DISTI... CLASS_LEGEND" />
+                <marker date="1518481846460" expanded="true" signature="2623:2683" ph="SELECT DISTI... DEPARTMENT" />
+                <marker date="1518481846460" expanded="true" signature="3109:3152" ph="SELECT rowid... DATA" />
+                <marker date="1518481846460" expanded="true" signature="4475:4518" ph="SELECT ROWID... DATA" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -127,6 +135,8 @@
         <option value="$PROJECT_DIR$/webapp/src/ScheduleGenerator.js" />
         <option value="$PROJECT_DIR$/webapp/backend.py" />
         <option value="$PROJECT_DIR$/webapp/application.py" />
+        <option value="$PROJECT_DIR$/application.py" />
+        <option value="$PROJECT_DIR$/requirements.txt" />
       </list>
     </option>
   </component>
@@ -167,7 +177,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -185,11 +194,12 @@
         </subPane>
       </pane>
       <pane id="Scratches" />
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="SearchEverywhereHistoryKey" value="&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/backend.py&#10;back&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/backend.py&#10;Sche&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/ScheduleGenerator.js&#10;Lan&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/Landing.js&#10;Cale&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/Calendar.js&#10;Land&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/Landing.js&#10;Sch&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/ScheduleGenerator.js&#10;ClassU&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/ClassUtils.js&#10;Subclass&#9;null&#9;null&#10;Landing&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/Landing.js&#10;index&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/index.js&#10;App&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/App.js&#10;backend&#9;null&#9;null&#10;backe&#9;RUN_CONFIGURATION&#9;Backend Server&#10;CLAS&#9;FILE&#9;das://table:/43cc346f/e0cf7189-a81a-42af-b04c-ee81fb4296b6/main.CLASS_LEGEND&#10;clas&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/classpicker.py&#10;departme&#9;null&#9;null&#10;CLASS LEGE&#9;FILE&#9;das://table:/43cc346f/e0cf7189-a81a-42af-b04c-ee81fb4296b6/main.CLASS_LEGEND&#10;CLASSES&#9;FILE&#9;das://table:/43cc346f/e0cf7189-a81a-42af-b04c-ee81fb4296b6/main.CLASSES&#10;classpi&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/classpicker.py&#10;ba&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/backend.py&#10;inde&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/index.js&#10;index.j&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/index.js&#10;Ap&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/App.js&#10;TODO&#9;ACTION&#9;ActivateTODOToolWindow&#10;data&#9;null&#9;null&#10;utc&#9;null&#9;null&#10;TimeU&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/timeutil/timeutils.py&#10;dec&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/classutil/class_decoders.py&#10;backen&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/backend.py&#10;TimeH&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/TimeHeuristic.js&#10;Class&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/ClassUtils.js&#10;heuristic&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/TimeHeuristic.js&#10;ClassS&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/ClassSelector.js&#10;Cla&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/ClassUtils.js&#10;Heu&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/Heuristic.js&#10;Heap&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/Heap.js&#10;UCSD_&#9;RUN_CONFIGURATION&#9;UCSD_Backend&#10;TimeHe&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/TimeHeuristic.js&#10;classde&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/classutil/class_decoders.py&#10;CLass&#9;null&#9;null&#10;tim&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/timeutil/timeutils.py&#10;deco&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/classutil/class_decoders.py&#10;Class &#9;null&#9;null&#10;classpick&#9;null&#9;null" />
+    <property name="SearchEverywhereHistoryKey" value="&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/classpicker.py&#10;back&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/backend.py&#10;Sche&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/ScheduleGenerator.js&#10;Lan&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/Landing.js&#10;Cale&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/Calendar.js&#10;Land&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/Landing.js&#10;Sch&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/ScheduleGenerator.js&#10;ClassU&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/ClassUtils.js&#10;Subclass&#9;null&#9;null&#10;Landing&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/Landing.js&#10;index&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/index.js&#10;App&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/App.js&#10;backend&#9;null&#9;null&#10;backe&#9;RUN_CONFIGURATION&#9;Backend Server&#10;CLAS&#9;FILE&#9;das://table:/43cc346f/e0cf7189-a81a-42af-b04c-ee81fb4296b6/main.CLASS_LEGEND&#10;clas&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/classpicker.py&#10;departme&#9;null&#9;null&#10;CLASS LEGE&#9;FILE&#9;das://table:/43cc346f/e0cf7189-a81a-42af-b04c-ee81fb4296b6/main.CLASS_LEGEND&#10;CLASSES&#9;FILE&#9;das://table:/43cc346f/e0cf7189-a81a-42af-b04c-ee81fb4296b6/main.CLASSES&#10;classpi&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/classpicker.py&#10;ba&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/backend.py&#10;inde&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/index.js&#10;index.j&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/index.js&#10;Ap&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/App.js&#10;TODO&#9;ACTION&#9;ActivateTODOToolWindow&#10;data&#9;null&#9;null&#10;utc&#9;null&#9;null&#10;TimeU&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/timeutil/timeutils.py&#10;dec&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/classutil/class_decoders.py&#10;backen&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/backend.py&#10;TimeH&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/TimeHeuristic.js&#10;Class&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/ClassUtils.js&#10;heuristic&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/TimeHeuristic.js&#10;ClassS&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/ClassSelector.js&#10;Cla&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/ClassUtils.js&#10;Heu&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/Heuristic.js&#10;Heap&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/Heap.js&#10;UCSD_&#9;RUN_CONFIGURATION&#9;UCSD_Backend&#10;TimeHe&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/TimeHeuristic.js&#10;classde&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/classutil/class_decoders.py&#10;CLass&#9;null&#9;null&#10;tim&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/timeutil/timeutils.py&#10;deco&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/classutil/class_decoders.py&#10;Class &#9;null&#9;null&#10;classpick&#9;null&#9;null" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="HbShouldOpenHtmlAsHb" value="" />
     <property name="nodejs_interpreter_path" value="C:/Program Files/nodejs/node" />
@@ -201,6 +211,7 @@
     <property name="JavaScriptPreferStrict" value="false" />
     <property name="JavaScriptWeakerCompletionTypeGuess" value="true" />
     <property name="jsx.switch.disabled" value="true" />
+    <property name="run.code.analysis.last.selected.profile" value="pProject Default" />
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
@@ -311,26 +322,40 @@
     <frame x="-11" y="-11" width="1942" height="1042" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3437838" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33055887" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3296875" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
-      <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32818073" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32936978" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33655006" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.25027028" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Inspection Results" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32461354" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3296875" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.34839478" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Data View" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3296875" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33055887" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Documentation" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="FLOATING" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" x="89" y="89" width="1742" height="842" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
+      <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32818073" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3437838" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3296875" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.34839478" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Data View" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3296875" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -354,13 +379,6 @@
     </watches-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python36-32/Lib/site-packages/matplotlib/backends/web_backend/jquery/js/jquery-ui.min.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="176">
-          <caret line="5" column="8408" lean-forward="false" selection-start-line="5" selection-start-column="8408" selection-end-line="5" selection-end-column="8408" />
-        </state>
-      </provider>
-    </entry>
     <entry file="jar://$APPLICATION_HOME_DIR$/plugins/JavaScriptLanguage/lib/JavaScriptLanguage.jar!/com/intellij/lang/javascript/index/predefined/ECMAScript7.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="355">
@@ -645,17 +663,28 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/classpicker.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="635">
-          <caret line="79" column="8" lean-forward="false" selection-start-line="79" selection-start-column="8" selection-end-line="79" selection-end-column="8" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/webapp/src/ScheduleGenerator.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="200">
-          <caret line="48" column="21" lean-forward="true" selection-start-line="48" selection-start-column="21" selection-end-line="48" selection-end-column="21" />
+          <caret line="11" column="38" lean-forward="false" selection-start-line="11" selection-start-column="38" selection-end-line="11" selection-end-column="38" />
+          <folding>
+            <marker date="1518481842532" expanded="false" signature="7:166" ph="..." />
+            <marker date="1518481842532" expanded="true" signature="217:676" ph="{...}" />
+            <marker date="1518481842532" expanded="true" signature="263:672" ph="{...}" />
+            <marker date="1518481842532" expanded="true" signature="288:512" ph="{&quot;method&quot;: 'post'...}" />
+            <marker date="1518481842532" expanded="true" signature="311:423" ph="{&quot;Accept&quot;: 'application/json'...}" />
+            <marker date="1518481842532" expanded="true" signature="576:621" ph="{...}" />
+            <marker date="1518481842532" expanded="true" signature="731:1594" ph="{...}" />
+            <marker date="1518481842532" expanded="true" signature="812:1353" ph="{...}" />
+            <marker date="1518481842532" expanded="true" signature="873:1345" ph="{...}" />
+            <marker date="1518481842532" expanded="true" signature="979:1285" ph="{...}" />
+            <marker date="1518481842532" expanded="true" signature="1034:1186" ph="{...}" />
+            <marker date="1518481842532" expanded="true" signature="1417:1470" ph="{...}" />
+            <marker date="1518481842532" expanded="true" signature="1646:2295" ph="{...}" />
+            <marker date="1518481842532" expanded="true" signature="1867:1975" ph="//..." />
+            <marker date="1518481842532" expanded="true" signature="2020:2291" ph="{...}" />
+            <marker date="1518481842532" expanded="true" signature="2111:2241" ph="{...}" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -670,55 +699,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="225">
           <caret line="170" column="25" lean-forward="true" selection-start-line="170" selection-start-column="25" selection-end-line="170" selection-end-column="25" />
-          <folding>
-            <marker date="1518311025232" expanded="true" signature="7:290" ph="..." />
-            <marker date="1518311025232" expanded="true" signature="339:5894" ph="{...}" />
-            <marker date="1518311025232" expanded="true" signature="364:721" ph="{...}" />
-            <marker date="1518311025232" expanded="true" signature="409:714" ph="{&quot;selectedClass&quot;: undefined...}" />
-            <marker date="1518311025232" expanded="true" signature="751:849" ph="{...}" />
-            <marker date="1518311025232" expanded="true" signature="878:1115" ph="{...}" />
-            <marker date="1518311025232" expanded="true" signature="1001:1041" ph="{...}" />
-            <marker date="1518311025232" expanded="true" signature="1136:1403" ph="{...}" />
-            <marker date="1518311025232" expanded="true" signature="1315:1395" ph="{...}" />
-            <marker date="1518311025232" expanded="true" signature="1439:1594" ph="{...}" />
-            <marker date="1518311025232" expanded="true" signature="1463:1586" ph="{...}" />
-            <marker date="1518311025232" expanded="true" signature="1635:2351" ph="{...}" />
-            <marker date="1518311025232" expanded="true" signature="1738:1911" ph="{&quot;method&quot;: 'post'...}" />
-            <marker date="1518311025232" expanded="true" signature="1761:1873" ph="{&quot;Accept&quot;: 'application/json'...}" />
-            <marker date="1518311025232" expanded="true" signature="1975:2343" ph="{...}" />
-            <marker date="1518311025232" expanded="true" signature="2049:2233" ph="{...}" />
-            <marker date="1518311025232" expanded="true" signature="2264:2327" ph="{&quot;classOptions&quot;: classes...}" />
-            <marker date="1518311025232" expanded="true" signature="2374:3033" ph="{...}" />
-            <marker date="1518311025232" expanded="true" signature="2405:2578" ph="{&quot;method&quot;: 'post'...}" />
-            <marker date="1518311025232" expanded="true" signature="2428:2540" ph="{&quot;Accept&quot;: 'application/json'...}" />
-            <marker date="1518311025232" expanded="true" signature="2642:3025" ph="{...}" />
-            <marker date="1518311025232" expanded="true" signature="2720:2905" ph="{...}" />
-            <marker date="1518311025232" expanded="true" signature="2936:3009" ph="{&quot;departmentOptions&quot;: departments...}" />
-            <marker date="1518311025232" expanded="true" signature="3058:3449" ph="{...}" />
-            <marker date="1518311025232" expanded="true" signature="3249:3393" ph="{...}" />
-            <marker date="1518311025232" expanded="true" signature="3320:3378" ph="{&quot;schedule&quot;: schedule...}" />
-            <marker date="1518311025232" expanded="true" signature="3471:3526" ph="{...}" />
-            <marker date="1518311025232" expanded="true" signature="3552:4004" ph="{...}" />
-            <marker date="1518311025232" expanded="true" signature="3641:3730" ph="{...}" />
-            <marker date="1518311025232" expanded="true" signature="3669:3718" ph="{...}" />
-            <marker date="1518311025232" expanded="true" signature="3770:3855" ph="{...}" />
-            <marker date="1518311025232" expanded="true" signature="3798:3843" ph="{...}" />
-            <marker date="1518311025232" expanded="true" signature="3895:3990" ph="{...}" />
-            <marker date="1518311025232" expanded="true" signature="3923:3978" ph="{...}" />
-            <marker date="1518311025232" expanded="true" signature="4019:5892" ph="{...}" />
-            <marker date="1518311025232" expanded="true" signature="4099:4328" ph="{...}" />
-            <marker date="1518311025232" expanded="true" signature="4161:4318" ph="&lt;ClassView/&gt;" />
-            <marker date="1518311025232" expanded="true" signature="4361:5875" ph="&lt;React.Fragment/&gt;" />
-            <marker date="1518311025232" expanded="true" signature="4394:5532" ph="&lt;Grid/&gt;" />
-            <marker date="1518311025232" expanded="true" signature="4440:5030" ph="&lt;Grid.Column/&gt;" />
-            <marker date="1518311025232" expanded="true" signature="4478:4995" ph="&lt;Container/&gt;" />
-            <marker date="1518311025232" expanded="true" signature="4518:4958" ph="&lt;ClassInput/&gt;" />
-            <marker date="1518311025232" expanded="true" signature="5051:5508" ph="&lt;Grid.Column/&gt;" />
-            <marker date="1518311025232" expanded="true" signature="5089:5473" ph="&lt;Container/&gt;" />
-            <marker date="1518311025232" expanded="true" signature="5257:5434" ph="&lt;Button/&gt;" />
-            <marker date="1518311025232" expanded="true" signature="5549:5845" ph="&lt;Container/&gt;" />
-            <marker date="1518311025232" expanded="true" signature="5611:5816" ph="&lt;Calendar/&gt;" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -726,45 +707,44 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="211">
           <caret line="56" column="32" lean-forward="false" selection-start-line="56" selection-start-column="32" selection-end-line="56" selection-end-column="32" />
-          <folding>
-            <marker date="1518310977626" expanded="true" signature="7:165" ph="..." />
-            <marker date="1518310977626" expanded="true" signature="215:2412" ph="{...}" />
-            <marker date="1518310977626" expanded="true" signature="241:393" ph="{...}" />
-            <marker date="1518310977626" expanded="true" signature="286:386" ph="{&quot;id&quot;: 0...}" />
-            <marker date="1518310977626" expanded="true" signature="423:1592" ph="{...}" />
-            <marker date="1518310977626" expanded="true" signature="492:1533" ph="{...}" />
-            <marker date="1518310977626" expanded="true" signature="564:1523" ph="{...}" />
-            <marker date="1518310977626" expanded="true" signature="617:1509" ph="{...}" />
-            <marker date="1518310977626" expanded="true" signature="897:1027" ph="{...}" />
-            <marker date="1518310977626" expanded="true" signature="1108:1234" ph="{...}" />
-            <marker date="1518310977626" expanded="true" signature="1607:2410" ph="{...}" />
-            <marker date="1518310977626" expanded="true" signature="1641:2386" ph="{...}" />
-            <marker date="1518310977626" expanded="true" signature="1733:2361" ph="&lt;React.Fragment/&gt;" />
-            <marker date="1518310977626" expanded="true" signature="1770:2156" ph="&lt;WeekCalendar/&gt;" />
-            <marker date="1518310977626" expanded="true" signature="2177:2327" ph="&lt;Button/&gt;" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/webapp/backend.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="775">
-          <caret line="45" column="0" lean-forward="false" selection-start-line="45" selection-start-column="0" selection-end-line="45" selection-end-column="0" />
-          <folding>
-            <marker date="1518332412592" expanded="true" signature="0:179" ph="import ..." />
-            <marker date="1518332412592" expanded="true" signature="379:761" ph="..." />
-            <marker date="1518332412592" expanded="true" signature="573:732" ph="..." />
-            <marker date="1518332412592" expanded="true" signature="837:892" ph="..." />
-            <marker date="1518332412592" expanded="true" signature="957:1088" ph="..." />
-          </folding>
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/webapp/backend.py" />
     <entry file="file://$PROJECT_DIR$/application.py">
       <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="25">
+          <caret line="1" column="14" lean-forward="false" selection-start-line="1" selection-start-column="14" selection-end-line="1" selection-end-column="14" />
+          <folding>
+            <marker date="1518481846447" expanded="true" signature="0:207" ph="import ..." />
+            <marker date="1518481846447" expanded="true" signature="440:822" ph="..." />
+            <marker date="1518481846447" expanded="true" signature="634:793" ph="..." />
+            <marker date="1518481846447" expanded="true" signature="906:961" ph="..." />
+            <marker date="1518481846447" expanded="true" signature="1034:1165" ph="..." />
+            <marker date="1518481846447" expanded="true" signature="1194:1245" ph="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/requirements.txt">
+      <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="50">
-          <caret line="2" column="17" lean-forward="false" selection-start-line="2" selection-start-column="17" selection-end-line="2" selection-end-column="17" />
+          <caret line="2" column="0" lean-forward="false" selection-start-line="2" selection-start-column="0" selection-end-line="2" selection-end-column="0" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/classpicker.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="25">
+          <caret line="1" column="13" lean-forward="false" selection-start-line="1" selection-start-column="13" selection-end-line="1" selection-end-column="13" />
+          <folding>
+            <marker date="1518481846460" expanded="true" signature="2381:2446" ph="SELECT DISTI... CLASS_LEGEND" />
+            <marker date="1518481846460" expanded="true" signature="2623:2683" ph="SELECT DISTI... DEPARTMENT" />
+            <marker date="1518481846460" expanded="true" signature="3109:3152" ph="SELECT rowid... DATA" />
+            <marker date="1518481846460" expanded="true" signature="4475:4518" ph="SELECT ROWID... DATA" />
+          </folding>
         </state>
       </provider>
     </entry>
