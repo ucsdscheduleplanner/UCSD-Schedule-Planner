@@ -1,3 +1,5 @@
+
+awsebcli
 Flask
 Flask-Cors
 pytz
