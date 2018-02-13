@@ -1,6 +1,7 @@
 {
   "name": "ucsd_webapp",
   "version": "0.1.0",
+  "homepage": "http://ctrando.github.io/UCSD_Webscraper_Backend/",
   "private": true,
   "dependencies": {
     "gh-pages": "^1.1.0",
@@ -17,7 +18,9 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
   },
   "proxy": "http://Ucsd-Webscraper-Backend-dev.us-west-2.elasticbeanstalk.com"
 }

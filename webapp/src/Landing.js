@@ -58,7 +58,7 @@ export default class Landing extends Component {
         console.log(key);
         console.log(value);
 
-        fetch(`/classes?department=${value}`, {
+        fetch(`http://Ucsd-Webscraper-Backend-dev.us-west-2.elasticbeanstalk.com/classes?department=${value}`, {
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
@@ -79,7 +79,7 @@ export default class Landing extends Component {
     }
 
     getDepartments() {
-        fetch('/department', {
+        fetch('http://Ucsd-Webscraper-Backend-dev.us-west-2.elasticbeanstalk.com/department', {
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'

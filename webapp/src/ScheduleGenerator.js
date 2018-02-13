@@ -6,7 +6,7 @@ import {getSchedule} from "./ClassSelector.js";
 
 function requestData(selectedClasses, callback) {
     return new Promise((resolve, reject) => {
-        fetch('/data', {
+        fetch('http://Ucsd-Webscraper-Backend-dev.us-west-2.elasticbeanstalk.com/data', {
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
