@@ -31,12 +31,12 @@ export default class Calendar extends Component {
                     let newStart = moment({
                         h: subclassStart.getHours(),
                         m: subclassStart.getMinutes()
-                    }).add('d', subclassStart.getDay() + 1);
+                    }).add('d', subclassStart.getDay());
 
                     let newEnd = moment({
                         h: subclassEnd.getHours(),
                         m: subclassEnd.getMinutes()
-                    }).add('d', subclassEnd.getDay() + 1);
+                    }).add('d', subclassEnd.getDay());
 
                     newInterval['start'] = newStart;
                     newInterval['end'] = newEnd;
