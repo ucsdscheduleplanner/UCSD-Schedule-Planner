@@ -1,4 +1,5 @@
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 import sqlite3
 import classpicker
 from classutil.class_decoders import ClassDecoder, CustomJSONEncoder
@@ -10,7 +11,7 @@ db_connection = sqlite3.connect(DATABASE_PATH)
 db_cursor = db_connection.cursor()
 
 application = Flask(__name__)
-
+CORS(application)
 
 @application.route('/data', methods=['POST'])
 def return_db_data():

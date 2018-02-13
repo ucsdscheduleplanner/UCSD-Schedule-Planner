@@ -42,12 +42,26 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
+<<<<<<< HEAD
       <file leaf-file-name="ScheduleGenerator.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/webapp/src/ScheduleGenerator.js">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="200">
               <caret line="11" column="38" lean-forward="false" selection-start-line="11" selection-start-column="38" selection-end-line="11" selection-end-column="38" />
               <folding />
+=======
+      <file leaf-file-name="classpicker.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/classpicker.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="25">
+              <caret line="1" column="13" lean-forward="false" selection-start-line="1" selection-start-column="13" selection-end-line="1" selection-end-column="13" />
+              <folding>
+                <marker date="1518481846460" expanded="true" signature="2381:2446" ph="SELECT DISTI... CLASS_LEGEND" />
+                <marker date="1518481846460" expanded="true" signature="2623:2683" ph="SELECT DISTI... DEPARTMENT" />
+                <marker date="1518481846460" expanded="true" signature="3109:3152" ph="SELECT rowid... DATA" />
+                <marker date="1518481846460" expanded="true" signature="4475:4518" ph="SELECT ROWID... DATA" />
+              </folding>
+>>>>>>> master
             </state>
           </provider>
         </entry>
@@ -134,6 +148,13 @@
         <option value="$PROJECT_DIR$/webapp/package.json" />
         <option value="$PROJECT_DIR$/webapp/src/Landing.js" />
         <option value="$PROJECT_DIR$/webapp/src/ScheduleGenerator.js" />
+<<<<<<< HEAD
+=======
+        <option value="$PROJECT_DIR$/webapp/backend.py" />
+        <option value="$PROJECT_DIR$/webapp/application.py" />
+        <option value="$PROJECT_DIR$/application.py" />
+        <option value="$PROJECT_DIR$/requirements.txt" />
+>>>>>>> master
       </list>
     </option>
   </component>
@@ -202,7 +223,11 @@
   </component>
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
+<<<<<<< HEAD
     <property name="SearchEverywhereHistoryKey" value="&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/Landing.js&#10;Calen&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/Calendar.js&#10;CLASS_&#9;FILE&#9;das://table:/43cc346f/e0cf7189-a81a-42af-b04c-ee81fb4296b6/main.CLASS_LEGEND&#10;back&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/backend.py&#10;Sche&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/ScheduleGenerator.js&#10;Lan&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/Landing.js&#10;Cale&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/Calendar.js&#10;Land&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/Landing.js&#10;Sch&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/ScheduleGenerator.js&#10;ClassU&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/ClassUtils.js&#10;Subclass&#9;null&#9;null&#10;Landing&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/Landing.js&#10;index&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/index.js&#10;App&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/App.js&#10;backend&#9;null&#9;null&#10;backe&#9;RUN_CONFIGURATION&#9;Backend Server&#10;CLAS&#9;FILE&#9;das://table:/43cc346f/e0cf7189-a81a-42af-b04c-ee81fb4296b6/main.CLASS_LEGEND&#10;clas&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/classpicker.py&#10;departme&#9;null&#9;null&#10;CLASS LEGE&#9;FILE&#9;das://table:/43cc346f/e0cf7189-a81a-42af-b04c-ee81fb4296b6/main.CLASS_LEGEND&#10;CLASSES&#9;FILE&#9;das://table:/43cc346f/e0cf7189-a81a-42af-b04c-ee81fb4296b6/main.CLASSES&#10;classpi&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/classpicker.py&#10;ba&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/backend.py&#10;inde&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/index.js&#10;index.j&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/index.js&#10;Ap&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/App.js&#10;TODO&#9;ACTION&#9;ActivateTODOToolWindow&#10;data&#9;null&#9;null&#10;utc&#9;null&#9;null&#10;TimeU&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/timeutil/timeutils.py&#10;dec&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/classutil/class_decoders.py&#10;backen&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/backend.py&#10;TimeH&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/TimeHeuristic.js&#10;Class&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/ClassUtils.js&#10;heuristic&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/TimeHeuristic.js&#10;ClassS&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/ClassSelector.js&#10;Cla&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/ClassUtils.js&#10;Heu&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/Heuristic.js&#10;Heap&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/Heap.js&#10;UCSD_&#9;RUN_CONFIGURATION&#9;UCSD_Backend&#10;TimeHe&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/TimeHeuristic.js&#10;classde&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/classutil/class_decoders.py&#10;CLass&#9;null&#9;null&#10;tim&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/timeutil/timeutils.py&#10;deco&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/classutil/class_decoders.py&#10;Class &#9;null&#9;null&#10;classpick&#9;null&#9;null" />
+=======
+    <property name="SearchEverywhereHistoryKey" value="&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/classpicker.py&#10;back&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/backend.py&#10;Sche&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/ScheduleGenerator.js&#10;Lan&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/Landing.js&#10;Cale&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/Calendar.js&#10;Land&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/Landing.js&#10;Sch&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/ScheduleGenerator.js&#10;ClassU&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/ClassUtils.js&#10;Subclass&#9;null&#9;null&#10;Landing&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/Landing.js&#10;index&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/index.js&#10;App&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/App.js&#10;backend&#9;null&#9;null&#10;backe&#9;RUN_CONFIGURATION&#9;Backend Server&#10;CLAS&#9;FILE&#9;das://table:/43cc346f/e0cf7189-a81a-42af-b04c-ee81fb4296b6/main.CLASS_LEGEND&#10;clas&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/classpicker.py&#10;departme&#9;null&#9;null&#10;CLASS LEGE&#9;FILE&#9;das://table:/43cc346f/e0cf7189-a81a-42af-b04c-ee81fb4296b6/main.CLASS_LEGEND&#10;CLASSES&#9;FILE&#9;das://table:/43cc346f/e0cf7189-a81a-42af-b04c-ee81fb4296b6/main.CLASSES&#10;classpi&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/classpicker.py&#10;ba&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/backend.py&#10;inde&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/index.js&#10;index.j&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/index.js&#10;Ap&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/App.js&#10;TODO&#9;ACTION&#9;ActivateTODOToolWindow&#10;data&#9;null&#9;null&#10;utc&#9;null&#9;null&#10;TimeU&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/timeutil/timeutils.py&#10;dec&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/classutil/class_decoders.py&#10;backen&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/backend.py&#10;TimeH&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/TimeHeuristic.js&#10;Class&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/ClassUtils.js&#10;heuristic&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/TimeHeuristic.js&#10;ClassS&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/ClassSelector.js&#10;Cla&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/ClassUtils.js&#10;Heu&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/Heuristic.js&#10;Heap&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/Heap.js&#10;UCSD_&#9;RUN_CONFIGURATION&#9;UCSD_Backend&#10;TimeHe&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/TimeHeuristic.js&#10;classde&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/classutil/class_decoders.py&#10;CLass&#9;null&#9;null&#10;tim&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/timeutil/timeutils.py&#10;deco&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/classutil/class_decoders.py&#10;Class &#9;null&#9;null&#10;classpick&#9;null&#9;null" />
+>>>>>>> master
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="HbShouldOpenHtmlAsHb" value="" />
     <property name="nodejs_interpreter_path" value="C:/Program Files/nodejs/node" />
@@ -214,6 +239,7 @@
     <property name="JavaScriptPreferStrict" value="false" />
     <property name="JavaScriptWeakerCompletionTypeGuess" value="true" />
     <property name="jsx.switch.disabled" value="true" />
+    <property name="run.code.analysis.last.selected.profile" value="pProject Default" />
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
@@ -328,9 +354,16 @@
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32936978" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
+<<<<<<< HEAD
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.33174792" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.7578829" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+=======
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33655006" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.25027028" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Inspection Results" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32461354" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+>>>>>>> master
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3296875" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
@@ -338,12 +371,28 @@
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.34839478" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Data View" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3296875" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33055887" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Documentation" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="FLOATING" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" x="89" y="89" width="1742" height="842" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
+      <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32818073" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+<<<<<<< HEAD
+=======
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3437838" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3296875" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+>>>>>>> master
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.34839478" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Data View" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3296875" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -367,6 +416,23 @@
     </watches-manager>
   </component>
   <component name="editorHistoryManager">
+<<<<<<< HEAD
+=======
+    <entry file="jar://$APPLICATION_HOME_DIR$/plugins/JavaScriptLanguage/lib/JavaScriptLanguage.jar!/com/intellij/lang/javascript/index/predefined/ECMAScript7.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="355">
+          <caret line="16" column="0" lean-forward="false" selection-start-line="16" selection-start-column="0" selection-end-line="16" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python36-32/Lib/tokenize.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="225">
+          <caret line="453" column="30" lean-forward="false" selection-start-line="453" selection-start-column="30" selection-end-line="453" selection-end-column="30" />
+        </state>
+      </provider>
+    </entry>
+>>>>>>> master
     <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python36-32/Lib/datetime.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="280">
@@ -630,6 +696,7 @@
         </state>
       </provider>
     </entry>
+<<<<<<< HEAD
     <entry file="file://$PROJECT_DIR$/classpicker.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="635">
@@ -641,6 +708,30 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="201">
           <caret line="24" column="18" lean-forward="true" selection-start-line="24" selection-start-column="18" selection-end-line="24" selection-end-column="18" />
+=======
+    <entry file="file://$PROJECT_DIR$/webapp/src/ScheduleGenerator.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="200">
+          <caret line="11" column="38" lean-forward="false" selection-start-line="11" selection-start-column="38" selection-end-line="11" selection-end-column="38" />
+          <folding>
+            <marker date="1518481842532" expanded="false" signature="7:166" ph="..." />
+            <marker date="1518481842532" expanded="true" signature="217:676" ph="{...}" />
+            <marker date="1518481842532" expanded="true" signature="263:672" ph="{...}" />
+            <marker date="1518481842532" expanded="true" signature="288:512" ph="{&quot;method&quot;: 'post'...}" />
+            <marker date="1518481842532" expanded="true" signature="311:423" ph="{&quot;Accept&quot;: 'application/json'...}" />
+            <marker date="1518481842532" expanded="true" signature="576:621" ph="{...}" />
+            <marker date="1518481842532" expanded="true" signature="731:1594" ph="{...}" />
+            <marker date="1518481842532" expanded="true" signature="812:1353" ph="{...}" />
+            <marker date="1518481842532" expanded="true" signature="873:1345" ph="{...}" />
+            <marker date="1518481842532" expanded="true" signature="979:1285" ph="{...}" />
+            <marker date="1518481842532" expanded="true" signature="1034:1186" ph="{...}" />
+            <marker date="1518481842532" expanded="true" signature="1417:1470" ph="{...}" />
+            <marker date="1518481842532" expanded="true" signature="1646:2295" ph="{...}" />
+            <marker date="1518481842532" expanded="true" signature="1867:1975" ph="//..." />
+            <marker date="1518481842532" expanded="true" signature="2020:2291" ph="{...}" />
+            <marker date="1518481842532" expanded="true" signature="2111:2241" ph="{...}" />
+          </folding>
+>>>>>>> master
         </state>
       </provider>
     </entry>
@@ -654,13 +745,20 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/application.py">
       <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
         <state relative-caret-position="150">
           <caret line="6" column="27" lean-forward="true" selection-start-line="6" selection-start-column="27" selection-end-line="6" selection-end-column="27" />
+=======
+        <state relative-caret-position="225">
+          <caret line="170" column="25" lean-forward="true" selection-start-line="170" selection-start-column="25" selection-end-line="170" selection-end-column="25" />
+          <folding />
+>>>>>>> master
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/webapp/src/Calendar.js">
       <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
         <state relative-caret-position="361">
           <caret line="38" column="52" lean-forward="false" selection-start-line="38" selection-start-column="52" selection-end-line="38" selection-end-column="52" />
         </state>
@@ -692,10 +790,31 @@
             <marker date="1518480579830" expanded="true" signature="0:755" ph="{&quot;name&quot;: &quot;ucsd_webapp&quot;...}" />
             <marker date="1518480579830" expanded="true" signature="153:431" ph="{&quot;gh-pages&quot;: &quot;^1.1.0&quot;...}" />
             <marker date="1518480579830" expanded="true" signature="446:673" ph="{&quot;start&quot;: &quot;react-scripts start&quot;...}" />
+=======
+        <state relative-caret-position="211">
+          <caret line="56" column="32" lean-forward="false" selection-start-line="56" selection-start-column="32" selection-end-line="56" selection-end-column="32" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/webapp/backend.py" />
+    <entry file="file://$PROJECT_DIR$/application.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="25">
+          <caret line="1" column="14" lean-forward="false" selection-start-line="1" selection-start-column="14" selection-end-line="1" selection-end-column="14" />
+          <folding>
+            <marker date="1518481846447" expanded="true" signature="0:207" ph="import ..." />
+            <marker date="1518481846447" expanded="true" signature="440:822" ph="..." />
+            <marker date="1518481846447" expanded="true" signature="634:793" ph="..." />
+            <marker date="1518481846447" expanded="true" signature="906:961" ph="..." />
+            <marker date="1518481846447" expanded="true" signature="1034:1165" ph="..." />
+            <marker date="1518481846447" expanded="true" signature="1194:1245" ph="..." />
+>>>>>>> master
           </folding>
         </state>
       </provider>
     </entry>
+<<<<<<< HEAD
     <entry file="file://$PROJECT_DIR$/webapp/src/Landing.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1350">
@@ -708,7 +827,26 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="200">
           <caret line="11" column="38" lean-forward="false" selection-start-line="11" selection-start-column="38" selection-end-line="11" selection-end-column="38" />
+=======
+    <entry file="file://$PROJECT_DIR$/requirements.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="50">
+          <caret line="2" column="0" lean-forward="false" selection-start-line="2" selection-start-column="0" selection-end-line="2" selection-end-column="0" />
+>>>>>>> master
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/classpicker.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="25">
+          <caret line="1" column="13" lean-forward="false" selection-start-line="1" selection-start-column="13" selection-end-line="1" selection-end-column="13" />
+          <folding>
+            <marker date="1518481846460" expanded="true" signature="2381:2446" ph="SELECT DISTI... CLASS_LEGEND" />
+            <marker date="1518481846460" expanded="true" signature="2623:2683" ph="SELECT DISTI... DEPARTMENT" />
+            <marker date="1518481846460" expanded="true" signature="3109:3152" ph="SELECT rowid... DATA" />
+            <marker date="1518481846460" expanded="true" signature="4475:4518" ph="SELECT ROWID... DATA" />
+          </folding>
         </state>
       </provider>
     </entry>
