@@ -31,12 +31,14 @@ export default class Calendar extends Component {
                     let newStart = moment({
                         h: subclassStart.getHours(),
                         m: subclassStart.getMinutes()
-                    }).add('d', subclassStart.getDay());
+                    });
+                    newStart.day(subclassStart.getDay());
 
                     let newEnd = moment({
                         h: subclassEnd.getHours(),
                         m: subclassEnd.getMinutes()
-                    }).add('d', subclassEnd.getDay());
+                    });
+                    newEnd.day(subclassEnd.getDay());
 
                     newInterval['start'] = newStart;
                     newInterval['end'] = newEnd;
@@ -46,21 +48,27 @@ export default class Calendar extends Component {
                 }
             }
         }
-        this.state.selectedIntervals = newIntervals;
+        this.setState({
+            selectedIntervals: newIntervals
+        });
+    }
+
+    componentWillReceiveProps(nextProps) {
+        if(this.props.schedule !== nextProps.schedule) {
+            this.initIntervals(nextProps.schedule);
+        }
     }
 
     render() {
         if (this.props.enabled) {
-            this.initIntervals(this.props.schedule);
             return (
                 <React.Fragment>
                     <WeekCalendar
-                        style={{zIndex: -1}}
+                        firstDay={moment().day(1)}
                         dayFormat="dd"
                         startTime={moment({h: 8, m: 0})}
                         endTime={moment({h: 21, m: 0})}
                         scaleUnit="30"
-                        numberOfDays={7}
                         selectedIntervals={this.state.selectedIntervals}
                     />
                     <Button negative floated="right"

@@ -46,9 +46,14 @@ function handleData(selectedClasses, dirtyClassData) {
     });
 
     console.log("Results");
-    let schedule = getSchedule(classData);
-    console.log(schedule);
-    return schedule;
+    return new Promise((resolve, reject) => {
+        try {
+            let schedule = getSchedule(classData);
+            resolve(schedule);
+        } catch(error) {
+            reject(error);
+        }
+    });
 }
 
 export function generateSchedule(selectedClasses) {

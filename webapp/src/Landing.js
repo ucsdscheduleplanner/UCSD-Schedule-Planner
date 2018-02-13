@@ -3,15 +3,18 @@ import ClassView from './ClassView.js';
 import ClassInput from './ClassInput.js'
 import './Landing.css'
 import {generateSchedule} from "./ScheduleGenerator";
-import {Button, Container, Grid} from 'semantic-ui-react'
+import {Button, Container, Grid, Header, Label, Transition, Segment} from 'semantic-ui-react'
 import Calendar from "./Calendar";
 
 export default class Landing extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            calendarError: false,
             enableCalendar: false,
             schedule: [],
+
+
             fadeOut: false,
             animationComplete: false,
             textVisible: false,
@@ -101,16 +104,29 @@ export default class Landing extends Component {
 
     generateSchedule() {
         let that = this;
-        this.setState({enableCalendar: true});
-        this.state.schedule = [];
+        this.setState({
+            enableCalendar: false,
+            calendarError: false,
+            schedule: []
+        });
+
         generateSchedule(this.state.selectedClasses)
             .then(schedule => {
                 console.log(schedule);
-                that.setState({
-                    schedule: schedule
-                })
+                if (schedule.length > 0) {
+                    that.setState({
+                        schedule: schedule,
+                        enableCalendar: true
+                    });
+                } else {
+
+                }
             })
-            .catch(error => console.log(error));
+            .catch(error => {
+                that.setState({
+                    calendarError: true,
+                });
+            });
     }
 
     clearSchedule() {
@@ -168,6 +184,12 @@ export default class Landing extends Component {
                     </Grid.Column>
                 </Grid>
                 <Container style={{marginBottom: "5em"}}>
+                    <Transition unmountOnHide={true} visible={this.state.calendarError} animation="shake" duration={500}>
+                        <Segment color="red" inverted raised={true}>
+                            <Header textAlign="center" as="h1" content="That schedule is not possible!"/>
+                        </Segment>
+                    </Transition>
+
                     <Calendar enabled={this.state.enableCalendar}
                               schedule={this.state.schedule}
                               clearSchedule={this.clearSchedule.bind(this)}
