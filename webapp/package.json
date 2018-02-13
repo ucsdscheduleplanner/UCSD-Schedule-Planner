@@ -1,7 +1,7 @@
 {
   "name": "ucsd_webapp",
   "version": "0.1.0",
-  "homepage": "http://ctrando.github.io/UCSD_Webscraper_Backend/",
+  "homepage": "http://sdschedule.com/",
   "private": true,
   "dependencies": {
     "gh-pages": "^1.1.0",
