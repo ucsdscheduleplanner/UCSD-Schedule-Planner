@@ -35,7 +35,7 @@ URLS
 """
 # URLs
 DEPARTMENT_URL = 'https://act.ucsd.edu/scheduleOfClasses/scheduleOfClassesStudent.htm'
-WEBREG_URL = 'https://act.ucsd.edu/webreg2/start'
+SCHEDULE_OF_CLASSES = 'https://act.ucsd.edu/scheduleOfClasses/scheduleOfClassesStudent.htm'
 
 """
 PREFERENCE DATA
@@ -54,7 +54,7 @@ CURRENT_CLASS_INDEX = 0
 
 
 # Time for timeout for browser
-TIMEOUT = 30
+TIMEOUT = 3
 
 # Time before class timeout
 CLASS_SEARCH_TIMEOUT = 5

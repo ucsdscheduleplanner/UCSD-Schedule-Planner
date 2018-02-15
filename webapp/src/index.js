@@ -5,5 +5,6 @@ import registerServiceWorker from './registerServiceWorker';
 import 'semantic-ui-css/semantic.min.css'
 import 'react-week-calendar/dist/style.css';
 
+document.title = "Plan Your Schedule!";
 ReactDOM.render(<Landing/>, document.getElementById('root'));
 registerServiceWorker();
