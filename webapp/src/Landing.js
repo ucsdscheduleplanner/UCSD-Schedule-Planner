@@ -81,7 +81,17 @@ export default class Landing extends Component {
                 for (let dict of res) {
                     unsorted.push(dict["COURSE_NUM"]);
                 }
-                let sorted = unsorted.sort();
+                let sorted = unsorted.sort((element1, element2) => {
+                    let num1 = parseInt(element1.match(/\d+/)[0]);
+                    let num2 = parseInt(element2.match(/\d+/)[0]);
+
+                    if(num1 < num2) return -1;
+                    if(num2 < num1) return 1;
+                    // checking lexicographically if they are the same number
+                    if(element1 < element2) return -1;
+                    if(element2 < element1) return 1;
+                    return 0;
+                });
                 for(let element of sorted) {
                     let new_dict = {"key": element, "text": element, "value": element};
                     classes.push(new_dict);
