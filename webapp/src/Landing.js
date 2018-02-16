@@ -77,10 +77,16 @@ export default class Landing extends Component {
             .then(res => res.json())
             .then(res => {
                 let classes = [];
+                let unsorted = [];
                 for (let dict of res) {
-                    let new_dict = {"key": dict["COURSE_NUM"], "text": dict["COURSE_NUM"], "value": dict["COURSE_NUM"]};
+                    unsorted.push(dict["COURSE_NUM"]);
+                }
+                let sorted = unsorted.sort();
+                for(let element of sorted) {
+                    let new_dict = {"key": element, "text": element, "value": element};
                     classes.push(new_dict);
                 }
+
                 this.setState({
                     "classOptions": classes
                 });
