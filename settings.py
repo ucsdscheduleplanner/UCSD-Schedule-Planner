@@ -54,7 +54,7 @@ CURRENT_CLASS_INDEX = 0
 
 
 # Time for timeout for browser
-TIMEOUT = 3
+TIMEOUT = 30
 
 # Time before class timeout
 CLASS_SEARCH_TIMEOUT = 5

@@ -5,6 +5,7 @@ import './Landing.css'
 import {generateSchedule} from "./ScheduleGenerator";
 import {Button, Container, Grid, Header, Label, Transition, Segment} from 'semantic-ui-react'
 import Calendar from "./Calendar";
+import {BACKENDURL} from "./settings";
 
 export default class Landing extends Component {
     constructor(props) {
@@ -21,7 +22,8 @@ export default class Landing extends Component {
             selectedClass: undefined,
             departmentOptions: [],
             classOptions: [],
-            selectedClasses: []
+            selectedClasses: [],
+            currentDepartment: null
         };
     }
 
@@ -61,7 +63,11 @@ export default class Landing extends Component {
         console.log(key);
         console.log(value);
 
-        fetch(`http://Ucsd-Webscraper-Backend-dev.us-west-2.elasticbeanstalk.com/classes?department=${value}`, {
+        this.setState({
+            currentDepartment: value
+        });
+
+        fetch(`${BACKENDURL}/classes?department=${value}`, {
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
@@ -82,7 +88,7 @@ export default class Landing extends Component {
     }
 
     getDepartments() {
-        fetch('http://Ucsd-Webscraper-Backend-dev.us-west-2.elasticbeanstalk.com/department', {
+        fetch(`${BACKENDURL}/department`, {
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
@@ -169,6 +175,7 @@ export default class Landing extends Component {
                                         departmentOptions={this.state.departmentOptions}
                                         handleDepartmentChange={this.handleDepartmentChange.bind(this)}
                                         changeState={this.changeState.bind(this)}
+                                        currentDepartment={this.state.currentDepartment}
                             />
                         </Container>
                     </Grid.Column>

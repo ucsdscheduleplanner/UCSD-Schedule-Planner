@@ -22,6 +22,8 @@ class Parser:
         # List of classes
         self.buffer = []
 
+        self.current_class = None
+
     def parse(self):
         print('Beginning parsing.')
         curr_time = time.time()
@@ -41,64 +43,114 @@ class Parser:
                         # Look for table rows
                         rows = soup.find_all(name='tr')
                         for row in rows:
-                            self.parse_row(row)
+                            self.parse_row(dir, row)
 
     """
     Will get info from the HTML and store it into a format that can be manipulated easily. 
     Then it will validate the information and make sure that it is in a usable format.
     """
-    def parse_row(self, row):
-        header = row.find(name='table',
-                        attrs={'id': 'search-group-header-id'})
-        section_id = row.find(name='td', attrs={'role': 'gridcell',
-                                                'aria-describedby': 'search-div-b-table_SECTION_NUMBER'})
-        class_type = row.find(name='td', attrs={'role': 'gridcell',
-                                                'aria-describedby': 'search-div-b-table_FK_CDI_INSTR_TYPE'})
-        day = row.find(name='td',
-                     attrs={'role': 'gridcell',
-                            'aria-describedby': 'search-div-b-table_DAY_CODE'})
-        class_time = row.find(name='td',
-                      attrs={'role': 'gridcell',
-                             'aria-describedby': 'search-div-b-table_coltime'})
-        location = row.find(name='td',
-                          attrs={'role': 'gridcell',
-                                 'aria-describedby': 'search-div-b-table_BLDG_CODE'})
-        room = row.find(name='td',
-                      attrs={'role': 'gridcell',
-                             'aria-describedby': 'search-div-b-table_ROOM_CODE'})
-        instructor = row.find(name='td',
-                            attrs={'role': 'gridcell',
-                                   'aria-describedby': 'search-div-b-table_PERSON_FULL_NAME'})
 
-        # Check if nothing is null
-        if None not in (header, section_id, class_type, day, class_time, location, room, instructor):
-            name_desc = header.find_all(name='td')
+    def parse_row(self, department, row):
+        course_num = row.find_all(name='td',
+                                  attrs={'class': 'crsheader'})
+        if course_num:
+            self.current_class = course_num[1].text
 
-            course_num = ' '.join(name_desc[0].text.split())
-            department = course_num.split(' ')[0]
-            section_id = ' '.join(section_id.text.split())
-            class_type = ' '.join(class_type.text.split())
-            day = ' '.join(day.text.split())
-            class_time = ' '.join(class_time.text.split())
-            location = ' '.join(location.text.split())
-            room = ' '.join(room.text.split())
-            instructor = ' '.join(instructor.text.split())
-            description = ' '.join(name_desc[1].text.split())
+        info = row.find_all(name='td',
+                            attrs={'class': 'brdr'})
 
-            # Dirty data with possible errors
-            info = [
-                department, course_num, section_id,
-                class_type, day, class_time,
-                location, room, instructor,
-                description
-            ]
+        if info and len(info) > 5:
+            copy_dict = {}
+            counter = 0
 
-            # Passing in a list which will be converted to tuple
-            info = self.validate_info(info)
-            if info not in self.buffer_buffer:
-                self.buffer_buffer.append(info)
+            for i in info:
+                if 'colspan' in i.attrs:
+                    for j in range(0, int(i.attrs['colspan'])):
+                        copy_dict[counter] = i.text.strip()
+                        counter += 1
+                else:
+                    copy_dict[counter] = i.text.strip()
+                    counter += 1
+
+            course_num = self.current_class
+            section_id = copy_dict[2]
+            type = copy_dict[3]
+            days = copy_dict[5]
+            times = copy_dict[6]
+            location = copy_dict[7]
+            room = copy_dict[8]
+            instructor = copy_dict[9]
+
+            ret_info = (
+                department,
+                course_num,
+                section_id,
+                type,
+                days,
+                times,
+                location,
+                room,
+                instructor,
+                ""
+            )
+
+            if ret_info not in self.buffer_buffer:
+                self.buffer_buffer.append(ret_info)
                 print('*' * 10)
-                print(info)
+                print(ret_info)
+
+
+
+
+            # section_id = row.find(name='td', attrs={'role': 'gridcell',
+            #                                         'aria-describedby': 'search-div-b-table_SECTION_NUMBER'})
+            # class_type = row.find(name='td', attrs={'role': 'gridcell',
+            #                                         'aria-describedby': 'search-div-b-table_FK_CDI_INSTR_TYPE'})
+            # day = row.find(name='td',
+            #              attrs={'role': 'gridcell',
+            #                     'aria-describedby': 'search-div-b-table_DAY_CODE'})
+            # class_time = row.find(name='td',
+            #               attrs={'role': 'gridcell',
+            #                      'aria-describedby': 'search-div-b-table_coltime'})
+            # location = row.find(name='td',
+            #                   attrs={'role': 'gridcell',
+            #                          'aria-describedby': 'search-div-b-table_BLDG_CODE'})
+            # room = row.find(name='td',
+            #               attrs={'role': 'gridcell',
+            #                      'aria-describedby': 'search-div-b-table_ROOM_CODE'})
+            # instructor = row.find(name='td',
+            #                     attrs={'role': 'gridcell',
+            #                            'aria-describedby': 'search-div-b-table_PERSON_FULL_NAME'})
+
+            # # Check if nothing is null
+            # if None not in (header, section_id, class_type, day, class_time, location, room, instructor):
+            #     name_desc = header.find_all(name='td')
+            #
+            #     course_num = ' '.join(name_desc[0].text.split())
+            #     department = course_num.split(' ')[0]
+            #     section_id = ' '.join(section_id.text.split())
+            #     class_type = ' '.join(class_type.text.split())
+            #     day = ' '.join(day.text.split())
+            #     class_time = ' '.join(class_time.text.split())
+            #     location = ' '.join(location.text.split())
+            #     room = ' '.join(room.text.split())
+            #     instructor = ' '.join(instructor.text.split())
+            #     description = ' '.join(name_desc[1].text.split())
+            #
+            #     # Dirty data with possible errors
+            #     info = [
+            #         department, course_num, section_id,
+            #         class_type, day, class_time,
+            #         location, room, instructor,
+            #         description
+            #     ]
+            #
+            #     # Passing in a list which will be converted to tuple
+            #     info = self.validate_info(info)
+            #     if info not in self.buffer_buffer:
+            #         self.buffer_buffer.append(info)
+            #         print('*' * 10)
+            #         print(info)
 
     """
     Method to make final alterations to the dataset. 
@@ -131,4 +183,5 @@ class Parser:
         self.connection.commit()
         self.connection.close()
 
-#Parser().parse()
+
+Parser().parse()

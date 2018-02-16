@@ -18,7 +18,8 @@ export default class ClassInput extends Component {
                                      options={this.props.departmentOptions}
                                      placeholder='Department'/>
                         <Form.Select search fluid
-                                     onChange={(e, {value}) => this.props.changeState('selectedClass', value)}
+                                     onChange={(e, {value}) => this.props.changeState('selectedClass',
+                                         this.props.currentDepartment + " " + value)}
                                      label='Classes' placeholder='Classes'
                                      options={this.props.classOptions}/>
                     </Form.Group>

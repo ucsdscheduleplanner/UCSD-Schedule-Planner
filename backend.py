@@ -36,7 +36,8 @@ def generate_class_versions(class_id):
     :param class_id: The id we want, for example CSE 20
     :return: returns all the classes with the same ID in a list
     """
-    cursor.execute("SELECT ROWID FROM DATA WHERE COURSE_NUM = ?", (class_id,))
+    department, course_num = class_id.split(' ')
+    cursor.execute("SELECT ROWID FROM DATA WHERE DEPARTMENT = ? AND COURSE_NUM = ?", (department, course_num))
     # The different sections of the given class
     class_versions = []
 

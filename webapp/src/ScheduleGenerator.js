@@ -2,11 +2,11 @@ import {Class} from './ClassUtils.js';
 import {Heap} from './Heap.js';
 import TimeHeuristic from './TimeHeuristic.js';
 import {getSchedule} from "./ClassSelector.js";
-
+import {BACKENDURL} from "./settings";
 
 function requestData(selectedClasses, callback) {
     return new Promise((resolve, reject) => {
-        fetch('http://Ucsd-Webscraper-Backend-dev.us-west-2.elasticbeanstalk.com/data', {
+        fetch(`${BACKENDURL}/data`, {
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'

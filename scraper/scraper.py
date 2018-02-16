@@ -1,5 +1,6 @@
 import os
 import sqlite3
+import requests
 
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -41,9 +42,15 @@ class Scraper:
             self.browser.get(self.login_url)
             WebDriverWait(self.browser, TIMEOUT).until(EC.presence_of_element_located
                                                        ((By.ID, 'selectedSubjects')))
+
             select = Select(self.browser.find_element_by_id("selectedSubjects"))
-            temp = department + (4 - len(department)) * " "
-            select.select_by_value(department + (4 - len(department)) * " ")
+
+            adj_dept = department + (4 - len(department)) * " "
+
+            WebDriverWait(self.browser, TIMEOUT).until(EC.presence_of_element_located
+                                                       ((By.CSS_SELECTOR, "option[value='{}']".format(adj_dept))))
+            select.select_by_value(adj_dept)
+
             default_schedule_option1 = self.browser.find_element_by_id("schedOption11")
             default_schedule_option2 = self.browser.find_element_by_id("schedOption21")
 
@@ -73,6 +80,8 @@ class Scraper:
             current_page += 1
             current_url = base_url + "?page={}".format(current_page)
             self.browser.get(current_url)
+            if 'Apache' in self.browser.title:
+                return
 
     def store_page(self, department, page_contents, num_page):
         if not os.path.exists(self.dir_path):
