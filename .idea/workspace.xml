@@ -42,11 +42,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="settings.js" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/webapp/src/settings.js">
+      <file leaf-file-name="package.json" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/webapp/package.json">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="0">
-              <caret line="0" column="87" lean-forward="false" selection-start-line="0" selection-start-column="87" selection-end-line="0" selection-end-column="87" />
+            <state relative-caret-position="507">
+              <caret line="25" column="0" lean-forward="false" selection-start-line="25" selection-start-column="0" selection-end-line="25" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -106,12 +106,12 @@
         <option value="$PROJECT_DIR$/datautil/data_cleaner.py" />
         <option value="$PROJECT_DIR$/backend.py" />
         <option value="$PROJECT_DIR$/webapp/src/ScheduleGenerator.js" />
-        <option value="$PROJECT_DIR$/webapp/package.json" />
         <option value="$PROJECT_DIR$/webapp/src/ClassInput.js" />
         <option value="$PROJECT_DIR$/webapp/src/Landing.js" />
         <option value="$PROJECT_DIR$/webapp/public/index.html" />
         <option value="$PROJECT_DIR$/README.md" />
         <option value="$PROJECT_DIR$/webapp/src/settings.js" />
+        <option value="$PROJECT_DIR$/webapp/package.json" />
       </list>
     </option>
   </component>
@@ -251,7 +251,7 @@
   </component>
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="SearchEverywhereHistoryKey" value="&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/settings.js&#10;index&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/public/index.html&#10;pac&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/package.json&#10;landing&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/Landing.js&#10;LE_&#9;null&#9;null&#10;CLA&#9;FILE&#9;das://table:/43cc346f/e0cf7189-a81a-42af-b04c-ee81fb4296b6/main.CLASS_LEGEND&#10;CL&#9;FILE&#9;das://table:/43cc346f/e0cf7189-a81a-42af-b04c-ee81fb4296b6/main.CLASSES&#10;DAT&#9;FILE&#9;das://table:/43cc346f/e0cf7189-a81a-42af-b04c-ee81fb4296b6/main.DATA&#10;parse&#9;null&#9;null&#10;data&#9;ACTION&#9;ActivateDataViewToolWindow&#10;CLAS&#9;FILE&#9;das://table:/43cc346f/e0cf7189-a81a-42af-b04c-ee81fb4296b6/main.CLASSES&#10;DEP&#9;null&#9;null&#10;set&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/settings.py&#10;CLASSES&#9;null&#9;null&#10;DATA&#9;null&#9;null&#10;classpick&#9;null&#9;null&#10;favi&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/public/favicon.ico&#10;Lan&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/Landing.js&#10;Calend&#9;null&#9;null&#10;Land&#9;null&#9;null&#10;works&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/.idea/workspace.xml&#10;workspace&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/.idea/workspace.xml&#10;workspace.xm&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/.idea/workspace.xml" />
+    <property name="SearchEverywhereHistoryKey" value="pac&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/package.json&#10;index&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/public/index.html&#10;landing&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/Landing.js&#10;LE_&#9;null&#9;null&#10;CLA&#9;FILE&#9;das://table:/43cc346f/e0cf7189-a81a-42af-b04c-ee81fb4296b6/main.CLASS_LEGEND&#10;CL&#9;FILE&#9;das://table:/43cc346f/e0cf7189-a81a-42af-b04c-ee81fb4296b6/main.CLASSES&#10;DAT&#9;FILE&#9;das://table:/43cc346f/e0cf7189-a81a-42af-b04c-ee81fb4296b6/main.DATA&#10;parse&#9;null&#9;null&#10;data&#9;ACTION&#9;ActivateDataViewToolWindow&#10;CLAS&#9;FILE&#9;das://table:/43cc346f/e0cf7189-a81a-42af-b04c-ee81fb4296b6/main.CLASSES&#10;DEP&#9;null&#9;null&#10;set&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/settings.py&#10;CLASSES&#9;null&#9;null&#10;DATA&#9;null&#9;null&#10;classpick&#9;null&#9;null&#10;favi&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/public/favicon.ico&#10;Lan&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/Landing.js&#10;Calend&#9;null&#9;null&#10;Land&#9;null&#9;null&#10;works&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/.idea/workspace.xml&#10;workspace&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/.idea/workspace.xml&#10;workspace.xm&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/.idea/workspace.xml" />
     <property name="nodejs_interpreter_path" value="C:/Program Files/nodejs/node" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/../UCSD_Webscraper" />
   </component>
@@ -272,7 +272,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="JavaScript Debug.Debug React">
+  <component name="RunManager" selected="npm.Run Server">
     <configuration name="Debug React" type="JavascriptDebugType" factoryName="JavaScript Debug" uri="http://localhost:3000/" />
     <configuration name="Run Flask Backend" type="PythonConfigurationType" factoryName="Python">
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -426,7 +426,7 @@
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32972974" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3293124" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32818073" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
@@ -771,24 +771,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/webapp/package.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="375">
-          <caret line="24" column="12" lean-forward="false" selection-start-line="24" selection-start-column="12" selection-end-line="24" selection-end-column="12" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/webapp/src/ClassInput.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="375">
           <caret line="21" column="78" lean-forward="false" selection-start-line="21" selection-start-column="78" selection-end-line="21" selection-end-column="78" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/webapp/src/Landing.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="250">
-          <caret line="87" column="24" lean-forward="false" selection-start-line="87" selection-start-column="24" selection-end-line="87" selection-end-column="24" />
         </state>
       </provider>
     </entry>
@@ -812,10 +798,84 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/webapp/src/Landing.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="100">
+          <caret line="106" column="0" lean-forward="false" selection-start-line="106" selection-start-column="0" selection-end-line="106" selection-end-column="0" />
+          <folding>
+            <marker date="1518823778308" expanded="false" signature="7:365" ph="..." />
+            <marker date="1518823778308" expanded="true" signature="414:7539" ph="{...}" />
+            <marker date="1518823778308" expanded="true" signature="439:869" ph="{...}" />
+            <marker date="1518823778308" expanded="true" signature="484:862" ph="{&quot;selectedClass&quot;: undefined...}" />
+            <marker date="1518823778308" expanded="true" signature="899:997" ph="{...}" />
+            <marker date="1518823778308" expanded="true" signature="1026:1263" ph="{...}" />
+            <marker date="1518823778308" expanded="true" signature="1149:1189" ph="{...}" />
+            <marker date="1518823778308" expanded="true" signature="1284:1551" ph="{...}" />
+            <marker date="1518823778308" expanded="true" signature="1463:1543" ph="{...}" />
+            <marker date="1518823778308" expanded="true" signature="1587:1742" ph="{...}" />
+            <marker date="1518823778308" expanded="true" signature="1611:1734" ph="{...}" />
+            <marker date="1518823778308" expanded="true" signature="1783:3241" ph="{...}" />
+            <marker date="1518823778308" expanded="true" signature="1862:1910" ph="{&quot;currentDepartment&quot;: value...}" />
+            <marker date="1518823778308" expanded="true" signature="1973:2146" ph="{&quot;method&quot;: 'post'...}" />
+            <marker date="1518823778308" expanded="true" signature="1996:2108" ph="{&quot;Accept&quot;: 'application/json'...}" />
+            <marker date="1518823778308" expanded="true" signature="2210:3233" ph="{...}" />
+            <marker date="1518823778308" expanded="true" signature="2319:2393" ph="{...}" />
+            <marker date="1518823778308" expanded="true" signature="2461:2925" ph="{...}" />
+            <marker date="1518823778308" expanded="true" signature="2971:3122" ph="{...}" />
+            <marker date="1518823778308" expanded="true" signature="3154:3217" ph="{&quot;classOptions&quot;: classes...}" />
+            <marker date="1518823778308" expanded="true" signature="3264:3936" ph="{...}" />
+            <marker date="1518823778308" expanded="true" signature="3308:3481" ph="{&quot;method&quot;: 'post'...}" />
+            <marker date="1518823778308" expanded="true" signature="3331:3443" ph="{&quot;Accept&quot;: 'application/json'...}" />
+            <marker date="1518823778308" expanded="true" signature="3545:3928" ph="{...}" />
+            <marker date="1518823778308" expanded="true" signature="3623:3808" ph="{...}" />
+            <marker date="1518823778308" expanded="true" signature="3839:3912" ph="{&quot;departmentOptions&quot;: departments...}" />
+            <marker date="1518823778308" expanded="true" signature="3961:4638" ph="{...}" />
+            <marker date="1518823778308" expanded="true" signature="4010:4115" ph="{...}" />
+            <marker date="1518823778308" expanded="true" signature="4202:4492" ph="{...}" />
+            <marker date="1518823778308" expanded="true" signature="4284:4452" ph="{...}" />
+            <marker date="1518823778308" expanded="true" signature="4320:4432" ph="{&quot;schedule&quot;: schedule...}" />
+            <marker date="1518823778308" expanded="true" signature="4458:4478" ph="{...}" />
+            <marker date="1518823778308" expanded="true" signature="4522:4630" ph="{...}" />
+            <marker date="1518823778308" expanded="true" signature="4554:4614" ph="{...}" />
+            <marker date="1518823778308" expanded="true" signature="4660:4715" ph="{...}" />
+            <marker date="1518823778308" expanded="true" signature="4741:5193" ph="{...}" />
+            <marker date="1518823778308" expanded="true" signature="4830:4919" ph="{...}" />
+            <marker date="1518823778308" expanded="true" signature="4858:4907" ph="{...}" />
+            <marker date="1518823778308" expanded="true" signature="4959:5044" ph="{...}" />
+            <marker date="1518823778308" expanded="true" signature="4987:5032" ph="{...}" />
+            <marker date="1518823778308" expanded="true" signature="5084:5179" ph="{...}" />
+            <marker date="1518823778308" expanded="true" signature="5112:5167" ph="{...}" />
+            <marker date="1518823778308" expanded="true" signature="5208:7537" ph="{...}" />
+            <marker date="1518823778308" expanded="true" signature="5288:5517" ph="{...}" />
+            <marker date="1518823778308" expanded="true" signature="5350:5507" ph="&lt;ClassView/&gt;" />
+            <marker date="1518823778308" expanded="true" signature="5550:7520" ph="&lt;React.Fragment/&gt;" />
+            <marker date="1518823778308" expanded="true" signature="5583:6810" ph="&lt;Grid/&gt;" />
+            <marker date="1518823778308" expanded="true" signature="5629:6308" ph="&lt;Grid.Column/&gt;" />
+            <marker date="1518823778308" expanded="true" signature="5667:6273" ph="&lt;Container/&gt;" />
+            <marker date="1518823778308" expanded="true" signature="5707:6236" ph="&lt;ClassInput/&gt;" />
+            <marker date="1518823778308" expanded="true" signature="6329:6786" ph="&lt;Grid.Column/&gt;" />
+            <marker date="1518823778308" expanded="true" signature="6367:6751" ph="&lt;Container/&gt;" />
+            <marker date="1518823778308" expanded="true" signature="6535:6712" ph="&lt;Button/&gt;" />
+            <marker date="1518823778308" expanded="true" signature="6827:7490" ph="&lt;Container/&gt;" />
+            <marker date="1518823778308" expanded="true" signature="6889:7234" ph="&lt;Transition/&gt;" />
+            <marker date="1518823778308" expanded="true" signature="7015:7200" ph="&lt;Segment/&gt;" />
+            <marker date="1518823778308" expanded="true" signature="7256:7461" ph="&lt;Calendar/&gt;" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/webapp/src/settings.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
-          <caret line="0" column="87" lean-forward="false" selection-start-line="0" selection-start-column="87" selection-end-line="0" selection-end-column="87" />
+          <caret line="0" column="34" lean-forward="false" selection-start-line="0" selection-start-column="34" selection-end-line="0" selection-end-column="34" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/webapp/package.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="507">
+          <caret line="25" column="0" lean-forward="false" selection-start-line="25" selection-start-column="0" selection-end-line="25" selection-end-column="0" />
           <folding />
         </state>
       </provider>
