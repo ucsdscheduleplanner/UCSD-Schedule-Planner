@@ -1,2 +1,5 @@
-export const BACKENDURL = "http://Ucsd-Webscraper-Backend-dev.us-west-2.elasticbeanstalk.com";
+export const BACKENDURL = "UCSD-Webscraper-Backend-dev.us-west-1.elasticbeanstalk.com";
 //export const BACKENDURL = "";
+
+
+
