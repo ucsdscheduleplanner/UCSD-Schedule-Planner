@@ -15,10 +15,6 @@ export default class Landing extends Component {
             enableCalendar: false,
             schedule: [],
 
-
-            fadeOut: false,
-            animationComplete: false,
-            textVisible: false,
             selectedClass: undefined,
             departmentOptions: [],
             classOptions: [],
@@ -27,101 +23,10 @@ export default class Landing extends Component {
         };
     }
 
-    changeState(key, value) {
-        let newState = {};
-        newState[key] = value;
-        this.setState(newState);
-    }
-
-    changeStateToggle(key) {
-        let newBool = this.state[key];
-        let newState = {};
-        if (newBool === undefined || newBool === null) {
-            newBool = false;
-        }
-        newState[key] = !newBool;
-
-        this.setState(newState);
-    }
-
-    handleSubmit() {
-        if (!this.state.selectedClass || !this.state.selectedClasses) return;
-        let newObj = {};
-        newObj['class'] = this.state.selectedClass;
-        this.setState({
-            selectedClasses: [...this.state.selectedClasses, newObj]
-        });
-    }
-
     deleteClassView(deletedClass) {
         this.setState({
             selectedClasses: this.state.selectedClasses.filter(selectedClass => selectedClass !== deletedClass)
         });
-    }
-
-    handleDepartmentChange(key, value) {
-        console.log(key);
-        console.log(value);
-
-        this.setState({
-            currentDepartment: value
-        });
-
-        fetch(`${BACKENDURL}/classes?department=${value}`, {
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            method: 'post'
-        })
-            .then(res => res.json())
-            .then(res => {
-                let classes = [];
-                let unsorted = [];
-                for (let dict of res) {
-                    unsorted.push(dict["COURSE_NUM"]);
-                }
-                let sorted = unsorted.sort((element1, element2) => {
-                    let num1 = parseInt(element1.match(/\d+/)[0]);
-                    let num2 = parseInt(element2.match(/\d+/)[0]);
-
-                    if(num1 < num2) return -1;
-                    if(num2 < num1) return 1;
-                    // checking lexicographically if they are the same number
-                    if(element1 < element2) return -1;
-                    if(element2 < element1) return 1;
-                    return 0;
-                });
-                for(let element of sorted) {
-                    let new_dict = {"key": element, "text": element, "value": element};
-                    classes.push(new_dict);
-                }
-
-                this.setState({
-                    "classOptions": classes
-                });
-            });
-    }
-
-    getDepartments() {
-        fetch(`${BACKENDURL}/department`, {
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            method: 'post'
-        })
-            .then(res => res.json())
-            .then(res => {
-                let departments = [];
-                for (let dict of res) {
-                    let new_dict = {"key": dict["DEPT_CODE"], "text": dict["DEPT_CODE"], "value": dict["DEPT_CODE"]};
-                    departments.push(new_dict);
-                }
-                this.setState({
-                    "departmentOptions": departments,
-                });
-            });
     }
 
     generateSchedule() {
@@ -141,7 +46,7 @@ export default class Landing extends Component {
                         enableCalendar: true
                     });
                 } else {
-
+                    throw "No valid schedules!"
                 }
             })
             .catch(error => {
@@ -155,29 +60,23 @@ export default class Landing extends Component {
         this.setState({enableCalendar: false});
     }
 
-    componentDidMount() {
-        this.getDepartments();
-        let that = this;
-        setTimeout(function () {
-            that.setState({
-                textVisible: true
-            });
-        }, 1000);
-        setTimeout(function () {
-            that.setState({
-                fadeOut: true
-            });
-        }, 1500);
-        setTimeout(function () {
-            that.setState({
-                animationComplete: true
-            });
-        }, 2000);
+    setValues(state, callback) {
+        this.setState(state, callback);
+    }
+
+    addClass() {
+        if (!this.state.selectedClass || !this.state.selectedClasses) return;
+        let newObj = {};
+        newObj['class'] = this.state.selectedClass;
+        this.setState({
+            selectedClasses: [...this.state.selectedClasses, newObj]
+        });
     }
 
     render() {
         let selectedClasses = this.state.selectedClasses.map((data, index) => {
-            if (data !== undefined && data !== null) return <ClassView key={index} data={data}
+            if (data !== undefined && data !== null) return <ClassView key={index}
+                                                                       data={data}
                                                                        deleteClassView={this.deleteClassView.bind(this)}/>
         });
 
@@ -186,13 +85,8 @@ export default class Landing extends Component {
                 <Grid columns={2} padded>
                     <Grid.Column>
                         <Container>
-                            <ClassInput handleSubmit={this.handleSubmit.bind(this)}
-                                        classOptions={this.state.classOptions}
-                                        departmentOptions={this.state.departmentOptions}
-                                        handleDepartmentChange={this.handleDepartmentChange.bind(this)}
-                                        changeState={this.changeState.bind(this)}
-                                        currentDepartment={this.state.currentDepartment}
-                            />
+                            <ClassInput setValues={this.setValues.bind(this)}
+                                        addClass={this.addClass.bind(this)} />
                         </Container>
                     </Grid.Column>
                     <Grid.Column>
@@ -202,12 +96,14 @@ export default class Landing extends Component {
                             <Button positive floated="right"
                                     onClick={this.generateSchedule.bind(this)}
                                     content="Generate Schedule"/>}
-
                         </Container>
                     </Grid.Column>
                 </Grid>
+
+
                 <Container style={{marginBottom: "5em"}}>
-                    <Transition unmountOnHide={true} visible={this.state.calendarError} animation="shake" duration={500}>
+                    <Transition unmountOnHide={true} visible={this.state.calendarError} animation="shake"
+                                duration={500}>
                         <Segment color="red" inverted raised={true}>
                             <Header textAlign="center" as="h1" content="That schedule is not possible!"/>
                         </Segment>

@@ -12,6 +12,10 @@ db_cursor = db_connection.cursor()
 application = Flask(__name__)
 CORS(application)
 
+"""
+The routing backend for the server.
+"""
+
 
 @application.route('/data', methods=['POST'])
 def return_db_data():
@@ -34,6 +38,13 @@ def return_db_data():
 def return_department_list():
     departments = backend.get_departments()
     return jsonify(departments)
+
+
+@application.route('/class_types', methods={'POST'})
+def return_class_types():
+    class_types = backend.get_class_types()
+    class_types_dicts = {'CLASS_TYPES': class_types}
+    return jsonify(class_types_dicts)
 
 
 @application.route('/classes', methods={'POST'})
