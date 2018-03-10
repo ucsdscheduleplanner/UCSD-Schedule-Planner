@@ -12,7 +12,23 @@ export default class ClassView extends Component {
         this.props.deleteClassView(this.props.data)
     }
 
+    deleteConflict(conflict) {
+        this.props.deleteConflict(this.props.index, conflict);
+        //this.props.deleteConflict()
+    }
+
     render() {
+        let conflicts = [];
+        if(this.props.data['conflicts']) {
+            conflicts = this.props.data['conflicts'].map((conflict) => {
+                return (
+                     <Label color='grey' horizontal={true} onClick={this.deleteConflict.bind(this, conflict)}>
+                         {conflict}
+                    </Label>
+                );
+            });
+        }
+
         return (
             <React.Fragment>
                 <Segment color="teal" raised>
@@ -20,6 +36,7 @@ export default class ClassView extends Component {
                     <Label color='red' floating onClick={this.deleteClassView.bind(this)}>
                         <Icon name="delete"/>
                     </Label>
+                    {conflicts.length > 0 && conflicts}
                 </Segment>
             </React.Fragment>
         );

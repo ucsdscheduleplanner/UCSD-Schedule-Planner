@@ -1,11 +1,10 @@
 import React, {Component} from 'react';
-import ClassView from './ClassView.js';
-import ClassInput from './ClassInput.js'
-import './Landing.css'
-import {generateSchedule} from "./ScheduleGenerator";
-import {Button, Container, Grid, Header, Label, Transition, Segment} from 'semantic-ui-react'
-import Calendar from "./Calendar";
-import {BACKENDURL} from "./settings";
+import ClassView from './landing/ClassView.js';
+import {ClassInput} from './landing/ClassInput.js'
+import ClassDisplay from './landing/ClassDisplay.js';
+import {generateSchedule} from "./schedulegeneration/ScheduleGenerator";
+import {Button, Container, Grid, Header, Transition, Segment} from 'semantic-ui-react'
+import Calendar from "./utils/Calendar";
 
 export default class Landing extends Component {
     constructor(props) {
@@ -16,6 +15,7 @@ export default class Landing extends Component {
             schedule: [],
 
             selectedClass: undefined,
+            selectedConflicts: [],
             departmentOptions: [],
             classOptions: [],
             selectedClasses: [],
@@ -23,10 +23,12 @@ export default class Landing extends Component {
         };
     }
 
-    deleteClassView(deletedClass) {
-        this.setState({
-            selectedClasses: this.state.selectedClasses.filter(selectedClass => selectedClass !== deletedClass)
-        });
+
+    deleteClassView(params) {
+        if(params['deleteClassView']) {
+            let deletedClass = params['delete'];
+            this.setState({selectedClasses: this.state.selectedClasses.filter(selectedClass => selectedClass !== deletedClass)});
+        }
     }
 
     generateSchedule() {
@@ -46,7 +48,7 @@ export default class Landing extends Component {
                         enableCalendar: true
                     });
                 } else {
-                    throw "No valid schedules!"
+                    throw new Error("No valid schedules!");
                 }
             })
             .catch(error => {
@@ -64,38 +66,29 @@ export default class Landing extends Component {
         this.setState(state, callback);
     }
 
-    addClass() {
-        if (!this.state.selectedClass || !this.state.selectedClasses) return;
-        let newObj = {};
-        newObj['class'] = this.state.selectedClass;
+    addClass(newClass) {
         this.setState({
-            selectedClasses: [...this.state.selectedClasses, newObj]
+            selectedClasses: [...this.state.selectedClasses, newClass],
+            selectedConflicts: []
         });
     }
 
     render() {
-        let selectedClasses = this.state.selectedClasses.map((data, index) => {
-            if (data !== undefined && data !== null) return <ClassView key={index}
-                                                                       data={data}
-                                                                       deleteClassView={this.deleteClassView.bind(this)}/>
-        });
-
         return (
             <React.Fragment>
                 <Grid columns={2} padded>
                     <Grid.Column>
                         <Container>
-                            <ClassInput setValues={this.setValues.bind(this)}
-                                        addClass={this.addClass.bind(this)} />
+                            <ClassInput setValues={this.setValues.bind(this)} />
                         </Container>
                     </Grid.Column>
                     <Grid.Column>
                         <Container style={{width: "90%"}}>
-                            {selectedClasses}
-                            {selectedClasses.length > 0 &&
-                            <Button positive floated="right"
-                                    onClick={this.generateSchedule.bind(this)}
-                                    content="Generate Schedule"/>}
+                            <ClassDisplay
+                                selectedClasses={this.state.selectedClasses}
+                                deleteClassView={this.deleteClassView.bind(this)}
+                                generateSchedule={this.generateSchedule.bind(this)}
+                            />
                         </Container>
                     </Grid.Column>
                 </Grid>

@@ -4,7 +4,7 @@
 
 
 
-const heap = require('./Heap.js');
+const heap = require('../utils/Heap.js');
 
 var h = new heap.Heap();
 h.add("b");

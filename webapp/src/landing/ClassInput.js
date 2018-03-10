@@ -5,23 +5,21 @@ import {
     Label,
     Checkbox
 } from 'semantic-ui-react';
-import {BACKENDURL} from "./settings";
-import Grid from "semantic-ui-react/dist/es/collections/Grid/Grid";
-import Dropdown from "semantic-ui-react/dist/es/modules/Dropdown/Dropdown";
+import {BACKENDURL} from "../settings";
+import addClass from "../reducers/AddClass";
+import {bindActionCreators} from "redux";
+import {connect} from "react-redux";
 
 
-export default class ClassInput extends Component {
+export class ClassInput extends Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            ignoreLE: false,
-
             classTypes: [],
             selectedConflicts: [],
             departmentOptions: [],
             classOptions: [],
-            selectedClasses: [],
             currentDepartment: null,
         };
     }
@@ -65,11 +63,10 @@ export default class ClassInput extends Component {
         })
             .then(res => res.json())
             .then(res => {
-                let classes = [];
-                let unsorted = [];
-                for (let dict of res) {
-                    unsorted.push(dict["COURSE_NUM"]);
-                }
+                // putting the response inside unsorted list
+                let unsorted = res.map((dict) => dict["COURSE_NUM"]);
+
+                // sorting based on comparator
                 let sorted = unsorted.sort((element1, element2) => {
                     // match numerically
                     let num1 = parseInt(element1.match(/\d+/)[0]);
@@ -83,11 +80,7 @@ export default class ClassInput extends Component {
                     return 0;
                 });
 
-                for (let element of sorted) {
-                    let new_dict = {"key": element, "text": element, "value": element};
-                    classes.push(new_dict);
-                }
-
+                let classes = sorted.map((element) => ({"key": element, "text": element, "value": element}));
                 this.setState({
                     "classOptions": classes
                 });
@@ -104,14 +97,10 @@ export default class ClassInput extends Component {
         })
             .then(res => res.json())
             .then(res => {
-                // must convert into a dict first for options
-                let classTypes = [];
                 let classTypeNames = res['CLASS_TYPES'].sort();
 
-                for (let element of classTypeNames) {
-                    let new_dict = {"key": element, "text": element, "value": element};
-                    classTypes.push(new_dict);
-                }
+                // must convert into a dict first for options
+                let classTypes = classTypeNames.map((element) => ({"key": element, "text": element, "value": element}));
                 this.setState({
                     classTypes: classTypes
                 });
@@ -119,7 +108,12 @@ export default class ClassInput extends Component {
     }
 
     handleSubmit() {
-        return this.props.setValues(this.state, this.props.addClass);
+        // set values has a callback
+        let newClass = {};
+        newClass['class'] = this.state.selectedClass;
+        newClass['conflicts'] = this.state.selectedConflicts;
+
+        this.props.addClass(newClass);
     }
 
     render() {
@@ -148,6 +142,7 @@ export default class ClassInput extends Component {
                         <Form.Select multiple
                                      search
                                      selection
+                                     onChange={(e, {value}) => this.setState({'selectedConflicts': value})}
                                      label="Ignore Conflicts"
                                      placeholder='LE'
                                      options={this.state.classTypes}/>
@@ -159,18 +154,13 @@ export default class ClassInput extends Component {
                 </Form>
             </Segment>
         </React.Fragment>
-
-
-        /*
-            <Form.Group inline>
-        <label>Ignore Overlaps: </label>
-        <Form.Radio slider label='Lecture' value='ignoreLecture'
-                    checked={this.state['ignoreLecture'] === true}
-                    onChange={(e, {value}) => this.changeStateToggle(value)}/>
-        <Form.Radio slider label='Other' value='ignoreOther'
-                    checked={this.state['ignoreOther'] === true}
-                    onChange={(e, {value}) => this.changeStateToggle(value)}/>
-    </Form.Group>
-    */
     }
 }
+
+function mapDispatchToProps(dispatch) {
+    return {
+        actions: bindActionCreators(addClass, dispatch)
+    }
+}
+
+export default connect(mapDispatchToProps)(ClassInput)

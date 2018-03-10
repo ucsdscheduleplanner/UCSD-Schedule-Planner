@@ -1,6 +1,6 @@
 import moment from 'moment';
 import momenttz from 'moment-timezone';
-import TimeHeuristic from './TimeHeuristic.js';
+import TimeHeuristic from '../heuristics/TimeHeuristic.js';
 
 const dayToNum = {
     "M": 1,
@@ -50,11 +50,13 @@ export function Subclass(data) {
 export function Class(data) {
     this.subclasses = {};
     this.timeIntervals = [];
+    this.allSubclasses = [];
 
     data.forEach((subclass_data) => {
         let subclass = new Subclass(subclass_data);
         let subclass_type = subclass.getType();
 
+        this.allSubclasses.push(subclass);
         if (this.subclasses[subclass_type] === undefined) {
             this.subclasses[subclass_type] = [];
         }
@@ -72,12 +74,13 @@ export function Class(data) {
     };
 
     this.overlaps = function (other) {
-        for (let this_time of this.timeIntervals) {
-            for (let other_time of other.timeIntervals) {
-                if (TimeHeuristic.prototype.overlaps(this_time, other_time)) {
-                    console.log(this_time, other_time);
-                    return true;
-                }
+        for(let subclass of this.allSubclasses) {
+            for(let otherSubclass of other.allSubclasses) {
+                if(this.conflicts.includes(subclass.getType())
+                || other.conflicts.includes(otherSubclass.getType())) continue;
+
+                //TODO keep functions out of subclass and put them in an array or PQ
+                if(subclass.overlaps(otherSubclass)) return true;
             }
         }
         return false;
