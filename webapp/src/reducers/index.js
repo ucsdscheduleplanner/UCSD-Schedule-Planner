@@ -1,8 +1,8 @@
 import {combineReducers} from 'redux';
-import addClass from './AddClass';
+import ClassSelection from './ClassSelection';
 
 const reducers = combineReducers({
-    addClass,
+    ClassSelection,
 });
 
 export default reducers;

@@ -1,14 +1,13 @@
 import React, {Component} from 'react';
 import ClassView from "./ClassView";
 import {Button} from "semantic-ui-react";
+import {connect} from "react-redux";
+import {bindActionCreators} from "redux";
+import {removeClass} from '../actions/index.js';
 
-export default class ClassDisplay extends Component {
-
+export class ClassDisplay extends Component {
     constructor(props) {
         super(props);
-        this.state = {
-            selectedClasses: props.selectedClasses
-        }
     }
 
     deleteConflict(index, conflict) {
@@ -16,14 +15,12 @@ export default class ClassDisplay extends Component {
     }
 
     render() {
-        let selectedClasses = this.props.selectedClasses
-            .filter((data) => data !== undefined && data !== null)
+        let selectedClasses = Object.keys(this.props.selectedClasses)
             // we need index to add more than one class
-            .map((data, index) => (
+            .map((key, index) => (
                 <ClassView
-                    index={index}
-                    data={data}
-                    deleteClassView={this.props.deleteClassView}
+                    index={key}
+                    data={this.props.selectedClasses[key]}
                     deleteConflict={this.deleteConflict.bind(this)}
                 />
             ));
@@ -41,3 +38,12 @@ export default class ClassDisplay extends Component {
         );
     }
 }
+
+
+function mapStateToProps(state) {
+    return {
+        selectedClasses: state.ClassSelection
+    }
+}
+
+export default connect(mapStateToProps)(ClassDisplay);

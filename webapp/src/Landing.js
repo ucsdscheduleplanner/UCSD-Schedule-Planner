@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import ClassView from './landing/ClassView.js';
-import {ClassInput} from './landing/ClassInput.js'
+import ClassInput from './landing/ClassInput.js'
 import ClassDisplay from './landing/ClassDisplay.js';
 import {generateSchedule} from "./schedulegeneration/ScheduleGenerator";
 import {Button, Container, Grid, Header, Transition, Segment} from 'semantic-ui-react'
@@ -85,7 +85,6 @@ export default class Landing extends Component {
                     <Grid.Column>
                         <Container style={{width: "90%"}}>
                             <ClassDisplay
-                                selectedClasses={this.state.selectedClasses}
                                 deleteClassView={this.deleteClassView.bind(this)}
                                 generateSchedule={this.generateSchedule.bind(this)}
                             />

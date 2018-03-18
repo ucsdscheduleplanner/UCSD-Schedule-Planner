@@ -1,14 +1,9 @@
 import React, {Component} from 'react';
-import {
-    Form,
-    Segment,
-    Label,
-    Checkbox
-} from 'semantic-ui-react';
+import {Form, Segment} from 'semantic-ui-react';
 import {BACKENDURL} from "../settings";
-import addClass from "../reducers/AddClass";
 import {bindActionCreators} from "redux";
 import {connect} from "react-redux";
+import {addClass} from "../actions/index";
 
 
 export class ClassInput extends Component {
@@ -16,6 +11,7 @@ export class ClassInput extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            uuid: 0,
             classTypes: [],
             selectedConflicts: [],
             departmentOptions: [],
@@ -113,7 +109,14 @@ export class ClassInput extends Component {
         newClass['class'] = this.state.selectedClass;
         newClass['conflicts'] = this.state.selectedConflicts;
 
-        this.props.addClass(newClass);
+        let action = {};
+        action.type = "ADD_CLASS";
+        action.payload = newClass;
+
+        this.props.addClass(this.state.uuid, newClass);
+        this.setState({
+            uuid: this.state.uuid+1
+        });
     }
 
     render() {
@@ -158,9 +161,15 @@ export class ClassInput extends Component {
 }
 
 function mapDispatchToProps(dispatch) {
+    return bindActionCreators({
+        addClass: addClass
+    }, dispatch);
+}
+
+function mapStateToProps(state) {
     return {
-        actions: bindActionCreators(addClass, dispatch)
+        selectedClasses: state.ClassSelection
     }
 }
 
-export default connect(mapDispatchToProps)(ClassInput)
+export default connect(mapStateToProps, mapDispatchToProps)(ClassInput)
