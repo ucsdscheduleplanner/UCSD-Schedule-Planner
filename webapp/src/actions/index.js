@@ -17,3 +17,13 @@ export const removeClass = (uuid) => {
     }
 };
 
+export const removeConflict = (uuid, conflict) => {
+    return {
+        type: "REMOVE_CONFLICT",
+        payload: {
+            uuid: uuid,
+            conflict: conflict
+        }
+    }
+};
+

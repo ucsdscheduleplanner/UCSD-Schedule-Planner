@@ -2,15 +2,15 @@ import React, {Component} from 'react';
 import {Header, Icon, Label, Segment} from 'semantic-ui-react'
 import {connect} from "react-redux";
 import {bindActionCreators} from "redux";
-import {removeClass} from '../actions/index';
+import {removeClass, removeConflict} from '../actions/index';
 
 class ClassView extends Component {
     removeClass() {
         this.props.removeClass(this.props.index);
     }
 
-    deleteConflict(conflict) {
-        this.props.deleteConflict(this.props.index, conflict);
+    removeConflict(conflict) {
+        this.props.removeConflict(this.props.index, conflict);
     }
 
     render() {
@@ -18,7 +18,7 @@ class ClassView extends Component {
         if(this.props.data['conflicts']) {
             conflicts = this.props.data['conflicts'].map((conflict) => {
                 return (
-                     <Label color='grey' horizontal={true} onClick={this.deleteConflict.bind(this, conflict)}>
+                     <Label color='grey' horizontal={true} onClick={this.removeConflict.bind(this, conflict)}>
                          {conflict}
                     </Label>
                 );
@@ -42,7 +42,8 @@ class ClassView extends Component {
 
 function mapDispatchToState(dispatch) {
     return bindActionCreators({
-        removeClass: removeClass
+        removeClass: removeClass,
+        removeConflict: removeConflict
     }, dispatch);
 }
 
