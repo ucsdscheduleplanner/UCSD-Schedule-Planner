@@ -65,10 +65,11 @@ function handleData(selectedClasses, dirtyClassData) {
 
 /**
  * Interfacing function that generates a schedule.
- * @param selectedClasses the classes we want to make a schedule out of
+ * @param selectedClasses the classes in dict form we want to make a schedule out of
  * @returns {Promise} a promise that will resolve to a schedule
  */
 export function generateSchedule(selectedClasses) {
+    selectedClasses = Object.values(selectedClasses);
     // making the JSON here for the request
     let selectedClassesJSON = {};
     selectedClassesJSON['classes'] = selectedClasses.map((cl) => cl['class']);

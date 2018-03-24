@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Form, Segment} from 'semantic-ui-react';
+import {Form, Segment, Message, Header} from 'semantic-ui-react';
 import {BACKENDURL} from "../settings";
 import {bindActionCreators} from "redux";
 import {connect} from "react-redux";
@@ -12,6 +12,8 @@ export class ClassInput extends Component {
         super(props);
         this.state = {
             uuid: 0,
+            duplicate: false,
+            selectedClass: null,
             classTypes: [],
             selectedConflicts: [],
             departmentOptions: [],
@@ -65,8 +67,8 @@ export class ClassInput extends Component {
                 // sorting based on comparator
                 let sorted = unsorted.sort((element1, element2) => {
                     // match numerically
-                    let num1 = parseInt(element1.match(/\d+/)[0]);
-                    let num2 = parseInt(element2.match(/\d+/)[0]);
+                    let num1 = parseInt(element1.match(/\d+/)[0], 10);
+                    let num2 = parseInt(element2.match(/\d+/)[0], 10);
 
                     if (num1 < num2) return -1;
                     if (num2 < num1) return 1;
@@ -104,6 +106,13 @@ export class ClassInput extends Component {
     }
 
     handleSubmit() {
+        let duplicate = Object.values(this.props.selectedClasses).reduce(function (accumulator, previousClass) {
+            if(this.state.selectedClass === previousClass['class']) return true;
+        }.bind(this), false);
+
+        this.setState({duplicate: duplicate});
+        if(duplicate) return;
+
         // set values has a callback
         let newClass = {};
         newClass['class'] = this.state.selectedClass;
@@ -115,7 +124,7 @@ export class ClassInput extends Component {
 
         this.props.addClass(this.state.uuid, newClass);
         this.setState({
-            uuid: this.state.uuid+1
+            uuid: this.state.uuid + 1
         });
     }
 
@@ -152,10 +161,23 @@ export class ClassInput extends Component {
                     </Form.Group>
 
                     {/* This is the master button that updates the parent with the input values */}
-                    <Form.Button onClick={this.handleSubmit.bind(this)} style={{marginTop: "1em"}} positive
-                                 floated="right" content="Add Class"/>
+                    <Form.Button onClick={this.handleSubmit.bind(this)}
+                                 style={{marginTop: "1em"}}
+                                 positive={this.state.selectedClass !== null}
+                                 disabled={this.state.selectedClass === null}
+                                 floated="right"
+                                 content="Add Class"/>
+
                 </Form>
             </Segment>
+
+            <Message error hidden={!this.state.duplicate} onDismiss={() => this.setState({duplicate: false})}>
+                <Message.Header>
+                    <Header as="h3" textAlign="center">
+                        You have already selected that class!
+                    </Header>
+                </Message.Header>
+            </Message>
         </React.Fragment>
     }
 }

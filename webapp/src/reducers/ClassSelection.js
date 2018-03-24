@@ -1,5 +1,4 @@
 
-
 /*
 Each reducer has its own space in store under the name
 So can access this reducer's state by doing state.ClassSelection

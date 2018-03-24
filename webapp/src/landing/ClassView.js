@@ -14,12 +14,15 @@ class ClassView extends Component {
     }
 
     render() {
+        // must convery key into integer
+        let currentClass = this.props.selectedClasses[parseInt(this.props.index)];
         let conflicts = [];
-        if(this.props.data['conflicts']) {
-            conflicts = this.props.data['conflicts'].map((conflict) => {
+        if(currentClass['conflicts']) {
+            conflicts = currentClass['conflicts'].map((conflict) => {
                 return (
-                     <Label color='grey' horizontal={true} onClick={this.removeConflict.bind(this, conflict)}>
+                     <Label color='red' horizontal={true} onClick={this.removeConflict.bind(this, conflict)}>
                          {conflict}
+                         <Icon name="delete"/>
                     </Label>
                 );
             });
@@ -28,7 +31,7 @@ class ClassView extends Component {
         return (
             <React.Fragment>
                 <Segment color="teal" raised>
-                    <Header as="h1" content={this.props.data['class']}/>
+                    <Header as="h1" content={currentClass['class']}/>
                     <Label color='red' floating onClick={this.removeClass.bind(this)}>
                         <Icon name="delete"/>
                     </Label>
@@ -39,13 +42,18 @@ class ClassView extends Component {
     }
 }
 
+function mapStateToProps(state) {
+    return {
+        selectedClasses: state.ClassSelection
+    }
+}
 
-function mapDispatchToState(dispatch) {
+function mapDispatchToProps(dispatch) {
     return bindActionCreators({
         removeClass: removeClass,
         removeConflict: removeConflict
     }, dispatch);
 }
 
-export default connect(null, mapDispatchToState)(ClassView);
+export default connect(mapStateToProps, mapDispatchToProps)(ClassView);
 
