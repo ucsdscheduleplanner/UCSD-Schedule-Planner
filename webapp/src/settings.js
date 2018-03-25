@@ -1,6 +1,8 @@
-//export const BACKENDURL = "http://UCSD-Webscraper-Backend-dev.us-west-1.elasticbeanstalk.com";
+export let PRODUCTION = true;
+export let BACKEND_URL = null;
 
-export const BACKENDURL = "";
-
-
-
+if(PRODUCTION) {
+    BACKEND_URL = "http://UCSD-Webscraper-Backend-dev.us-west-1.elasticbeanstalk.com";
+} else {
+    BACKEND_URL = "";
+}

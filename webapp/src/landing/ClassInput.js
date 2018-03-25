@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {Form, Segment, Message, Header} from 'semantic-ui-react';
-import {BACKENDURL} from "../settings";
+import {BACKEND_URL} from "../settings";
 import {bindActionCreators} from "redux";
 import {connect} from "react-redux";
 import {addClass} from "../actions/index";
@@ -28,7 +28,7 @@ export class ClassInput extends Component {
     }
 
     getDepartments() {
-        fetch(`${BACKENDURL}/department`, {
+        fetch(`${BACKEND_URL}/department`, {
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
@@ -52,7 +52,7 @@ export class ClassInput extends Component {
      * Update the class list with classes from the given department.
      */
     updateClassList(department) {
-        fetch(`${BACKENDURL}/classes?department=${department}`, {
+        fetch(`${BACKEND_URL}/classes?department=${department}`, {
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
@@ -86,7 +86,7 @@ export class ClassInput extends Component {
     }
 
     getClassTypes() {
-        fetch(`${BACKENDURL}/class_types`, {
+        fetch(`${BACKEND_URL}/class_types`, {
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'

@@ -1,11 +1,11 @@
 import {Class} from '../utils/ClassUtils.js';
 import {Heap} from '../utils/Heap.js';
 import TimeHeuristic from '../heuristics/TimeHeuristic.js';
-import {BACKENDURL} from "../settings";
+import {BACKEND_URL} from "../settings";
 
 function requestData(selectedClasses) {
     return new Promise((resolve, reject) => {
-        fetch(`${BACKENDURL}/data`, {
+        fetch(`${BACKEND_URL}/data`, {
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
