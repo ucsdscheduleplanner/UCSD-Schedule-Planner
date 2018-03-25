@@ -85,5 +85,9 @@ export function Class(data) {
         }
         return false;
     };
+
+    this.toString = function() {
+        return this.name;
+    }
 }
 

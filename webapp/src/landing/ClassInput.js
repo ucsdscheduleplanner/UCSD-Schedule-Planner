@@ -13,12 +13,12 @@ export class ClassInput extends Component {
         this.state = {
             uuid: 0,
             duplicate: false,
-            selectedClass: null,
             classTypes: [],
             selectedConflicts: [],
             departmentOptions: [],
             classOptions: [],
             currentDepartment: null,
+            currentCourseNum: null,
         };
     }
 
@@ -106,8 +106,9 @@ export class ClassInput extends Component {
     }
 
     handleSubmit() {
+        let selectedClass = this.state.currentDepartment + " " + this.state.currentCourseNum;
         let duplicate = Object.values(this.props.selectedClasses).reduce(function (accumulator, previousClass) {
-            if(this.state.selectedClass === previousClass['class']) return true;
+            if(selectedClass === previousClass['class']) return true;
         }.bind(this), false);
 
         this.setState({duplicate: duplicate});
@@ -115,7 +116,7 @@ export class ClassInput extends Component {
 
         // set values has a callback
         let newClass = {};
-        newClass['class'] = this.state.selectedClass;
+        newClass['class'] = selectedClass;
         newClass['conflicts'] = this.state.selectedConflicts;
 
         let action = {};
@@ -136,7 +137,8 @@ export class ClassInput extends Component {
                     <Form.Group widths='equal'>
                         {/* This is the department label and such*/}
                         <Form.Select search fluid
-                                     onChange={(e, {value}) => this.setState({'currentDepartment': value}, this.updateClassList.bind(this, value))}
+                                     onChange={(e, {value}) => this.setState({currentDepartment: value, currentCourseNum: null},
+                                         this.updateClassList.bind(this, value))}
                                      options={this.state.departmentOptions}
                                      label='Department'
                                      placeholder='Department'/>
@@ -144,7 +146,7 @@ export class ClassInput extends Component {
 
                         {/* Make sure the selected class gets updated */}
                         <Form.Select search fluid
-                                     onChange={(e, {value}) => this.setState({'selectedClass': this.state.currentDepartment + " " + value})}
+                                     onChange={(e, {value}) => this.setState({currentCourseNum: value})}
                                      label='Classes' placeholder='Classes'
                                      options={this.state.classOptions}/>
                     </Form.Group>
@@ -154,7 +156,7 @@ export class ClassInput extends Component {
                         <Form.Select multiple
                                      search
                                      selection
-                                     onChange={(e, {value}) => this.setState({'selectedConflicts': value})}
+                                     onChange={(e, {value}) => this.setState({selectedConflicts: value})}
                                      label="Ignore Conflicts"
                                      placeholder='LE'
                                      options={this.state.classTypes}/>
@@ -163,8 +165,8 @@ export class ClassInput extends Component {
                     {/* This is the master button that updates the parent with the input values */}
                     <Form.Button onClick={this.handleSubmit.bind(this)}
                                  style={{marginTop: "1em"}}
-                                 positive={this.state.selectedClass !== null}
-                                 disabled={this.state.selectedClass === null}
+                                 positive={this.state.currentCourseNum !== null && this.state.currentCourseNum !== undefined}
+                                 disabled={this.state.currentCourseNum === null || this.state.currentCourseNum === undefined}
                                  floated="right"
                                  content="Add Class"/>
 
