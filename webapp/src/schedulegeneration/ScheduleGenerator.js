@@ -107,14 +107,18 @@ function swap(index1, index2, myList) {
  * @returns {Array} the desired schedule
  */
 export function getSchedule(classHeaps) {
-    let workingClassHeaps = Object.values(classHeaps);
+    // converting into an array
+    classHeaps = Object.values(classHeaps);
     let retSchedule = [];
-    for (let curStart = 0; curStart < workingClassHeaps.length; curStart++) {
+    for (let curStart = 0; curStart < classHeaps.length; curStart++) {
         let curSchedule = [];
-        workingClassHeaps = Object.values(classHeaps);
+        // numClasses should have number of classes in correct schedule
+        let numClasses = classHeaps.length;
+
+        let workingClassHeaps = [];
 
         // copying the heap each time
-        workingClassHeaps.forEach((heap, index) => {
+        classHeaps.forEach((heap, index) => {
             workingClassHeaps[index] = heap.copy();
         });
 
@@ -122,8 +126,8 @@ export function getSchedule(classHeaps) {
         swap(curStart, 0, workingClassHeaps);
 
         let curIndex = 0;
-        while (curSchedule.length < workingClassHeaps.length) {
-            if (workingClassHeaps[curIndex].isEmpty()) throw new TypeError("No schedule is possible");
+        while (curIndex < numClasses) {
+            if (workingClassHeaps[curIndex].isEmpty()) break;
             if (isValid(workingClassHeaps[curIndex].peek(), curSchedule)) {
                 curSchedule.push(workingClassHeaps[curIndex].removeRoot());
                 curIndex++;
@@ -132,11 +136,16 @@ export function getSchedule(classHeaps) {
             }
         }
 
+        // making sure the schedule is actually valid by comparing
+        // num classes in each schedule
+        if(curSchedule.length !== numClasses) continue;
+
         if (TimeHeuristic.prototype.evaluateSchedule(curSchedule) >
             TimeHeuristic.prototype.evaluateSchedule(retSchedule)) {
             retSchedule = curSchedule;
         }
     }
+    if(retSchedule.length === 0) return new TypeError("No schedule is possible!");
     return retSchedule;
 }
 
