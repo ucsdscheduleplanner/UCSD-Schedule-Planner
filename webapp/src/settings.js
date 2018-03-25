@@ -1,4 +1,4 @@
-export const PRODUCTION = false;
+export const PRODUCTION = true;
 export let BACKEND_URL = null;
 
 if(PRODUCTION) {
