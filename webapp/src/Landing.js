@@ -6,6 +6,7 @@ import Calendar from "./utils/Calendar";
 import {connect} from "react-redux";
 import {bindActionCreators} from "redux";
 import {generateSchedule} from "./schedulegeneration/ScheduleGenerator";
+import FileSaver from 'file-saver'
 
 class Landing extends Component {
 
@@ -41,6 +42,25 @@ class Landing extends Component {
             });
     }
 
+    handleExportICAL() {
+        let schedule = this.state.schedule;
+        let request = schedule.reduce((accumulator, _class) => {
+            _class.subclassList.forEach((subclass) => accumulator.push(subclass));
+            return accumulator;
+        }, []);
+
+        fetch('/create_ics', {
+            method: "post",
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(request)
+        }).then((response) => response.blob())
+            .then((response) => FileSaver.saveAs(response, 'calendar.ics'));
+        return request;
+    }
+
     clearSchedule() {
         this.setState({enableCalendar: false});
     }
@@ -51,6 +71,7 @@ class Landing extends Component {
         // we need index for the mapping part
             .map((index, element) => (
                 <ClassView
+                    key={index}
                     index={index}
                 />
             ));
@@ -87,7 +108,7 @@ class Landing extends Component {
 
                     <Calendar enabled={this.state.enableCalendar}
                               schedule={this.state.schedule}
-                              clearSchedule={this.clearSchedule.bind(this)}
+                              clearSchedule={this.handleExportICAL.bind(this)}
                     />
                 </Container>
 

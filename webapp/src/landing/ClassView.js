@@ -15,7 +15,7 @@ class ClassView extends Component {
 
     render() {
         // must convery key into integer
-        let currentClass = this.props.selectedClasses[parseInt(this.props.index)];
+        let currentClass = this.props.selectedClasses[parseInt(this.props.index, 10)];
         let conflicts = [];
         if(currentClass['conflicts']) {
             conflicts = currentClass['conflicts'].map((conflict) => {

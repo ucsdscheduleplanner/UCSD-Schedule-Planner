@@ -1,10 +1,11 @@
 import sqlite3
 import backend
 
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_file
 from flask_cors import CORS
 from classutil.class_decoders import ClassDecoder
 from settings import DATABASE_PATH
+from ics import Calendar, Event
 
 db_connection = sqlite3.connect(DATABASE_PATH)
 db_cursor = db_connection.cursor()
@@ -19,7 +20,8 @@ The routing backend for the server.
 
 @application.route('/data', methods=['POST'])
 def return_db_data():
-    classes = request.json['classes']
+    request_json = request.get_json()
+    classes = request_json['classes']
     ret_classes = [backend.generate_class_versions(i) for i in classes]
 
     cd = ClassDecoder()
@@ -52,6 +54,22 @@ def return_classes():
     department = request.args.get('department')
     classes = backend.get_classes_in_department(department)
     return jsonify(classes)
+
+
+@application.route('/create_ics', methods={'POST'})
+def create_ics():
+    request_json = request.get_json()
+    # TODO ADD ASSERTION HERE TO MAKE SURE DATA IS CORRECT
+    calendar = Calendar()
+    for _class in request_json:
+        event = Event()
+        event.name = _class['department'] + " " + _class['courseNum']
+        event.begin = _class['timeInterval']['start']
+        event.end = _class['timeInterval']['end']
+        calendar.events.append(event)
+    with open('test.ics', 'w') as test:
+        test.writelines(calendar)
+    return send_file('test.ics', as_attachment=True)
 
 
 if __name__ == '__main__':

@@ -14,12 +14,12 @@ export default function ClassSelection(state={}, action) {
             copy[action.payload.uuid] = action.payload.add;
             return copy;
         case "REMOVE_CLASS":
-            uuid = parseInt(action.payload.uuid);
+            uuid = parseInt(action.payload.uuid, 0);
             copy = Object.assign({}, state);
             delete copy[uuid];
             return copy;
         case "REMOVE_CONFLICT":
-            uuid = parseInt(action.payload.uuid);
+            uuid = parseInt(action.payload.uuid, 0);
             copy = Object.assign({}, state);
             copy[uuid].conflicts = copy[uuid].conflicts.filter(conflict => conflict !== action.payload.conflict);
             return copy;

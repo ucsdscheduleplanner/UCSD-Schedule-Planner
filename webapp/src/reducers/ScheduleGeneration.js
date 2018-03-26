@@ -2,8 +2,6 @@
  Should be able to access this through state.ScheduleGeneration
  **/
 
-import {generateSchedule} from "../schedulegeneration/ScheduleGenerator";
-
 export default function ScheduleGeneration(state = {enableCalendar: false,
                                                     calendarError: false,
                                                     schedule: []}, action) {

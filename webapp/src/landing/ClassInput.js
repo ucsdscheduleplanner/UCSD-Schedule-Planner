@@ -108,8 +108,8 @@ export class ClassInput extends Component {
     handleSubmit() {
         let selectedClass = this.state.currentDepartment + " " + this.state.currentCourseNum;
         let duplicate = Object.values(this.props.selectedClasses).reduce(function (accumulator, previousClass) {
-            if(selectedClass === previousClass['class']) return true;
-        }.bind(this), false);
+            return accumulator || selectedClass === previousClass['class'];
+        }, false);
 
         this.setState({duplicate: duplicate});
         if(duplicate) return;

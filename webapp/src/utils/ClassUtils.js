@@ -17,9 +17,16 @@ momenttz().tz("America/Los_Angeles").format();
 const date_string = "ddd, DD MMM YYYY HH:mm:ss";
 
 export function Subclass(data) {
-    this.data = data;
-    this.timeInterval = makeTimeInterval.call(this);
+    this.location = data['LOCATION'];
+    this.room = data['ROOM'];
+    this.instructor = data['INSTRUCTOR'];
+    this.id = data['ID'];
+    this.courseNum = data['COURSE_NUM'];
+    this.department = data['DEPARTMENT'];
+    this.type = data['TYPE'];
     this.day = data['DAYS'];
+
+    this.timeInterval = makeTimeInterval.call(this);
     this.timeInterval['start'].setDate(dayToNum[this.day]);
     this.timeInterval['end'].setDate(dayToNum[this.day]);
 
@@ -30,33 +37,25 @@ export function Subclass(data) {
         return timeInterval;
     }
 
-    this.getType = function () {
-        return this.data['TYPE'];
-    };
-
-    this.getTimeInterval = function () {
-        return this.timeInterval;
-    };
-
     this.overlaps = function (other) {
-        return TimeHeuristic.prototype.overlaps(this.getTimeInterval(), other.getTimeInterval());
+        return TimeHeuristic.prototype.overlaps(this.timeInterval, other.timeInterval);
     };
 
     this.toString = function() {
-        return this.data['COURSE_NUM'] + " " + this.data['TYPE'];
+        return this.courseNum + " " + this.type;
     }
 }
 
 export function Class(data) {
     this.subclasses = {};
     this.timeIntervals = [];
-    this.allSubclasses = [];
+    this.subclassList = [];
 
     data.forEach((subclass_data) => {
         let subclass = new Subclass(subclass_data);
-        let subclass_type = subclass.getType();
+        let subclass_type = subclass.type;
 
-        this.allSubclasses.push(subclass);
+        this.subclassList.push(subclass);
         if (this.subclasses[subclass_type] === undefined) {
             this.subclasses[subclass_type] = [];
         }
@@ -65,19 +64,15 @@ export function Class(data) {
 
     Object.entries(this.subclasses).forEach(function ([key, value]) {
         value.forEach(function (cl) {
-            this.timeIntervals.push(cl.getTimeInterval());
+            this.timeIntervals.push(cl.timeInterval);
         }, this);
     }, this);
 
-    this.getTimeIntervals = function () {
-        return this.timeIntervals;
-    };
-
     this.overlaps = function (other) {
-        for(let subclass of this.allSubclasses) {
-            for(let otherSubclass of other.allSubclasses) {
-                if(this.conflicts.includes(subclass.getType())
-                || other.conflicts.includes(otherSubclass.getType())) continue;
+        for(let subclass of this.subclassList) {
+            for(let otherSubclass of other.subclassList) {
+                if(this.conflicts.includes(subclass.type)
+                || other.conflicts.includes(otherSubclass.type)) continue;
 
                 //TODO keep functions out of subclass and put them in an array or PQ
                 if(subclass.overlaps(otherSubclass)) return true;

@@ -30,7 +30,7 @@ TimeHeuristic.prototype.compare = function compare(class1, class2) {
 
 TimeHeuristic.prototype.evaluateClass = function evaluateClass(class1) {
     let score = 0;
-    class1.getTimeIntervals().forEach((subclassInterval) => {
+    class1.timeIntervals.forEach((subclassInterval) => {
         if (this.overlapsTimeRange(TimeHeuristic.prototype.timeRange, subclassInterval)) {
             score += 1;
         } else {
