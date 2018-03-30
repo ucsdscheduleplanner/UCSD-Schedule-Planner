@@ -1,7 +1,12 @@
 import sqlite3
-import backend
 
-from flask import Flask, request, jsonify, send_file
+import os
+import io
+
+import backend
+import tempfile
+
+from flask import Flask, request, jsonify, send_file, make_response
 from flask_cors import CORS
 from classutil.class_decoders import ClassDecoder
 from settings import DATABASE_PATH
@@ -67,9 +72,17 @@ def create_ics():
         event.begin = _class['timeInterval']['start']
         event.end = _class['timeInterval']['end']
         calendar.events.append(event)
-    with open('test.ics', 'w') as test:
-        test.writelines(calendar)
-    return send_file('test.ics', as_attachment=True)
+    # Storing the data in a variable of higher scope
+    obj = [0]
+    with tempfile.TemporaryFile(mode="w+") as temp:
+        temp.writelines(calendar.__iter__())
+        temp.seek(0)
+        data = temp.read()
+        obj[0] = str.encode(data)
+    # Using make response to convert binary to response
+    response = make_response(obj[0])
+    response.headers.set('Content-Disposition', 'attachment')
+    return response
 
 
 if __name__ == '__main__':
