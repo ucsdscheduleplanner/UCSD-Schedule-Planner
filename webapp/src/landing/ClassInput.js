@@ -28,7 +28,7 @@ export class ClassInput extends Component {
     }
 
     getDepartments() {
-        fetch(`${BACKEND_URL}/department`, {
+        fetch(`${BACKEND_URL}/api_department`, {
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
@@ -52,7 +52,7 @@ export class ClassInput extends Component {
      * Update the class list with classes from the given department.
      */
     updateClassList(department) {
-        fetch(`${BACKEND_URL}/classes?department=${department}`, {
+        fetch(`${BACKEND_URL}/api_classes?department=${department}`, {
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
@@ -86,7 +86,7 @@ export class ClassInput extends Component {
     }
 
     getClassTypes() {
-        fetch(`${BACKEND_URL}/class_types`, {
+        fetch(`${BACKEND_URL}/api_class_types`, {
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'

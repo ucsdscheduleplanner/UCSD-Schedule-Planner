@@ -5,7 +5,7 @@ import {BACKEND_URL} from "../settings";
 
 function requestData(selectedClasses) {
     return new Promise((resolve, reject) => {
-        fetch(`${BACKEND_URL}/data`, {
+        fetch(`${BACKEND_URL}/api_data`, {
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
