@@ -54,7 +54,7 @@ def return_class_types():
     return jsonify(class_types_dicts)
 
 
-@application.route('/api_classes', methods={'POST'})
+@application.route('/api_classes', methods={'GET'})
 def return_classes():
     department = request.args.get('department')
     classes = backend.get_classes_in_department(department)
