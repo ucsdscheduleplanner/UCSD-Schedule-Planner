@@ -33,7 +33,7 @@ export class ClassInput extends Component {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             },
-            method: 'post'
+            method: 'get'
         })
             .then(res => res.json())
             .then(res => {

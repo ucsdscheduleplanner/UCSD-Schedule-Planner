@@ -44,12 +44,14 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="Calendar.js" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/webapp/src/utils/Calendar.js">
+      <file leaf-file-name="ClassInput.js" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/webapp/src/landing/ClassInput.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-275">
-              <caret line="9" column="10" lean-forward="false" selection-start-line="9" selection-start-column="10" selection-end-line="9" selection-end-column="10" />
-              <folding />
+            <state relative-caret-position="315">
+              <caret line="35" column="23" lean-forward="false" selection-start-line="35" selection-start-column="23" selection-end-line="35" selection-end-column="23" />
+              <folding>
+                <element signature="e#0#39#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -67,7 +69,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>redux</find>
       <find>selectedClasses</find>
       <find>uuid</find>
       <find>ClassView</find>
@@ -97,6 +98,7 @@
       <find>render()</find>
       <find>fetch</find>
       <find>api+da</find>
+      <find>api_depar</find>
     </findStrings>
     <replaceStrings>
       <replace />
@@ -137,7 +139,6 @@
         <option value="$PROJECT_DIR$/webapp/src/landing/ClassView.js" />
         <option value="$PROJECT_DIR$/webapp/src/reducers/ScheduleGeneration.js" />
         <option value="$PROJECT_DIR$/webapp/src/reducers/ClassSelection.js" />
-        <option value="$PROJECT_DIR$/webapp/src/landing/ClassInput.js" />
         <option value="$PROJECT_DIR$/webapp/package.json" />
         <option value="$PROJECT_DIR$/webapp/src/utils/ClassUtils.js" />
         <option value="$PROJECT_DIR$/test.ics" />
@@ -147,6 +148,7 @@
         <option value="$PROJECT_DIR$/webapp/src/utils/Calendar.js" />
         <option value="$PROJECT_DIR$/webapp/src/settings.js" />
         <option value="$PROJECT_DIR$/application.py" />
+        <option value="$PROJECT_DIR$/webapp/src/landing/ClassInput.js" />
       </list>
     </option>
   </component>
@@ -345,7 +347,7 @@
   </component>
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="SearchEverywhereHistoryKey" value="Calend&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/utils/Calendar.js&#10;appli&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/application.py&#10;backe&#9;null&#9;null&#10;Landing&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/Landing.js&#10;WeekCal&#9;null&#9;null&#10;Calendar&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/utils/Calendar.js&#10;Class&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/utils/ClassUtils.js&#10;package.js&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/package.json&#10;Classi&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/landing/ClassInput.js&#10;classSe&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/reducers/ClassSelection.js&#10;Sche&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/reducers/ScheduleGeneration.js&#10;ClasV&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/landing/ClassView.js&#10;Land&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/Landing.js&#10;ClassIn&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/landing/ClassInput.js&#10;CLASSLE&#9;FILE&#9;das://table:/43cc346f/e0cf7189-a81a-42af-b04c-ee81fb4296b6/main.CLASS_LEGEND&#10;DATA&#9;null&#9;null&#10;ScheduleG&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/schedulegeneration/ScheduleGenerator.js&#10;SC&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/reducers/ScheduleGeneration.js&#10;sett&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/settings.js&#10;Cal&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/utils/Calendar.js&#10;ClassIp&#9;null&#9;null&#10;ClassVi&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/landing/ClassView.js&#10;Cl&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/landing/ClassViewContainer.js&#10;ClassDisp&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/landing/ClassDisplay.js&#10;ClassInput&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/landing/ClassInput.js&#10;ClassView&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/landing/ClassView.js&#10;classDi&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/landing/ClassDisplay.js&#10;ClassS&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/reducers/ClassSelection.js&#10;index&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/actions/index.js&#10;ClassSe&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/reducers/ClassSelection.js&#10;ClassDis&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/landing/ClassDisplay.js&#10;ClassDi&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/landing/ClassDisplay.js&#10;ClassI&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/landing/ClassInput.js&#10;ClassSE&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/reducers/ClassSelection.js&#10;inde&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/reducers/index.js&#10;land&#9;null&#9;null&#10;addCla&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/reducers/AddClass.js&#10;ClassInpu&#9;null&#9;null&#10;Landin&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/Landing.js&#10;ClassUti&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/utils/ClassUtils.js&#10;applicatio&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/application.py&#10;landin&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/Landing.js&#10;class&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/ClassInput.js&#10;dat&#9;ACTION&#9;ActivateDatabaseToolWindow&#10;CLASS&#9;FILE&#9;das://table:/43cc346f/e0cf7189-a81a-42af-b04c-ee81fb4296b6/main.CLASSES&#10;cleane&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/datautil/data_cleaner.py&#10;pack&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/package.json&#10;pac&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/package.json&#10;landing&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/Landing.js&#10;LE_&#9;null&#9;null" />
+    <property name="SearchEverywhereHistoryKey" value="&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/utils/Calendar.js&#10;Calend&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/utils/Calendar.js&#10;appli&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/application.py&#10;backe&#9;null&#9;null&#10;Landing&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/Landing.js&#10;WeekCal&#9;null&#9;null&#10;Calendar&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/utils/Calendar.js&#10;Class&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/utils/ClassUtils.js&#10;package.js&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/package.json&#10;Classi&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/landing/ClassInput.js&#10;classSe&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/reducers/ClassSelection.js&#10;Sche&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/reducers/ScheduleGeneration.js&#10;ClasV&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/landing/ClassView.js&#10;Land&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/Landing.js&#10;ClassIn&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/landing/ClassInput.js&#10;CLASSLE&#9;FILE&#9;das://table:/43cc346f/e0cf7189-a81a-42af-b04c-ee81fb4296b6/main.CLASS_LEGEND&#10;DATA&#9;null&#9;null&#10;ScheduleG&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/schedulegeneration/ScheduleGenerator.js&#10;SC&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/reducers/ScheduleGeneration.js&#10;sett&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/settings.js&#10;Cal&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/utils/Calendar.js&#10;ClassIp&#9;null&#9;null&#10;ClassVi&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/landing/ClassView.js&#10;Cl&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/landing/ClassViewContainer.js&#10;ClassDisp&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/landing/ClassDisplay.js&#10;ClassInput&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/landing/ClassInput.js&#10;ClassView&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/landing/ClassView.js&#10;classDi&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/landing/ClassDisplay.js&#10;ClassS&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/reducers/ClassSelection.js&#10;index&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/actions/index.js&#10;ClassSe&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/reducers/ClassSelection.js&#10;ClassDis&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/landing/ClassDisplay.js&#10;ClassDi&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/landing/ClassDisplay.js&#10;ClassI&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/landing/ClassInput.js&#10;ClassSE&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/reducers/ClassSelection.js&#10;inde&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/reducers/index.js&#10;land&#9;null&#9;null&#10;addCla&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/reducers/AddClass.js&#10;ClassInpu&#9;null&#9;null&#10;Landin&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/Landing.js&#10;ClassUti&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/utils/ClassUtils.js&#10;applicatio&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/application.py&#10;landin&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/Landing.js&#10;class&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/ClassInput.js&#10;dat&#9;ACTION&#9;ActivateDatabaseToolWindow&#10;CLASS&#9;FILE&#9;das://table:/43cc346f/e0cf7189-a81a-42af-b04c-ee81fb4296b6/main.CLASSES&#10;cleane&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/datautil/data_cleaner.py&#10;pack&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/package.json&#10;pac&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/package.json&#10;landing&#9;FILE&#9;file://C:/Users/ctran/PycharmProjects/UCSD_Backend/webapp/src/Landing.js" />
     <property name="nodejs_interpreter_path" value="C:/Program Files/nodejs/node" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="list.type.of.created.stylesheet" value="CSS" />
@@ -810,13 +812,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/webapp/src/landing/ClassInput.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="125">
-          <caret line="5" column="41" lean-forward="false" selection-start-line="5" selection-start-column="41" selection-end-line="5" selection-end-column="41" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/webapp/package.json">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="400">
@@ -1016,28 +1011,47 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/application.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="152">
-          <caret line="19" column="0" lean-forward="true" selection-start-line="19" selection-start-column="0" selection-end-line="19" selection-end-column="0" />
-          <folding>
-            <marker date="1524426189600" expanded="true" signature="0:281" ph="import ..." />
-            <marker date="1524426189600" expanded="true" signature="415:458" ph="&quot;&quot;&quot;...&quot;&quot;&quot;" />
-            <marker date="1524426189600" expanded="true" signature="532:957" ph="..." />
-            <marker date="1524426189600" expanded="true" signature="769:928" ph="..." />
-            <marker date="1524426189600" expanded="true" signature="1045:1121" ph="..." />
-            <marker date="1524426189600" expanded="true" signature="1206:1341" ph="..." />
-            <marker date="1524426189600" expanded="true" signature="1418:1554" ph="..." />
-            <marker date="1524426189600" expanded="true" signature="1630:2330" ph="..." />
-            <marker date="1524426189600" expanded="true" signature="1785:2021" ph="..." />
-            <marker date="1524426189600" expanded="true" signature="2359:2410" ph="..." />
-          </folding>
+        <state relative-caret-position="25">
+          <caret line="43" column="50" lean-forward="false" selection-start-line="43" selection-start-column="50" selection-end-line="43" selection-end-column="50" />
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/webapp/src/utils/Calendar.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-275">
+        <state relative-caret-position="25">
           <caret line="9" column="10" lean-forward="false" selection-start-line="9" selection-start-column="10" selection-end-line="9" selection-end-column="10" />
-          <folding />
+          <folding>
+            <marker date="1522384691133" expanded="false" signature="7:87" ph="..." />
+            <marker date="1522384691133" expanded="false" signature="124:194" ph="..." />
+            <marker date="1522384691133" expanded="true" signature="244:2589" ph="{...}" />
+            <marker date="1522384691133" expanded="true" signature="270:422" ph="{...}" />
+            <marker date="1522384691133" expanded="true" signature="315:415" ph="{&quot;id&quot;: 0...}" />
+            <marker date="1522384691133" expanded="true" signature="452:1688" ph="{...}" />
+            <marker date="1522384691133" expanded="true" signature="521:1602" ph="{...}" />
+            <marker date="1522384691133" expanded="true" signature="593:1592" ph="{...}" />
+            <marker date="1522384691133" expanded="true" signature="646:1578" ph="{...}" />
+            <marker date="1522384691133" expanded="true" signature="926:1056" ph="{...}" />
+            <marker date="1522384691133" expanded="true" signature="1158:1284" ph="{...}" />
+            <marker date="1522384691133" expanded="true" signature="1625:1680" ph="{&quot;selectedIntervals&quot;: newIntervals...}" />
+            <marker date="1522384691133" expanded="true" signature="1731:1857" ph="{...}" />
+            <marker date="1522384691133" expanded="true" signature="1788:1851" ph="{...}" />
+            <marker date="1522384691133" expanded="true" signature="1872:2587" ph="{...}" />
+            <marker date="1522384691133" expanded="true" signature="1906:2563" ph="{...}" />
+            <marker date="1522384691133" expanded="true" signature="1945:2538" ph="&lt;React.Fragment/&gt;" />
+            <marker date="1522384691133" expanded="true" signature="1982:2333" ph="&lt;WeekCalendar/&gt;" />
+            <marker date="1522384691133" expanded="true" signature="2354:2504" ph="&lt;Button/&gt;" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/webapp/src/landing/ClassInput.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="315">
+          <caret line="35" column="23" lean-forward="false" selection-start-line="35" selection-start-column="23" selection-end-line="35" selection-end-column="23" />
+          <folding>
+            <element signature="e#0#39#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

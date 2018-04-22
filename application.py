@@ -41,7 +41,7 @@ def return_db_data():
     return jsonify(ret_dict)
 
 
-@application.route('/api_department', methods={'POST'})
+@application.route('/api_department', methods={'GET'})
 def return_department_list():
     departments = backend.get_departments()
     return jsonify(departments)
