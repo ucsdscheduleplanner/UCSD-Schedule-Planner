@@ -1,5 +1,4 @@
 import React, {Component} from 'react';
-import {Header, Icon, Label, Segment} from 'semantic-ui-react'
 import {connect} from "react-redux";
 import {bindActionCreators} from "redux";
 import {removeClass, removeConflict} from '../actions/index';

@@ -17,9 +17,9 @@ departments = []
 class_types = []
 
 
-def get_classes_in_department(department):
+def get_class_info_in_department(department):
     # Must order this one separately because doing it lexically won't work
-    cursor.execute("SELECT DISTINCT COURSE_NUM FROM CLASS_LEGEND WHERE DEPARTMENT = ?", (department,))
+    cursor.execute("SELECT * FROM CLASS_LEGEND WHERE DEPARTMENT = ? GROUP BY COURSE_NUM", (department,))
     return [dict(row) for row in cursor.fetchall()]
 
 

@@ -15,6 +15,10 @@ __pycache__
 ./idea/workspace.xml
 *.jar
 
+./node_modules
+node_modules
+coverage
+
 # Sensitive or high-churn files:
 .idea/**/dataSources/
 .idea/**/dataSources.ids

@@ -1,0 +1,6 @@
+
+.container {
+    display: grid;
+    height: 100%;
+    grid-template-columns: 1fr 5fr 2fr;
+}

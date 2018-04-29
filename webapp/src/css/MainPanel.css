@@ -1,0 +1,51 @@
+
+.main-panel {
+    font-family: 'Lato', 'sans-serif';
+    height: 100%;
+    width: 100%;
+    color: rgb(0, 70, 0);
+}
+
+.content {
+    margin-right: 1.5em;
+}
+
+.input-header {
+    padding-bottom: .5em;
+}
+
+.form-field {
+    margin: .5em 0;
+    width: 100%;
+    font-size: 1.2em;
+}
+
+.title {
+    /* this is for the border bottom */
+    display: inline-block;
+    padding: .5em 1em 0 0;
+    border-bottom: thin solid rgb(0, 70, 0);
+
+    margin: .5em 0;
+    font-size: 2.5em;
+    font-weight: bold;
+    font-family: 'Raleway', sans-serif;
+}
+
+.title-preferences {
+    margin: .5em 0;
+    font-size: 2em;
+    font-weight: bold;
+    font-family: 'Raleway', sans-serif;
+}
+
+.two-column-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+
+.form-button {
+    margin: .5em 0;
+    width: 100%;
+    font-size: 1.2em;
+}

@@ -1,21 +1,52 @@
 import React, {Component} from 'react';
-import {Form, Segment, Message, Header} from 'semantic-ui-react';
 import {BACKEND_URL} from "../settings";
 import {bindActionCreators} from "redux";
 import {connect} from "react-redux";
 import {addClass} from "../actions/index";
+import {Rating} from "primereact/components/rating/Rating";
+import {ListBox} from "primereact/components/listbox/ListBox";
+import {Button} from "primereact/components/button/Button";
+import {AutoComplete} from "primereact/components/autocomplete/AutoComplete";
 
+import "../css/MainPanel.css";
+
+const codeToClassType = {
+    "AC_KEY": "Activity",
+    "CL_KEY": "Clinical Clerkship",
+    "CO_KEY": "Conference",
+    "DI_KEY": "Discussion",
+    "FI_KEY": "Final Exam",
+    "FM_KEY": "Film",
+    "FW_KEY": "Fieldwork",
+    "IN_KEY": "Independent Study",
+    "IT_KEY": "Internship",
+    "LA_KEY": "Lab",
+    "LE_KEY": "Lecture",
+    "MI_KEY": "Midterm",
+    "MU_KEY": "Make-up Session",
+    "OT_KEY": "Other Additional Meeting",
+    "PB_KEY": "Problem Session",
+    "PR_KEY": "Practicum",
+    "RE_KEY": "Review Session",
+    "SE_KEY": "Seminar",
+    "ST_KEY": "Studio",
+    "TU_KEY": "Tutorial",
+};
 
 export class ClassInput extends Component {
-
     constructor(props) {
         super(props);
         this.state = {
             uuid: 0,
             duplicate: false,
-            classTypes: [],
+            classTypesPerClass: [],
+            instructorsPerClass: [],
+            instructorOptions: [],
+            currentInstructor: null,
             selectedConflicts: [],
+            departments: [],
             departmentOptions: [],
+            classes: [],
             classOptions: [],
             currentDepartment: null,
             currentCourseNum: null,
@@ -28,6 +59,7 @@ export class ClassInput extends Component {
     }
 
     getDepartments() {
+        let that = this;
         fetch(`${BACKEND_URL}/api_department`, {
             headers: {
                 'Accept': 'application/json',
@@ -37,13 +69,9 @@ export class ClassInput extends Component {
         })
             .then(res => res.json())
             .then(res => {
-                let departments = [];
-                for (let dict of res) {
-                    let new_dict = {"key": dict["DEPT_CODE"], "text": dict["DEPT_CODE"], "value": dict["DEPT_CODE"]};
-                    departments.push(new_dict);
-                }
-                this.setState({
-                    "departmentOptions": departments,
+                let departments = res.map((resObj) => resObj["DEPT_CODE"]);
+                that.setState({
+                    "departments": departments,
                 });
             });
     }
@@ -51,7 +79,9 @@ export class ClassInput extends Component {
     /**
      * Update the class list with classes from the given department.
      */
-    updateClassList(department) {
+    getClasses(department) {
+        // need this for context
+        let that = this;
         fetch(`${BACKEND_URL}/api_classes?department=${department}`, {
             headers: {
                 'Accept': 'application/json',
@@ -64,8 +94,8 @@ export class ClassInput extends Component {
                 // putting the response inside unsorted list
                 let unsorted = res.map((dict) => dict["COURSE_NUM"]);
 
-                // sorting based on comparator
-                let sorted = unsorted.sort((element1, element2) => {
+                // sorting based on comparator for the course nums
+                let sortedClasses = unsorted.sort((element1, element2) => {
                     // match numerically
                     let num1 = parseInt(element1.match(/\d+/)[0], 10);
                     let num2 = parseInt(element2.match(/\d+/)[0], 10);
@@ -78,11 +108,58 @@ export class ClassInput extends Component {
                     return 0;
                 });
 
-                let classes = sorted.map((element) => ({"key": element, "text": element, "value": element}));
-                this.setState({
-                    "classOptions": classes
+                let classTypesPerClass = {};
+                let instructorsPerClass = {};
+                for (let dict of res) {
+                    classTypesPerClass[dict["COURSE_NUM"]] = Object.keys(dict).filter((property) => {
+                        if (property.endsWith("KEY") && dict[property] !== null) {
+                            return true;
+                        }
+                    }).map((classTypeStr) => {
+                        return {label: codeToClassType[classTypeStr], value: codeToClassType[classTypeStr]};
+                    });
+
+                    instructorsPerClass[dict["COURSE_NUM"]] = dict["INSTRUCTOR"].split("\n");
+                    instructorsPerClass[dict["COURSE_NUM"]] = instructorsPerClass[dict["COURSE_NUM"]]
+                        .filter((instructor) => instructor.length > 0)
+                        .map((instructor) => instructor.trim());
+                }
+
+                that.setState({
+                    classes: sortedClasses,
+                    classTypesPerClass: classTypesPerClass,
+                    instructorsPerClass: instructorsPerClass
                 });
             });
+    }
+
+    clearFields(fields) {
+        let clearObj = fields.reduce((accumulator, field) => {
+            accumulator[field] = null;
+            return accumulator;
+        }, {});
+        this.setState(clearObj);
+    }
+
+    completeDepartmentSuggestions(event) {
+        let departmentOptions = this.state.departments.filter((department) => {
+            return department.toLowerCase().startsWith(event.query.toLowerCase());
+        });
+        this.setState({departmentOptions: departmentOptions});
+    }
+
+    completeClassSuggestions(event) {
+        let classOptions = this.state.classes.filter((Class) => {
+            return Class.toLowerCase().startsWith(event.query.toLowerCase());
+        });
+        this.setState({classOptions: classOptions});
+    }
+
+    completeInstructorSuggestions(event) {
+        let instructorOptions = this.state.instructorsPerClass[this.state.currentCourseNum].filter((instructor) => {
+            return instructor.toLowerCase().startsWith(event.query.toLowerCase());
+        });
+        this.setState({instructorOptions: instructorOptions});
     }
 
     getClassTypes() {
@@ -112,7 +189,7 @@ export class ClassInput extends Component {
         }, false);
 
         this.setState({duplicate: duplicate});
-        if(duplicate) return;
+        if (duplicate) return;
 
         // set values has a callback
         let newClass = {};
@@ -131,55 +208,74 @@ export class ClassInput extends Component {
 
     render() {
         return <React.Fragment>
-            <Segment color="teal" raised>
-                <Form onSubmit={this.props.handleSubmit}
-                      style={{display: "table", width: "100%", zIndex: 1}}>
-                    <Form.Group widths='equal'>
-                        {/* This is the department label and such*/}
-                        <Form.Select search fluid
-                                     onChange={(e, {value}) => this.setState({currentDepartment: value, currentCourseNum: null},
-                                         this.updateClassList.bind(this, value))}
-                                     options={this.state.departmentOptions}
-                                     label='Department'
-                                     placeholder='Department'/>
-                        {/* This is the classes label and such*/}
+            <div className="title"> UCSD Schedule Planner</div>
 
-                        {/* Make sure the selected class gets updated */}
-                        <Form.Select search fluid
-                                     onChange={(e, {value}) => this.setState({currentCourseNum: value})}
-                                     label='Classes' placeholder='Classes'
-                                     options={this.state.classOptions}/>
-                    </Form.Group>
+            <div className="content">
+                <div className="form-field">
+                    <div className="input-header"> Department:</div>
+                    <AutoComplete suggestions={this.state.departmentOptions} dropdown={true}
+                                  value={this.state.currentDepartment}
+                                  onChange={(e) => this.setState({currentDepartment: e.value})}
+                                  completeMethod={this.completeDepartmentSuggestions.bind(this)}
+                                  onSelect={(e) => {
+                                      this.getClasses.call(this, e.value);
+                                      if (e.value !== this.state.currentDepartment) {
+                                          this.clearFields(["currentInstructor", "currentCourseNum", "priority"]);
+                                      }
+                                  }}/>
+                </div>
 
-                    {/* Form group for ignoring conflicts in schedules */}
-                    <Form.Group>
-                        <Form.Select multiple
-                                     search
-                                     selection
-                                     onChange={(e, {value}) => this.setState({selectedConflicts: value})}
-                                     label="Ignore Conflicts"
-                                     placeholder='LE'
-                                     options={this.state.classTypes}/>
-                    </Form.Group>
+                <div className="form-field">
+                    <div className="input-header"> Course Number:</div>
+                    <AutoComplete suggestions={this.state.classOptions}
+                                  value={this.state.currentCourseNum}
+                                  onChange={(e) => this.setState({currentCourseNum: e.value})}
+                                  onSelect={(e) => {
+                                      if (e.value !== this.state.currentCourseNum) {
+                                          this.clearFields(["currentInstructor", "priority"]);
+                                      }
+                                  }}
+                                  completeMethod={this.completeClassSuggestions.bind(this)}
+                                  disabled={this.state.currentDepartment === null || this.state.currentDepartment.length === 0}
+                                  dropdown={true}/>
+                </div>
 
-                    {/* This is the master button that updates the parent with the input values */}
-                    <Form.Button onClick={this.handleSubmit.bind(this)}
-                                 style={{marginTop: "1em"}}
-                                 positive={this.state.currentCourseNum !== null && this.state.currentCourseNum !== undefined}
-                                 disabled={this.state.currentCourseNum === null || this.state.currentCourseNum === undefined}
-                                 floated="right"
-                                 content="Add Class"/>
+                <div className="title-preferences"> Preferences</div>
 
-                </Form>
-            </Segment>
+                <div className="two-column-grid">
+                    <div>
+                        <div className="form-field">
+                            <div className="input-header"> Instructor Preference:</div>
+                            <AutoComplete suggestions={this.state.instructorsPerClass[this.state.currentCourseNum]}
+                                          value={this.state.currentInstructor}
+                                          onChange={(e) => this.setState({currentInstructor: e.value})}
+                                          completeMethod={this.completeInstructorSuggestions.bind(this)}
+                                          disabled={this.state.currentCourseNum === null}
+                                          dropdown={true}/>
+                        </div>
+                        <div className="form-field">
+                            <div className="input-header"> Importance:</div>
+                            <Rating value={this.state.priority}
+                                    onChange={(e) => this.setState({priority: e.value})}
+                                    stars={3}/>
+                        </div>
+                    </div>
 
-            <Message error hidden={!this.state.duplicate} onDismiss={() => this.setState({duplicate: false})}>
-                <Message.Header>
-                    <Header as="h3" textAlign="center">
-                        You have already selected that class!
-                    </Header>
-                </Message.Header>
-            </Message>
+                    <div className="form-field">
+                        <div className="input-header"> Ignore Class Types:</div>
+                        <ListBox value={this.state.selectedConflicts}
+                                 options={this.state.classTypesPerClass[this.state.currentCourseNum]}
+                                 onChange={(e) => {
+                                     this.setState({selectedConflicts: e.value});
+                                 }}
+                                 multiple={true}
+                                 disabled={this.state.currentCourseNum === null}/>
+                    </div>
+                </div>
+                <div className="form-button">
+                    <Button label="Add Class" style={{padding: ".25em 1em"}}/>
+                </div>
+            </div>
         </React.Fragment>
     }
 }
