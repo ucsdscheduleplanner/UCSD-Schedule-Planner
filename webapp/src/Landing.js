@@ -7,11 +7,9 @@ import "./css/Landing.css";
 import {LeftSidePanel} from './landing/LeftSidePanel';
 import {RightSidePanel} from './landing/RightSidePanel';
 import {MainPanel} from './landing/MainPanel';
-import {Accordion, AccordionTab} from 'primereact/components/accordion/Accordion';
 
 
 class Landing extends Component {
-
     constructor(props) {
         super(props);
         this.state = {
@@ -50,6 +48,7 @@ class Landing extends Component {
             _class.subclassList.forEach((subclass) => accumulator.push(subclass));
             return accumulator;
         }, []);
+
 
         fetch('/create_ics', {
             method: "post",
