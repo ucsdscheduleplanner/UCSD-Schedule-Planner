@@ -5,6 +5,7 @@
 
 import React, {Component} from 'react';
 import "../css/LeftSidePanel.css";
+import ClassList from "./ClassList";
 
 export class LeftSidePanel extends Component {
     constructor(props) {
@@ -15,6 +16,7 @@ export class LeftSidePanel extends Component {
         return (
             <React.Fragment>
                 <div className="left-side-panel">
+                    <ClassList />
                 </div>
             </React.Fragment>
         )

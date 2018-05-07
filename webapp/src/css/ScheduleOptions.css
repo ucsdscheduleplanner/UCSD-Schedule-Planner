@@ -1,0 +1,26 @@
+
+
+.schedule-options {
+    margin: 2.5em 1em 1em 2em;
+}
+
+.schedule-options-title {
+    color: rgb(230, 230, 230);
+    font-size: 1.5em;
+    font-weight: bold;
+    font-family: 'Raleway', sans-serif;
+}
+
+.schedule-options-content {
+    display: flex;
+    flex-direction: column;
+    border-collapse: collapse;
+    font-family: 'Lato', sans-serif;
+    color: rgb(215, 215, 215);
+    margin: 0 2em;
+}
+
+.schedule-options-generate {
+    margin-top: 2em;
+    align-self: flex-end;
+}

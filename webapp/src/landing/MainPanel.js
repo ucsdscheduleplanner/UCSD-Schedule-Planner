@@ -4,9 +4,11 @@
 
 import React, {Component} from 'react';
 import ClassInput from './ClassInput';
+import WeekCalendar from '../utils/WeekCalendar'
 import "../css/MainPanel.css";
+import {connect} from "react-redux";
 
-export class MainPanel extends Component {
+class MainPanel extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -17,11 +19,33 @@ export class MainPanel extends Component {
     }
 
     render() {
-        return (
-            <div className="main-panel">
-                <ClassInput />
+        if (this.props.scheduleScreen) {
+            return (
+                    <div className="main-panel">
+                        <div className="title"> UCSD Schedule Planner</div>
+                        <WeekCalendar
+                            schedule={this.props.schedule}
+                        />
+                    </div>
+            );
+        } else {
+            return (
+                <div className="main-panel">
+                    <div className="title"> UCSD Schedule Planner</div>
+                    <ClassInput/>
+                </div>
+            );
+        }
 
-            </div>
-        )
     }
 }
+
+function mapStateToProps(state) {
+    return {
+        generating: state.ScheduleGeneration.generating,
+        scheduleScreen: state.ScheduleGeneration.scheduleScreen,
+        schedule: state.ScheduleGeneration.schedule
+    };
+}
+
+export default connect(mapStateToProps, null)(MainPanel);

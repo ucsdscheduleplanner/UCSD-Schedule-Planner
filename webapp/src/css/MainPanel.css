@@ -3,11 +3,12 @@
     font-family: 'Lato', 'sans-serif';
     height: 100%;
     width: 100%;
-    color: rgb(0, 70, 0);
+    color: rgb(24,43, 73);
 }
 
 .content {
     margin-right: 1.5em;
+    color: rgb(116, 118, 120);
 }
 
 .input-header {
@@ -23,10 +24,12 @@
 .title {
     /* this is for the border bottom */
     display: inline-block;
-    padding: .5em 1em 0 0;
+    color: rgb(24,43, 73);
+    padding-right: 1em;
     border-bottom: thin solid rgb(0, 70, 0);
 
-    margin: .5em 0;
+    margin-top: 1em;
+    margin-bottom: .5em;
     font-size: 2.5em;
     font-weight: bold;
     font-family: 'Raleway', sans-serif;
@@ -34,6 +37,7 @@
 
 .title-preferences {
     margin: .5em 0;
+    color: rgb(24,43, 73);
     font-size: 2em;
     font-weight: bold;
     font-family: 'Raleway', sans-serif;

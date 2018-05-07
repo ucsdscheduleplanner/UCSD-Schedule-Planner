@@ -6,8 +6,7 @@ import FileSaver from 'file-saver'
 import "./css/Landing.css";
 import {LeftSidePanel} from './landing/LeftSidePanel';
 import {RightSidePanel} from './landing/RightSidePanel';
-import {MainPanel} from './landing/MainPanel';
-
+import MainPanel from './landing/MainPanel';
 
 class Landing extends Component {
     constructor(props) {
@@ -48,7 +47,6 @@ class Landing extends Component {
             _class.subclassList.forEach((subclass) => accumulator.push(subclass));
             return accumulator;
         }, []);
-
 
         fetch('/create_ics', {
             method: "post",

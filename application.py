@@ -27,7 +27,7 @@ The routing backend for the server.
 def return_db_data():
     request_json = request.get_json()
     classes = request_json['classes']
-    ret_classes = [backend.generate_class_versions(i) for i in classes]
+    ret_classes = [backend.generate_class_versions(i['department'], i['course_num']) for i in classes]
 
     cd = ClassDecoder()
     ret_dict = {}
@@ -36,7 +36,7 @@ def return_db_data():
         temp_list = []
         for cl in cl_list:
             temp_list.append(cd.default(cl))
-        ret_dict[classes[index]] = temp_list
+        ret_dict[classes[index]['class_title']] = temp_list
         index += 1
     return jsonify(ret_dict)
 

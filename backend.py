@@ -40,14 +40,14 @@ def get_class_types():
     return class_types
 
 
-def generate_class_versions(class_id):
+def generate_class_versions(department, course_num):
     """
     Generates a set of classes of the same version and ID.
     For example returns all the CSE 20 classes given that ID.
-    :param class_id: The id we want, for example CSE 20
+    :param course_num: the course number
+    :param department: the department
     :return: returns all the classes with the same ID in a list
     """
-    department, course_num = class_id.split(' ')
     cursor.execute("SELECT ROWID FROM DATA WHERE DEPARTMENT = ? AND COURSE_NUM = ?", (department, course_num))
     # The different sections of the given class
     class_versions = []

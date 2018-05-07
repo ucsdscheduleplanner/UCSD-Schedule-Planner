@@ -16,7 +16,9 @@
     "react-scripts": "1.1.0",
     "react-transition-group": "^2.3.1",
     "react-week-calendar": "^0.1.1",
-    "redux": "^3.7.2"
+    "redux": "^3.7.2",
+    "redux-thunk": "^2.2.0",
+    "react-big-calendar": "latest"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -25,5 +27,8 @@
     "eject": "react-scripts eject",
     "predeploy": "npm run build"
   },
-  "proxy": "http://localhost:5000/"
+  "proxy": "http://localhost:5000/",
+  "devDependencies": {
+    "redux-logger": "^3.0.6"
+  }
 }

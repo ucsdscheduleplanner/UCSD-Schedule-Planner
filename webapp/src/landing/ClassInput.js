@@ -8,7 +8,6 @@ import {ListBox} from "primereact/components/listbox/ListBox";
 import {Button} from "primereact/components/button/Button";
 import {AutoComplete} from "primereact/components/autocomplete/AutoComplete";
 
-import "../css/MainPanel.css";
 
 const codeToClassType = {
     "AC_KEY": "Activity",
@@ -183,39 +182,44 @@ export class ClassInput extends Component {
     }
 
     handleSubmit() {
-        let selectedClass = this.state.currentDepartment + " " + this.state.currentCourseNum;
+        if(this.state.currentCourseNum === null || this.state.currentDepartment === null) return;
+        let classTitle = `${this.state.currentDepartment} ${this.state.currentCourseNum}`;
+        // testing whether this is a duplicate class
         let duplicate = Object.values(this.props.selectedClasses).reduce(function (accumulator, previousClass) {
-            return accumulator || selectedClass === previousClass['class'];
+            return accumulator || classTitle === previousClass['class_title']
         }, false);
 
-        this.setState({duplicate: duplicate});
-        if (duplicate) return;
+        if (!duplicate) {
+            // constructing new class to be added to UI
+            let newClass = {};
+            newClass['class_title'] = classTitle;
+            newClass['course_num'] = this.state.currentCourseNum;
+            newClass['department'] = this.state.currentDepartment;
+            newClass['priority'] = this.state.priority;
+            newClass['conflicts'] = this.state.selectedConflicts;
+            newClass['currentInstructor'] = this.state.currentInstructor;
 
-        // set values has a callback
-        let newClass = {};
-        newClass['class'] = selectedClass;
-        newClass['conflicts'] = this.state.selectedConflicts;
-
-        let action = {};
-        action.type = "ADD_CLASS";
-        action.payload = newClass;
-
-        this.props.addClass(this.state.uuid, newClass);
+            // using the addClass method from the reducer
+            this.props.addClass(this.state.uuid, newClass);
+        }
         this.setState({
-            uuid: this.state.uuid + 1
+            uuid: this.state.uuid + 1,
+            duplicate: duplicate
         });
     }
 
     render() {
         return <React.Fragment>
-            <div className="title"> UCSD Schedule Planner</div>
 
             <div className="content">
                 <div className="form-field">
                     <div className="input-header"> Department:</div>
                     <AutoComplete suggestions={this.state.departmentOptions} dropdown={true}
                                   value={this.state.currentDepartment}
-                                  onChange={(e) => this.setState({currentDepartment: e.value})}
+                                  onChange={(e) => {
+                                      this.setState({currentDepartment: e.value});
+                                      this.clearFields(["currentCourseNum", "currentInstructor", "priority"]);
+                                  }}
                                   completeMethod={this.completeDepartmentSuggestions.bind(this)}
                                   onSelect={(e) => {
                                       this.getClasses.call(this, e.value);
@@ -272,8 +276,10 @@ export class ClassInput extends Component {
                                  disabled={this.state.currentCourseNum === null}/>
                     </div>
                 </div>
-                <div className="form-button">
-                    <Button label="Add Class" style={{padding: ".25em 1em"}}/>
+                <div className="form-button" onClick={this.handleSubmit.bind(this)}>
+                    <Button label="Add Class" style={{padding: ".25em 1em"}}
+                            disabled={this.state.currentCourseNum === null}
+                    />
                 </div>
             </div>
         </React.Fragment>
@@ -288,7 +294,8 @@ function mapDispatchToProps(dispatch) {
 
 function mapStateToProps(state) {
     return {
-        selectedClasses: state.ClassSelection
+        selectedClasses: state.ClassSelection,
+        schedule: state.ScheduleGeneration.schedule
     }
 }
 

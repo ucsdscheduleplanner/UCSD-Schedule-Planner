@@ -27,12 +27,4 @@ export const removeConflict = (uuid, conflict) => {
     }
 };
 
-export const generateSchedule = (selectedClasses) => {
-    return {
-        type: "GENERATE_SCHEDULE",
-        payload: {
-            selectedClasses: selectedClasses
-        }
-    }
-};
 

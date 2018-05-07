@@ -4,8 +4,10 @@ import TimeHeuristic from '../heuristics/TimeHeuristic.js';
 import {BACKEND_URL} from "../settings";
 
 function requestData(selectedClasses) {
+    let url = BACKEND_URL;
     return new Promise((resolve, reject) => {
-        fetch(`${BACKEND_URL}/api_data`, {
+        console.log(url);
+        fetch(`${url}/api_data`, {
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
@@ -32,7 +34,7 @@ function handleData(selectedClasses, dirtyClassData) {
     // using object here to define each class heap by its class
     let classData = {};
     selectedClasses.forEach((_class) => {
-        let classGroup = _class['class'];
+        let classGroup = _class['class_title'];
         let conflicts = _class['conflicts'];
         dirtyClassData[classGroup].forEach((class_data) => {
             let new_class = new Class(class_data);
@@ -78,7 +80,13 @@ export function generateSchedule(selectedClasses) {
     selectedClasses = Object.values(selectedClasses);
     // making the JSON here for the request
     let selectedClassesJSON = {};
-    selectedClassesJSON['classes'] = selectedClasses.map((cl) => cl['class']);
+    selectedClassesJSON['classes'] = selectedClasses.map((cl) =>  {
+            return {
+                class_title: cl['class_title'],
+                course_num: cl['course_num'],
+                department: cl['department']
+            };
+    });
 
     return new Promise((resolve, reject) => {
         requestData(selectedClassesJSON)

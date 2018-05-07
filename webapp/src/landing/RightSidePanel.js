@@ -4,14 +4,15 @@
  */
 
 import React, {Component} from 'react';
+import ScheduleOptions from './ScheduleOptions';
 import "../css/RightSidePanel.css";
 
 export class RightSidePanel extends Component {
-
     render() {
         return (
             <React.Fragment>
                 <div className="right-side-panel">
+                    <ScheduleOptions />
                 </div>
             </React.Fragment>
         )
