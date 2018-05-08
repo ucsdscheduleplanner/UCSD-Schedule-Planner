@@ -19,11 +19,27 @@ export function receiveSchedule(schedule) {
     }
 }
 
+export const SET_UID = "SET_UID";
+export function setUID(uid) {
+    return {
+        type: SET_UID,
+        uid: uid,
+    }
+}
+
 export function getSchedule(scheduleList) {
     return function(dispatch) {
         dispatch(requestSchedule);
 
         return generateSchedule(scheduleList)
             .then((schedule) => dispatch(receiveSchedule(schedule)))
+    }
+}
+
+export const PLAN_SCHEDULE = "PLAN_SCHEDULE";
+export function returnToPlanning() {
+    return {
+        type: PLAN_SCHEDULE,
+        scheduleScreen: false,
     }
 }

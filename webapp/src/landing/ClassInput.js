@@ -7,6 +7,7 @@ import {Rating} from "primereact/components/rating/Rating";
 import {ListBox} from "primereact/components/listbox/ListBox";
 import {Button} from "primereact/components/button/Button";
 import {AutoComplete} from "primereact/components/autocomplete/AutoComplete";
+import {setUID} from "../actions/scheduleActions";
 
 
 const codeToClassType = {
@@ -36,7 +37,6 @@ export class ClassInput extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            uuid: 0,
             duplicate: false,
             classTypesPerClass: [],
             instructorsPerClass: [],
@@ -111,9 +111,7 @@ export class ClassInput extends Component {
                 let instructorsPerClass = {};
                 for (let dict of res) {
                     classTypesPerClass[dict["COURSE_NUM"]] = Object.keys(dict).filter((property) => {
-                        if (property.endsWith("KEY") && dict[property] !== null) {
-                            return true;
-                        }
+                        return property.endsWith("KEY") && dict[property] !== null;
                     }).map((classTypeStr) => {
                         return {label: codeToClassType[classTypeStr], value: codeToClassType[classTypeStr]};
                     });
@@ -182,7 +180,7 @@ export class ClassInput extends Component {
     }
 
     handleSubmit() {
-        if(this.state.currentCourseNum === null || this.state.currentDepartment === null) return;
+        if (this.state.currentCourseNum === null || this.state.currentDepartment === null) return;
         let classTitle = `${this.state.currentDepartment} ${this.state.currentCourseNum}`;
         // testing whether this is a duplicate class
         let duplicate = Object.values(this.props.selectedClasses).reduce(function (accumulator, previousClass) {
@@ -200,102 +198,106 @@ export class ClassInput extends Component {
             newClass['currentInstructor'] = this.state.currentInstructor;
 
             // using the addClass method from the reducer
-            this.props.addClass(this.state.uuid, newClass);
+            this.props.addClass(this.props.uid, newClass);
         }
+        this.props.setUID(this.props.uid + 1);
+        // set duplicate so we can do some UI stuff in case
         this.setState({
-            uuid: this.state.uuid + 1,
             duplicate: duplicate
         });
     }
 
     render() {
-        return <React.Fragment>
-
-            <div className="content">
-                <div className="form-field">
-                    <div className="input-header"> Department:</div>
-                    <AutoComplete suggestions={this.state.departmentOptions} dropdown={true}
-                                  value={this.state.currentDepartment}
-                                  onChange={(e) => {
-                                      this.setState({currentDepartment: e.value});
-                                      this.clearFields(["currentCourseNum", "currentInstructor", "priority"]);
-                                  }}
-                                  completeMethod={this.completeDepartmentSuggestions.bind(this)}
-                                  onSelect={(e) => {
-                                      this.getClasses.call(this, e.value);
-                                      if (e.value !== this.state.currentDepartment) {
-                                          this.clearFields(["currentInstructor", "currentCourseNum", "priority"]);
-                                      }
-                                  }}/>
-                </div>
-
-                <div className="form-field">
-                    <div className="input-header"> Course Number:</div>
-                    <AutoComplete suggestions={this.state.classOptions}
-                                  value={this.state.currentCourseNum}
-                                  onChange={(e) => this.setState({currentCourseNum: e.value})}
-                                  onSelect={(e) => {
-                                      if (e.value !== this.state.currentCourseNum) {
-                                          this.clearFields(["currentInstructor", "priority"]);
-                                      }
-                                  }}
-                                  completeMethod={this.completeClassSuggestions.bind(this)}
-                                  disabled={this.state.currentDepartment === null || this.state.currentDepartment.length === 0}
-                                  dropdown={true}/>
-                </div>
-
-                <div className="title-preferences"> Preferences</div>
-
-                <div className="two-column-grid">
-                    <div>
-                        <div className="form-field">
-                            <div className="input-header"> Instructor Preference:</div>
-                            <AutoComplete suggestions={this.state.instructorsPerClass[this.state.currentCourseNum]}
-                                          value={this.state.currentInstructor}
-                                          onChange={(e) => this.setState({currentInstructor: e.value})}
-                                          completeMethod={this.completeInstructorSuggestions.bind(this)}
-                                          disabled={this.state.currentCourseNum === null}
-                                          dropdown={true}/>
-                        </div>
-                        <div className="form-field">
-                            <div className="input-header"> Importance:</div>
-                            <Rating value={this.state.priority}
-                                    onChange={(e) => this.setState({priority: e.value})}
-                                    stars={3}/>
-                        </div>
+        return (
+            <React.Fragment>
+                <div className="content">
+                    <div className="form-field">
+                        <div className="input-header"> Department:</div>
+                        <AutoComplete suggestions={this.state.departmentOptions} dropdown={true}
+                                      value={this.state.currentDepartment}
+                                      onChange={(e) => {
+                                          this.setState({currentDepartment: e.value});
+                                          this.clearFields(["currentCourseNum", "currentInstructor", "priority"]);
+                                      }}
+                                      completeMethod={this.completeDepartmentSuggestions.bind(this)}
+                                      onSelect={(e) => {
+                                          this.getClasses.call(this, e.value);
+                                          if (e.value !== this.state.currentDepartment) {
+                                              this.clearFields(["currentInstructor", "currentCourseNum", "priority"]);
+                                          }
+                                      }}/>
                     </div>
 
                     <div className="form-field">
-                        <div className="input-header"> Ignore Class Types:</div>
-                        <ListBox value={this.state.selectedConflicts}
-                                 options={this.state.classTypesPerClass[this.state.currentCourseNum]}
-                                 onChange={(e) => {
-                                     this.setState({selectedConflicts: e.value});
-                                 }}
-                                 multiple={true}
-                                 disabled={this.state.currentCourseNum === null}/>
+                        <div className="input-header"> Course Number:</div>
+                        <AutoComplete suggestions={this.state.classOptions}
+                                      value={this.state.currentCourseNum}
+                                      onChange={(e) => this.setState({currentCourseNum: e.value})}
+                                      onSelect={(e) => {
+                                          if (e.value !== this.state.currentCourseNum) {
+                                              this.clearFields(["currentInstructor", "priority"]);
+                                          }
+                                      }}
+                                      completeMethod={this.completeClassSuggestions.bind(this)}
+                                      disabled={this.state.currentDepartment === null || this.state.currentDepartment.length === 0}
+                                      dropdown={true}/>
+                    </div>
+
+                    <div className="title-preferences"> Preferences</div>
+
+                    <div className="two-column-grid">
+                        <div>
+                            <div className="form-field">
+                                <div className="input-header"> Instructor Preference:</div>
+                                <AutoComplete suggestions={this.state.instructorsPerClass[this.state.currentCourseNum]}
+                                              value={this.state.currentInstructor}
+                                              onChange={(e) => this.setState({currentInstructor: e.value})}
+                                              completeMethod={this.completeInstructorSuggestions.bind(this)}
+                                              disabled={this.state.currentCourseNum === null}
+                                              dropdown={true}/>
+                            </div>
+                            <div className="form-field">
+                                <div className="input-header"> Importance:</div>
+                                <Rating value={this.state.priority}
+                                        onChange={(e) => this.setState({priority: e.value})}
+                                        stars={3}/>
+                            </div>
+                        </div>
+
+                        <div className="form-field">
+                            <div className="input-header"> Ignore Class Types:</div>
+                            <ListBox value={this.state.selectedConflicts}
+                                     options={this.state.classTypesPerClass[this.state.currentCourseNum]}
+                                     onChange={(e) => {
+                                         this.setState({selectedConflicts: e.value});
+                                     }}
+                                     multiple={true}
+                                     disabled={this.state.currentCourseNum === null}/>
+                        </div>
+                    </div>
+                    <div className="form-button" onClick={this.handleSubmit.bind(this)}>
+                        <Button label="Add Class" style={{padding: ".25em 1em"}}
+                                disabled={this.state.currentCourseNum === null}
+                        />
                     </div>
                 </div>
-                <div className="form-button" onClick={this.handleSubmit.bind(this)}>
-                    <Button label="Add Class" style={{padding: ".25em 1em"}}
-                            disabled={this.state.currentCourseNum === null}
-                    />
-                </div>
-            </div>
-        </React.Fragment>
+            </React.Fragment>
+        )
     }
 }
 
 function mapDispatchToProps(dispatch) {
     return bindActionCreators({
-        addClass: addClass
+        addClass: addClass,
+        setUID: setUID,
     }, dispatch);
 }
 
 function mapStateToProps(state) {
     return {
         selectedClasses: state.ClassSelection,
-        schedule: state.ScheduleGeneration.schedule
+        schedule: state.ScheduleGeneration.schedule,
+        uid: state.ScheduleGeneration.uid,
     }
 }
 

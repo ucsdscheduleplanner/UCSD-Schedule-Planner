@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import '../css/ScheduleOptions.css'
 import {AutoComplete} from "primereact/components/autocomplete/AutoComplete";
 import {Button} from "primereact/components/button/Button";
-import {getSchedule} from "../actions/scheduleActions";
+import {getSchedule, returnToPlanning} from "../actions/scheduleActions";
 import {bindActionCreators} from "redux";
 import {connect} from "react-redux";
 
@@ -14,11 +14,29 @@ import {connect} from "react-redux";
 class ScheduleOptions extends Component {
 
     getSchedule() {
-        console.log("hi");
         this.props.getSchedule(this.props.selectedClasses);
     }
 
+    returnToPlanning() {
+        this.props.returnToPlanning();
+    }
+
     render() {
+        let activeButton;
+        if (this.props.scheduleScreen) {
+            activeButton = (
+                <div className="schedule-options-return-planning" onClick={this.returnToPlanning.bind(this)}>
+                    <Button label="Return to Planning" style={{padding: "1em"}}/>
+                </div>
+            );
+        } else {
+            activeButton = (
+                <div className="schedule-options-generate" onClick={this.getSchedule.bind(this)}>
+                    <Button label="Generate" style={{padding: "1em"}}/>
+                </div>
+            );
+        }
+
         return (
             <React.Fragment>
                 <div className="schedule-options">
@@ -36,9 +54,7 @@ class ScheduleOptions extends Component {
                         <AutoComplete value={"Coming soon!"}/>
                     </div>
 
-                    <div className="schedule-options-generate" onClick={this.getSchedule.bind(this)}>
-                        <Button label="Generate" style={{padding: "1em"}} />
-                    </div>
+                    {activeButton}
                 </div>
             </React.Fragment>
         )
@@ -47,13 +63,15 @@ class ScheduleOptions extends Component {
 
 function mapStateToProps(state) {
     return {
-        selectedClasses: state.ClassSelection
+        selectedClasses: state.ClassSelection,
+        scheduleScreen: state.ScheduleGeneration.scheduleScreen
     }
 }
 
 function mapDispatchToProps(dispatch) {
     return bindActionCreators({
-        getSchedule: getSchedule
+        getSchedule: getSchedule,
+        returnToPlanning: returnToPlanning,
     }, dispatch);
 }
 

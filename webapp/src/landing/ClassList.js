@@ -2,7 +2,6 @@ import React, {Component} from 'react';
 import {connect} from "react-redux";
 import {bindActionCreators} from "redux";
 import {removeClass, removeConflict} from '../actions/index';
-import {Card} from 'primereact/components/card/Card';
 
 import "../css/ClassList.css";
 

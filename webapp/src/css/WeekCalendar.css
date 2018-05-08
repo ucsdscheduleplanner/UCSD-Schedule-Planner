@@ -4,3 +4,7 @@
     margin-top: 1em;
     margin-bottom: 2em;
 }
+
+.rbc-events-container .rbc-event-label {
+    display: none;
+}
