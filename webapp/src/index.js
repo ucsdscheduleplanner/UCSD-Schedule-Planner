@@ -14,9 +14,7 @@ import './css/utils.css';
 import {createLogger} from 'redux-logger';
 import thunkMiddleware from 'redux-thunk';
 
-const loggerMiddleware = createLogger();
-
-const store = createStore(reducers, applyMiddleware(thunkMiddleware, loggerMiddleware));
+const store = createStore(reducers, applyMiddleware(thunkMiddleware));
 
 document.title = "Plan Your Schedule!";
 ReactDOM.render(

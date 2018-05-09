@@ -8,7 +8,7 @@ import "../css/ClassList.css";
 const activateSidePanelUI = () => {
     let classListPanel = document.querySelector('.class-list');
     classListPanel.animate({
-        width: ["0", "75%"],
+        width: ["0", "100%"],
     }, {
         duration: 300,
         fill: "forwards"
