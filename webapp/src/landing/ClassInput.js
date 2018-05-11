@@ -8,6 +8,7 @@ import {ListBox} from "primereact/components/listbox/ListBox";
 import {Button} from "primereact/components/button/Button";
 import {AutoComplete} from "primereact/components/autocomplete/AutoComplete";
 import {setUID} from "../actions/scheduleActions";
+import "../css/ClassInput.css";
 
 
 const codeToClassType = {
@@ -245,25 +246,16 @@ export class ClassInput extends Component {
 
                     <div className="title-preferences"> Preferences</div>
 
-                    <div className="two-column-grid">
-                        <div>
-                            <div className="form-field">
-                                <div className="input-header"> Instructor Preference:</div>
-                                <AutoComplete suggestions={this.state.instructorsPerClass[this.state.currentCourseNum]}
-                                              value={this.state.currentInstructor}
-                                              onChange={(e) => this.setState({currentInstructor: e.value})}
-                                              completeMethod={this.completeInstructorSuggestions.bind(this)}
-                                              disabled={this.state.currentCourseNum === null}
-                                              dropdown={true}/>
-                            </div>
-                            <div className="form-field">
-                                <div className="input-header"> Importance:</div>
-                                <Rating value={this.state.priority}
-                                        onChange={(e) => this.setState({priority: e.value})}
-                                        stars={3}/>
-                            </div>
+                    <div className="preference-container">
+                        <div className="form-field">
+                            <div className="input-header"> Instructor Preference:</div>
+                            <AutoComplete suggestions={this.state.instructorsPerClass[this.state.currentCourseNum]}
+                                          value={this.state.currentInstructor}
+                                          onChange={(e) => this.setState({currentInstructor: e.value})}
+                                          completeMethod={this.completeInstructorSuggestions.bind(this)}
+                                          disabled={this.state.currentCourseNum === null}
+                                          dropdown={true}/>
                         </div>
-
                         <div className="form-field">
                             <div className="input-header"> Ignore Class Types:</div>
                             <ListBox value={this.state.selectedConflicts}
@@ -273,6 +265,13 @@ export class ClassInput extends Component {
                                      }}
                                      multiple={true}
                                      disabled={this.state.currentCourseNum === null}/>
+                        </div>
+
+                        <div className="form-field">
+                            <div className="input-header"> Importance:</div>
+                            <Rating value={this.state.priority}
+                                    onChange={(e) => this.setState({priority: e.value})}
+                                    stars={3}/>
                         </div>
                     </div>
                     <div className="form-button" onClick={this.handleSubmit.bind(this)}>

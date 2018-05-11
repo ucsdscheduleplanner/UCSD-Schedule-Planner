@@ -23,9 +23,14 @@
 .schedule-options-generate {
     margin-top: 2em;
     align-self: flex-end;
+    width: 100%;
 }
 
 .schedule-options-return-planning {
     margin-top: 2em;
     align-self: flex-end;
+}
+
+div.schedule-options-content input{
+    width: 100%;
 }

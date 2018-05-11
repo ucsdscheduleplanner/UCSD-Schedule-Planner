@@ -15,12 +15,6 @@
     padding-bottom: .5em;
 }
 
-.form-field {
-    margin: .5em 0;
-    width: 100%;
-    font-size: 1.2em;
-}
-
 .title {
     /* this is for the border bottom */
     display: inline-block;
@@ -35,26 +29,6 @@
     font-family: 'Raleway', sans-serif;
 }
 
-
-.title-preferences {
-    margin: .5em 0;
-    color: rgb(24,43, 73);
-    font-size: 2em;
-    font-weight: bold;
-    font-family: 'Raleway', sans-serif;
-}
-
-.two-column-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-}
-
-.form-button {
-    margin: .5em 0;
-    width: 100%;
-    font-size: 1.2em;
-}
-
 .class-input {
     margin-left: 2em;
 }
@@ -63,17 +37,9 @@
     margin-left: 2em;
 }
 
-.ui-inputtext .ui-state-default .ui-corner-all ui-autocomplete-input {
-    width: 100%;
-}
-
 @media only screen and (max-width: 640px) {
     .title {
         font-size: 1.5em;
-    }
-
-    .title-preferences {
-        font-size: 1em;
     }
 }
 

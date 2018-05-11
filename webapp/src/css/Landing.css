@@ -2,7 +2,7 @@
 .container {
     display: grid;
     height: 100%;
-    grid-template-columns: .8fr 5fr 2fr;
+    grid-template-columns: 100px 10fr 1fr;
 }
 
 
@@ -10,7 +10,7 @@
     .container {
         display: grid;
         height: 100%;
-        grid-template-columns: 2fr 5fr .7fr;
+        grid-template-columns: 100px 10fr 1fr;
     }
 }
 
