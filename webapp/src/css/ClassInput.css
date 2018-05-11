@@ -1,9 +1,12 @@
 .form-field {
-    margin: .5em 0;
+    margin: .25em 0;
     width: 100%;
     font-size: 1.2em;
 }
 
+.ignore-class-types {
+    grid-row-start: span 2;
+}
 
 .title-preferences {
     margin: .5em 0;

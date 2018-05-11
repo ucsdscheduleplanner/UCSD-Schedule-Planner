@@ -256,7 +256,7 @@ export class ClassInput extends Component {
                                           disabled={this.state.currentCourseNum === null}
                                           dropdown={true}/>
                         </div>
-                        <div className="form-field">
+                        <div className="form-field ignore-class-types">
                             <div className="input-header"> Ignore Class Types:</div>
                             <ListBox value={this.state.selectedConflicts}
                                      options={this.state.classTypesPerClass[this.state.currentCourseNum]}
