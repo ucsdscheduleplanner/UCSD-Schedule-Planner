@@ -2,6 +2,7 @@ import {Class} from '../utils/ClassUtils.js';
 import {Heap} from '../utils/Heap.js';
 import TimeHeuristic from '../heuristics/TimeHeuristic.js';
 import {BACKEND_URL} from "../settings";
+import {SimpleIntervalTree} from "../utils/SimpleIntervalTree";
 
 function requestData(selectedClasses) {
     let url = BACKEND_URL;
@@ -103,9 +104,16 @@ export function generateSchedule(selectedClasses) {
 }
 
 // for now makes sure they do not overlap and considers conflicts
-function isValid(newClass, schedule) {
-    for (let classInSchedule of schedule) {
-        if (classInSchedule.overlaps(newClass)) return false;
+function isValid(newClass, intervalTree) {
+    let addedIntervals = [];
+    for(let timeInterval of newClass.timeIntervals) {
+        addedIntervals.push(timeInterval);
+        if(!intervalTree.add(timeInterval)) {
+            // removing intervals we have added
+            // making sure no side effects if unsuccessful
+            addedIntervals.map((interval) => intervalTree.remove(interval));
+            return false;
+        }
     }
     return true;
 }
@@ -130,6 +138,7 @@ export function getSchedule(classHeaps) {
     // in our new schedule
     for (let curStart = 0; curStart < classHeaps.length; curStart++) {
         let curSchedule = [];
+        let intervalTree = new SimpleIntervalTree();
         // numClasses is the number of classes in correct schedule
         let numClasses = classHeaps.length;
 
@@ -155,7 +164,7 @@ export function getSchedule(classHeaps) {
 
             // add it to the schedule if it is valid and advance one class ahead
             // because of the heap ordering, we are guaranteed the best class so far
-            if (isValid(workingClassHeaps[curIndex].peek(), curSchedule)) {
+            if (isValid(workingClassHeaps[curIndex].peek(), intervalTree)) {
                 curSchedule.push(workingClassHeaps[curIndex].removeRoot());
                 curIndex++;
             } else {

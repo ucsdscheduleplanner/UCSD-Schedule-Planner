@@ -44,7 +44,7 @@ class WeekCalendar extends Component {
         // setting max and min times
         const minTime = new Date();
         const maxTime = new Date();
-        minTime.setHours(7, 30, 0);
+        minTime.setHours(8, 0, 0);
         maxTime.setHours(23, 0, 0);
 
         return (
@@ -54,7 +54,8 @@ class WeekCalendar extends Component {
                     max={maxTime}
                     toolbar={false}
                     defaultDate={new Date()}
-                    defaultView="week"
+                    defaultView={'work_week'}
+                    views={['work_week']}
                     events={this.state.events}
                 />
             </div>

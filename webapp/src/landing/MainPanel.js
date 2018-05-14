@@ -7,6 +7,7 @@ import ClassInput from './ClassInput';
 import WeekCalendar from '../utils/WeekCalendar'
 import "../css/MainPanel.css";
 import {connect} from "react-redux";
+import "../tests/SimpleIntervalTreeTest.js";
 
 class MainPanel extends Component {
     constructor(props) {

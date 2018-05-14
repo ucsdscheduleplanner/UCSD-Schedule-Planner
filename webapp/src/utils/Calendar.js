@@ -66,7 +66,7 @@ export default class Calendar extends Component {
                         dayFormat="dd"
                         startTime={moment({h: 8, m: 0})}
                         endTime={moment({h: 21, m: 0})}
-                        scaleUnit="30"
+                        scaleUnit="60"
                         selectedIntervals={this.state.selectedIntervals}
                     />
                     <Button negative floated="right"
