@@ -1,37 +1,25 @@
-import React, {Component} from 'react';
+import React, {PureComponent} from 'react';
 import '../css/ScheduleOptions.css'
 import {AutoComplete} from "primereact/components/autocomplete/AutoComplete";
 import {Button} from "primereact/components/button/Button";
-import {getSchedule, returnToPlanning} from "../actions/scheduleActions";
-import {bindActionCreators} from "redux";
-import {connect} from "react-redux";
 
 
 /*
     This class should hold the UI for settings options for the schedule.
-
  */
-class ScheduleOptions extends Component {
-
-    getSchedule() {
-        this.props.getSchedule(this.props.selectedClasses);
-    }
-
-    returnToPlanning() {
-        this.props.returnToPlanning();
-    }
-
+export default class ScheduleOptions extends PureComponent {
     render() {
         let activeButton;
         if (this.props.scheduleScreen) {
             activeButton = (
-                <div className="schedule-options-return-planning" onClick={this.returnToPlanning.bind(this)}>
+                <div className="schedule-options-return-planning" onClick={this.props.returnToPlanning}>
                     <Button label="Return to Planning" style={{padding: "1em"}}/>
                 </div>
             );
         } else {
             activeButton = (
-                <div className="schedule-options-generate" onClick={this.getSchedule.bind(this)}>
+                <div className="schedule-options-generate"
+                     onClick={this.props.getSchedule}>
                     <Button label="Generate" style={{padding: "1em"}}/>
                 </div>
             );
@@ -60,19 +48,3 @@ class ScheduleOptions extends Component {
         )
     }
 }
-
-function mapStateToProps(state) {
-    return {
-        selectedClasses: state.ClassSelection,
-        scheduleScreen: state.ScheduleGeneration.scheduleScreen
-    }
-}
-
-function mapDispatchToProps(dispatch) {
-    return bindActionCreators({
-        getSchedule: getSchedule,
-        returnToPlanning: returnToPlanning,
-    }, dispatch);
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(ScheduleOptions);

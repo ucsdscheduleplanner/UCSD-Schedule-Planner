@@ -3,11 +3,11 @@
  */
 
 import React, {Component} from 'react';
-import ClassInput from './ClassInput';
 import WeekCalendar from '../utils/WeekCalendar'
 import "../css/MainPanel.css";
 import {connect} from "react-redux";
 import "../tests/SimpleIntervalTreeTest.js";
+import ClassInputContainer from "../containers/ClassInputContainer";
 
 class MainPanel extends Component {
     constructor(props) {
@@ -36,7 +36,7 @@ class MainPanel extends Component {
                 <div className="main-panel">
                     <div className="class-calendar">
                         <div className="title"> UCSD Schedule Planner</div>
-                        <ClassInput/>
+                        <ClassInputContainer/>
                     </div>
                 </div>
             );

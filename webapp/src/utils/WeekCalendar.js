@@ -1,4 +1,4 @@
-import React, {Component} from "react";
+import React, {PureComponent} from "react";
 import Calendar from "react-big-calendar";
 import moment from 'moment';
 import "../css/WeekCalendar.css";
@@ -7,7 +7,7 @@ import "react-big-calendar/lib/css/react-big-calendar.css";
 
 Calendar.setLocalizer(Calendar.momentLocalizer(moment));
 
-class WeekCalendar extends Component {
+class WeekCalendar extends PureComponent {
     constructor(props) {
         super(props);
         this.state = {

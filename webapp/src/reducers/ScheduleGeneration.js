@@ -1,4 +1,4 @@
-import {PLAN_SCHEDULE, RECEIVE_SCHEDULE, REQUEST_SCHEDULE, SET_UID} from '../actions/scheduleActions';
+import {PLAN_SCHEDULE, RECEIVE_SCHEDULE, REQUEST_SCHEDULE, SET_UID} from '../actions/ScheduleActions';
 
 /**
  Should be able to access this through state.ScheduleGeneration
