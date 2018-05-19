@@ -1,6 +1,6 @@
 import React, {Component} from "react";
 import Calendar from "react-big-calendar";
-import moment from "moment";
+import moment from 'moment';
 import "../css/WeekCalendar.css";
 
 import "react-big-calendar/lib/css/react-big-calendar.css";
