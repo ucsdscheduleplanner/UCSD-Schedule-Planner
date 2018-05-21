@@ -1,8 +1,4 @@
-import React, {Component} from 'react';
-import {connect} from "react-redux";
-import {bindActionCreators} from "redux";
-import {removeClass, removeConflict} from '../actions/index';
-
+import React, {PureComponent} from 'react';
 import "../css/ClassList.css";
 
 const activateSidePanelUI = () => {
@@ -24,19 +20,34 @@ const activateSidePanelUI = () => {
     });
 };
 
-class ClassList extends Component {
+const deactivateSidePanelUI = () => {
+    let classListPanel = document.querySelector('.class-list');
+    classListPanel.animate({
+        width: ["100%", "0"],
+    }, {
+        duration: 300,
+        fill: "forwards"
+    });
+};
 
+export default class ClassList extends PureComponent {
     componentDidUpdate(prevProps) {
         if (Object.keys(this.props.selectedClasses).length !== 0
             && Object.keys(prevProps.selectedClasses).length === 0) {
             activateSidePanelUI();
+        } else if(Object.keys(this.props.selectedClasses).length === 0
+            && Object.keys(prevProps.selectedClasses).length !== 0) {
+            deactivateSidePanelUI();
         }
     }
 
     render() {
         let classes = Object.keys(this.props.selectedClasses).map((selectedClassKey, index) => {
             let selectedClass = this.props.selectedClasses[selectedClassKey];
-            return (<button className="class-button" key={selectedClassKey} onClick={(e) => console.log("hello world")}>
+            return (
+                <button className="class-button"
+                            onClick={(e) => this.props.removeClass(selectedClassKey)}
+                            key={selectedClassKey}>
                     <div className="class-item">
                         {selectedClass['class_title']}
                     </div>
@@ -52,19 +63,3 @@ class ClassList extends Component {
         );
     }
 }
-
-function mapStateToProps(state) {
-    return {
-        selectedClasses: state.ClassSelection
-    }
-}
-
-function mapDispatchToProps(dispatch) {
-    return bindActionCreators({
-        removeClass: removeClass,
-        removeConflict: removeConflict
-    }, dispatch);
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(ClassList);
-

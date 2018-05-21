@@ -6,7 +6,6 @@ import React, {Component} from 'react';
 import WeekCalendar from '../utils/WeekCalendar'
 import "../css/MainPanel.css";
 import {connect} from "react-redux";
-import "../tests/SimpleIntervalTreeTest.js";
 import ClassInputContainer from "../containers/ClassInputContainer";
 
 class MainPanel extends Component {

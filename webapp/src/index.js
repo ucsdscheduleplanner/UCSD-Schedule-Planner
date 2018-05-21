@@ -10,8 +10,6 @@ import {Provider} from 'react-redux';
 import reducers from './reducers/index';
 import './settings';
 import './css/utils.css';
-
-import {createLogger} from 'redux-logger';
 import thunkMiddleware from 'redux-thunk';
 
 const store = createStore(reducers, applyMiddleware(thunkMiddleware));

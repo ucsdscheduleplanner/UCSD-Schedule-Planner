@@ -38,7 +38,7 @@ function handleData(selectedClasses, dirtyClassData) {
         let classGroup = _class['class_title'];
         let conflicts = _class['conflicts'];
         dirtyClassData[classGroup].forEach((class_data) => {
-            let new_class = new Class(class_data);
+            let new_class = new Class(classGroup, class_data);
             // giving the name to identify it
             new_class.name = classGroup;
             new_class['conflicts'] = conflicts;
@@ -81,13 +81,8 @@ export function generateSchedule(selectedClasses) {
     selectedClasses = Object.values(selectedClasses);
     // making the JSON here for the request
     let selectedClassesJSON = {};
-    selectedClassesJSON['classes'] = selectedClasses.map((cl) =>  {
-            return {
-                class_title: cl['class_title'],
-                course_num: cl['course_num'],
-                department: cl['department']
-            };
-    });
+    // recreating it for the JSON
+    selectedClassesJSON['classes'] = selectedClasses;
 
     return new Promise((resolve, reject) => {
         requestData(selectedClassesJSON)

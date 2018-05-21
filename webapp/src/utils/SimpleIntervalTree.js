@@ -37,6 +37,18 @@ export function SimpleIntervalTree() {
         return node;
     };
 
+    this._copy = function(node) {
+      if(node === null) return null;
+      let copyNode = new SimpleIntervalTreeNode(node.interval);
+      copyNode.left = this._copy(node.left);
+      copyNode.right = this._copy(node.right);
+      return copyNode;
+    };
+
+    this.copy = function() {
+        return this._copy(this.root);
+    };
+
     this.remove = function (interval) {
         this.root = this.removeNode(this.root, interval);
     };

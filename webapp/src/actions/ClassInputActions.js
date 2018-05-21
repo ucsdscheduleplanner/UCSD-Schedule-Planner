@@ -24,6 +24,50 @@ const codeToClassType = {
     "TU_KEY": "Tutorial",
 };
 
+export const SET_CURRENT_INSTRUCTOR = "SET_CURRENT_INSTRUCTOR";
+
+export function setCurrentInstructor(instructor) {
+    return {
+        type: SET_CURRENT_INSTRUCTOR,
+        currentInstructor: instructor
+    }
+}
+
+export const SET_CURRENT_DEPARTMENT = "SET_CURRENT_DEPARTMENT";
+
+export function setCurrentDepartment(department) {
+    return {
+        type: SET_CURRENT_DEPARTMENT,
+        currentDepartment: department
+    }
+}
+
+export const SET_CURRENT_COURSE_NUM = "SET_CURRENT_COURSE_NUM";
+
+export function setCurrentCourseNum(courseNum) {
+    return {
+        type: SET_CURRENT_COURSE_NUM,
+        currentCourseNum: courseNum
+    }
+}
+
+export const SET_PRIORITY = "SET_PRIORITY";
+
+export function setPriority(priority) {
+    return {
+        type: SET_PRIORITY,
+        priority: priority
+    }
+}
+
+export const SET_CONFLICTS = "SET_CONFLICTS";
+
+export function setConflicts(conflicts) {
+    return {
+        type: SET_CONFLICTS,
+        conflicts: conflicts
+    }
+}
 
 export const REQUEST_DEPARTMENTS = "REQUEST_DEPARTMENTS";
 
@@ -70,6 +114,29 @@ export function getDepartments() {
         dispatch(requestDepartments);
 
         fetchDepartments().then(departments => dispatch(receiveDepartments(departments)));
+    }
+}
+
+export const ADD_CLASS = "ADD_CLASS";
+
+export function addClass(uuid, newClass) {
+    return {
+        type: ADD_CLASS,
+        payload: {
+            uuid: uuid,
+            add: newClass
+        }
+    }
+}
+
+export const REMOVE_CLASS = "REMOVE_CLASS";
+
+export function removeClass(uuid) {
+    return {
+        type: REMOVE_CLASS,
+        payload: {
+            uuid: uuid
+        },
     }
 }
 
@@ -155,7 +222,7 @@ function fetchClasses(department) {
                         .map((instructor) => instructor.trim());
                 }
 
-                resolve ({
+                resolve({
                     classes: sortedClasses,
                     classTypesPerClass: classTypesPerClass,
                     instructorsPerClass: instructorsPerClass

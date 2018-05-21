@@ -46,7 +46,8 @@ export function Subclass(data) {
     }
 }
 
-export function Class(data) {
+export function Class(name, data) {
+    this.name = name;
     this.subclasses = {};
     this.timeIntervals = [];
     this.subclassList = [];

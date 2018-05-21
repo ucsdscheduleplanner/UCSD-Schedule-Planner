@@ -6,19 +6,15 @@ import {AutoComplete} from "primereact/components/autocomplete/AutoComplete";
 import "../css/ClassInput.css";
 
 
-
 export default class ClassInput extends PureComponent {
     constructor(props) {
         super(props);
         this.state = {
             duplicate: false,
             instructorOptions: [],
-            currentInstructor: null,
             selectedConflicts: [],
             departmentOptions: [],
             classOptions: [],
-            currentDepartment: null,
-            currentCourseNum: null,
         };
     }
 
@@ -45,15 +41,15 @@ export default class ClassInput extends PureComponent {
     }
 
     completeInstructorSuggestions(event) {
-        let instructorOptions = this.props.instructorsPerClass[this.state.currentCourseNum].filter((instructor) => {
+        let instructorOptions = this.props.instructorsPerClass[this.props.currentCourseNum].filter((instructor) => {
             return instructor.toLowerCase().startsWith(event.query.toLowerCase());
         });
         this.setState({instructorOptions: instructorOptions});
     }
 
     handleSubmit() {
-        if (this.state.currentCourseNum === null || this.state.currentDepartment === null) return;
-        let classTitle = `${this.state.currentDepartment} ${this.state.currentCourseNum}`;
+        if (this.props.currentCourseNum === null || this.props.currentDepartment === null) return;
+        let classTitle = `${this.props.currentDepartment} ${this.props.currentCourseNum}`;
         // testing whether this is a duplicate class
         let duplicate = Object.values(this.props.selectedClasses).reduce(function (accumulator, previousClass) {
             return accumulator || classTitle === previousClass['class_title']
@@ -63,11 +59,11 @@ export default class ClassInput extends PureComponent {
             // constructing new class to be added to UI
             let newClass = {};
             newClass['class_title'] = classTitle;
-            newClass['course_num'] = this.state.currentCourseNum;
-            newClass['department'] = this.state.currentDepartment;
-            newClass['priority'] = this.state.priority;
-            newClass['conflicts'] = this.state.selectedConflicts;
-            newClass['currentInstructor'] = this.state.currentInstructor;
+            newClass['course_num'] = this.props.currentCourseNum;
+            newClass['department'] = this.props.currentDepartment;
+            newClass['priority'] = this.props.priority;
+            newClass['conflicts'] = this.props.selectedConflicts;
+            newClass['currentInstructor'] = this.props.currentInstructor;
 
             // using the addClass method from the reducer
             this.props.addClass(this.props.uid, newClass);
@@ -86,16 +82,20 @@ export default class ClassInput extends PureComponent {
                     <div className="form-field">
                         <div className="input-header"> Department:</div>
                         <AutoComplete suggestions={this.state.departmentOptions} dropdown={true}
-                                      value={this.state.currentDepartment}
+                                      value={this.props.currentDepartment}
                                       onChange={(e) => {
-                                          this.setState({currentDepartment: e.value});
-                                          this.clearFields(["currentCourseNum", "currentInstructor", "priority"]);
+                                          this.props.setCurrentDepartment(e.value);
+                                          this.props.setCurrentCourseNum(null);
+                                          this.props.setCurrentInstructor(null);
+                                          this.props.setPriority(null);
                                       }}
                                       completeMethod={this.completeDepartmentSuggestions.bind(this)}
                                       onSelect={(e) => {
                                           this.props.getClasses.call(this, e.value);
-                                          if (e.value !== this.state.currentDepartment) {
-                                              this.clearFields(["currentInstructor", "currentCourseNum", "priority"]);
+                                          if (e.value !== this.props.currentDepartment) {
+                                              this.props.setCurrentCourseNum(null);
+                                              this.props.setCurrentInstructor(null);
+                                              this.props.setPriority(null);
                                           }
                                       }}/>
                     </div>
@@ -103,15 +103,17 @@ export default class ClassInput extends PureComponent {
                     <div className="form-field">
                         <div className="input-header"> Course Number:</div>
                         <AutoComplete suggestions={this.state.classOptions}
-                                      value={this.state.currentCourseNum}
-                                      onChange={(e) => this.setState({currentCourseNum: e.value})}
+                                      value={this.props.currentCourseNum}
+                                      onChange={(e) => this.props.setCurrentCourseNum(e.value)}
                                       onSelect={(e) => {
                                           if (e.value !== this.state.currentCourseNum) {
-                                              this.clearFields(["currentInstructor", "priority"]);
+                                              this.props.setCurrentInstructor(null);
+                                              this.props.setPriority(null);
                                           }
                                       }}
                                       completeMethod={this.completeClassSuggestions.bind(this)}
-                                      disabled={this.state.currentDepartment === null || this.state.currentDepartment.length === 0}
+                                      disabled={this.props.currentDepartment === null
+                                      || this.props.currentDepartment.length === 0}
                                       dropdown={true}/>
                     </div>
 
@@ -120,34 +122,32 @@ export default class ClassInput extends PureComponent {
                     <div className="preference-container">
                         <div className="form-field">
                             <div className="input-header"> Instructor Preference:</div>
-                            <AutoComplete suggestions={this.props.instructorsPerClass[this.state.currentCourseNum]}
-                                          value={this.state.currentInstructor}
-                                          onChange={(e) => this.setState({currentInstructor: e.value})}
+                            <AutoComplete suggestions={this.props.instructorsPerClass[this.props.currentCourseNum]}
+                                          value={this.props.currentInstructor}
+                                          onChange={(e) => this.props.setCurrentInstructor(e.value)}
                                           completeMethod={this.completeInstructorSuggestions.bind(this)}
-                                          disabled={this.state.currentCourseNum === null}
+                                          disabled={this.props.currentCourseNum === null}
                                           dropdown={true}/>
                         </div>
                         <div className="form-field ignore-class-types">
                             <div className="input-header"> Ignore Class Types:</div>
-                            <ListBox value={this.state.selectedConflicts}
-                                     options={this.props.classTypesPerClass[this.state.currentCourseNum]}
-                                     onChange={(e) => {
-                                         this.setState({selectedConflicts: e.value});
-                                     }}
+                            <ListBox value={this.props.conflicts}
+                                     options={this.props.classTypesPerClass[this.props.currentCourseNum]}
+                                     onChange={(e) => this.props.setConflicts(e.value)}
                                      multiple={true}
-                                     disabled={this.state.currentCourseNum === null}/>
+                                     disabled={this.props.currentCourseNum === null}/>
                         </div>
 
                         <div className="form-field">
                             <div className="input-header"> Importance:</div>
-                            <Rating value={this.state.priority}
-                                    onChange={(e) => this.setState({priority: e.value})}
+                            <Rating value={this.props.priority}
+                                    onChange={(e) => this.props.setPriority(e.value)}
                                     stars={3}/>
                         </div>
                     </div>
                     <div className="form-button" onClick={this.handleSubmit.bind(this)}>
                         <Button label="Add Class" style={{padding: ".25em 1em"}}
-                                disabled={this.state.currentCourseNum === null}
+                                disabled={this.props.currentCourseNum === null}
                         />
                     </div>
                 </div>

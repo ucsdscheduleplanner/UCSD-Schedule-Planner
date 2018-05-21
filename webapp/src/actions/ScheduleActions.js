@@ -1,5 +1,5 @@
 
-import {generateSchedule} from "../schedulegeneration/ScheduleGenerator";
+import {generateSchedule} from "../schedulegeneration/ScheduleGeneratorBruteForce";
 
 export  const REQUEST_SCHEDULE = 'REQUEST_SCHEDULE';
 export function requestSchedule() {

@@ -5,18 +5,14 @@
 
 import React, {Component} from 'react';
 import "../css/LeftSidePanel.css";
-import ClassList from "./ClassList";
+import ClassListContainer from "../containers/ClassListContainer";
 
 export class LeftSidePanel extends Component {
-    constructor(props) {
-        super(props);
-    }
-
     render() {
         return (
             <React.Fragment>
                 <div className="left-side-panel">
-                    <ClassList />
+                    <ClassListContainer />
                 </div>
             </React.Fragment>
         )
