@@ -12,7 +12,6 @@ export default class ClassInput extends PureComponent {
         this.state = {
             duplicate: false,
             instructorOptions: [],
-            selectedConflicts: [],
             departmentOptions: [],
             classOptions: [],
         };
@@ -62,8 +61,8 @@ export default class ClassInput extends PureComponent {
             newClass['course_num'] = this.props.currentCourseNum;
             newClass['department'] = this.props.currentDepartment;
             newClass['priority'] = this.props.priority;
-            newClass['conflicts'] = this.props.selectedConflicts;
-            newClass['currentInstructor'] = this.props.currentInstructor;
+            newClass['conflicts'] = this.props.conflicts;
+            newClass['instructor'] = this.props.currentInstructor;
 
             // using the addClass method from the reducer
             this.props.addClass(this.props.uid, newClass);
@@ -75,7 +74,56 @@ export default class ClassInput extends PureComponent {
         });
     }
 
+    // basically same function as handle submit
+    handleEdit() {
+        if (this.props.currentCourseNum === null || this.props.currentDepartment === null) return;
+        let classTitle = `${this.props.currentDepartment} ${this.props.currentCourseNum}`;
+        // testing whether this is a duplicate class
+        // handle edit means it must have a uid
+        let that = this;
+        let duplicate = Object.values(this.props.selectedClasses).reduce(function (accumulator, previousClass) {
+            return (that.props.selectedClasses[that.props.editUID] !== previousClass) &&
+                (accumulator || classTitle === previousClass['class_title'])
+        }, false);
+
+        if (!duplicate) {
+            // constructing new class to be added to UI
+            let newClass = {};
+            newClass['class_title'] = classTitle;
+            newClass['course_num'] = this.props.currentCourseNum;
+            newClass['department'] = this.props.currentDepartment;
+            newClass['priority'] = this.props.priority;
+            newClass['conflicts'] = this.props.conflicts;
+            newClass['instructor'] = this.props.currentInstructor;
+
+            // using the addClass method from the reducer
+            this.props.editClass(this.props.editUID, newClass);
+            this.props.exitEditMode();
+        }
+        // set duplicate so we can do some UI stuff in case
+        this.setState({
+            duplicate: duplicate
+        });
+    }
+
+
     render() {
+        let editButton = (
+            <div className="form-button" onClick={this.handleEdit.bind(this)}>
+                <Button label="Edit Class" style={{padding: ".25em 1em"}}
+                        disabled={this.props.currentCourseNum === null}
+                />
+            </div>
+        );
+
+        let addButton = (
+            <div className="form-button" onClick={this.handleSubmit.bind(this)}>
+                <Button label="Add Class" style={{padding: ".25em 1em"}}
+                        disabled={this.props.currentCourseNum === null}
+                />
+            </div>
+        );
+
         return (
             <React.Fragment>
                 <div className="content">
@@ -145,11 +193,8 @@ export default class ClassInput extends PureComponent {
                                     stars={3}/>
                         </div>
                     </div>
-                    <div className="form-button" onClick={this.handleSubmit.bind(this)}>
-                        <Button label="Add Class" style={{padding: ".25em 1em"}}
-                                disabled={this.props.currentCourseNum === null}
-                        />
-                    </div>
+
+                    {this.props.editMode ? editButton : addButton}
                 </div>
             </React.Fragment>
         )

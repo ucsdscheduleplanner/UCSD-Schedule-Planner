@@ -134,9 +134,51 @@ export const REMOVE_CLASS = "REMOVE_CLASS";
 export function removeClass(uuid) {
     return {
         type: REMOVE_CLASS,
-        payload: {
-            uuid: uuid
-        },
+        uuid: uuid
+    }
+}
+
+export const SET_EDIT_MODE = "SET_EDIT_MODE";
+
+export function setEditMode(uid, mode) {
+    return {
+        type: SET_EDIT_MODE,
+        editMode: mode,
+        editUID: uid
+    }
+}
+
+export const EDIT_CLASS = "EDIT_CLASS";
+
+export function editClass(uid, editClass) {
+    return {
+        type: EDIT_CLASS,
+        editClass: editClass,
+        editUID: uid
+    }
+}
+
+export function enterEditMode(uid) {
+    return function (dispatch, getState) {
+        const otherClass = getState().ClassSelection[uid];
+
+        dispatch(setPriority(otherClass.priority));
+        dispatch(setConflicts(otherClass.conflicts));
+        dispatch(setCurrentInstructor(otherClass.instructor));
+        dispatch(setCurrentCourseNum(otherClass.course_num));
+        dispatch(setCurrentDepartment(otherClass.department));
+        dispatch(setEditMode(uid, true));
+    }
+}
+
+export function exitEditMode() {
+    return function (dispatch) {
+        dispatch(setPriority(null));
+        dispatch(setConflicts(null));
+        dispatch(setCurrentInstructor(null));
+        dispatch(setCurrentCourseNum(null));
+        dispatch(setCurrentDepartment(null));
+        dispatch(setEditMode(null, false));
     }
 }
 

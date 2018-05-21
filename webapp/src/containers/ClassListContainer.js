@@ -2,14 +2,14 @@ import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import ClassList from "../landing/ClassList";
 import {bindActionCreators} from "redux";
-import {removeClass} from "../actions/ClassInputActions";
+import {enterEditMode, removeClass} from "../actions/ClassInputActions";
 
 class ClassListContainer extends Component {
 
     render() {
         return <ClassList
             removeClass={this.props.removeClass}
-            removeConflict={this.props.removeConflict}
+            enterEditMode={this.props.enterEditMode}
 
             selectedClasses={this.props.selectedClasses}
         />
@@ -25,6 +25,7 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
     return bindActionCreators({
         removeClass: removeClass,
+        enterEditMode: enterEditMode
     }, dispatch);
 }
 

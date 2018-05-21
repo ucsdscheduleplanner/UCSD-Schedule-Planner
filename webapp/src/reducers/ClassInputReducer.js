@@ -1,6 +1,8 @@
 import {
+    EDIT_CLASS,
     RECEIVE_CLASS_PER_DEPARTMENT, RECEIVE_DEPARTMENTS, REQUEST_CLASS_PER_DEPARTMENT,
     REQUEST_DEPARTMENTS, SET_CONFLICTS, SET_CURRENT_COURSE_NUM, SET_CURRENT_DEPARTMENT, SET_CURRENT_INSTRUCTOR,
+    SET_EDIT_MODE,
     SET_PRIORITY
 } from "../actions/ClassInputActions";
 
@@ -16,6 +18,8 @@ export default function ClassInput(state = {
     currentDepartment: null,
     currentCourseNum: null,
     priority: null,
+    editMode: false,
+    editUID: null,
 }, action) {
     switch (action.type) {
         case RECEIVE_DEPARTMENTS:
@@ -57,6 +61,11 @@ export default function ClassInput(state = {
         case SET_CONFLICTS:
             return Object.assign({}, state, {
                 conflicts: action.conflicts
+            });
+        case SET_EDIT_MODE:
+            return Object.assign({}, state, {
+                editMode: action.editMode,
+                editUID: action.editUID
             });
         default:
             return state;

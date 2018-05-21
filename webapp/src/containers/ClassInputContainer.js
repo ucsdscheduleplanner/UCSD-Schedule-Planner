@@ -3,7 +3,7 @@ import {connect} from "react-redux";
 import ClassInput from "../landing/ClassInput";
 import {
     getClasses, getDepartments, setConflicts, setCurrentCourseNum, setCurrentDepartment, setCurrentInstructor,
-    setPriority, addClass
+    setPriority, addClass, exitEditMode, editClass
 } from "../actions/ClassInputActions";
 import {setUID} from "../actions/ScheduleActions";
 import {bindActionCreators} from "redux";
@@ -15,6 +15,11 @@ class ClassInputContainer extends Component {
 
     render() {
         return <ClassInput
+            editMode={this.props.editMode}
+            editClass={this.props.editClass}
+            exitEditMode={this.props.exitEditMode}
+            editUID={this.props.editUID}
+
             addClass={this.props.addClass}
             setUID={this.props.setUID}
             getDepartments={this.props.getDepartments}
@@ -51,6 +56,9 @@ function mapDispatchToProps(dispatch) {
         setCurrentDepartment: setCurrentDepartment,
         setCurrentCourseNum: setCurrentCourseNum,
 
+        exitEditMode: exitEditMode,
+        editClass: editClass,
+
         addClass: addClass,
         setUID: setUID,
         getDepartments: getDepartments,
@@ -65,6 +73,9 @@ function mapStateToProps(state) {
         currentCourseNum: state.ClassInput.currentCourseNum,
         conflicts: state.ClassInput.conflicts,
         priority: state.ClassInput.priority,
+
+        editMode: state.ClassInput.editMode,
+        editUID: state.ClassInput.editUID,
 
         selectedClasses: state.ClassSelection,
         departments: state.ClassInput.departments,
