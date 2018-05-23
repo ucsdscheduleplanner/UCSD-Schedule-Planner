@@ -46,13 +46,16 @@ export function Subclass(data) {
     }
 }
 
-export function Class(name, data) {
-    this.name = name;
+export function Class(data) {
+    this.course_num = data['COURSE_NUM'];
+    this.department = data['DEPARTMENT'];
+    this.instructor = data['INSTRUCTOR'];
+    this.class_title = `${this.department} ${this.course_num}`;
     this.subclasses = {};
     this.timeIntervals = [];
     this.subclassList = [];
 
-    data.forEach((subclass_data) => {
+    data['subclasses'].forEach((subclass_data) => {
         let subclass = new Subclass(subclass_data);
         let subclass_type = subclass.type;
 

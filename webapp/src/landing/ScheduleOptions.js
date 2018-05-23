@@ -10,9 +10,9 @@ import {Button} from "primereact/components/button/Button";
 export default class ScheduleOptions extends PureComponent {
     render() {
         let activeButton;
-        if (this.props.scheduleScreen) {
+        if (this.props.calendarMode) {
             activeButton = (
-                <div className="schedule-options-return-planning" onClick={this.props.returnToPlanning}>
+                <div className="schedule-options-return-planning" onClick={this.props.exitCalendarMode}>
                     <Button label="Return to Planning" style={{padding: "1em"}}/>
                 </div>
             );

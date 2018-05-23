@@ -11,11 +11,13 @@ class ClassDecoder(json.JSONEncoder):
             return ValueError("Not the correct type")
 
         subclass_decoder = SubClassDecoder()
+        class_data = o.data.copy()
         subclass = []
         for i in o.subclasses.values():
             for j in i:
                 subclass.append(subclass_decoder.default(j))
-        return subclass
+        class_data['subclasses'] = subclass
+        return class_data
 
 
 class SubClassDecoder(json.JSONEncoder):

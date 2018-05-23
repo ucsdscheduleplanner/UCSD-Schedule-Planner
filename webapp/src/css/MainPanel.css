@@ -3,7 +3,7 @@
     font-family: 'Lato', 'sans-serif';
     height: 100%;
     width: 100%;
-    color: rgb(24,43, 73);
+    color: rgb(24, 43, 73);
 }
 
 .content {
@@ -18,7 +18,7 @@
 .title {
     /* this is for the border bottom */
     display: inline-block;
-    color: rgb(24,43, 73);
+    color: rgb(24, 43, 73);
     padding-right: 1em;
     border-bottom: thin solid rgb(0, 70, 0);
 
@@ -37,9 +37,16 @@
     margin-left: 2em;
 }
 
-@media only screen and (max-width: 640px) {
+@media only screen and (min-width: 0px) and (max-width: 700px) {
     .title {
         font-size: 1.5em;
+    }
+}
+
+@media only screen and (min-width: 700px) and (max-width: 1000px) {
+    .title {
+        font-size: 2em;
+        padding-right: 0;
     }
 }
 

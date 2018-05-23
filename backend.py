@@ -19,8 +19,17 @@ class_types = []
 
 def get_class_info_in_department(department):
     # Must order this one separately because doing it lexically won't work
-    cursor.execute("SELECT * FROM CLASS_LEGEND WHERE DEPARTMENT = ? GROUP BY COURSE_NUM", (department,))
-    return [dict(row) for row in cursor.fetchall()]
+    ret_dict = {}
+    cursor.execute("SELECT * FROM CLASS_LEGEND WHERE DEPARTMENT = ?", (department,))
+    # use dict here for fast lookup
+    ret_dict["COURSE_NUMS"] = {}
+    rows = cursor.fetchall()
+    for row in rows:
+        row = dict(row)
+        if row["COURSE_NUM"] not in ret_dict["COURSE_NUMS"]:
+            ret_dict["COURSE_NUMS"][row["COURSE_NUM"]] = []
+        ret_dict["COURSE_NUMS"][row["COURSE_NUM"]].append(row)
+    return ret_dict
 
 
 def get_departments():

@@ -28,13 +28,10 @@ function isValid(newClass, intervalTree) {
     return true;
 }
 
-function evaluateSchedule(schedule1, schedule2) {
-    return 1;
-}
-
-function _dfs(classData, currentSchedule, intervalTree, schedules, counter) {
+function _dfs(classData, currentSchedule, intervalTree, schedules, evaluateSchedule, counter) {
     if (currentSchedule.length >= classData.length) {
-        schedules.push(currentSchedule);
+        let score = evaluateSchedule(currentSchedule);
+        schedules.push([score, currentSchedule]);
         return currentSchedule;
     }
 
@@ -43,7 +40,7 @@ function _dfs(classData, currentSchedule, intervalTree, schedules, counter) {
         let currentClass = currentClassGroup[i];
         if (isValid(currentClass, intervalTree)) {
             currentSchedule.push(currentClass);
-            _dfs(classData, currentSchedule, intervalTree, schedules, counter + 1);
+            _dfs(classData, currentSchedule, intervalTree, schedules, evaluateSchedule, counter + 1);
             for (let j = counter; j < currentSchedule.length; j++) {
                 currentSchedule[j].timeIntervals.forEach(timeInterval => intervalTree.remove(timeInterval));
             }
@@ -52,13 +49,16 @@ function _dfs(classData, currentSchedule, intervalTree, schedules, counter) {
     }
 }
 
-function dfs(classData) {
+function dfs(classData, evaluateSchedule) {
     let schedules = [];
-    _dfs(classData, [], new SimpleIntervalTree(), schedules, 0);
-    return schedules[0];
+    _dfs(classData, [], new SimpleIntervalTree(), schedules, evaluateSchedule, 0);
+    schedules = schedules.sort((scheduleArr1, scheduleArr2) => {
+        if(scheduleArr1[0] > scheduleArr2[0]) return -1; else return 1;
+    });
+    return schedules[0][1];
 }
 
-export async function generateSchedule(selectedClasses) {
+export async function generateSchedule(selectedClasses, preferences = []) {
     selectedClasses = Object.values(selectedClasses);
     // making the JSON here for the request
     let selectedClassesJSON = {};
@@ -73,13 +73,21 @@ export async function generateSchedule(selectedClasses) {
     Object.keys(classJSON).forEach((ClassGroupsKey) => {
         // class group is an array of all the different sections that are the same class
         let ClassGroupJSON = classJSON[ClassGroupsKey];
-        // ClassGroupsKey is the name of the class
-        classData[counter++] = ClassGroupJSON.map((ClassGroup) => new Class(ClassGroupsKey, ClassGroup));
+        classData[counter++] = ClassGroupJSON.map((ClassGroup) => new Class(ClassGroup));
     });
     // now we have an array where each index is a Class Group
     // we can start brute force dfs now
 
-    return dfs(classData);
+    let evaluateSchedule = (schedule) => {
+        return preferences.reduce((accumulator, evaluate) => {
+            return accumulator +
+                schedule.reduce((classAccum, Class) => {
+                    return classAccum + evaluate(Class)
+                }, 0);
+        }, 0);
+    };
+
+    return dfs(classData, evaluateSchedule);
 }
 
 

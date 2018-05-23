@@ -2,7 +2,7 @@ import {connect} from 'react-redux';
 import React, {Component} from 'react';
 import ScheduleOptions from "../landing/ScheduleOptions";
 import {bindActionCreators} from "redux";
-import {getSchedule, returnToPlanning} from "../actions/ScheduleActions";
+import {exitCalendarMode, getSchedule, returnToPlanning} from "../actions/ScheduleActions";
 
 class ScheduleOptionsContainer extends Component {
     // using class field syntax to get correct context binding
@@ -13,9 +13,9 @@ class ScheduleOptionsContainer extends Component {
     render() {
         return <ScheduleOptions
             getSchedule={this.getSchedule}
-            returnToPlanning={this.props.returnToPlanning}
+            exitCalendarMode={this.props.exitCalendarMode}
 
-            scheduleScreen={this.props.scheduleScreen}
+            calendarMode={this.props.calendarMode}
             selectedClasses={this.props.selectedClasses}
         />
     }
@@ -24,14 +24,14 @@ class ScheduleOptionsContainer extends Component {
 function mapStateToProps(state) {
     return {
         selectedClasses: state.ClassSelection,
-        scheduleScreen: state.ScheduleGeneration.scheduleScreen
+        calendarMode: state.ScheduleGeneration.calendarMode
     }
 }
 
 function mapDispatchToProps(dispatch) {
     return bindActionCreators({
         getSchedule: getSchedule,
-        returnToPlanning: returnToPlanning,
+        exitCalendarMode: exitCalendarMode,
     }, dispatch);
 }
 

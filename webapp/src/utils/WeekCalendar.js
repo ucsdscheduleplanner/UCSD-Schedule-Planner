@@ -34,7 +34,7 @@ class WeekCalendar extends PureComponent {
                 this.state.events.push({
                    start: startTime,
                    end: endTime,
-                   title: Class.name
+                   title: Class.class_title
                 });
             }
         }

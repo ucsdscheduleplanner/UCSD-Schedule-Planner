@@ -1,11 +1,14 @@
-import {PLAN_SCHEDULE, RECEIVE_SCHEDULE, REQUEST_SCHEDULE, SET_UID} from '../actions/ScheduleActions';
+import {
+    PLAN_SCHEDULE, RECEIVE_SCHEDULE, REQUEST_SCHEDULE, SET_CALENDAR_MODE,
+    SET_UID
+} from '../actions/ScheduleActions';
 
 /**
  Should be able to access this through state.ScheduleGeneration
  **/
 
 export default function ScheduleGeneration(state = {
-    scheduleScreen: false, generating: false, uid: 0,
+    calendarMode: false, generating: false, uid: 0,
     generateSuccess: false, schedule: []
 }, action) {
     switch (action.type) {
@@ -27,10 +30,9 @@ export default function ScheduleGeneration(state = {
                     scheduleScreen: false
                 });
             }
-
-        case PLAN_SCHEDULE:
+        case SET_CALENDAR_MODE:
             return Object.assign({}, state, {
-                scheduleScreen: action.scheduleScreen,
+                calendarMode: action.calendarMode
             });
         case SET_UID:
             return Object.assign({}, state, {

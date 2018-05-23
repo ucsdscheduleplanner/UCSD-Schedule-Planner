@@ -152,11 +152,19 @@ export default class ClassInput extends PureComponent {
                         <div className="input-header"> Course Number:</div>
                         <AutoComplete suggestions={this.state.classOptions}
                                       value={this.props.currentCourseNum}
-                                      onChange={(e) => this.props.setCurrentCourseNum(e.value)}
+                                      onChange={(e) => {
+                                          // must clear out the fields
+                                          this.props.setCurrentCourseNum(e.value);
+                                          this.props.setCurrentInstructor(null);
+                                          this.props.setPriority(null);
+                                          this.props.setConflicts(null);
+                                      }}
                                       onSelect={(e) => {
+                                          // only clear if we select something else
                                           if (e.value !== this.state.currentCourseNum) {
                                               this.props.setCurrentInstructor(null);
                                               this.props.setPriority(null);
+                                              this.props.setConflicts(null);
                                           }
                                       }}
                                       completeMethod={this.completeClassSuggestions.bind(this)}

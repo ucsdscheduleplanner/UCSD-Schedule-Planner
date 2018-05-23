@@ -232,11 +232,37 @@ function fetchClasses(department) {
         })
             .then(res => res.json())
             .then(res => {
+                res = res["COURSE_NUMS"];
                 // putting the response inside unsorted list
-                let unsorted = res.map((dict) => dict["COURSE_NUM"]);
+                let unsorted = new Set();
+                let classTypesPerClass = {};
+                let instructorsPerClass = {};
+
+                Object.values(res).map((dict) => {
+                    dict.map((Class) => {
+                        unsorted.add(Class["COURSE_NUM"]);
+
+                        // handling instructors
+                        if (instructorsPerClass[Class["COURSE_NUM"]] === null || instructorsPerClass[Class["COURSE_NUM"]] === undefined) {
+                            instructorsPerClass[Class["COURSE_NUM"]] = new Set();
+                        }
+                        let instructors = Class["INSTRUCTOR"].split("\n");
+                        instructorsPerClass[Class["COURSE_NUM"]].add(...instructors);
+                        instructorsPerClass[Class["COURSE_NUM"]] = new Set([...instructorsPerClass[Class["COURSE_NUM"]]]
+                            .filter((instructor) => instructor.length > 0)
+                            .map((instructor) => instructor.trim()));
+
+                        // should all be the same so can filter
+                        classTypesPerClass[Class["COURSE_NUM"]] = Object.keys(Class).filter((property) => {
+                            return property.endsWith("KEY") && Class[property] !== null;
+                        }).map((classTypeStr) => {
+                            return {label: codeToClassType[classTypeStr], value: codeToClassType[classTypeStr]};
+                        });
+                    });
+                });
 
                 // sorting based on comparator for the course nums
-                let sortedClasses = unsorted.sort((element1, element2) => {
+                let sortedClasses = [...unsorted].sort((element1, element2) => {
                     // match numerically
                     let num1 = parseInt(element1.match(/\d+/)[0], 10);
                     let num2 = parseInt(element2.match(/\d+/)[0], 10);
@@ -249,20 +275,9 @@ function fetchClasses(department) {
                     return 0;
                 });
 
-                let classTypesPerClass = {};
-                let instructorsPerClass = {};
-                for (let dict of res) {
-                    classTypesPerClass[dict["COURSE_NUM"]] = Object.keys(dict).filter((property) => {
-                        return property.endsWith("KEY") && dict[property] !== null;
-                    }).map((classTypeStr) => {
-                        return {label: codeToClassType[classTypeStr], value: codeToClassType[classTypeStr]};
-                    });
-
-                    instructorsPerClass[dict["COURSE_NUM"]] = dict["INSTRUCTOR"].split("\n");
-                    instructorsPerClass[dict["COURSE_NUM"]] = instructorsPerClass[dict["COURSE_NUM"]]
-                        .filter((instructor) => instructor.length > 0)
-                        .map((instructor) => instructor.trim());
-                }
+                Object.keys(instructorsPerClass).map((key) => {
+                    instructorsPerClass[key] = [...instructorsPerClass[key]];
+                });
 
                 resolve({
                     classes: sortedClasses,

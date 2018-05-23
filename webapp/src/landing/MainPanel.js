@@ -19,7 +19,7 @@ class MainPanel extends Component {
     }
 
     render() {
-        if (this.props.scheduleScreen) {
+        if (this.props.calendarMode) {
             return (
                 <div className="main-panel">
                     <div className="class-input">
@@ -47,7 +47,7 @@ class MainPanel extends Component {
 function mapStateToProps(state) {
     return {
         generating: state.ScheduleGeneration.generating,
-        scheduleScreen: state.ScheduleGeneration.scheduleScreen,
+        calendarMode: state.ScheduleGeneration.calendarMode,
         schedule: state.ScheduleGeneration.schedule
     };
 }
