@@ -1,5 +1,5 @@
 import {generateSchedule} from "../schedulegeneration/ScheduleGeneratorBruteForce";
-import {InstructorPreference, PriorityPreference} from "../utils/Preferences";
+import {InstructorPreference, PriorityModifier} from "../utils/Preferences";
 import {classTypeToCode} from "./ClassInputActions";
 
 export const REQUEST_SCHEDULE = 'REQUEST_SCHEDULE';
@@ -59,11 +59,20 @@ export function getSchedule(selectedClasses) {
         let preferences = [];
         let conflicts = {};
         Object.values(selectedClasses).forEach((Class) => {
-            if (Class.priority !== null) preferences.push(new PriorityPreference(Class, Class.priority));
-            if (Class.instructor !== null) preferences.push(new InstructorPreference(Class, Class.instructor));
+            let priorityModifier = new PriorityModifier(Class);
+            if (Class.priority !== null) {
+                priorityModifier.priority = Class.priority;
+            }
 
+            // add preferences to the priority modifier
+            if (Class.instructor !== null) {
+                priorityModifier.preferences.push(new InstructorPreference(Class, Class.instructor));
+            }
+            preferences.push(priorityModifier);
+
+            // passing conflicts
             conflicts[Class.class_title] = [];
-            if(Class.conflicts) {
+            if (Class.conflicts) {
                 conflicts[Class.class_title] = Class.conflicts.map((conflict) => classTypeToCode[conflict])
             }
         });

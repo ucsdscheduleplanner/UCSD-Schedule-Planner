@@ -1,5 +1,5 @@
 import {combineReducers} from 'redux';
-import ClassSelection from './ClassSelection';
+import ClassSelection from './ClassSelectionReducer';
 import ScheduleGeneration from './ScheduleGenerationReducer';
 import ClassInput from './ClassInputReducer';
 

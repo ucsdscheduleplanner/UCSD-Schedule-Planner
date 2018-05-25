@@ -154,10 +154,10 @@ export function addClass(uuid, newClass) {
 
 export const REMOVE_CLASS = "REMOVE_CLASS";
 
-export function removeClass(uuid) {
+export function removeClass(uid) {
     return {
         type: REMOVE_CLASS,
-        uuid: uuid
+        uid: uid
     }
 }
 

@@ -3,7 +3,7 @@ import {connect} from "react-redux";
 import ClassInput from "../landing/ClassInput";
 import {
     getClasses, getDepartments, setConflicts, setCurrentCourseNum, setCurrentDepartment, setCurrentInstructor,
-    setPriority, addClass, exitEditMode, editClass
+    setPriority, addClass, exitEditMode, editClass, removeClass
 } from "../actions/ClassInputActions";
 import {setUID} from "../actions/ScheduleGenerationActions";
 import {bindActionCreators} from "redux";
@@ -19,6 +19,8 @@ class ClassInputContainer extends Component {
             editClass={this.props.editClass}
             exitEditMode={this.props.exitEditMode}
             editUID={this.props.editUID}
+
+            removeClass={this.props.removeClass}
 
             addClass={this.props.addClass}
             setUID={this.props.setUID}
@@ -58,6 +60,7 @@ function mapDispatchToProps(dispatch) {
 
         exitEditMode: exitEditMode,
         editClass: editClass,
+        removeClass: removeClass,
 
         addClass: addClass,
         setUID: setUID,
