@@ -5,7 +5,7 @@ import {
     getClasses, getDepartments, setConflicts, setCurrentCourseNum, setCurrentDepartment, setCurrentInstructor,
     setPriority, addClass, exitEditMode, editClass
 } from "../actions/ClassInputActions";
-import {setUID} from "../actions/ScheduleActions";
+import {setUID} from "../actions/ScheduleGenerationActions";
 import {bindActionCreators} from "redux";
 
 class ClassInputContainer extends Component {

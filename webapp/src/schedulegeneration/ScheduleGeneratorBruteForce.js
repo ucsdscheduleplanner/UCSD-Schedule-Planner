@@ -14,9 +14,14 @@ async function requestData(selectedClasses) {
     return await response.json();
 }
 
-function isValid(newClass, intervalTree) {
+function isValid(newClass, conflicts, intervalTree) {
     let addedIntervals = [];
-    for (let timeInterval of newClass.timeIntervals) {
+    for (let subclass of newClass.subclassList) {
+        let timeInterval = subclass.timeInterval;
+        // if we have a conflict, that means we don't care so don't add to the tree
+        if(conflicts[newClass.class_title] && conflicts[newClass.class_title].includes(subclass.type)) {
+            continue;
+        }
         addedIntervals.push(timeInterval);
         if (!intervalTree.add(timeInterval)) {
             // removing intervals we have added
@@ -28,7 +33,7 @@ function isValid(newClass, intervalTree) {
     return true;
 }
 
-function _dfs(classData, currentSchedule, intervalTree, schedules, evaluateSchedule, counter) {
+function _dfs(classData, currentSchedule, intervalTree, schedules, conflicts, evaluateSchedule, counter) {
     if (currentSchedule.length >= classData.length) {
         let score = evaluateSchedule(currentSchedule);
         schedules.push([score, currentSchedule]);
@@ -38,9 +43,9 @@ function _dfs(classData, currentSchedule, intervalTree, schedules, evaluateSched
     let currentClassGroup = classData[counter];
     for (let i = 0; i < currentClassGroup.length; i++) {
         let currentClass = currentClassGroup[i];
-        if (isValid(currentClass, intervalTree)) {
+        if (isValid(currentClass, conflicts, intervalTree)) {
             currentSchedule.push(currentClass);
-            _dfs(classData, currentSchedule, intervalTree, schedules, evaluateSchedule, counter + 1);
+            _dfs(classData, currentSchedule, intervalTree, schedules, conflicts, evaluateSchedule, counter + 1);
             for (let j = counter; j < currentSchedule.length; j++) {
                 currentSchedule[j].timeIntervals.forEach(timeInterval => intervalTree.remove(timeInterval));
             }
@@ -49,16 +54,20 @@ function _dfs(classData, currentSchedule, intervalTree, schedules, evaluateSched
     }
 }
 
-function dfs(classData, evaluateSchedule) {
+function dfs(classData, conflicts, evaluateSchedule) {
     let schedules = [];
-    _dfs(classData, [], new SimpleIntervalTree(), schedules, evaluateSchedule, 0);
+    _dfs(classData, [], new SimpleIntervalTree(), schedules, conflicts, evaluateSchedule, 0);
     schedules = schedules.sort((scheduleArr1, scheduleArr2) => {
-        if(scheduleArr1[0] > scheduleArr2[0]) return -1; else return 1;
+        if (scheduleArr1[0] > scheduleArr2[0]) return -1; else return 1;
     });
-    return schedules[0][1];
+    if (schedules.length > 0) {
+        return schedules[0][1];
+    } else {
+        return null;
+    }
 }
 
-export async function generateSchedule(selectedClasses, preferences = []) {
+export async function generateSchedule(selectedClasses, conflicts = [], preferences = []) {
     selectedClasses = Object.values(selectedClasses);
     // making the JSON here for the request
     let selectedClassesJSON = {};
@@ -87,7 +96,7 @@ export async function generateSchedule(selectedClasses, preferences = []) {
         }, 0);
     };
 
-    return dfs(classData, evaluateSchedule);
+    return dfs(classData, conflicts, evaluateSchedule);
 }
 
 

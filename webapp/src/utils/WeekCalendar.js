@@ -15,7 +15,8 @@ class WeekCalendar extends PureComponent {
         };
 
         for(let Class of props.schedule) {
-            for(let timeInterval of Class.timeIntervals) {
+            for(let subclass of Class.subclassList) {
+                let timeInterval = subclass.timeInterval;
                 let startTime = new Date();
                 let endTime = new Date();
 
@@ -34,10 +35,14 @@ class WeekCalendar extends PureComponent {
                 this.state.events.push({
                    start: startTime,
                    end: endTime,
-                   title: Class.class_title
+                   title: `${Class.class_title} ${subclass.type}`
                 });
             }
         }
+    }
+
+    replaceCodeWithName(str) {
+        //return str.split(" ").map((element) => codeToClassType[element])
     }
 
     render() {

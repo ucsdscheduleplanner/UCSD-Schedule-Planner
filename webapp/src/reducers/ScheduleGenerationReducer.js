@@ -1,7 +1,7 @@
 import {
-    PLAN_SCHEDULE, RECEIVE_SCHEDULE, REQUEST_SCHEDULE, SET_CALENDAR_MODE,
+    RECEIVE_SCHEDULE, REQUEST_SCHEDULE, SET_CALENDAR_MODE,
     SET_UID
-} from '../actions/ScheduleActions';
+} from '../actions/ScheduleGenerationActions';
 
 /**
  Should be able to access this through state.ScheduleGeneration

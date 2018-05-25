@@ -2,7 +2,7 @@ import {connect} from 'react-redux';
 import React, {Component} from 'react';
 import ScheduleOptions from "../landing/ScheduleOptions";
 import {bindActionCreators} from "redux";
-import {exitCalendarMode, getSchedule, returnToPlanning} from "../actions/ScheduleActions";
+import {exitCalendarMode, getSchedule} from "../actions/ScheduleGenerationActions";
 
 class ScheduleOptionsContainer extends Component {
     // using class field syntax to get correct context binding

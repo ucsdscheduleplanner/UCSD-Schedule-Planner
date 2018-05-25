@@ -66,6 +66,12 @@ export default class ClassInput extends PureComponent {
 
             // using the addClass method from the reducer
             this.props.addClass(this.props.uid, newClass);
+
+            // do cleanup
+            this.props.setCurrentInstructor(null);
+            this.props.setCurrentCourseNum(null);
+            this.props.setPriority(null);
+            this.props.setConflicts(null);
         }
         this.props.setUID(this.props.uid + 1);
         // set duplicate so we can do some UI stuff in case

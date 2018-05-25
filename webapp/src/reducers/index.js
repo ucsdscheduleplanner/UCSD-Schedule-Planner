@@ -1,6 +1,6 @@
 import {combineReducers} from 'redux';
 import ClassSelection from './ClassSelection';
-import ScheduleGeneration from './ScheduleGeneration';
+import ScheduleGeneration from './ScheduleGenerationReducer';
 import ClassInput from './ClassInputReducer';
 
 const reducers = combineReducers({

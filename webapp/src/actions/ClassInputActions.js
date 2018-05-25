@@ -24,6 +24,29 @@ const codeToClassType = {
     "TU_KEY": "Tutorial",
 };
 
+export const classTypeToCode = {
+    "Activity": "AC",
+    "Clinical Clerkship": "CL",
+    "Conference": "CO",
+    "Discussion": "DI",
+    "Final Exam": "DI",
+    "Film": "FM",
+    "Fieldwork": "FW",
+    "Independent Study": "IN",
+    "Internship": "IT",
+    "Lab": "LA",
+    "Lecture": "LE",
+    "Midterm": "MI",
+    "Make-up Session": "MU",
+    "Other Additional Meeting": "OT",
+    "Problem Session": "PB",
+    "Practicum": "PR",
+    "Review Session": "RE",
+    "Seminar": "SE",
+    "Studio": "ST",
+    "Tutorial": "TU"
+};
+
 export const SET_CURRENT_INSTRUCTOR = "SET_CURRENT_INSTRUCTOR";
 
 export function setCurrentInstructor(instructor) {
@@ -246,11 +269,15 @@ function fetchClasses(department) {
                         if (instructorsPerClass[Class["COURSE_NUM"]] === null || instructorsPerClass[Class["COURSE_NUM"]] === undefined) {
                             instructorsPerClass[Class["COURSE_NUM"]] = new Set();
                         }
-                        let instructors = Class["INSTRUCTOR"].split("\n");
-                        instructorsPerClass[Class["COURSE_NUM"]].add(...instructors);
-                        instructorsPerClass[Class["COURSE_NUM"]] = new Set([...instructorsPerClass[Class["COURSE_NUM"]]]
+
+                        // getting instructors split by white space
+                        let instructors = [...Class["INSTRUCTOR"].split("\n")];
+                        // filter them first before adding
+                        instructors = instructors
                             .filter((instructor) => instructor.length > 0)
-                            .map((instructor) => instructor.trim()));
+                            .map((instructor) => instructor.trim());
+                        // adding to set
+                        instructorsPerClass[Class["COURSE_NUM"]].add(...instructors);
 
                         // should all be the same so can filter
                         classTypesPerClass[Class["COURSE_NUM"]] = Object.keys(Class).filter((property) => {

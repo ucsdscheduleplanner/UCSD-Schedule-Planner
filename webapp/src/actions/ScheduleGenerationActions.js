@@ -1,5 +1,6 @@
 import {generateSchedule} from "../schedulegeneration/ScheduleGeneratorBruteForce";
 import {InstructorPreference, PriorityPreference} from "../utils/Preferences";
+import {classTypeToCode} from "./ClassInputActions";
 
 export const REQUEST_SCHEDULE = 'REQUEST_SCHEDULE';
 
@@ -51,17 +52,23 @@ export function exitCalendarMode() {
 }
 
 
-export function getSchedule(classList) {
+export function getSchedule(selectedClasses) {
     return function (dispatch) {
         dispatch(requestSchedule);
 
         let preferences = [];
-        Object.values(classList).forEach((Class) => {
+        let conflicts = {};
+        Object.values(selectedClasses).forEach((Class) => {
             if (Class.priority !== null) preferences.push(new PriorityPreference(Class, Class.priority));
             if (Class.instructor !== null) preferences.push(new InstructorPreference(Class, Class.instructor));
+
+            conflicts[Class.class_title] = [];
+            if(Class.conflicts) {
+                conflicts[Class.class_title] = Class.conflicts.map((conflict) => classTypeToCode[conflict])
+            }
         });
 
-        return generateSchedule(classList, preferences)
+        return generateSchedule(selectedClasses, conflicts, preferences)
             .then((schedule) => {
                 dispatch(receiveSchedule(schedule));
                 dispatch(enterCalendarMode())
