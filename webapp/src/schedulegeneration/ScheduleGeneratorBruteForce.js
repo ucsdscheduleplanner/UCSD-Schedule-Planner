@@ -88,10 +88,10 @@ export async function generateSchedule(selectedClasses, conflicts = [], preferen
     // we can start brute force dfs now
 
     let evaluateSchedule = (schedule) => {
-        return preferences.reduce((accumulator, evaluate) => {
+        return preferences.reduce((accumulator, evaluator) => {
             return accumulator +
                 schedule.reduce((classAccum, Class) => {
-                    return classAccum + evaluate(Class)
+                    return classAccum + evaluator.evaluate(Class)
                 }, 0);
         }, 0);
     };

@@ -5,7 +5,7 @@ So can access this reducer's state by doing state.ClassSelection
  */
 
 // not including uuid in here in order to keep state shallow
-import {EDIT_CLASS} from "../actions/ClassInputActions";
+import {EDIT_CLASS, REMOVE_CLASS} from "../actions/ClassInputActions";
 
 export default function ClassSelection(state={}, action) {
     let copy = null;
@@ -19,10 +19,10 @@ export default function ClassSelection(state={}, action) {
             copy = Object.assign({}, state);
             copy[action.editUID] = action.editClass;
             return copy;
-        case "REMOVE_CLASS":
-            uuid = parseInt(action.payload.uuid, 0);
+        case REMOVE_CLASS:
+            let uid = parseInt(action.uid, 10);
             copy = Object.assign({}, state);
-            delete copy[uuid];
+            delete copy[uid];
             return copy;
         case "REMOVE_CONFLICT":
             uuid = parseInt(action.payload.uuid, 0);

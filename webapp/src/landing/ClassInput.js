@@ -112,12 +112,27 @@ export default class ClassInput extends PureComponent {
         });
     }
 
+    handleRemove() {
+        this.props.removeClass(this.props.editUID);
+        this.props.exitEditMode();
+    }
 
     render() {
         let editButton = (
-            <div className="form-button" onClick={this.handleEdit.bind(this)}>
+            <div className="form-button">
                 <Button label="Edit Class" style={{padding: ".25em 1em"}}
                         disabled={this.props.currentCourseNum === null}
+                        onClick={this.handleEdit.bind(this)}
+                />
+
+                <Button label="Back to input" className="ui-button-info" style={{padding: ".25em 1em"}}
+                        disabled={this.props.currentCourseNum === null}
+                        onClick={this.props.exitEditMode}
+                />
+
+                <Button label="Delete Class" className="ui-button-danger" style={{padding: ".25em 1em"}}
+                        disabled={this.props.currentCourseNum === null}
+                        onClick={this.handleRemove.bind(this)}
                 />
             </div>
         );
