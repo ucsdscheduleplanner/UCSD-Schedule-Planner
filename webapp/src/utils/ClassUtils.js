@@ -1,5 +1,4 @@
 import moment from 'moment';
-import momenttz from 'moment-timezone';
 import TimeHeuristic from '../heuristics/TimeHeuristic.js';
 
 const dayToNum = {
@@ -11,8 +10,6 @@ const dayToNum = {
     "Sa": 6,
     "Su": 7
 };
-
-momenttz().tz("America/Los_Angeles").format();
 
 const date_string = "ddd, DD MMM YYYY HH:mm:ss";
 
