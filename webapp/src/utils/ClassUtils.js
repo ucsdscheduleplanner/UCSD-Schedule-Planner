@@ -38,7 +38,7 @@ export function Subclass(data) {
         return TimeHeuristic.prototype.overlaps(this.timeInterval, other.timeInterval);
     };
 
-    this.toString = function() {
+    this.toString = function () {
         return this.courseNum + " " + this.type;
     }
 }
@@ -55,12 +55,14 @@ export function Class(data) {
     data['subclasses'].forEach((subclass_data) => {
         let subclass = new Subclass(subclass_data);
         let subclass_type = subclass.type;
-
-        this.subclassList.push(subclass);
-        if (this.subclasses[subclass_type] === undefined) {
-            this.subclasses[subclass_type] = [];
+        // handle case for final
+        if (subclass_type !== 'FI') {
+            this.subclassList.push(subclass);
+            if (this.subclasses[subclass_type] === undefined) {
+                this.subclasses[subclass_type] = [];
+            }
+            this.subclasses[subclass_type].push(subclass);
         }
-        this.subclasses[subclass_type].push(subclass);
     });
 
     Object.entries(this.subclasses).forEach(function ([key, value]) {
@@ -70,19 +72,19 @@ export function Class(data) {
     }, this);
 
     this.overlaps = function (other) {
-        for(let subclass of this.subclassList) {
-            for(let otherSubclass of other.subclassList) {
-                if(this.conflicts.includes(subclass.type)
-                || other.conflicts.includes(otherSubclass.type)) continue;
+        for (let subclass of this.subclassList) {
+            for (let otherSubclass of other.subclassList) {
+                if (this.conflicts.includes(subclass.type)
+                    || other.conflicts.includes(otherSubclass.type)) continue;
 
                 //TODO keep functions out of subclass and put them in an array or PQ
-                if(subclass.overlaps(otherSubclass)) return true;
+                if (subclass.overlaps(otherSubclass)) return true;
             }
         }
         return false;
     };
 
-    this.toString = function() {
+    this.toString = function () {
         return this.name;
     }
 }

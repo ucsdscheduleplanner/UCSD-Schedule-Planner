@@ -54,3 +54,6 @@ class DepartmentScraper:
         self.database.commit()
         self.database.close()
         self.browser.close()
+
+dp = DepartmentScraper()
+dp.scrape()
