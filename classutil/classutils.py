@@ -11,7 +11,7 @@ class Class:
     def __init__(self, cursor, ID):
         # Initialize class by looking at its data
         self.cursor = cursor
-        cursor.execute("SELECT * FROM DATA WHERE ROWID = ?", (ID,))
+        cursor.execute("SELECT * FROM CLASS_LEGEND WHERE ROWID = ?", (ID,))
 
         # Setting the data dict to the database info
         self.data = dict(cursor.fetchone())

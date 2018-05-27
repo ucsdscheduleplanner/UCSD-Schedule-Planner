@@ -57,7 +57,7 @@ def generate_class_versions(department, course_num):
     :param department: the department
     :return: returns all the classes with the same ID in a list
     """
-    cursor.execute("SELECT ROWID FROM DATA WHERE DEPARTMENT = ? AND COURSE_NUM = ?", (department, course_num))
+    cursor.execute("SELECT ROWID FROM CLASS_LEGEND WHERE DEPARTMENT = ? AND COURSE_NUM = ?", (department, course_num))
     # The different sections of the given class
     class_versions = []
 

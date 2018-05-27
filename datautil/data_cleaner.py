@@ -8,6 +8,29 @@ Convenience class for holding the keys to the CLASSES table representing
 the subclasses in this specific class.
 """
 
+subclassDBs = [
+    "AC_KEY",
+    "CL_KEY",
+    "CO_KEY",
+    "DI_KEY",
+    "FI_KEY",
+    "FM_KEY",
+    "FW_KEY",
+    "IN_KEY",
+    "IT_KEY",
+    "LA_KEY",
+    "LE_KEY",
+    "MI_KEY",
+    "MU_KEY",
+    "OT_KEY",
+    "PB_KEY",
+    "PR_KEY",
+    "RE_KEY",
+    "SE_KEY",
+    "ST_KEY",
+    "TU_KEY",
+]
+
 
 class ClassHolder:
     def __init__(self):
@@ -154,13 +177,15 @@ class Cleaner:
 
     def setup_database(self):
         self.cursor.execute('DROP TABLE IF EXISTS DATA')
+        for subclass_type in subclassDBs:
+            self.cursor.execute("DROP TABLE IF EXISTS {}".format(subclass_type))
 
     def create_subclass_databases(self):
         course_types = []
         self.cursor.execute("SELECT DEPARTMENT, ID, COURSE_NUM, COURSE_ID, TYPE, INSTRUCTOR FROM CLASSES")
         courses = self.cursor.fetchall()
         for course in courses:
-            viewing_dict = dict(course)
+            course = dict(course)
             instructor = str(course['INSTRUCTOR'])
             key = course['ID']
             course_type = str(course['TYPE'])
@@ -177,7 +202,8 @@ class Cleaner:
             if not course_type.isupper() or len(course_type) == 0:
                 continue
 
-            #self.cursor.execute("DROP TABLE IF EXISTS {}_SUBCLASS".format(course_type))
+            # UNCOMMENT THIS LINE IF YOU WANT TO RECREATE THE SUBCLASS DATABASES
+            # self.cursor.execute("DROP TABLE IF EXISTS {}_SUBCLASS".format(course_type))
             self.cursor.execute("CREATE TABLE IF NOT EXISTS {}_SUBCLASS"
                                 "(DEPARTMENT TEXT, COURSE_NUM TEXT, COURSE_ID TEXT, {}_KEY INTEGER, INSTRUCTOR TEXT, UNIQUE({}_KEY))"
                                 .format(course['TYPE'], course['TYPE'], course['TYPE']))
@@ -191,7 +217,7 @@ class Cleaner:
         self.cursor.execute("DROP TABLE IF EXISTS CLASS_LEGEND")
 
         self.cursor.execute(
-            "CREATE TABLE CLASS_LEGEND (DEPARTMENT TEXT, COURSE_NUM TEXT, COURSE_ID TEXT, {}, INSTRUCTOR TEXT)"
+            "CREATE TABLE CLASS_LEGEND (DEPARTMENT TEXT, COURSE_NUM TEXT, COURSE_ID TEXT,  INSTRUCTOR TEXT, {})"
                 .format(course_keys, course_keys))
 
         self.cursor.execute("CREATE TABLE DATA (DEPARTMENT TEXT, COURSE_NUM TEXT, COURSE_ID TEXT, {}, INSTRUCTOR TEXT)"
@@ -200,75 +226,125 @@ class Cleaner:
         print(course_types)
         self.cursor.execute("CREATE TEMP TABLE DEL (ID)")
 
-        # Each cl is a subclass
-        for t in course_types:
-            self.cursor.execute(
-                "SELECT * FROM {}".format(t + '_SUBCLASS'))
-            cl_list = self.cursor.fetchall()
-            for cl in cl_list:
-                cl = dict(cl)
-                self.cursor.execute(
-                    "CREATE TEMP TABLE TAB (DEPARTMENT TEXT, COURSE_NUM TEXT, COURSE_ID TEXT, {}, INSTRUCTOR TEXT "
-                    ")".format(course_keys, course_keys))
-
-                if cl['COURSE_ID'] != 'None' and cl['COURSE_ID'] is not None:
-                    self.cursor.execute("SELECT EXISTS(SELECT * FROM CLASS_LEGEND WHERE COURSE_ID = ? "
-                                        "LIMIT 1)", (cl['COURSE_ID'],))
-                    num_found = self.cursor.fetchone()[0]
-                    if num_found == 0:
-                        self.cursor.execute("INSERT INTO TAB (DEPARTMENT, COURSE_NUM, COURSE_ID, {}, INSTRUCTOR)"
-                                            "VALUES(?, ?, ?, ?, ?)".format(t + '_KEY'),
-                                            (cl['DEPARTMENT'], cl['COURSE_NUM'], cl['COURSE_ID'], cl[t + '_KEY'],
-                                             cl['INSTRUCTOR']))
-                    else:
-                        self.cursor.execute("UPDATE CLASS_LEGEND SET {} = ? WHERE COURSE_ID = ?"
-                                            .format(t + '_KEY'),
-                                            (cl[t + '_KEY'], cl['COURSE_ID']))
-
-                self.cursor.execute("INSERT INTO CLASS_LEGEND SELECT * FROM TAB")
-                self.cursor.execute("DROP TABLE IF EXISTS TAB")
-
+        self.cursor.execute("DROP TABLE IF EXISTS TEMP_TAB")
         self.cursor.execute(
-            "CREATE TEMP TABLE TAB (DEPARTMENT TEXT, COURSE_NUM TEXT, COURSE_ID TEXT, {}, INSTRUCTOR TEXT "
-            ")".format(course_keys, course_keys))
+            "CREATE TABLE TEMP_TAB (DEPARTMENT TEXT, COURSE_NUM TEXT, COURSE_ID TEXT, INSTRUCTOR TEXT, IN_KEY TEXT)")
 
-        for t in course_types:
-            self.cursor.execute(
-                "SELECT * FROM {}".format(t + '_SUBCLASS'))
-            cl_list = self.cursor.fetchall()
-            for cl in cl_list:
-                # if cl['COURSE_NUM'] == 'CSE 11' and t == 'LA':
-                #     print('hi')
-                #     self.database.commit()
-                # cl = dict(cl)
-                # if cl['COURSE_NUM'] == 'CSE 11':
-                #     print('hi')
+        self.cursor.execute("DROP TABLE IF EXISTS EVEN_MORE_TEMP_TAB")
+        self.cursor.execute(
+            "CREATE TABLE EVEN_MORE_TEMP_TAB (DEPARTMENT TEXT, COURSE_NUM TEXT, COURSE_ID TEXT, INSTRUCTOR TEXT, IN_KEY TEXT)")
 
-                if cl['COURSE_ID'] == "None" or cl['COURSE_ID'] is None:
-                    self.cursor.execute("INSERT INTO TAB SELECT * FROM CLASS_LEGEND WHERE "
-                                        "COURSE_NUM = ? AND INSTRUCTOR = ? AND {} ISNULL ".format(t + '_KEY'),
-                                        (cl['COURSE_NUM'], cl['INSTRUCTOR']))
+        self.cursor.execute("INSERT INTO TEMP_TAB(DEPARTMENT, COURSE_NUM, COURSE_ID, INSTRUCTOR, IN_KEY) SELECT I.DEPARTMENT, I.COURSE_NUM, "
+                            "I.COURSE_ID, I.INSTRUCTOR, I.IN_KEY FROM IN_SUBCLASS AS I ")
 
-                    self.cursor.execute("INSERT INTO DEL SELECT ROWID FROM CLASS_LEGEND WHERE "
-                                        "COURSE_NUM = ? AND INSTRUCTOR = ? AND {} ISNULL ".format(t + '_KEY'),
-                                        (cl['COURSE_NUM'], cl['INSTRUCTOR']))
+        # Each cl is a subclass
+        for i in range(1, len(course_types)):
+            self.database.commit()
+            t = course_types[i]
+            subclass_table = t + '_SUBCLASS'
+            subclass_type = t + '_KEY'
+            # self.cursor.execute(
 
-                    self.cursor.execute("UPDATE TAB SET {} = ?".format(t + '_KEY'), (cl[t + '_KEY'],))
+            self.cursor.execute("".format(subclass_type))
+            sqlstr = '''
+                    DELETE FROM EVEN_MORE_TEMP_TAB;
+                    ALTER TABLE EVEN_MORE_TEMP_TAB ADD COLUMN {} CHAR(20);
+                    INSERT INTO EVEN_MORE_TEMP_TAB 
+                    
+                    SELECT TT.*, T.{} FROM TEMP_TAB AS TT LEFT JOIN {} AS T ON 
+                     TT.DEPARTMENT=T.DEPARTMENT AND TT.COURSE_NUM=T.COURSE_NUM;
+                     
+                    ALTER TABLE TEMP_TAB ADD COLUMN {} CHAR(20);
+                     '''.format(
+                subclass_type,
+                subclass_type,
+                subclass_table,
+                subclass_type,
+                subclass_type)
 
-                self.cursor.execute("INSERT INTO CLASS_LEGEND SELECT * FROM TAB")
-                self.cursor.execute("DELETE FROM TAB")
-            self.cursor.execute("DELETE FROM CLASS_LEGEND WHERE ROWID IN (SELECT ID FROM DEL)")
-            self.cursor.execute("DELETE FROM DEL")
+            self.cursor.executescript(sqlstr)
 
-        self.cursor.execute("SELECT ID FROM DEL")
-        # for t in self.cursor.fetchall():
-        #     d = dict(t)
-        #     print(d)
-        # self.database.commit()
-        # self.database.commit()
+            self.cursor.execute("SELECT * FROM EVEN_MORE_TEMP_TAB")
+            hello = [dict(i) for i in self.cursor.fetchall()]
 
-        self.cursor.execute("INSERT INTO DATA "
-                            "SELECT * FROM CLASS_LEGEND".format(course_keys))
+            self.cursor.execute("SELECT {} FROM EVEN_MORE_TEMP_TAB WHERE {} IS NOT NULL"
+                                .format(subclass_type, subclass_type))
+            hello = [dict(i) for i in self.cursor.fetchall()]
+            if not hello:
+                sqlstr = "INSERT INTO TEMP_TAB(DEPARTMENT, COURSE_NUM, COURSE_ID, {}, INSTRUCTOR) SELECT * FROM {}" \
+                    .format(subclass_type, subclass_table)
+                self.cursor.execute(sqlstr)
+            else:
+                script = '''
+                DELETE FROM TEMP_TAB;
+                INSERT INTO TEMP_TAB SELECT * FROM EVEN_MORE_TEMP_TAB;
+                '''
+                self.cursor.executescript(script)
+
+        self.cursor.execute("INSERT INTO CLASS_LEGEND SELECT * FROM TEMP_TAB")
+        self.cursor.execute("DROP TABLE TEMP_TAB")
+        self.database.commit()
+        #     cl_list = self.cursor.fetchall()
+        #     for cl in cl_list:
+        #         cl = dict(cl)
+        #         self.cursor.execute(
+        #             "CREATE TEMP TABLE TAB (DEPARTMENT TEXT, COURSE_NUM TEXT, COURSE_ID TEXT, {}, INSTRUCTOR TEXT "
+        #             ")".format(course_keys, course_keys))
+        #
+        #         if cl['COURSE_ID'] != 'None' and cl['COURSE_ID'] is not None:
+        #             self.cursor.execute("SELECT EXISTS(SELECT * FROM CLASS_LEGEND WHERE COURSE_ID = ? "
+        #                                 "LIMIT 1)", (cl['COURSE_ID'],))
+        #             num_found = self.cursor.fetchone()[0]
+        #
+        #             if cl['DEPARTMENT'] == 'CSE' and cl['COURSE_NUM'] == '105':
+        #                 print('hello')
+        #             if num_found == 0:
+        #                 self.cursor.execute("INSERT INTO TAB (DEPARTMENT, COURSE_NUM, COURSE_ID, {}, INSTRUCTOR)"
+        #                                     "VALUES(?, ?, ?, ?, ?)".format(t + '_KEY'),
+        #                                     (cl['DEPARTMENT'], cl['COURSE_NUM'], cl['COURSE_ID'], cl[t + '_KEY'],
+        #                                      cl['INSTRUCTOR']))
+        #             else:
+        #                 self.cursor.execute("UPDATE CLASS_LEGEND SET {} = ? WHERE COURSE_ID = ?"
+        #                                     .format(t + '_KEY'),
+        #                                     (cl[t + '_KEY'], cl['COURSE_ID']))
+        #
+        #         self.cursor.execute("INSERT INTO CLASS_LEGEND SELECT * FROM TAB")
+        #         self.cursor.execute("DROP TABLE IF EXISTS TAB")
+        #
+        # self.cursor.execute(
+        #     "CREATE TEMP TABLE TAB (DEPARTMENT TEXT, COURSE_NUM TEXT, COURSE_ID TEXT, {}, INSTRUCTOR TEXT "
+        #     ")".format(course_keys, course_keys))
+        #
+        # for t in course_types:
+        #     self.cursor.execute(
+        #         "SELECT * FROM {}".format(t + '_SUBCLASS'))
+        #     cl_list = self.cursor.fetchall()
+        #     for cl in cl_list:
+        #         if cl['COURSE_ID'] == "None" or cl['COURSE_ID'] is None:
+        #             self.cursor.execute("INSERT INTO TAB SELECT * FROM CLASS_LEGEND WHERE "
+        #                                 "COURSE_NUM = ? AND INSTRUCTOR = ? AND {} ISNULL ".format(t + '_KEY'),
+        #                                 (cl['COURSE_NUM'], cl['INSTRUCTOR']))
+        #
+        #             self.cursor.execute("INSERT INTO DEL SELECT ROWID FROM CLASS_LEGEND WHERE "
+        #                                 "COURSE_NUM = ? AND INSTRUCTOR = ? AND {} ISNULL ".format(t + '_KEY'),
+        #                                 (cl['COURSE_NUM'], cl['INSTRUCTOR']))
+        #
+        #             self.cursor.execute("UPDATE TAB SET {} = ?".format(t + '_KEY'), (cl[t + '_KEY'],))
+        #
+        #         self.cursor.execute("INSERT INTO CLASS_LEGEND SELECT * FROM TAB")
+        #         self.cursor.execute("DELETE FROM TAB")
+        #     self.cursor.execute("DELETE FROM CLASS_LEGEND WHERE ROWID IN (SELECT ID FROM DEL)")
+        #     self.cursor.execute("DELETE FROM DEL")
+        #
+        # self.cursor.execute("SELECT ID FROM DEL")
+        # # for t in self.cursor.fetchall():
+        # #     d = dict(t)
+        # #     print(d)
+        # # self.database.commit()
+        # # self.database.commit()
+        #
+        # self.cursor.execute("INSERT INTO DATA "
+        #                     "SELECT * FROM CLASS_LEGEND".format(course_keys))
 
     def create_links(self):
         self.cursor.execute("SELECT DISTINCT COURSE_NUM FROM CLASSES")
@@ -324,6 +400,7 @@ class Cleaner:
 
     def close(self):
         self.database.commit()
+        self.database.execute("VACUUM")
         self.database.close()
 
 

@@ -1,16 +1,13 @@
 import os
 import sqlite3
-import requests
 
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.select import Select
 from selenium.webdriver.support.wait import WebDriverWait
 
-from settings import HTML_STORAGE, HOME_DIR, MANUAL_MODE, \
-    DATABASE_PATH, DRIVER_PATH, SCHEDULE_OF_CLASSES, TIMEOUT, CURRENT_CLASS_INDEX, CLASS_SEARCH_TIMEOUT
+from settings import HTML_STORAGE, HOME_DIR, DATABASE_PATH, DRIVER_PATH, SCHEDULE_OF_CLASSES, TIMEOUT
 
 
 class Scraper:

@@ -47,6 +47,29 @@ export const classTypeToCode = {
     "Tutorial": "TU"
 };
 
+const codeKeyToVal = {
+    "AC_KEY": 6,
+    "CL_KEY": 6,
+    "CO_KEY": 6,
+    "DI_KEY": 7,
+    "FI_KEY": 10,
+    "FM_KEY": 6,
+    "FW_KEY": 6,
+    "IN_KEY": 6,
+    "IT_KEY": 6,
+    "LA_KEY": 8,
+    "LE_KEY": 1,
+    "MI_KEY": 9,
+    "MU_KEY": 6,
+    "OT_KEY": 6,
+    "PB_KEY": 6,
+    "PR_KEY": 6,
+    "RE_KEY": 6,
+    "SE_KEY": 6,
+    "ST_KEY": 6,
+    "TU_KEY": 6,
+};
+
 export const SET_CURRENT_INSTRUCTOR = "SET_CURRENT_INSTRUCTOR";
 
 export function setCurrentInstructor(instructor) {
@@ -282,9 +305,10 @@ function fetchClasses(department) {
                         // should all be the same so can filter
                         classTypesPerClass[Class["COURSE_NUM"]] = Object.keys(Class).filter((property) => {
                             return property.endsWith("KEY") && Class[property] !== null;
-                        }).map((classTypeStr) => {
-                            return {label: codeToClassType[classTypeStr], value: codeToClassType[classTypeStr]};
-                        });
+                        }).sort((a, b) => codeKeyToVal[a] - codeKeyToVal[b])
+                            .map((classTypeStr) => {
+                                return {label: codeToClassType[classTypeStr], value: codeToClassType[classTypeStr]};
+                            });
                     });
                 });
 

@@ -1,22 +1,20 @@
 import sqlite3
 
-import os
-import io
+from flask import Flask, request, jsonify, make_response
+from flask_cors import CORS
+from flask_compress import Compress
+from ics import Calendar, Event
 
 import backend
-import tempfile
-
-from flask import Flask, request, jsonify, send_file, make_response
-from flask_cors import CORS
 from classutil.class_decoders import ClassDecoder
 from settings import DATABASE_PATH
-from ics import Calendar, Event
 
 db_connection = sqlite3.connect(DATABASE_PATH)
 db_cursor = db_connection.cursor()
 
 application = Flask(__name__)
 CORS(application)
+Compress(application)
 
 """
 The routing backend for the server.
