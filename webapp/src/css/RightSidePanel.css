@@ -5,4 +5,14 @@
     background-color: rgb(24,43, 73);
 }
 
+@media only screen and (max-width: 500px) {
+    .right-side-panel {
+        width: 100vw;
+        height: auto;
+        grid-column: 1/-1;
+    }
+}
+
+
+
 

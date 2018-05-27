@@ -27,8 +27,8 @@
     font-size: 1.2em;
 }
 
-.ui-inputtext .ui-state-default .ui-corner-all ui-autocomplete-input {
-    width: 100%;
+.ui-autocomplete-dd input.ui-corner-all {
+    width: 90%;
 }
 
 .ui-autocomplete {

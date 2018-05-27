@@ -8,6 +8,7 @@
 
 .content {
     margin-right: 1.5em;
+    margin-bottom: 2em;
     color: rgb(116, 118, 120);
 }
 
@@ -47,6 +48,13 @@
     .title {
         font-size: 2em;
         padding-right: 0;
+    }
+}
+
+@media only screen and (max-width: 500px) {
+    .main-panel {
+        height: auto;
+        grid-column: 1/-1;
     }
 }
 
