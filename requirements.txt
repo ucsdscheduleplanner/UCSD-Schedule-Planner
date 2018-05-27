@@ -4,4 +4,5 @@ selenium
 awsebcli
 Flask
 Flask-Cors
+flask-compress
 pytz
