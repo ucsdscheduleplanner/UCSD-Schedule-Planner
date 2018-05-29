@@ -11,6 +11,7 @@
     "moment": "^2.22.1",
     "npm-check": "^5.7.1",
     "primereact": "^1.5.3",
+    "rc-progress": "^2.2.5",
     "react": "^16.4.0",
     "react-big-calendar": "^0.19.1",
     "react-dom": "^16.4.0",
@@ -25,7 +26,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
-    "predeploy": "npm run build"
+    "predeploy": "npm run build",
+    "aws-deploy": "npm run build && aws s3 sync ./build s3://sdschedule.com --delete"
   },
   "proxy": "http://localhost:5000/",
   "devDependencies": {}

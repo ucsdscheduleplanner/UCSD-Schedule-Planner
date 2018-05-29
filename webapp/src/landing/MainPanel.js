@@ -7,6 +7,7 @@ import WeekCalendar from '../utils/WeekCalendar'
 import "../css/MainPanel.css";
 import {connect} from "react-redux";
 import ClassInputContainer from "../containers/ClassInputContainer";
+import {ProgressBar} from 'primereact/components/progressbar/ProgressBar';
 
 class MainPanel extends Component {
     constructor(props) {
@@ -19,7 +20,11 @@ class MainPanel extends Component {
     }
 
     render() {
-        if (this.props.calendarMode) {
+        if(this.props.generating) {
+            return (
+                <ProgressBar mode="indeterminate"/>
+            );
+        } else if (this.props.calendarMode) {
             return (
                 <div className="main-panel">
                     <div className="class-input">
@@ -44,8 +49,10 @@ class MainPanel extends Component {
     }
 }
 
+
 function mapStateToProps(state) {
     return {
+        generatingProgress: state.ScheduleGeneration.generatingProgress,
         generating: state.ScheduleGeneration.generating,
         calendarMode: state.ScheduleGeneration.calendarMode,
         schedule: state.ScheduleGeneration.schedule

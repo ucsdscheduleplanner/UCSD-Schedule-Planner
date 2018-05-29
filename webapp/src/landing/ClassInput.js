@@ -50,8 +50,8 @@ export default class ClassInput extends PureComponent {
         this.setState({instructorOptions: instructorOptions});
     }
 
-    showError(message) {
-        this.message.show({ severity: 'error', summary: message, life: 750});
+    showMessage(type, message) {
+        this.message.show({severity: type, summary: message, life: 1000});
     }
 
     handleSubmit() {
@@ -65,8 +65,8 @@ export default class ClassInput extends PureComponent {
         }, false);
 
         // error checking on department and course num
-        if(!this.props.departments.includes(this.props.currentDepartment)) error = true;
-        if(!this.props.classes[this.props.currentDepartment].includes(this.props.currentCourseNum)) error = true;
+        if (!this.props.departments.includes(this.props.currentDepartment)) error = true;
+        if (!this.props.classes[this.props.currentDepartment].includes(this.props.currentCourseNum)) error = true;
 
         if (!duplicate && !error) {
             // constructing new class to be added to UI
@@ -87,7 +87,7 @@ export default class ClassInput extends PureComponent {
             this.props.setPriority(null);
             this.props.setConflicts(null);
         } else {
-            this.showError("Failed to add class");
+            this.showMessage("error", "Failed to add class");
         }
         this.props.setUID(this.props.uid + 1);
         // set duplicate so we can do some UI stuff in case
@@ -120,7 +120,7 @@ export default class ClassInput extends PureComponent {
 
             // using the edit method from the reducer
             this.props.editClass(this.props.editUID, newClass);
-            this.message.show({ severity: 'success', summary: 'Edit Successful', life: 750});
+            this.message.show({severity: 'success', summary: 'Edit Successful', life: 750});
             this.props.exitEditMode();
         }
         // set duplicate so we can do some UI stuff in case
@@ -131,6 +131,7 @@ export default class ClassInput extends PureComponent {
 
     handleRemove() {
         this.props.removeClass(this.props.editUID);
+        this.showMessage("success", "Successfully removed class");
         this.props.exitEditMode();
     }
 
@@ -165,7 +166,6 @@ export default class ClassInput extends PureComponent {
         let that = this;
         return (
             <React.Fragment>
-                <Messages ref={(el) => this.message = el} />
                 <div className="content">
                     <div className="form-field">
                         <div className="input-header"> Department:</div>
@@ -261,8 +261,10 @@ export default class ClassInput extends PureComponent {
                                     stars={3}/>
                         </div>
                     </div>
-
-                    {this.props.editMode ? editButton : addButton}
+                    <div style={{display: "inline-block"}}>
+                        {this.props.editMode ? editButton : addButton}
+                        <Messages ref={(el) => this.message = el}/>
+                    </div>
                 </div>
             </React.Fragment>
         )
