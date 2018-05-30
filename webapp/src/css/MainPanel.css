@@ -7,7 +7,7 @@
 }
 
 .content {
-    margin-right: 1.5em;
+    margin-bottom: 2em;
     color: rgb(116, 118, 120);
 }
 
@@ -22,7 +22,7 @@
     padding-right: 1em;
     border-bottom: thin solid rgb(0, 70, 0);
 
-    margin-top: 1em;
+    margin-top: .8em;
     margin-bottom: .5em;
     font-size: 2.5em;
     font-weight: bold;
@@ -35,6 +35,11 @@
 
 .class-calendar {
     margin-left: 2em;
+    margin-right: 2em;
+}
+
+.main-panel .ui-progressbar-determinate .ui-progressbar-value-animate{
+    transition: color 0s;
 }
 
 @media only screen and (min-width: 0px) and (max-width: 700px) {
@@ -47,6 +52,13 @@
     .title {
         font-size: 2em;
         padding-right: 0;
+    }
+}
+
+@media only screen and (max-width: 525px) {
+    .main-panel {
+        height: auto;
+        grid-column: 1/-1;
     }
 }
 

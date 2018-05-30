@@ -8,7 +8,9 @@ import {
 export default function ClassInput(state = {
     requesting: false,
     departments: [],
-    classes: [],
+    // classes will be a dict where each value is an array of
+    // classes and each key is a department
+    classes: {},
     instructorsPerClass: [],
     classTypesPerClass: [],
 
@@ -35,9 +37,15 @@ export default function ClassInput(state = {
                 requesting: action.requesting
             });
         case RECEIVE_CLASS_PER_DEPARTMENT:
+            // getting department
+            let newDepartment = action.department;
+            // copying over
+            let newClassDict = Object.assign({}, state.classes);
+            // setting new department key to classes
+            newClassDict[newDepartment] = action.classes;
             return Object.assign({}, state, {
                 requesting: action.requesting,
-                classes: action.classes,
+                classes: newClassDict,
                 instructorsPerClass: action.instructorsPerClass,
                 classTypesPerClass: action.classTypesPerClass
             });

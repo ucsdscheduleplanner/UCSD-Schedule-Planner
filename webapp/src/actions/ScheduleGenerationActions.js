@@ -1,6 +1,10 @@
-import {generateSchedule} from "../schedulegeneration/ScheduleGeneratorBruteForce";
+import {
+    generateSchedule, ScheduleGeneration,
+    ScheduleGenerationBruteForce
+} from "../schedulegeneration/ScheduleGeneratorBruteForce";
 import {InstructorPreference, PriorityModifier} from "../utils/Preferences";
 import {classTypeToCode} from "./ClassInputActions";
+import 'workerize';
 
 export const REQUEST_SCHEDULE = 'REQUEST_SCHEDULE';
 
@@ -48,16 +52,33 @@ export function enterCalendarMode() {
 export function exitCalendarMode() {
     return function (dispatch) {
         dispatch(setCalendarMode(false));
+        dispatch(setProgress(0));
     }
 }
 
+export const SET_PROGRESS = "SET_PROGRESS";
+export function setProgress(generatingProgress) {
+    return {
+        type: SET_PROGRESS,
+        generatingProgress: generatingProgress
+    }
+}
+
+function dispatchProgress(dispatch) {
+    return function(progress) {
+        dispatch(setProgress(progress));
+    }
+}
 
 export function getSchedule(selectedClasses) {
-    return function (dispatch) {
-        dispatch(requestSchedule);
+    return async function (dispatch) {
+        dispatch(requestSchedule());
 
         let preferences = [];
         let conflicts = {};
+        // setting progress to 0 initially
+        dispatch(setProgress(0));
+        let dispatchProgressFunction = dispatchProgress(dispatch);
         Object.values(selectedClasses).forEach((Class) => {
             let priorityModifier = new PriorityModifier(Class);
             if (Class.priority !== null) {
@@ -77,7 +98,7 @@ export function getSchedule(selectedClasses) {
             }
         });
 
-        return generateSchedule(selectedClasses, conflicts, preferences)
+        return new ScheduleGenerationBruteForce().generateSchedule(selectedClasses, conflicts, preferences, dispatchProgressFunction)
             .then((schedule) => {
                 dispatch(receiveSchedule(schedule));
                 dispatch(enterCalendarMode())

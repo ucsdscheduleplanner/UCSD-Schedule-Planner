@@ -220,9 +220,6 @@ class Cleaner:
             "CREATE TABLE CLASS_LEGEND (DEPARTMENT TEXT, COURSE_NUM TEXT, COURSE_ID TEXT,  INSTRUCTOR TEXT, {})"
                 .format(course_keys, course_keys))
 
-        self.cursor.execute("CREATE TABLE DATA (DEPARTMENT TEXT, COURSE_NUM TEXT, COURSE_ID TEXT, {}, INSTRUCTOR TEXT)"
-                            .format(course_keys, course_keys))
-
         print(course_types)
         self.cursor.execute("CREATE TEMP TABLE DEL (ID)")
 
@@ -234,8 +231,9 @@ class Cleaner:
         self.cursor.execute(
             "CREATE TABLE EVEN_MORE_TEMP_TAB (DEPARTMENT TEXT, COURSE_NUM TEXT, COURSE_ID TEXT, INSTRUCTOR TEXT, IN_KEY TEXT)")
 
-        self.cursor.execute("INSERT INTO TEMP_TAB(DEPARTMENT, COURSE_NUM, COURSE_ID, INSTRUCTOR, IN_KEY) SELECT I.DEPARTMENT, I.COURSE_NUM, "
-                            "I.COURSE_ID, I.INSTRUCTOR, I.IN_KEY FROM IN_SUBCLASS AS I ")
+        self.cursor.execute(
+            "INSERT INTO TEMP_TAB(DEPARTMENT, COURSE_NUM, COURSE_ID, INSTRUCTOR, IN_KEY) SELECT I.DEPARTMENT, I.COURSE_NUM, "
+            "I.COURSE_ID, I.INSTRUCTOR, I.IN_KEY FROM IN_SUBCLASS AS I ")
 
         # Each cl is a subclass
         for i in range(1, len(course_types)):
@@ -243,9 +241,8 @@ class Cleaner:
             t = course_types[i]
             subclass_table = t + '_SUBCLASS'
             subclass_type = t + '_KEY'
-            # self.cursor.execute(
 
-            self.cursor.execute("".format(subclass_type))
+            # this query takes care of merging through left joins
             sqlstr = '''
                     DELETE FROM EVEN_MORE_TEMP_TAB;
                     ALTER TABLE EVEN_MORE_TEMP_TAB ADD COLUMN {} CHAR(20);
@@ -264,9 +261,6 @@ class Cleaner:
 
             self.cursor.executescript(sqlstr)
 
-            self.cursor.execute("SELECT * FROM EVEN_MORE_TEMP_TAB")
-            hello = [dict(i) for i in self.cursor.fetchall()]
-
             self.cursor.execute("SELECT {} FROM EVEN_MORE_TEMP_TAB WHERE {} IS NOT NULL"
                                 .format(subclass_type, subclass_type))
             hello = [dict(i) for i in self.cursor.fetchall()]
@@ -275,6 +269,17 @@ class Cleaner:
                     .format(subclass_type, subclass_table)
                 self.cursor.execute(sqlstr)
             else:
+                self.cursor.execute("SELECT {} FROM {}".format(subclass_type, subclass_table))
+                hello = [i[0] for i in self.cursor.fetchall()]
+                for i in hello:
+                    self.cursor.execute(
+                        "SELECT {} FROM EVEN_MORE_TEMP_TAB WHERE {} = ?".format(subclass_type, subclass_type), (i,))
+                    if not self.cursor.fetchall():
+                        self.cursor.execute(
+                            "INSERT INTO EVEN_MORE_TEMP_TAB(DEPARTMENT, COURSE_NUM, COURSE_ID, INSTRUCTOR, {}) "
+                            "SELECT DEPARTMENT, COURSE_NUM, COURSE_ID, INSTRUCTOR, {} FROM {} "
+                            "WHERE {} = ?".format(subclass_type, subclass_type, subclass_table, subclass_type), (i,))
+
                 script = '''
                 DELETE FROM TEMP_TAB;
                 INSERT INTO TEMP_TAB SELECT * FROM EVEN_MORE_TEMP_TAB;

@@ -60,7 +60,7 @@ const codeKeyToVal = {
     "LA_KEY": 8,
     "LE_KEY": 1,
     "MI_KEY": 9,
-    "MU_KEY": 6,
+    "MU_KEY": 9,
     "OT_KEY": 6,
     "PB_KEY": 6,
     "PR_KEY": 6,
@@ -145,10 +145,11 @@ export function requestClassesPerDepartment() {
 
 export const RECEIVE_CLASS_PER_DEPARTMENT = "RECEIVE_CLASS_PER_DEPARTMENT";
 
-export function receiveClassesPerDepartment(classes, instructors, types) {
+export function receiveClassesPerDepartment(department, classes, instructors, types) {
     return {
         type: RECEIVE_CLASS_PER_DEPARTMENT,
         requesting: false,
+        department: department,
         classes: classes,
         instructorsPerClass: instructors,
         classTypesPerClass: types,
@@ -235,11 +236,12 @@ export function exitEditMode() {
  */
 export function getClasses(department) {
     return function (dispatch) {
+        // tell the store that we are requesting
         dispatch(requestClassesPerDepartment);
 
         fetchClasses(department).then(classData => {
             let {classes, instructorsPerClass, classTypesPerClass} = classData;
-            dispatch(receiveClassesPerDepartment(classes, instructorsPerClass, classTypesPerClass));
+            dispatch(receiveClassesPerDepartment(department, classes, instructorsPerClass, classTypesPerClass));
         });
     }
 }

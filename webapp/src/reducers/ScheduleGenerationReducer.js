@@ -1,5 +1,5 @@
 import {
-    RECEIVE_SCHEDULE, REQUEST_SCHEDULE, SET_CALENDAR_MODE,
+    RECEIVE_SCHEDULE, REQUEST_SCHEDULE, SET_CALENDAR_MODE, SET_PROGRESS,
     SET_UID
 } from '../actions/ScheduleGenerationActions';
 
@@ -8,8 +8,12 @@ import {
  **/
 
 export default function ScheduleGeneration(state = {
-    calendarMode: false, generating: false, uid: 0,
-    generateSuccess: false, schedule: []
+    calendarMode: false,
+    generating: false,
+    generatingProgress: 0,
+    uid: 0,
+    generateSuccess: true,
+    schedule: []
 }, action) {
     switch (action.type) {
         case REQUEST_SCHEDULE:
@@ -17,10 +21,14 @@ export default function ScheduleGeneration(state = {
                 generating: action.generating
             });
         case RECEIVE_SCHEDULE:
-            if (action.schedule.length > 0) {
+            if(!action.schedule) {
+                console.error("Could not generate schedule");
+            }
+            if (action.schedule && action.schedule.length > 0) {
                 return Object.assign({}, state, {
                     generating: action.generating,
                     schedule: action.schedule,
+                    generateSuccess: true,
                     scheduleScreen: action.scheduleScreen
                 });
             } else {
@@ -37,6 +45,10 @@ export default function ScheduleGeneration(state = {
         case SET_UID:
             return Object.assign({}, state, {
                 uid: action.uid,
+            });
+        case SET_PROGRESS:
+            return Object.assign({}, state, {
+                generatingProgress: action.generatingProgress
             });
         default:
             return state;
