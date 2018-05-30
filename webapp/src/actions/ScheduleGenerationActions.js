@@ -4,6 +4,7 @@ import {
 } from "../schedulegeneration/ScheduleGeneratorBruteForce";
 import {InstructorPreference, PriorityModifier} from "../utils/Preferences";
 import {classTypeToCode} from "./ClassInputActions";
+import 'workerize';
 
 export const REQUEST_SCHEDULE = 'REQUEST_SCHEDULE';
 
@@ -70,7 +71,7 @@ function dispatchProgress(dispatch) {
 }
 
 export function getSchedule(selectedClasses) {
-    return function (dispatch) {
+    return async function (dispatch) {
         dispatch(requestSchedule());
 
         let preferences = [];

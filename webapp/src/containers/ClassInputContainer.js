@@ -15,6 +15,8 @@ class ClassInputContainer extends Component {
 
     render() {
         return <ClassInput
+            generateSuccess={this.props.generateSuccess}
+
             editMode={this.props.editMode}
             editClass={this.props.editClass}
             exitEditMode={this.props.exitEditMode}
@@ -77,6 +79,7 @@ function mapStateToProps(state) {
         conflicts: state.ClassInput.conflicts,
         priority: state.ClassInput.priority,
 
+        generateSuccess: state.ScheduleGeneration.generateSuccess,
         editMode: state.ClassInput.editMode,
         editUID: state.ClassInput.editUID,
 

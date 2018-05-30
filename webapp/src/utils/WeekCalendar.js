@@ -4,6 +4,7 @@ import moment from 'moment';
 import "../css/WeekCalendar.css";
 
 import "react-big-calendar/lib/css/react-big-calendar.css";
+import {Growl} from "primereact/components/growl/Growl";
 
 Calendar.setLocalizer(Calendar.momentLocalizer(moment));
 
@@ -46,6 +47,7 @@ class WeekCalendar extends PureComponent {
     }
 
     render() {
+        let that = this;
         // setting max and min times
         const minTime = new Date();
         const maxTime = new Date();
@@ -54,6 +56,12 @@ class WeekCalendar extends PureComponent {
 
         return (
             <div className="calendar-content">
+                <Growl ref={(el) => {
+                    this.message = el;
+                    if(this.message && that.state.events.length === 0) {
+                        this.message.show({severity: "error", summary: "Failed to generate schedule.", life: 1000});
+                    }
+                }}/>
                 <Calendar
                     min={minTime}
                     max={maxTime}

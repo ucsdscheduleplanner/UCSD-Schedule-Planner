@@ -3,7 +3,7 @@ import {Rating} from "primereact/components/rating/Rating";
 import {ListBox} from "primereact/components/listbox/ListBox";
 import {Button} from "primereact/components/button/Button";
 import {Messages} from 'primereact/components/messages/Messages';
-import {Message} from 'primereact/components/message/Message';
+import {Growl} from 'primereact/components/growl/Growl';
 import {AutoComplete} from "primereact/components/autocomplete/AutoComplete";
 import "../css/ClassInput.css";
 
@@ -17,6 +17,7 @@ export default class ClassInput extends PureComponent {
             departmentOptions: [],
             classOptions: [],
         };
+        this.message = null;
     }
 
     clearFields(fields) {
@@ -133,6 +134,10 @@ export default class ClassInput extends PureComponent {
         this.props.removeClass(this.props.editUID);
         this.showMessage("success", "Successfully removed class");
         this.props.exitEditMode();
+    }
+
+    showError() {
+        this.showMessage("error", "Failed to generate schedule");
     }
 
     render() {
@@ -263,7 +268,9 @@ export default class ClassInput extends PureComponent {
                     </div>
                     <div style={{display: "inline-block"}}>
                         {this.props.editMode ? editButton : addButton}
-                        <Messages ref={(el) => this.message = el}/>
+                        <Growl ref={(el) => {
+                            this.message = el;
+                        }}/>
                     </div>
                 </div>
             </React.Fragment>

@@ -12,7 +12,7 @@ export default function ScheduleGeneration(state = {
     generating: false,
     generatingProgress: 0,
     uid: 0,
-    generateSuccess: false,
+    generateSuccess: true,
     schedule: []
 }, action) {
     switch (action.type) {
@@ -28,6 +28,7 @@ export default function ScheduleGeneration(state = {
                 return Object.assign({}, state, {
                     generating: action.generating,
                     schedule: action.schedule,
+                    generateSuccess: true,
                     scheduleScreen: action.scheduleScreen
                 });
             } else {

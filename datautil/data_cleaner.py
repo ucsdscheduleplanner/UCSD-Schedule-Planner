@@ -261,12 +261,6 @@ class Cleaner:
 
             self.cursor.executescript(sqlstr)
 
-            if t == "SE":
-                print('hi')
-
-            self.cursor.execute("SELECT * FROM EVEN_MORE_TEMP_TAB")
-            hello = [dict(i) for i in self.cursor.fetchall()]
-
             self.cursor.execute("SELECT {} FROM EVEN_MORE_TEMP_TAB WHERE {} IS NOT NULL"
                                 .format(subclass_type, subclass_type))
             hello = [dict(i) for i in self.cursor.fetchall()]
@@ -275,15 +269,6 @@ class Cleaner:
                     .format(subclass_type, subclass_table)
                 self.cursor.execute(sqlstr)
             else:
-                # test = "SELECT * FROM {} WHERE {}.{} = ?".format(subclass_table, subclass_table, subclass_type)
-                # self.cursor.execute(test, ())
-                # hello = [dict(i) for i in self.cursor.fetchall()]
-
-                test = '''SELECT DEPARTMENT, COURSE_NUM, 
-                COURSE_ID, INSTRUCTOR, {} FROM {} AS T WHERE NOT EXISTS(SELECT {} FROM EVEN_MORE_TEMP_TAB
-                AS MERGE WHERE T.{} = MERGE.{})
-                '''.format(subclass_type, subclass_table, subclass_type, subclass_type, subclass_type)
-
                 self.cursor.execute("SELECT {} FROM {}".format(subclass_type, subclass_table))
                 hello = [i[0] for i in self.cursor.fetchall()]
                 for i in hello:
