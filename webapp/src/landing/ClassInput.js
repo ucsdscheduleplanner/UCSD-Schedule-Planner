@@ -45,10 +45,20 @@ export default class ClassInput extends PureComponent {
     }
 
     completeInstructorSuggestions(event) {
-        let instructorOptions = this.props.instructorsPerClass[this.props.currentCourseNum].filter((instructor) => {
-            return instructor.toLowerCase().startsWith(event.query.toLowerCase());
-        });
-        this.setState({instructorOptions: instructorOptions});
+        if (this.props.instructorsPerClass && this.props.instructorsPerClass[this.props.currentDepartment]) {
+            let instructorOptions = this.props.instructorsPerClass[this.props.currentDepartment][this.props.currentCourseNum]
+                .filter((instructor) => {
+                    return instructor.toLowerCase().startsWith(event.query.toLowerCase());
+                });
+            this.setState({instructorOptions: instructorOptions});
+        }
+    }
+
+    getClassTypeOptions(courseNum) {
+        if (this.props.classTypesPerClass && this.props.classTypesPerClass[this.props.currentDepartment]) {
+            return this.props.classTypesPerClass[this.props.currentDepartment][courseNum];
+        }
+        return undefined;
     }
 
     showMessage(type, message) {
@@ -239,7 +249,7 @@ export default class ClassInput extends PureComponent {
                             <AutoComplete suggestions={
                                 // because to clear the thing we put undefined, we can just put the course num in whether
                                 // it is actually in the dict or not because if not it will be undefined and show nothing
-                                this.props.instructorsPerClass[this.props.currentCourseNum]}
+                                this.state.instructorOptions}
                                           value={this.props.currentInstructor}
                                           onChange={(e) => this.props.setCurrentInstructor(e.value)}
                                           completeMethod={this.completeInstructorSuggestions.bind(this)}
@@ -251,7 +261,7 @@ export default class ClassInput extends PureComponent {
                             <ListBox value={
                                 // same as above with the undefined
                                 this.props.conflicts}
-                                     options={this.props.classTypesPerClass[this.props.currentCourseNum]}
+                                     options={this.getClassTypeOptions(this.props.currentCourseNum)}
                                      onChange={(e) => this.props.setConflicts(e.value)}
                                      multiple={true}
                                      disabled={this.props.currentCourseNum === null}/>

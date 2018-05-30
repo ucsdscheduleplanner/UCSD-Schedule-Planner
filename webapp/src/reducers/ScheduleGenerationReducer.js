@@ -21,21 +21,18 @@ export default function ScheduleGeneration(state = {
                 generating: action.generating
             });
         case RECEIVE_SCHEDULE:
-            if(!action.schedule) {
-                console.error("Could not generate schedule");
-            }
             if (action.schedule && action.schedule.length > 0) {
                 return Object.assign({}, state, {
                     generating: action.generating,
                     schedule: action.schedule,
                     generateSuccess: true,
-                    scheduleScreen: action.scheduleScreen
                 });
             } else {
+                console.error("Could not generate schedule");
                 return Object.assign({}, state, {
                     generating: action.generating,
                     generateSuccess: false,
-                    scheduleScreen: false
+                    schedule: []
                 });
             }
         case SET_CALENDAR_MODE:
