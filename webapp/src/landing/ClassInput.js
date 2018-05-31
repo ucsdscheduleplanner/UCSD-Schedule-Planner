@@ -39,7 +39,8 @@ export default class ClassInput extends PureComponent {
         // hopefully this will never trigger
         if (!this.props.classes[this.props.currentDepartment]) return;
         let classOptions = this.props.classes[this.props.currentDepartment].filter((Class) => {
-            return Class.toLowerCase().startsWith(event.query.toLowerCase());
+            if(Class) return Class.toLowerCase().startsWith(event.query.toLowerCase());
+            return false;
         });
         this.setState({classOptions: classOptions});
     }
@@ -48,7 +49,8 @@ export default class ClassInput extends PureComponent {
         if (this.props.instructorsPerClass && this.props.instructorsPerClass[this.props.currentDepartment]) {
             let instructorOptions = this.props.instructorsPerClass[this.props.currentDepartment][this.props.currentCourseNum]
                 .filter((instructor) => {
-                    return instructor.toLowerCase().startsWith(event.query.toLowerCase());
+                if(instructor) return instructor.toLowerCase().startsWith(event.query.toLowerCase());
+                return false;
                 });
             this.setState({instructorOptions: instructorOptions});
         }
