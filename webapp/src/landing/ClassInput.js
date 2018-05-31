@@ -55,8 +55,13 @@ export default class ClassInput extends PureComponent {
     }
 
     getClassTypeOptions(courseNum) {
-        if (this.props.classTypesPerClass && this.props.classTypesPerClass[this.props.currentDepartment]) {
-            return this.props.classTypesPerClass[this.props.currentDepartment][courseNum];
+        if (this.props.classTypesPerClass && this.props.classTypesPerClass[this.props.currentDepartment]
+            && this.props.classTypesPerClass[this.props.currentDepartment][courseNum]) {
+            // filtering midterms and finals for now
+            // TODO find way to mess with labels and values to make this cleaner and less shaky
+            return this.props.classTypesPerClass[this.props.currentDepartment][courseNum].filter((classType) => {
+                return classType["label"] !== "Final Exam" && classType["label"] !== "Midterm";
+            });
         }
         return undefined;
     }
@@ -187,7 +192,7 @@ export default class ClassInput extends PureComponent {
                         <AutoComplete suggestions={this.state.departmentOptions} dropdown={true}
                                       value={this.props.currentDepartment}
                                       onChange={(e) => {
-                                          this.props.setCurrentDepartment(e.value);
+                                          this.props.setCurrentDepartment(e.value.toUpperCase());
                                           this.props.setCurrentCourseNum(null);
                                           this.props.setCurrentInstructor(null);
                                           this.props.setPriority(null);

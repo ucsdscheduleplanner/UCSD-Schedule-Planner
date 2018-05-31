@@ -40,17 +40,22 @@ class MainPanel extends Component {
             </div>
         );
 
+        const progressBar = (
+            <div className="main-panel">
+                <div className="class-calendar">
+                    <div className="title"> UCSD Schedule Planner</div>
+                    <ProgressBar mode="indeterminate"/>
+                </div>
+            </div>
+        );
 
         if (this.props.generating) {
-            return (
-                <ProgressBar mode="indeterminate"/>
-            );
+            return progressBar;
         } else if (this.props.calendarMode) {
             return scheduleComponent;
         } else {
             return classInput;
         }
-
     }
 }
 
