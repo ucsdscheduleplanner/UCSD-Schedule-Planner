@@ -280,7 +280,9 @@ export default class ClassInput extends PureComponent {
                                 // same as above with undefined
                                 this.props.priority}
                                     onChange={(e) => this.props.setPriority(e.value)}
-                                    stars={3}/>
+                                    stars={3}
+                                    disabled={this.props.currentCourseNum === null}
+                            />
                         </div>
                     </div>
                     <div style={{display: "inline-block"}}>
