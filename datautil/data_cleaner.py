@@ -263,10 +263,21 @@ class Cleaner:
                 # making temp section for setting later
                 temp_sections = []
                 # adding cartesian product to temp
+                # cur section is a list
                 for cur_section in cur_class_sections:
-                    for class_type in type_group:
+                    # class with type is a class
+                    for class_with_type in type_group:
                         replica = cur_section.copy()
-                        replica.append(class_type)
+                        copy = class_with_type.copy()
+                        # always guaranteed to have at least one element in the list
+                        copy["COURSE_ID"] = replica[0]["COURSE_ID"]
+                        # handle the passing of variable information through rows here
+                        if not replica[0]["INSTRUCTOR"] and copy["INSTRUCTOR"]:
+                            replica[0]["INSTRUCTOR"] = copy["INSTRUCTOR"]
+                        elif not copy["INSTRUCTOR"]:
+                            copy["INSTRUCTOR"] = replica[0]["INSTRUCTOR"]
+
+                        replica.append(copy)
                         temp_sections.append(replica)
                 # setting current to temp
                 cur_class_sections = temp_sections
