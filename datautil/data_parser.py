@@ -55,6 +55,9 @@ class Parser:
                                   attrs={'class': 'crsheader'})
         if course_num:
             self.current_class = course_num[1].text
+            # num slots on the top header
+            if len(course_num) == 4:
+                self.buffer_buffer.append((department,))
 
         info = row.find_all(name='td',
                             attrs={'class': 'brdr'})
@@ -177,7 +180,10 @@ class Parser:
         # TODO Make database insertion quicker
         self.cursor.execute("BEGIN TRANSACTION")
         for info in self.buffer_buffer:
-            self.cursor.execute("INSERT OR IGNORE INTO CLASSES VALUES(?,?,?,?,?,?,?,?, ?,?,?)", (None,) + info)
+            if len(info) > 1:
+                self.cursor.execute("INSERT OR IGNORE INTO CLASSES VALUES(?,?,?,?,?,?,?,?,?,?,?)", (None,) + info)
+            else:
+                self.cursor.execute("INSERT INTO CLASSES(ID, DEPARTMENT) VALUES(?, ?)", (None,) + info)
 
     def close(self):
         self.connection.commit()

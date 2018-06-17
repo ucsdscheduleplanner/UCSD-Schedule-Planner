@@ -1,5 +1,6 @@
 import sqlite3
 import time
+from itertools import groupby, product
 
 from settings import DATABASE_PATH
 
@@ -157,251 +158,134 @@ DATA table
 class Cleaner:
     def __init__(self):
         self.database = sqlite3.connect(DATABASE_PATH)
+        # will set the return value to a dict
         self.database.row_factory = sqlite3.Row
         self.cursor = self.database.cursor()
 
     def clean(self):
         print('Begin cleaning database.')
         curr_time = time.time()
-        self.setup_database()
-        self.create_subclass_databases()
-        # self.create_links()
-        # self.validate_database()
+        self.setup_tables()
+        self.begin_processing()
         self.close()
-        fin_time = time.time()
-        print('Finished cleaning database in {} seconds'.format(fin_time - curr_time))
+
+    def setup_tables(self):
+        self.cursor.execute("DROP TABLE IF EXISTS CLASS_DATA")
+        self.cursor.execute("CREATE TABLE CLASS_DATA"
+                            "(DEPARTMENT TEXT, COURSE_NUM TEXT, SECTION_ID TEXT, COURSE_ID TEXT,"
+                            "TYPE TEXT, DAYS TEXT, TIME TEXT, LOCATION TEXT, ROOM TEXT, "
+                            "INSTRUCTOR TEXT, DESCRIPTION TEXT)")
+
+    def begin_processing(self):
+        # getting list of departments
+        self.cursor.execute("SELECT * FROM DEPARTMENT")
+        departments = [i["DEPT_CODE"] for i in self.cursor.fetchall()]
+
+        # handle each department separately
+        for department in departments:
+            self.process_department(department)
 
     """
-    Setup database
+    Will store in format with partitions for the classes in the same format : i.e CSE3$0 means section 0 of CSE3.
     """
+    def process_department(self, department):
+        # getting all classes in department in order
+        self.cursor.execute("SELECT * FROM CLASSES WHERE DEPARTMENT = ? ORDER BY ID", (department,))
+        visible_classes = [dict(row) for row in self.cursor.fetchall()]
+        # doing this so fast_ptr knows where to stop
+        visible_classes.append({"COURSE_NUM": None})
 
-    def setup_database(self):
-        self.cursor.execute('DROP TABLE IF EXISTS DATA')
-        for subclass_type in subclassDBs:
-            self.cursor.execute("DROP TABLE IF EXISTS {}".format(subclass_type))
+        # blank class list for ones to insert
+        classes_to_insert = []
 
-    def create_subclass_databases(self):
-        course_types = []
-        self.cursor.execute("SELECT DEPARTMENT, ID, COURSE_NUM, COURSE_ID, TYPE, INSTRUCTOR FROM CLASSES")
-        courses = self.cursor.fetchall()
-        for course in courses:
-            course = dict(course)
-            instructor = str(course['INSTRUCTOR'])
-            key = course['ID']
-            course_type = str(course['TYPE'])
-            course_id = str(course['COURSE_ID'])
-            course_num = course['COURSE_NUM']
-            department = course['DEPARTMENT']
+        fast_ptr, slow_ptr = 0, 0
+        # course num will be set later
+        course_num = None
+        section_count = {}
+        while fast_ptr < len(visible_classes):
+            slow_class = visible_classes[slow_ptr]
+            fast_class = visible_classes[fast_ptr]
 
-            if course_id is not None and len(course_id) == 0:
-                course_id = None
+            if slow_class["COURSE_NUM"]:
+                slow_ptr += 1
 
-            if course_type not in course_types and course_type.isupper():
-                course_types.append(course_type)
+            if fast_class["COURSE_NUM"]:
+                course_num = fast_class["COURSE_NUM"]
 
-            if not course_type.isupper() or len(course_type) == 0:
-                continue
+            # we know we have hit the end of a section
+            if not fast_class["COURSE_NUM"] and slow_ptr != fast_ptr:
+                classes_to_insert.extend(
+                    # we want slow_ptr + 1 and fast_ptr to be the lower and upper bounds
+                    self.process_current_class_set(visible_classes[slow_ptr + 1: fast_ptr],
+                                                   section_count,
+                                                   department,
+                                                   course_num))
+                slow_ptr = fast_ptr
+            fast_ptr += 1
 
-            # UNCOMMENT THIS LINE IF YOU WANT TO RECREATE THE SUBCLASS DATABASES
-            # self.cursor.execute("DROP TABLE IF EXISTS {}_SUBCLASS".format(course_type))
-            self.cursor.execute("CREATE TABLE IF NOT EXISTS {}_SUBCLASS"
-                                "(DEPARTMENT TEXT, COURSE_NUM TEXT, COURSE_ID TEXT, {}_KEY INTEGER, INSTRUCTOR TEXT, UNIQUE({}_KEY))"
-                                .format(course['TYPE'], course['TYPE'], course['TYPE']))
-            self.cursor.execute("INSERT OR IGNORE INTO {}_SUBCLASS VALUES(?, ?, ?, ?, ?)".format(course_type),
-                                (department, course_num, course_id, key, instructor))
-            # self.cursor.execute("DROP TABLE IF EXISTS {}_SUBCLASS".format(course_type))
-        print(course_types)
-        course_keys = [a + '_KEY' for a in course_types]
-        course_keys = ', '.join(map(str, course_keys))
+        self.cursor.execute("BEGIN TRANSACTION")
+        for c in classes_to_insert:
+            sql_str = """\
+                      INSERT INTO CLASS_DATA(DEPARTMENT, COURSE_NUM, SECTION_ID, \
+                      COURSE_ID, TYPE, DAYS, TIME, LOCATION, ROOM, INSTRUCTOR, DESCRIPTION)  \
+                      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) \
+                    """
+            self.cursor.execute(sql_str,
+                                    (c["DEPARTMENT"],
+                                     c["COURSE_NUM"],
+                                     c["SECTION_ID"],
+                                     c["COURSE_ID"],
+                                     c["TYPE"],
+                                     c["DAYS"],
+                                     c["TIME"],
+                                     c["LOCATION"],
+                                     c["ROOM"],
+                                     c["INSTRUCTOR"],
+                                     c["DESCRIPTION"],
+                                 ))
 
-        self.cursor.execute("DROP TABLE IF EXISTS CLASS_LEGEND")
+        self.cursor.execute("END TRANSACTION")
 
-        self.cursor.execute(
-            "CREATE TABLE CLASS_LEGEND (DEPARTMENT TEXT, COURSE_NUM TEXT, COURSE_ID TEXT,  INSTRUCTOR TEXT, {})"
-                .format(course_keys, course_keys))
+    def process_current_class_set(self, class_set, section_count, department, course_num):
+        ret = []
+        class_sections = []
+        # sorts so has classes with no class_section
+        classes_to_replicate = [c for c in class_set if not c["COURSE_ID"]]
+        classes_to_add = [c for c in class_set if c not in classes_to_replicate]
 
-        print(course_types)
-        self.cursor.execute("CREATE TEMP TABLE DEL (ID)")
+        # can only be one unique copy of var$Class per Class because of COURSE_ID uniqueness
+        for Class in classes_to_add:
+            type_groups = groupby(classes_to_replicate, lambda x: x["TYPE"])
+            cur_class_sections = [[Class]]
+            # groups of replicas based on types
+            for key, type_group in type_groups:
+                type_group = list(type_group)
+                # making temp section for setting later
+                temp_sections = []
+                # adding cartesian product to temp
+                for cur_section in cur_class_sections:
+                    for class_type in type_group:
+                        replica = cur_section.copy()
+                        replica.append(class_type)
+                        temp_sections.append(replica)
+                # setting current to temp
+                cur_class_sections = temp_sections
+            class_sections.extend(cur_class_sections)
 
-        self.cursor.execute("DROP TABLE IF EXISTS TEMP_TAB")
-        self.cursor.execute(
-            "CREATE TABLE TEMP_TAB (DEPARTMENT TEXT, COURSE_NUM TEXT, COURSE_ID TEXT, INSTRUCTOR TEXT, IN_KEY TEXT)")
-
-        self.cursor.execute("DROP TABLE IF EXISTS EVEN_MORE_TEMP_TAB")
-        self.cursor.execute(
-            "CREATE TABLE EVEN_MORE_TEMP_TAB (DEPARTMENT TEXT, COURSE_NUM TEXT, COURSE_ID TEXT, INSTRUCTOR TEXT, IN_KEY TEXT)")
-
-        self.cursor.execute(
-            "INSERT INTO TEMP_TAB(DEPARTMENT, COURSE_NUM, COURSE_ID, INSTRUCTOR, IN_KEY) SELECT I.DEPARTMENT, I.COURSE_NUM, "
-            "I.COURSE_ID, I.INSTRUCTOR, I.IN_KEY FROM IN_SUBCLASS AS I ")
-
-        # Each cl is a subclass
-        for i in range(1, len(course_types)):
-            self.database.commit()
-            t = course_types[i]
-            subclass_table = t + '_SUBCLASS'
-            subclass_type = t + '_KEY'
-
-            # this query takes care of merging through left joins
-            sqlstr = '''
-                    DELETE FROM EVEN_MORE_TEMP_TAB;
-                    ALTER TABLE EVEN_MORE_TEMP_TAB ADD COLUMN {} CHAR(20);
-                    INSERT INTO EVEN_MORE_TEMP_TAB 
-                    
-                    SELECT TT.*, T.{} FROM TEMP_TAB AS TT LEFT JOIN {} AS T ON 
-                     TT.DEPARTMENT=T.DEPARTMENT AND TT.COURSE_NUM=T.COURSE_NUM;
-                     
-                    ALTER TABLE TEMP_TAB ADD COLUMN {} CHAR(20);
-                     '''.format(
-                subclass_type,
-                subclass_type,
-                subclass_table,
-                subclass_type,
-                subclass_type)
-
-            self.cursor.executescript(sqlstr)
-
-            self.cursor.execute("SELECT {} FROM EVEN_MORE_TEMP_TAB WHERE {} IS NOT NULL"
-                                .format(subclass_type, subclass_type))
-            hello = [dict(i) for i in self.cursor.fetchall()]
-            if not hello:
-                sqlstr = "INSERT INTO TEMP_TAB(DEPARTMENT, COURSE_NUM, COURSE_ID, {}, INSTRUCTOR) SELECT * FROM {}" \
-                    .format(subclass_type, subclass_table)
-                self.cursor.execute(sqlstr)
-            else:
-                self.cursor.execute("SELECT {} FROM {}".format(subclass_type, subclass_table))
-                hello = [i[0] for i in self.cursor.fetchall()]
-                for i in hello:
-                    self.cursor.execute(
-                        "SELECT {} FROM EVEN_MORE_TEMP_TAB WHERE {} = ?".format(subclass_type, subclass_type), (i,))
-                    if not self.cursor.fetchall():
-                        self.cursor.execute(
-                            "INSERT INTO EVEN_MORE_TEMP_TAB(DEPARTMENT, COURSE_NUM, COURSE_ID, INSTRUCTOR, {}) "
-                            "SELECT DEPARTMENT, COURSE_NUM, COURSE_ID, INSTRUCTOR, {} FROM {} "
-                            "WHERE {} = ?".format(subclass_type, subclass_type, subclass_table, subclass_type), (i,))
-
-                script = '''
-                DELETE FROM TEMP_TAB;
-                INSERT INTO TEMP_TAB SELECT * FROM EVEN_MORE_TEMP_TAB;
-                '''
-                self.cursor.executescript(script)
-
-        self.cursor.execute("INSERT INTO CLASS_LEGEND SELECT * FROM TEMP_TAB")
-        self.cursor.execute("DROP TABLE TEMP_TAB")
-        self.database.commit()
-        #     cl_list = self.cursor.fetchall()
-        #     for cl in cl_list:
-        #         cl = dict(cl)
-        #         self.cursor.execute(
-        #             "CREATE TEMP TABLE TAB (DEPARTMENT TEXT, COURSE_NUM TEXT, COURSE_ID TEXT, {}, INSTRUCTOR TEXT "
-        #             ")".format(course_keys, course_keys))
-        #
-        #         if cl['COURSE_ID'] != 'None' and cl['COURSE_ID'] is not None:
-        #             self.cursor.execute("SELECT EXISTS(SELECT * FROM CLASS_LEGEND WHERE COURSE_ID = ? "
-        #                                 "LIMIT 1)", (cl['COURSE_ID'],))
-        #             num_found = self.cursor.fetchone()[0]
-        #
-        #             if cl['DEPARTMENT'] == 'CSE' and cl['COURSE_NUM'] == '105':
-        #                 print('hello')
-        #             if num_found == 0:
-        #                 self.cursor.execute("INSERT INTO TAB (DEPARTMENT, COURSE_NUM, COURSE_ID, {}, INSTRUCTOR)"
-        #                                     "VALUES(?, ?, ?, ?, ?)".format(t + '_KEY'),
-        #                                     (cl['DEPARTMENT'], cl['COURSE_NUM'], cl['COURSE_ID'], cl[t + '_KEY'],
-        #                                      cl['INSTRUCTOR']))
-        #             else:
-        #                 self.cursor.execute("UPDATE CLASS_LEGEND SET {} = ? WHERE COURSE_ID = ?"
-        #                                     .format(t + '_KEY'),
-        #                                     (cl[t + '_KEY'], cl['COURSE_ID']))
-        #
-        #         self.cursor.execute("INSERT INTO CLASS_LEGEND SELECT * FROM TAB")
-        #         self.cursor.execute("DROP TABLE IF EXISTS TAB")
-        #
-        # self.cursor.execute(
-        #     "CREATE TEMP TABLE TAB (DEPARTMENT TEXT, COURSE_NUM TEXT, COURSE_ID TEXT, {}, INSTRUCTOR TEXT "
-        #     ")".format(course_keys, course_keys))
-        #
-        # for t in course_types:
-        #     self.cursor.execute(
-        #         "SELECT * FROM {}".format(t + '_SUBCLASS'))
-        #     cl_list = self.cursor.fetchall()
-        #     for cl in cl_list:
-        #         if cl['COURSE_ID'] == "None" or cl['COURSE_ID'] is None:
-        #             self.cursor.execute("INSERT INTO TAB SELECT * FROM CLASS_LEGEND WHERE "
-        #                                 "COURSE_NUM = ? AND INSTRUCTOR = ? AND {} ISNULL ".format(t + '_KEY'),
-        #                                 (cl['COURSE_NUM'], cl['INSTRUCTOR']))
-        #
-        #             self.cursor.execute("INSERT INTO DEL SELECT ROWID FROM CLASS_LEGEND WHERE "
-        #                                 "COURSE_NUM = ? AND INSTRUCTOR = ? AND {} ISNULL ".format(t + '_KEY'),
-        #                                 (cl['COURSE_NUM'], cl['INSTRUCTOR']))
-        #
-        #             self.cursor.execute("UPDATE TAB SET {} = ?".format(t + '_KEY'), (cl[t + '_KEY'],))
-        #
-        #         self.cursor.execute("INSERT INTO CLASS_LEGEND SELECT * FROM TAB")
-        #         self.cursor.execute("DELETE FROM TAB")
-        #     self.cursor.execute("DELETE FROM CLASS_LEGEND WHERE ROWID IN (SELECT ID FROM DEL)")
-        #     self.cursor.execute("DELETE FROM DEL")
-        #
-        # self.cursor.execute("SELECT ID FROM DEL")
-        # # for t in self.cursor.fetchall():
-        # #     d = dict(t)
-        # #     print(d)
-        # # self.database.commit()
-        # # self.database.commit()
-        #
-        # self.cursor.execute("INSERT INTO DATA "
-        #                     "SELECT * FROM CLASS_LEGEND".format(course_keys))
-
-    def create_links(self):
-        self.cursor.execute("SELECT DISTINCT COURSE_NUM FROM CLASSES")
-        class_list = self.cursor.fetchall()
-        for course_num in class_list:
-            self.cursor.execute("SELECT ID, COURSE_ID, DAYS, TYPE "
-                                "FROM CLASSES WHERE COURSE_NUM = ?"
-                                "ORDER BY ID", course_num)
-
-            """
-                The strategy here is to loop through each class database set (Every class that has the same 
-                course num), and then if it is a lecture, create a new row inside the database with the
-                lab, discussion, and final keys not filled up 
-                
-                As we continue to loop through the set of database, we will encounter the corresponding
-                extra classes (the matching discussion section and such), and we will go to our table, 
-                find all the classes with the same course num that don't have any values for the section,
-                and populate it with the correct key.
-                
-                This is how we deal with discussions, labs, and finals sometimes matching to multiple lectures.
-            """
-
-            for class_info in self.cursor.fetchall():
-                print(str(course_num + class_info))
-                # Make sure class is usable
-                # TODO Make the below part dynamic
-                if ClassHolder.is_canceled(class_info) or ClassHolder.is_review_session(class_info):
-                    continue
-                if ClassHolder.get_type(class_info) == 'LE':
-                    ClassHolder.insert_lecture(self.cursor, course_num[0], class_info[0])
-                elif ClassHolder.get_type(class_info) == 'DI':
-                    ClassHolder.insert_discussion(self.cursor, course_num[0], class_info[0])
-                elif ClassHolder.get_type(class_info) == 'FINAL':
-                    ClassHolder.insert_final(self.cursor, course_num[0], class_info[0])
-                elif ClassHolder.get_type(class_info) == 'LA':
-                    ClassHolder.insert_lab(self.cursor, course_num[0], class_info[0])
-                elif ClassHolder.get_type(class_info) == 'SE':
-                    ClassHolder.insert_seminar(self.cursor, course_num[0], class_info[0])
-            print('*' * 10)
-
-    """
-    Make sure that there are no rows where every class (not including final) is null.
-    """
-
-    def validate_database(self):
-        print('Begin validating database.')
-        curr_time = time.time()
-        self.cursor.execute(
-            'DELETE FROM DATA WHERE COURSE_NUM ISNULL OR LECTURE_KEY ISNULL AND DISCUSSION_KEY ISNULL '
-            'AND SEMINAR_KEY ISNULL AND LAB_KEY ISNULL')
-        fin_time = time.time()
-        print('Finished validating database in {} seconds.'.format(fin_time - curr_time))
+        # now we are going to set ids based on class_section
+        for class_section in class_sections:
+            if department not in section_count:
+                section_count[department] = {}
+            if course_num not in section_count[department]:
+                section_count[department][course_num] = 0
+            id = department+course_num
+            for Class in class_section:
+                replica = Class.copy()
+                replica["SECTION_ID"] = id + "$" + str(section_count[department][course_num])
+                ret.append(replica)
+            # incrementing to signify going to next section
+            section_count[department][course_num] += 1
+        return ret
 
     def close(self):
         self.database.commit()
