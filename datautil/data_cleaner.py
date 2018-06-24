@@ -2,7 +2,10 @@ import sqlite3
 import time
 from itertools import groupby, product
 
+import itertools
+
 from settings import DATABASE_PATH
+from timeutil.timeutils import TimeIntervalCollection
 
 """
 Convenience class for holding the keys to the CLASSES table representing
@@ -168,6 +171,8 @@ class Cleaner:
         self.setup_tables()
         self.begin_processing()
         self.close()
+        fin_time = time.time()
+        print('Finished cleaning database in {} seconds.'.format(fin_time-curr_time))
 
     def setup_tables(self):
         self.cursor.execute("DROP TABLE IF EXISTS CLASS_DATA")
@@ -188,6 +193,7 @@ class Cleaner:
     """
     Will store in format with partitions for the classes in the same format : i.e CSE3$0 means section 0 of CSE3.
     """
+
     def process_department(self, department):
         # getting all classes in department in order
         self.cursor.execute("SELECT * FROM CLASSES WHERE DEPARTMENT = ? ORDER BY ID", (department,))
@@ -231,17 +237,17 @@ class Cleaner:
                       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) \
                     """
             self.cursor.execute(sql_str,
-                                    (c["DEPARTMENT"],
-                                     c["COURSE_NUM"],
-                                     c["SECTION_ID"],
-                                     c["COURSE_ID"],
-                                     c["TYPE"],
-                                     c["DAYS"],
-                                     c["TIME"],
-                                     c["LOCATION"],
-                                     c["ROOM"],
-                                     c["INSTRUCTOR"],
-                                     c["DESCRIPTION"],
+                                (c["DEPARTMENT"],
+                                 c["COURSE_NUM"],
+                                 c["SECTION_ID"],
+                                 c["COURSE_ID"],
+                                 c["TYPE"],
+                                 c["DAYS"],
+                                 c["TIME"],
+                                 c["LOCATION"],
+                                 c["ROOM"],
+                                 c["INSTRUCTOR"],
+                                 c["DESCRIPTION"],
                                  ))
 
         self.cursor.execute("END TRANSACTION")
@@ -284,18 +290,62 @@ class Cleaner:
             class_sections.extend(cur_class_sections)
 
         # now we are going to set ids based on class_section
+        # also going to split classes into their subclasses
         for class_section in class_sections:
             if department not in section_count:
                 section_count[department] = {}
             if course_num not in section_count[department]:
                 section_count[department][course_num] = 0
-            id = department+course_num
-            for Class in class_section:
-                replica = Class.copy()
-                replica["SECTION_ID"] = id + "$" + str(section_count[department][course_num])
-                ret.append(replica)
+            id = department + course_num
+            for section in class_section:
+                # setting id based on sectionn
+                section["SECTION_ID"] = id + "$" + str(section_count[department][course_num])
+                subsections = self.split_into_subsections(section)
+
+                # only add if we could create the subsections
+                ret.extend(subsections)
             # incrementing to signify going to next section
             section_count[department][course_num] += 1
+        return ret
+
+    def split_into_subsections(self, section):
+        """
+        Takes in a section and splits it into its subsections for easy insertion into rdbms table.
+
+        :param section: the section to split
+        :return returns a list of subsections
+        """
+
+        ret = []
+        # TimeIntervalCollection functions will parse days and times correctly into lists
+        days = TimeIntervalCollection.get_days(section['DAYS'])
+        # times is a list of TimeInterval objects, want to convert to string
+        times = TimeIntervalCollection.get_times(section['TIME'])
+        for i in range(0, len(times)):
+            # both datetime objects
+            start_time = times[i].start_time
+            end_time = times[i].end_time
+
+            start_time_str = start_time.strftime('%H:%M')
+            end_time_str = end_time.strftime('%H:%M')
+            # combining into one string
+            time_str = "{}-{}".format(start_time_str, end_time_str)
+            times[i] = time_str
+
+
+        # If it had no days or times just return the original
+        if not days or not times:
+            return [section]
+
+        day_time_pairs = list(itertools.zip_longest(days, times,
+                                                    fillvalue=times[len(times) - 1] if len(days) > len(times) else days[
+                                                        len(days) - 1]))
+        for entry in day_time_pairs:
+            # each subsection has mostly the same info as the section
+            subsection = section.copy()
+            subsection['DAYS'] = entry[0]
+            subsection['TIME'] = entry[1]
+            ret.append(subsection)
         return ret
 
     def close(self):
