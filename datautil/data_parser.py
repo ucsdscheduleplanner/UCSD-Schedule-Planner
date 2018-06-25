@@ -61,7 +61,7 @@ class Parser:
                                   attrs={'class': 'crsheader'})
         if course_num:
             self.current_class = course_num[1].text
-            self.description = course_num[2].text.strip()
+            self.description = course_num[2].text.strip().replace('\n', '').replace('\t','')
             # num slots on the top header
             if len(course_num) == 4:
                 self.buffer_buffer.append((department,))

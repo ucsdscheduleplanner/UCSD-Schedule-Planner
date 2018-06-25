@@ -15,6 +15,8 @@ __pycache__
 ./idea/workspace.xml
 *.jar
 
+**/secrets.py
+
 ./node_modules
 node_modules
 coverage
