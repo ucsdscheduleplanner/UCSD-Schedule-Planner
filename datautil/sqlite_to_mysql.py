@@ -43,6 +43,27 @@ for sql_row in class_rows:
                           row["INSTRUCTOR"],
                           row["DESCRIPTION"],
                           ))
+
+""" 
+Making departments
+"""
+mysql_cursor.execute("DROP TABLE IF EXISTS DEPARTMENT")
+mysql_cursor.execute('CREATE TABLE DEPARTMENT (DEPT_CODE TEXT)')
+
+sqlite_cursor.execute("SELECT * FROM DEPARTMENT")
+class_rows = sqlite_cursor.fetchall()
+
+for sql_row in class_rows:
+    sql_str = """\
+                      INSERT INTO DEPARTMENT(DEPT_CODE) \
+                      VALUES (%s) \
+                    """
+    row = dict(sql_row)
+    mysql_cursor.execute(sql_str,
+                         (
+                             row["DEPT_CODE"],
+                         ))
+
 # adding changes
 mysql_db.commit()
 

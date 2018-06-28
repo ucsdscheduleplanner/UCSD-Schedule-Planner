@@ -72,6 +72,7 @@ function dispatchProgress(dispatch) {
 
 export function getSchedule(selectedClasses) {
     return async function (dispatch) {
+        // let redux know that we are creating a scheedule
         dispatch(requestSchedule());
 
         let preferences = [];
@@ -98,6 +99,7 @@ export function getSchedule(selectedClasses) {
             }
         });
 
+        // handles all scchedule generation including the queries for data
         return new ScheduleGenerationBruteForce().generateSchedule(selectedClasses, conflicts, preferences, dispatchProgressFunction)
             .then((schedule) => {
                 dispatch(receiveSchedule(schedule));

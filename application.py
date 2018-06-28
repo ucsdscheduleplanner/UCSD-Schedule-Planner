@@ -1,12 +1,11 @@
 import sqlite3
 
 from flask import Flask, request, jsonify, make_response
-from flask_cors import CORS
 from flask_compress import Compress
+from flask_cors import CORS
 from ics import Calendar, Event
 
 import backend
-from classutil.class_decoders import ClassDecoder
 from settings import DATABASE_PATH
 
 db_connection = sqlite3.connect(DATABASE_PATH)
@@ -25,18 +24,14 @@ The routing backend for the server.
 def return_db_data():
     request_json = request.get_json()
     classes = request_json['classes']
-    ret_classes = [backend.generate_class_versions(i['department'], i['course_num']) for i in classes]
+    ret_classes = {}
 
-    cd = ClassDecoder()
-    ret_dict = {}
-    index = 0
-    for cl_list in ret_classes:
-        temp_list = []
-        for cl in cl_list:
-            temp_list.append(cd.default(cl))
-        ret_dict[classes[index]['class_title']] = temp_list
-        index += 1
-    return jsonify(ret_dict)
+    for Class in classes:
+        department, course_num = Class['department'], Class['course_num']
+        full_name = "{} {}".format(department, course_num)
+        ret_classes[full_name] = backend.generate_class_json(department, course_num)
+
+    return jsonify(ret_classes)
 
 
 @application.route('/api_department', methods={'GET'})
@@ -45,17 +40,10 @@ def return_department_list():
     return jsonify(departments)
 
 
-@application.route('/api_class_types', methods={'POST'})
-def return_class_types():
-    class_types = backend.get_class_types()
-    class_types_dicts = {'CLASS_TYPES': class_types}
-    return jsonify(class_types_dicts)
-
-
 @application.route('/api_classes', methods={'GET'})
 def return_classes():
     department = request.args.get('department')
-    classes = backend.get_class_info_in_department(department)
+    classes = backend.get_all_classes_in(department)
     return jsonify(classes)
 
 
