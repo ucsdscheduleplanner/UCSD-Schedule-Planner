@@ -5,7 +5,7 @@ import pytz
 
 DAY_INDEX = 0
 TIME_INDEX = 1
-PRESET_DAYS = ['M', 'Tu', 'W', 'Th', 'F', ' ']
+PRESET_DAYS = ['M', 'Tu', 'W', 'Th', 'F', 'Sa', 'Su', ' ']
 DayTime = namedtuple(typename='DayTime', field_names='day times')
 TimeInterval = namedtuple(typename='TimeInterval', field_names='start_time end_time midpoint')
 
@@ -93,6 +93,7 @@ class TimeIntervalCollection:
         :param day_list: In the form MWF M, etc.
         :return: an array of days
         """
+
         unsorted_days = []
         ret_days = [None] * len(day_list)
 

@@ -1,7 +1,6 @@
 import {BACKEND_URL} from "../settings";
 import {SimpleIntervalTree} from "../utils/SimpleIntervalTree";
-import {Class} from "../utils/ClassUtils";
-import {generateSchedule} from "./ScheduleGenerator";
+import {Subsection} from "../utils/ClassUtils";
 
 async function requestDirtyData(selectedClasses) {
     let response = await fetch(`${BACKEND_URL}/api_data`, {
@@ -18,10 +17,8 @@ async function requestDirtyData(selectedClasses) {
 // dirty class data is a list
 function cleanData(dirtyClassData) {
     let ret = {};
-    Object.keys(dirtyClassData).map(courseName => {
+    for(let courseName of Object.keys(dirtyClassData)) {
         ret[courseName] = [];
-        let currentList = null;
-        let currentSection = null;
 
         let slowPtr = 0;
         let fastPtr = 0;
@@ -29,44 +26,52 @@ function cleanData(dirtyClassData) {
         let copyCourseData = dirtyClassData[courseName].slice();
         copyCourseData.push({"SECTION_ID": null});
 
-        while(fastPtr < copyCourseData.length) {
+        while (fastPtr < copyCourseData.length) {
             let slowSectionID = copyCourseData[slowPtr]["SECTION_ID"];
             let fastSectionID = copyCourseData[fastPtr]["SECTION_ID"];
 
             if (slowSectionID !== fastSectionID) {
                 // inclusive exclusive for bounds
-                ret[courseName].push(copyCourseData.slice(slowPtr, fastPtr));
+                let subsectionsPerSection = copyCourseData.slice(slowPtr, fastPtr);
+                // converting each one into a subsection
+                subsectionsPerSection = subsectionsPerSection.reduce((ret, subsectionData) => {
+                    let subsection = new Subsection(subsectionData);
+                    if (subsection.type !== "FI" && subsection.type !== "MI") {
+                        ret.push(subsection);
+                    }
+                    return ret;
+                }, []);
+                ret[courseName].push(subsectionsPerSection);
                 slowPtr = fastPtr;
             }
 
             fastPtr++;
         }
-    });
+    }
     // no alterations to input
     return ret;
 }
 
 export function ScheduleGenerationBruteForce() {
-    this.isValid = function(newClass, conflicts, intervalTree) {
-        let addedIntervals = [];
-        for (let subclass of newClass.subclassList) {
-            let timeInterval = subclass.timeInterval;
-            // if we have a conflict, that means we don't care so don't add to the tree
-            if (conflicts[newClass.class_title] && conflicts[newClass.class_title].includes(subclass.type)) {
-                continue;
-            }
-            addedIntervals.push(timeInterval);
-            if (!intervalTree.add(timeInterval)) {
-                // removing intervals we have added
-                // making sure no side effects if unsuccessful
-                addedIntervals.map((interval) => intervalTree.remove(interval));
-                return false;
-            }
+    // subsection has a time interval object, represents a subsection with data
+    this.isValid = function (subsection, conflicts, intervalTree) {
+        let timeInterval = subsection.timeInterval;
+        // if we have a conflict, that means we don't care so don't add to the tree
+        if (conflicts[subsection.classTitle] && conflicts[subsection.classTitle].includes(subsection.type)) {
+            return true;
         }
+
+        if (!intervalTree.add(timeInterval)) {
+            return false;
+        }
+
+        // removing intervals we have added
+        // making sure no side effects if unsuccessful
+        intervalTree.remove(timeInterval);
         return true;
     };
 
-    this._dfs = function(classData, currentSchedule, intervalTree, schedules, conflicts, counter) {
+    this._dfs = function (classData, currentSchedule, intervalTree, schedules, conflicts, counter) {
         if (currentSchedule.length >= classData.length) {
             let score = this.evaluateSchedule(currentSchedule);
             schedules.push([score, currentSchedule]);
@@ -81,19 +86,36 @@ export function ScheduleGenerationBruteForce() {
 
         let currentClassGroup = classData[counter];
         for (let i = 0; i < currentClassGroup.length; i++) {
-            let currentClass = currentClassGroup[i];
-            if (this.isValid(currentClass, conflicts, intervalTree)) {
-                currentSchedule.push(currentClass);
+            // current class group has all the sections for CSE 11
+            // this will be an array of sections
+            // so [[class, class] , [class, class]]
+
+            // current section
+            let currentSection = currentClassGroup[i];
+            let couldAddClass = true;
+            for (let subsection of currentSection) {
+                // if we encounter anything bad at all stop
+                if (!this.isValid(subsection, conflicts, intervalTree)) {
+                    couldAddClass = false;
+                }
+                intervalTree.add(subsection.timeInterval);
+            }
+
+            // we have chosen this schedule to DFS from
+            if (couldAddClass) {
+                currentSchedule.push(currentSection);
                 this._dfs(classData, currentSchedule, intervalTree, schedules, conflicts, counter + 1);
-                for (let j = counter; j < currentSchedule.length; j++) {
-                    currentSchedule[j].timeIntervals.forEach(timeInterval => intervalTree.remove(timeInterval));
+                // removing all intervals we added
+                for (let subsection of currentSection) {
+                    intervalTree.remove(subsection.timeInterval);
                 }
                 currentSchedule = currentSchedule.slice(0, counter);
             }
+            // otherwise we do nothing
         }
     };
 
-    this.dfs = function(classData, conflicts) {
+    this.dfs = function (classData, conflicts) {
         let schedules = [];
         // set num schedules to this, note that it will not be set with the ones after
         // due to javascript pass by value
@@ -113,7 +135,7 @@ export function ScheduleGenerationBruteForce() {
         }
     };
 
-    this.generateSchedule = async function(selectedClasses, conflicts = [], preferences = [], dispatchProgressFunction) {
+    this.generateSchedule = async function (selectedClasses, conflicts = [], preferences = [], dispatchProgressFunction) {
         this.dispatchProgressFunction = dispatchProgressFunction;
         this.numSchedules = 0;
         this.totalPossibleSchedules = 1;
@@ -127,22 +149,21 @@ export function ScheduleGenerationBruteForce() {
         // is a class with its times and such
         let dirtyClassJSON = await requestDirtyData(selectedClassesJSON);
         // class will put the data into
-        // CSE 11 -> section 0, section 1
+        // CSE 11 -> section 0 [class, class], section 1 [class, class]
         let classData = cleanData(dirtyClassJSON);
-        // counter of where we are in the dfs
-        let counter = 0;
 
-        // further filtering into just sections
-        let classSections = [];
+        // input is a 2D array where each element is a list of all the sections of a specific class
+        // converting dict where key is courseNum to 2D array
+        let inputToDFS = [];
 
         Object.keys(classData).forEach(courseNum => {
-            // class group is an array of all the different sections that are the same class
+            // class sections for course num is an array of all the different sections that are the same class
+            // CSE 11: [[class, class], [class, class]]
             let classSectionsForCourseNum = classData[courseNum];
-            // multiplying to see total number of schedules
+            // multiplying to see total number of schedules because length of classSectionsForCourseNum gives num sections
             this.totalPossibleSchedules *= classSectionsForCourseNum.length;
 
-            // adding to total count
-            classSectionsForCourseNum.map(classSectionForCourseNum => classSections.push(classSectionForCourseNum));
+            inputToDFS.push(classSectionsForCourseNum);
         });
         // now we have an array where each index is a Class Group
         // we can start brute force dfs now
@@ -156,7 +177,7 @@ export function ScheduleGenerationBruteForce() {
             }, 0);
         };
 
-        return this.dfs(classSections, conflicts);
-    }
+        return this.dfs(inputToDFS, conflicts);
+    };
 }
 

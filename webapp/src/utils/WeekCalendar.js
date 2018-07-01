@@ -15,35 +15,27 @@ class WeekCalendar extends PureComponent {
             events: []
         };
 
-        for(let Class of props.schedule) {
-            for(let subclass of Class.subclassList) {
-                let timeInterval = subclass.timeInterval;
-                let startTime = new Date();
-                let endTime = new Date();
-
-                let backendStart = timeInterval["start"];
-                let backendEnd = timeInterval["end"];
-
-                let currentDay = startTime.getDay();
-                let dist = backendStart.getDay() - currentDay;
-                startTime.setDate(startTime.getDate() + dist);
-                dist = backendEnd.getDay() - currentDay;
-                endTime.setDate(endTime.getDate() + dist);
-
-                startTime.setHours(backendStart.getHours(), backendStart.getMinutes(), backendStart.getSeconds());
-                endTime.setHours(backendEnd.getHours(), backendEnd.getMinutes(), backendEnd.getSeconds());
-
-                this.state.events.push({
-                   start: startTime,
-                   end: endTime,
-                   title: `${Class.class_title} ${subclass.type}`
-                });
-            }
+        // schedule should look like a 2D array where each element is a list of subsections
+        let subsections = this.flattenSchedule(props.schedule);
+        for (let subsection of subsections) {
+            let startTime = subsection.timeInterval['start'];
+            let endTime = subsection.timeInterval['end'];
+            this.state.events.push({
+                start: startTime,
+                end: endTime,
+                title: `${subsection.classTitle} ${subsection.type}`
+            });
         }
     }
 
-    replaceCodeWithName(str) {
-        //return str.split(" ").map((element) => codeToClassType[element])
+    flattenSchedule(schedule) {
+        let ret = [];
+        for (let Class of schedule) {
+            for (let subsection of Class) {
+                ret.push(subsection);
+            }
+        }
+        return ret;
     }
 
     render() {
@@ -58,7 +50,7 @@ class WeekCalendar extends PureComponent {
             <div className="calendar-content">
                 <Growl ref={(el) => {
                     this.message = el;
-                    if(this.message && that.state.events.length === 0) {
+                    if (this.message && that.state.events.length === 0) {
                         this.message.show({severity: "error", summary: "Failed to generate schedule.", life: 1000});
                     }
                 }}/>

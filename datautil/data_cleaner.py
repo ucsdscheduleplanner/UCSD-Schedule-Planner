@@ -8,151 +8,6 @@ from settings import DATABASE_PATH
 from timeutil.timeutils import TimeIntervalCollection
 
 """
-Convenience class for holding the keys to the CLASSES table representing
-the subclasses in this specific class.
-"""
-
-subclassDBs = [
-    "AC_KEY",
-    "CL_KEY",
-    "CO_KEY",
-    "DI_KEY",
-    "FI_KEY",
-    "FM_KEY",
-    "FW_KEY",
-    "IN_KEY",
-    "IT_KEY",
-    "LA_KEY",
-    "LE_KEY",
-    "MI_KEY",
-    "MU_KEY",
-    "OT_KEY",
-    "PB_KEY",
-    "PR_KEY",
-    "RE_KEY",
-    "SE_KEY",
-    "ST_KEY",
-    "TU_KEY",
-]
-
-
-class ClassHolder:
-    def __init__(self):
-        """
-        There is a class key for each type of class. That would be lectures, discussions,
-        finals, etc. At the moment, we have to add a new key if we want to make
-        adjustments to a new type.
-        """
-        self.course_num = None
-        self.lab_key = None
-        self.lecture_key = None
-        self.discussion_key = None
-        self.seminar_key = None
-        self.final_key = None
-
-    @staticmethod
-    def get_type(row):
-        for col in row:
-            if col in ('LE', 'LA', 'DI', 'SE', 'FINAL'):
-                return col
-        return None
-
-    """
-    Returns if the class is cancelled.
-    """
-
-    @staticmethod
-    def is_canceled(row):
-        if 'cancelled' in row:
-            return True
-        return False
-
-    """
-    Returns if the class is a review session.
-    """
-
-    @staticmethod
-    def is_review_session(row):
-        if 'Review Sessions' in row:
-            return True
-        return False
-
-    """
-    The general strategy for the following methods is to look at the table and see if there are
-    any column with the same COURSE_NUM but a null corresponding key.
-         
-    That means that for insert lecture, the code will look at the database for any rows with 
-    the same COURSE_NUM but no lecture key. 
-    
-    Because of how the data is funneled in, there should be no cases where a lecture key corresponds
-    to the right class but the wrong class section (Could still happen).
-    
-    If there is no corresponding COURSE_NUM row, then it will create a row.
-    The only exception is the final, where an extra final is not enough to make a class by itself. 
-    """
-
-    @classmethod
-    def insert_lecture(self, cursor, course_num, lecture_key):
-        cursor.execute('SELECT COUNT(1) FROM DATA WHERE COURSE_NUM = ? AND LECTURE_KEY IS NULL', (course_num,))
-        num = cursor.fetchone()
-        if num[0] > 0:
-            cursor.execute('UPDATE DATA SET LECTURE_KEY = ? WHERE COURSE_NUM = ? AND LECTURE_KEY IS NULL',
-                           (lecture_key, course_num))
-        else:
-            cursor.execute('INSERT INTO DATA VALUES(?,?,?,?,?,?,?)',
-                           (None, course_num, lecture_key, None, None, None, None))
-
-    @staticmethod
-    def insert_discussion(cursor, course_num, discussion_key):
-        cursor.execute('SELECT COUNT(1) FROM DATA WHERE COURSE_NUM = ? AND DISCUSSION_KEY IS NULL', (course_num,))
-        num = cursor.fetchone()
-        if num[0] > 0:
-            cursor.execute('UPDATE DATA SET DISCUSSION_KEY = ? WHERE COURSE_NUM = ? AND DISCUSSION_KEY IS NULL',
-                           (discussion_key, course_num))
-        else:
-            cursor.execute('INSERT INTO DATA VALUES(?,?,?,?,?,?,?)',
-                           (None, course_num, None, None, discussion_key, None, None))
-
-    @staticmethod
-    def insert_lab(cursor, course_num, lab_key):
-        cursor.execute('SELECT COUNT(1) FROM DATA WHERE COURSE_NUM = ? AND LAB_KEY IS NULL', (course_num,))
-        num = cursor.fetchone()
-        if num[0] > 0:
-            cursor.execute('UPDATE DATA SET LAB_KEY = ? WHERE COURSE_NUM = ? AND LAB_KEY IS NULL',
-                           (lab_key, course_num))
-        else:
-            cursor.execute('INSERT INTO DATA VALUES(?,?,?,?,?,?,?)',
-                           (None, course_num, None, lab_key, None, None, None))
-
-    @staticmethod
-    def insert_seminar(cursor, course_num, seminar_key):
-        cursor.execute('SELECT COUNT(1) FROM DATA WHERE COURSE_NUM = ? AND SEMINAR_KEY IS NULL', (seminar_key,))
-        num = cursor.fetchone()
-        if num[0] > 0:
-            cursor.execute('UPDATE DATA SET SEMINAR_KEY = ? WHERE COURSE_NUM = ? AND SEMINAR_KEY IS NULL',
-                           (seminar_key, course_num))
-        else:
-            cursor.execute('INSERT INTO DATA VALUES(?,?,?,?,?,?,?)',
-                           (None, course_num, None, None, None, seminar_key, None))
-
-    """
-    Important! This method is slightly different
-    """
-
-    @staticmethod
-    def insert_final(cursor, course_num, final_key):
-        # Difference is in the line below with not testing if the FINAL_KEY is null
-        cursor.execute('SELECT COUNT(1) FROM DATA WHERE COURSE_NUM = ?', (course_num,))
-        num = cursor.fetchone()
-        if num[0] > 0:
-            cursor.execute('UPDATE DATA SET FINAL_KEY = ? WHERE COURSE_NUM = ? AND FINAL_KEY IS NULL',
-                           (final_key, course_num))
-        else:
-            cursor.execute('INSERT INTO DATA VALUES(?,?,?,?,?,?,?)',
-                           (None, course_num, None, None, None, None, final_key))
-
-
-"""
 Will go through every row of the CLASSES table and sort them correctly into the
 DATA table
 """
@@ -172,7 +27,7 @@ class Cleaner:
         self.begin_processing()
         self.close()
         fin_time = time.time()
-        print('Finished cleaning database in {} seconds.'.format(fin_time-curr_time))
+        print('Finished cleaning database in {} seconds.'.format(fin_time - curr_time))
 
     def setup_tables(self):
         self.cursor.execute("DROP TABLE IF EXISTS CLASS_DATA")
@@ -332,11 +187,11 @@ class Cleaner:
             time_str = "{}-{}".format(start_time_str, end_time_str)
             times[i] = time_str
 
-
         # If it had no days or times just return the original
         if not days or not times:
             return [section]
 
+        # make each day go with a time
         day_time_pairs = list(itertools.zip_longest(days, times,
                                                     fillvalue=times[len(times) - 1] if len(days) > len(times) else days[
                                                         len(days) - 1]))

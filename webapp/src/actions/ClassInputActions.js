@@ -1,5 +1,4 @@
 import {BACKEND_URL} from "../settings";
-import ClassListContainer from "../containers/ClassListContainer";
 
 
 const codeToClassType = {
@@ -288,7 +287,7 @@ function fetchClasses(department) {
                     let instructorsPerClass = {};
 
                     // classArrKey is the course num
-                    Object.keys(res).map((classArrKey) => {
+                    for(let classArrKey of Object.keys(res)) {
                         // classArr holds an array of all the subsections of each class
                         // for each class subsection, meaning for cse 11 lecture then lab...
                         let classArr = res[classArrKey];
@@ -296,7 +295,7 @@ function fetchClasses(department) {
                         classTypesPerClass[classArrKey] = new Set();
                         unsorted.add(classArrKey);
 
-                        classArr.map((Class) => {
+                        for(let Class of classArr) {
                             let instructors = [...Class["INSTRUCTOR"].split("\n")];
                             // filter them first before adding
                             // just in case we have multiple instructors on one line
@@ -309,7 +308,7 @@ function fetchClasses(department) {
                             let classType = Class["TYPE"];
                             // adding to set
                             classTypesPerClass[classArrKey].add(classType);
-                        });
+                        }
 
                         // converting back into set
                         instructorsPerClass[classArrKey] = [...instructorsPerClass[classArrKey]];
@@ -318,7 +317,7 @@ function fetchClasses(department) {
                                 .map((classTypeStr) => {
                                     return {label: codeToClassType[classTypeStr], value: codeToClassType[classTypeStr]};
                                 });
-                    });
+                    }
 
                     // sorting based on comparator for the course nums
                     let sortedClasses = [...unsorted].sort((element1, element2) => {
@@ -334,9 +333,9 @@ function fetchClasses(department) {
                         return 0;
                     });
 
-                    Object.keys(instructorsPerClass).map((key) => {
+                    for(let key of Object.keys(instructorsPerClass)) {
                         instructorsPerClass[key] = [...instructorsPerClass[key]];
-                    });
+                    }
 
                     resolve({
                         classes: sortedClasses,

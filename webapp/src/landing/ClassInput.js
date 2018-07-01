@@ -2,7 +2,6 @@ import React, {PureComponent} from 'react';
 import {Rating} from "primereact/components/rating/Rating";
 import {ListBox} from "primereact/components/listbox/ListBox";
 import {Button} from "primereact/components/button/Button";
-import {Messages} from 'primereact/components/messages/Messages';
 import {Growl} from 'primereact/components/growl/Growl';
 import {AutoComplete} from "primereact/components/autocomplete/AutoComplete";
 import "../css/ClassInput.css";
@@ -185,7 +184,6 @@ export default class ClassInput extends PureComponent {
             </div>
         );
 
-        let that = this;
         return (
             <React.Fragment>
                 <div className="content">
