@@ -37,6 +37,8 @@ export default class ClassInput extends PureComponent {
     completeClassSuggestions(event) {
         // hopefully this will never trigger
         if (!this.props.classes[this.props.currentDepartment]) return;
+
+        // hits the caching layer here
         let classOptions = this.props.classes[this.props.currentDepartment].filter((Class) => {
             if(Class) return Class.toLowerCase().startsWith(event.query.toLowerCase());
             return false;
@@ -46,6 +48,8 @@ export default class ClassInput extends PureComponent {
 
     completeInstructorSuggestions(event) {
         if (this.props.instructorsPerClass && this.props.instructorsPerClass[this.props.currentDepartment]) {
+
+            // hits the caching layer here
             let instructorOptions = this.props.instructorsPerClass[this.props.currentDepartment][this.props.currentCourseNum]
                 .filter((instructor) => {
                 if(instructor) return instructor.toLowerCase().startsWith(event.query.toLowerCase());
@@ -200,7 +204,10 @@ export default class ClassInput extends PureComponent {
                                       completeMethod={this.completeDepartmentSuggestions.bind(this)}
                                       onSelect={(e) => {
                                           // don't requery if we have the class already
-                                          if (this.props.classes[e.value]) return;
+                                          if (this.props.classes[e.value]) {
+                                              console.info("Found classes cached, will use that.");
+                                              return;
+                                          }
                                           this.props.getClasses.call(this, e.value);
                                           // check if the thing we selected is the same as the one we already had
                                           if (e.value !== this.props.currentDepartment) {
@@ -211,7 +218,10 @@ export default class ClassInput extends PureComponent {
                                       }}
                                       onBlur={() => {
                                           // don't requery if we have the class already
-                                          if (this.props.classes[this.props.currentDepartment]) return;
+                                          if (this.props.classes[this.props.currentDepartment]){
+                                              console.info("Found classes cached, will use that.");
+                                              return;
+                                          }
                                           // don't query if it is not in our departments
                                           if (!this.props.departments.includes(this.props.currentDepartment)) return;
                                           this.props.getClasses.call(this, this.props.currentDepartment);

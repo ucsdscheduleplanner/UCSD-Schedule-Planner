@@ -39,13 +39,16 @@ export default function ClassInput(state = {
         case RECEIVE_CLASS_PER_DEPARTMENT:
             // getting department
             let newDepartment = action.department;
-            // copying over
+
+            // caching classes per department
             let newClassDict = Object.assign({}, state.classes);
-            // setting new department key to classes
             newClassDict[newDepartment] = action.classes;
+
+            // caching instructors
             let newInstructorDict = Object.assign({}, state.instructorsPerClass);
             newInstructorDict[newDepartment] = action.instructorsPerClass;
 
+            // caching class types
             let newClassTypeDict = Object.assign({}, state.classTypesPerClass);
             newClassTypeDict[newDepartment] = action.classTypesPerClass;
 
