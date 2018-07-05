@@ -11,8 +11,8 @@ export default function ClassInput(state = {
     // classes will be a dict where each value is an array of
     // classes and each key is a department
     classes: {},
-    instructorsPerClass: [],
-    classTypesPerClass: [],
+    instructorsPerClass: {},
+    classTypesPerClass: {},
 
     selectedConflicts: [],
     currentInstructor: null,
@@ -39,15 +39,24 @@ export default function ClassInput(state = {
         case RECEIVE_CLASS_PER_DEPARTMENT:
             // getting department
             let newDepartment = action.department;
-            // copying over
+
+            // caching classes per department
             let newClassDict = Object.assign({}, state.classes);
-            // setting new department key to classes
             newClassDict[newDepartment] = action.classes;
+
+            // caching instructors
+            let newInstructorDict = Object.assign({}, state.instructorsPerClass);
+            newInstructorDict[newDepartment] = action.instructorsPerClass;
+
+            // caching class types
+            let newClassTypeDict = Object.assign({}, state.classTypesPerClass);
+            newClassTypeDict[newDepartment] = action.classTypesPerClass;
+
             return Object.assign({}, state, {
                 requesting: action.requesting,
                 classes: newClassDict,
-                instructorsPerClass: action.instructorsPerClass,
-                classTypesPerClass: action.classTypesPerClass
+                instructorsPerClass: newInstructorDict,
+                classTypesPerClass: newClassTypeDict
             });
         case SET_CURRENT_COURSE_NUM:
             return Object.assign({}, state, {

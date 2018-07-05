@@ -2,26 +2,26 @@ import {BACKEND_URL} from "../settings";
 
 
 const codeToClassType = {
-    "AC_KEY": "Activity",
-    "CL_KEY": "Clinical Clerkship",
-    "CO_KEY": "Conference",
-    "DI_KEY": "Discussion",
-    "FI_KEY": "Final Exam",
-    "FM_KEY": "Film",
-    "FW_KEY": "Fieldwork",
-    "IN_KEY": "Independent Study",
-    "IT_KEY": "Internship",
-    "LA_KEY": "Lab",
-    "LE_KEY": "Lecture",
-    "MI_KEY": "Midterm",
-    "MU_KEY": "Make-up Session",
-    "OT_KEY": "Other Additional Meeting",
-    "PB_KEY": "Problem Session",
-    "PR_KEY": "Practicum",
-    "RE_KEY": "Review Session",
-    "SE_KEY": "Seminar",
-    "ST_KEY": "Studio",
-    "TU_KEY": "Tutorial",
+    "AC": "Activity",
+    "CL": "Clinical Clerkship",
+    "CO": "Conference",
+    "DI": "Discussion",
+    "FI": "Final Exam",
+    "FM": "Film",
+    "FW": "Fieldwork",
+    "IN": "Independent Study",
+    "IT": "Internship",
+    "LA": "Lab",
+    "LE": "Lecture",
+    "MI": "Midterm",
+    "MU": "Make-up Session",
+    "OT": "Other Additional Meeting",
+    "PB": "Problem Session",
+    "PR": "Practicum",
+    "RE": "Review Session",
+    "SE": "Seminar",
+    "ST": "Studio",
+    "TU": "Tutorial",
 };
 
 export const classTypeToCode = {
@@ -271,72 +271,78 @@ function fetchDepartments() {
  */
 function fetchClasses(department) {
     return new Promise((resolve, reject) => {
-        fetch(`${BACKEND_URL}/api_classes?department=${department}`, {
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            method: 'get'
-        })
-            .then(res => res.json())
-            .then(res => {
-                res = res["COURSE_NUMS"];
-                // putting the response inside unsorted list
-                let unsorted = new Set();
-                let classTypesPerClass = {};
-                let instructorsPerClass = {};
+            fetch(`${BACKEND_URL}/api_classes?department=${department}`, {
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                method: 'get'
+            })
+                .then(res => res.json())
+                .then(res => {
+                    res = res["COURSE_NUMS"];
+                    // putting the response inside unsorted list
+                    let unsorted = new Set();
+                    let classTypesPerClass = {};
+                    let instructorsPerClass = {};
 
-                Object.values(res).map((dict) => {
-                    dict.map((Class) => {
-                        unsorted.add(Class["COURSE_NUM"]);
+                    // classArrKey is the course num
+                    for(let classArrKey of Object.keys(res)) {
+                        // classArr holds an array of all the subsections of each class
+                        // for each class subsection, meaning for cse 11 lecture then lab...
+                        let classArr = res[classArrKey];
+                        instructorsPerClass[classArrKey] = new Set();
+                        classTypesPerClass[classArrKey] = new Set();
+                        unsorted.add(classArrKey);
 
-                        // handling instructors
-                        if (instructorsPerClass[Class["COURSE_NUM"]] === null || instructorsPerClass[Class["COURSE_NUM"]] === undefined) {
-                            instructorsPerClass[Class["COURSE_NUM"]] = new Set();
+                        for(let Class of classArr) {
+                            let instructors = [...Class["INSTRUCTOR"].split("\n")];
+                            // filter them first before adding
+                            // just in case we have multiple instructors on one line
+                            instructors = instructors
+                                .filter((instructor) => instructor.length > 0)
+                                .map((instructor) => instructor.trim());
+                            // adding to set
+                            instructorsPerClass[classArrKey].add(...instructors);
+
+                            let classType = Class["TYPE"];
+                            // adding to set
+                            classTypesPerClass[classArrKey].add(classType);
                         }
 
-                        // getting instructors split by white space
-                        let instructors = [...Class["INSTRUCTOR"].split("\n")];
-                        // filter them first before adding
-                        instructors = instructors
-                            .filter((instructor) => instructor.length > 0)
-                            .map((instructor) => instructor.trim());
-                        // adding to set
-                        instructorsPerClass[Class["COURSE_NUM"]].add(...instructors);
+                        // converting back into set
+                        instructorsPerClass[classArrKey] = [...instructorsPerClass[classArrKey]];
+                        classTypesPerClass[classArrKey] = [...classTypesPerClass[classArrKey]]
+                            .sort((a, b) => codeKeyToVal[a] - codeKeyToVal[b])
+                                .map((classTypeStr) => {
+                                    return {label: codeToClassType[classTypeStr], value: codeToClassType[classTypeStr]};
+                                });
+                    }
 
-                        // should all be the same so can filter
-                        classTypesPerClass[Class["COURSE_NUM"]] = Object.keys(Class).filter((property) => {
-                            return property.endsWith("KEY") && Class[property] !== null;
-                        }).sort((a, b) => codeKeyToVal[a] - codeKeyToVal[b])
-                            .map((classTypeStr) => {
-                                return {label: codeToClassType[classTypeStr], value: codeToClassType[classTypeStr]};
-                            });
+                    // sorting based on comparator for the course nums
+                    let sortedClasses = [...unsorted].sort((element1, element2) => {
+                        // match numerically
+                        let num1 = parseInt(element1.match(/\d+/)[0], 10);
+                        let num2 = parseInt(element2.match(/\d+/)[0], 10);
+
+                        if (num1 < num2) return -1;
+                        if (num2 < num1) return 1;
+                        // checking lexicographically if they are the same number
+                        if (element1 < element2) return -1;
+                        if (element2 < element1) return 1;
+                        return 0;
                     });
-                });
 
-                // sorting based on comparator for the course nums
-                let sortedClasses = [...unsorted].sort((element1, element2) => {
-                    // match numerically
-                    let num1 = parseInt(element1.match(/\d+/)[0], 10);
-                    let num2 = parseInt(element2.match(/\d+/)[0], 10);
+                    for(let key of Object.keys(instructorsPerClass)) {
+                        instructorsPerClass[key] = [...instructorsPerClass[key]];
+                    }
 
-                    if (num1 < num2) return -1;
-                    if (num2 < num1) return 1;
-                    // checking lexicographically if they are the same number
-                    if (element1 < element2) return -1;
-                    if (element2 < element1) return 1;
-                    return 0;
-                });
-
-                Object.keys(instructorsPerClass).map((key) => {
-                    instructorsPerClass[key] = [...instructorsPerClass[key]];
-                });
-
-                resolve({
-                    classes: sortedClasses,
-                    classTypesPerClass: classTypesPerClass,
-                    instructorsPerClass: instructorsPerClass
-                });
-            }).catch(error => reject(error).catch(error => reject(error)));
-    });
+                    resolve({
+                        classes: sortedClasses,
+                        classTypesPerClass: classTypesPerClass,
+                        instructorsPerClass: instructorsPerClass
+                    });
+                }).catch(error => reject(error).catch(error => reject(error)));
+        }
+    )
 }

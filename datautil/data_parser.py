@@ -1,6 +1,7 @@
 import os
 import sqlite3
 import bs4
+import re
 import time
 from settings import HTML_STORAGE, DATABASE_PATH, HOME_DIR
 
@@ -23,6 +24,7 @@ class Parser:
         self.buffer = []
 
         self.current_class = None
+        self.description = None
 
     def parse(self):
         print('Beginning parsing.')
@@ -36,7 +38,11 @@ class Parser:
     def parse_data(self):
         for root, dirs, files in os.walk(os.curdir):
             for dir in dirs:
-                for file in os.listdir(dir):
+                print("Current department: {}".format(dir))
+                files = os.listdir(dir)
+                # just to sort based on number
+                files.sort(key=lambda x: int(re.findall('[0-9]+', x)[0]))
+                for file in files:
                     with open(os.path.join(dir, file)) as html:
                         # Use lxml for parsing
                         soup = bs4.BeautifulSoup(html, 'lxml')
@@ -55,6 +61,10 @@ class Parser:
                                   attrs={'class': 'crsheader'})
         if course_num:
             self.current_class = course_num[1].text
+            self.description = course_num[2].text.strip().replace('\n', '').replace('\t','')
+            # num slots on the top header
+            if len(course_num) == 4:
+                self.buffer_buffer.append((department,))
 
         info = row.find_all(name='td',
                             attrs={'class': 'brdr'})
@@ -91,66 +101,10 @@ class Parser:
                 location,
                 room,
                 instructor,
-                ""
+                self.description,
             )
 
-            if ret_info not in self.buffer_buffer:
-                self.buffer_buffer.append(ret_info)
-                print('*' * 10)
-                print(ret_info)
-
-
-
-
-            # section_id = row.find(name='td', attrs={'role': 'gridcell',
-            #                                         'aria-describedby': 'search-div-b-table_SECTION_NUMBER'})
-            # class_type = row.find(name='td', attrs={'role': 'gridcell',
-            #                                         'aria-describedby': 'search-div-b-table_FK_CDI_INSTR_TYPE'})
-            # day = row.find(name='td',
-            #              attrs={'role': 'gridcell',
-            #                     'aria-describedby': 'search-div-b-table_DAY_CODE'})
-            # class_time = row.find(name='td',
-            #               attrs={'role': 'gridcell',
-            #                      'aria-describedby': 'search-div-b-table_coltime'})
-            # location = row.find(name='td',
-            #                   attrs={'role': 'gridcell',
-            #                          'aria-describedby': 'search-div-b-table_BLDG_CODE'})
-            # room = row.find(name='td',
-            #               attrs={'role': 'gridcell',
-            #                      'aria-describedby': 'search-div-b-table_ROOM_CODE'})
-            # instructor = row.find(name='td',
-            #                     attrs={'role': 'gridcell',
-            #                            'aria-describedby': 'search-div-b-table_PERSON_FULL_NAME'})
-
-            # # Check if nothing is null
-            # if None not in (header, section_id, class_type, day, class_time, location, room, instructor):
-            #     name_desc = header.find_all(name='td')
-            #
-            #     course_num = ' '.join(name_desc[0].text.split())
-            #     department = course_num.split(' ')[0]
-            #     section_id = ' '.join(section_id.text.split())
-            #     class_type = ' '.join(class_type.text.split())
-            #     day = ' '.join(day.text.split())
-            #     class_time = ' '.join(class_time.text.split())
-            #     location = ' '.join(location.text.split())
-            #     room = ' '.join(room.text.split())
-            #     instructor = ' '.join(instructor.text.split())
-            #     description = ' '.join(name_desc[1].text.split())
-            #
-            #     # Dirty data with possible errors
-            #     info = [
-            #         department, course_num, section_id,
-            #         class_type, day, class_time,
-            #         location, room, instructor,
-            #         description
-            #     ]
-            #
-            #     # Passing in a list which will be converted to tuple
-            #     info = self.validate_info(info)
-            #     if info not in self.buffer_buffer:
-            #         self.buffer_buffer.append(info)
-            #         print('*' * 10)
-            #         print(info)
+            self.buffer_buffer.append(ret_info)
 
     """
     Method to make final alterations to the dataset. 
@@ -171,13 +125,16 @@ class Parser:
         self.cursor.execute("CREATE TABLE CLASSES"
                             "(ID INTEGER PRIMARY KEY, DEPARTMENT TEXT, COURSE_NUM TEXT, COURSE_ID TEXT, "
                             "TYPE TEXT, DAYS TEXT, TIME TEXT, LOCATION TEXT, ROOM TEXT, "
-                            "INSTRUCTOR TEXT, DESCRIPTION TEXT,"
-                            "UNIQUE(COURSE_NUM, COURSE_ID, TYPE, DAYS, TIME, LOCATION, ROOM, INSTRUCTOR))")
+                            "INSTRUCTOR TEXT, DESCRIPTION TEXT)")
 
         # TODO Make database insertion quicker
         self.cursor.execute("BEGIN TRANSACTION")
         for info in self.buffer_buffer:
-            self.cursor.execute("INSERT OR IGNORE INTO CLASSES VALUES(?,?,?,?,?,?,?,?, ?,?,?)", (None,) + info)
+            if len(info) > 1:
+                self.cursor.execute("INSERT OR IGNORE INTO CLASSES VALUES(?,?,?,?,?,?,?,?,?,?,?)", (None,) + info)
+            else:
+                self.cursor.execute("INSERT INTO CLASSES(ID, DEPARTMENT) VALUES(?, ?)", (None,) + info)
+        self.cursor.execute("END TRANSACTION")
 
     def close(self):
         self.connection.commit()

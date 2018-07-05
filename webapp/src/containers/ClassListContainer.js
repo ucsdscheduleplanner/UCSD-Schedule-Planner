@@ -3,6 +3,7 @@ import {connect} from 'react-redux';
 import ClassList from "../landing/ClassList";
 import {bindActionCreators} from "redux";
 import {enterEditMode, removeClass} from "../actions/ClassInputActions";
+import {exitCalendarMode} from "../actions/ScheduleGenerationActions";
 
 class ClassListContainer extends Component {
 
@@ -10,6 +11,7 @@ class ClassListContainer extends Component {
         return <ClassList
             removeClass={this.props.removeClass}
             enterEditMode={this.props.enterEditMode}
+            exitCalendarMode={this.props.exitCalendarMode}
 
             selectedClasses={this.props.selectedClasses}
         />
@@ -25,7 +27,8 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
     return bindActionCreators({
         removeClass: removeClass,
-        enterEditMode: enterEditMode
+        enterEditMode: enterEditMode,
+        exitCalendarMode: exitCalendarMode,
     }, dispatch);
 }
 

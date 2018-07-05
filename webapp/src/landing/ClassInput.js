@@ -2,7 +2,6 @@ import React, {PureComponent} from 'react';
 import {Rating} from "primereact/components/rating/Rating";
 import {ListBox} from "primereact/components/listbox/ListBox";
 import {Button} from "primereact/components/button/Button";
-import {Messages} from 'primereact/components/messages/Messages';
 import {Growl} from 'primereact/components/growl/Growl';
 import {AutoComplete} from "primereact/components/autocomplete/AutoComplete";
 import "../css/ClassInput.css";
@@ -38,17 +37,38 @@ export default class ClassInput extends PureComponent {
     completeClassSuggestions(event) {
         // hopefully this will never trigger
         if (!this.props.classes[this.props.currentDepartment]) return;
+
+        // hits the caching layer here
         let classOptions = this.props.classes[this.props.currentDepartment].filter((Class) => {
-            return Class.toLowerCase().startsWith(event.query.toLowerCase());
+            if(Class) return Class.toLowerCase().startsWith(event.query.toLowerCase());
+            return false;
         });
         this.setState({classOptions: classOptions});
     }
 
     completeInstructorSuggestions(event) {
-        let instructorOptions = this.props.instructorsPerClass[this.props.currentCourseNum].filter((instructor) => {
-            return instructor.toLowerCase().startsWith(event.query.toLowerCase());
-        });
-        this.setState({instructorOptions: instructorOptions});
+        if (this.props.instructorsPerClass && this.props.instructorsPerClass[this.props.currentDepartment]) {
+
+            // hits the caching layer here
+            let instructorOptions = this.props.instructorsPerClass[this.props.currentDepartment][this.props.currentCourseNum]
+                .filter((instructor) => {
+                if(instructor) return instructor.toLowerCase().startsWith(event.query.toLowerCase());
+                return false;
+                });
+            this.setState({instructorOptions: instructorOptions});
+        }
+    }
+
+    getClassTypeOptions(courseNum) {
+        if (this.props.classTypesPerClass && this.props.classTypesPerClass[this.props.currentDepartment]
+            && this.props.classTypesPerClass[this.props.currentDepartment][courseNum]) {
+            // filtering midterms and finals for now
+            // TODO find way to mess with labels and values to make this cleaner and less shaky
+            return this.props.classTypesPerClass[this.props.currentDepartment][courseNum].filter((classType) => {
+                return classType["label"] !== "Final Exam" && classType["label"] !== "Midterm";
+            });
+        }
+        return undefined;
     }
 
     showMessage(type, message) {
@@ -168,7 +188,6 @@ export default class ClassInput extends PureComponent {
             </div>
         );
 
-        let that = this;
         return (
             <React.Fragment>
                 <div className="content">
@@ -177,7 +196,7 @@ export default class ClassInput extends PureComponent {
                         <AutoComplete suggestions={this.state.departmentOptions} dropdown={true}
                                       value={this.props.currentDepartment}
                                       onChange={(e) => {
-                                          this.props.setCurrentDepartment(e.value);
+                                          this.props.setCurrentDepartment(e.value.toUpperCase());
                                           this.props.setCurrentCourseNum(null);
                                           this.props.setCurrentInstructor(null);
                                           this.props.setPriority(null);
@@ -185,7 +204,10 @@ export default class ClassInput extends PureComponent {
                                       completeMethod={this.completeDepartmentSuggestions.bind(this)}
                                       onSelect={(e) => {
                                           // don't requery if we have the class already
-                                          if (this.props.classes[e.value]) return;
+                                          if (this.props.classes[e.value]) {
+                                              console.info("Found classes cached, will use that.");
+                                              return;
+                                          }
                                           this.props.getClasses.call(this, e.value);
                                           // check if the thing we selected is the same as the one we already had
                                           if (e.value !== this.props.currentDepartment) {
@@ -196,7 +218,10 @@ export default class ClassInput extends PureComponent {
                                       }}
                                       onBlur={() => {
                                           // don't requery if we have the class already
-                                          if (this.props.classes[this.props.currentDepartment]) return;
+                                          if (this.props.classes[this.props.currentDepartment]){
+                                              console.info("Found classes cached, will use that.");
+                                              return;
+                                          }
                                           // don't query if it is not in our departments
                                           if (!this.props.departments.includes(this.props.currentDepartment)) return;
                                           this.props.getClasses.call(this, this.props.currentDepartment);
@@ -239,7 +264,7 @@ export default class ClassInput extends PureComponent {
                             <AutoComplete suggestions={
                                 // because to clear the thing we put undefined, we can just put the course num in whether
                                 // it is actually in the dict or not because if not it will be undefined and show nothing
-                                this.props.instructorsPerClass[this.props.currentCourseNum]}
+                                this.state.instructorOptions}
                                           value={this.props.currentInstructor}
                                           onChange={(e) => this.props.setCurrentInstructor(e.value)}
                                           completeMethod={this.completeInstructorSuggestions.bind(this)}
@@ -251,7 +276,7 @@ export default class ClassInput extends PureComponent {
                             <ListBox value={
                                 // same as above with the undefined
                                 this.props.conflicts}
-                                     options={this.props.classTypesPerClass[this.props.currentCourseNum]}
+                                     options={this.getClassTypeOptions(this.props.currentCourseNum)}
                                      onChange={(e) => this.props.setConflicts(e.value)}
                                      multiple={true}
                                      disabled={this.props.currentCourseNum === null}/>
@@ -263,7 +288,9 @@ export default class ClassInput extends PureComponent {
                                 // same as above with undefined
                                 this.props.priority}
                                     onChange={(e) => this.props.setPriority(e.value)}
-                                    stars={3}/>
+                                    stars={3}
+                                    disabled={this.props.currentCourseNum === null}
+                            />
                         </div>
                     </div>
                     <div style={{display: "inline-block"}}>

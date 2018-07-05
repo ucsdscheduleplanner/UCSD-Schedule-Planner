@@ -15,11 +15,14 @@ export function InstructorPreference(Class, instructor) {
     this.instructor = instructor;
 
     return function (classToEvaluate) {
-        if (Class.class_title === classToEvaluate.class_title) {
-            if (Class.instructor === classToEvaluate.instructor) {
-                return 10;
+        for(let subsection of classToEvaluate) {
+            // one has different name I know it is bad
+            if(subsection.classTitle === Class.class_title) {
+                if (subsection.instructor === Class.instructor) {
+                    return 10;
+                }
+                return -3;
             }
-            return -3;
         }
     }
 }

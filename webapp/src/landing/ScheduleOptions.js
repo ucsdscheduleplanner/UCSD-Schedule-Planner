@@ -34,12 +34,12 @@ export default class ScheduleOptions extends PureComponent {
                 <div className="schedule-options-content">
                     <div className="form-field">
                         <div className="input-header"> Time Preference:</div>
-                        <AutoComplete value={"Coming soon!"}/>
+                        <AutoComplete disabled={true} value={"Todo"}/>
                     </div>
 
                     <div className="form-field">
                         <div className="input-header"> Day Preference:</div>
-                        <AutoComplete value={"Coming soon!"}/>
+                        <AutoComplete disabled={true} value={"Todo"}/>
                     </div>
 
                     {activeButton}

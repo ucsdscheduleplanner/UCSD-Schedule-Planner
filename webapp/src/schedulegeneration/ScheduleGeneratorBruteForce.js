@@ -1,9 +1,8 @@
 import {BACKEND_URL} from "../settings";
 import {SimpleIntervalTree} from "../utils/SimpleIntervalTree";
-import {Class} from "../utils/ClassUtils";
-import {generateSchedule} from "./ScheduleGenerator";
+import {Subsection} from "../utils/ClassUtils";
 
-async function requestData(selectedClasses) {
+async function requestDirtyData(selectedClasses) {
     let response = await fetch(`${BACKEND_URL}/api_data`, {
         headers: {
             'Accept': 'application/json',
@@ -15,27 +14,78 @@ async function requestData(selectedClasses) {
     return await response.json();
 }
 
-export function ScheduleGenerationBruteForce() {
-    this.isValid = function(newClass, conflicts, intervalTree) {
-        let addedIntervals = [];
-        for (let subclass of newClass.subclassList) {
-            let timeInterval = subclass.timeInterval;
-            // if we have a conflict, that means we don't care so don't add to the tree
-            if (conflicts[newClass.class_title] && conflicts[newClass.class_title].includes(subclass.type)) {
-                continue;
+function isValidSubsection(subsection) {
+    // we don't want to include finals or midterms in the regular week view
+    if (subsection.type === "FI" || subsection.type === "MI") {
+        return false;
+    }
+    // if timeInterval is null that means time is TBA and/or day is TBA which means
+    // don't include in here
+    if (!subsection.timeInterval) {
+        return false;
+    }
+    return true;
+}
+
+// dirty class data is a 2D array where each element is an array of subsections for each class section
+function cleanData(dirtyClassData) {
+    let ret = {};
+    for (let courseName of Object.keys(dirtyClassData)) {
+        ret[courseName] = [];
+
+        let slowPtr = 0;
+        let fastPtr = 0;
+
+        let copyCourseData = dirtyClassData[courseName].slice();
+        copyCourseData.push({"SECTION_ID": null});
+
+        while (fastPtr < copyCourseData.length) {
+            let slowSectionID = copyCourseData[slowPtr]["SECTION_ID"];
+            let fastSectionID = copyCourseData[fastPtr]["SECTION_ID"];
+
+            if (slowSectionID !== fastSectionID) {
+                // inclusive exclusive for bounds
+                let subsectionsPerSection = copyCourseData.slice(slowPtr, fastPtr);
+                // converting each one into a subsection
+                subsectionsPerSection = subsectionsPerSection.reduce((ret, subsectionData) => {
+                    let subsection = new Subsection(subsectionData);
+                    if (isValidSubsection(subsection)) {
+                        ret.push(subsection);
+                    }
+                    return ret;
+
+                }, []);
+                ret[courseName].push(subsectionsPerSection);
+                slowPtr = fastPtr;
             }
-            addedIntervals.push(timeInterval);
-            if (!intervalTree.add(timeInterval)) {
-                // removing intervals we have added
-                // making sure no side effects if unsuccessful
-                addedIntervals.map((interval) => intervalTree.remove(interval));
-                return false;
-            }
+
+            fastPtr++;
         }
+    }
+    // no alterations to input
+    return ret;
+}
+
+export function ScheduleGenerationBruteForce() {
+    // subsection has a time interval object, represents a subsection with data
+    this.isValid = function (subsection, conflicts, intervalTree) {
+        let timeInterval = subsection.timeInterval;
+        // if we have a conflict, that means we don't care so don't add to the tree
+        if (conflicts[subsection.classTitle] && conflicts[subsection.classTitle].includes(subsection.type)) {
+            return true;
+        }
+
+        if (!intervalTree.add(timeInterval)) {
+            return false;
+        }
+
+        // removing intervals we have added
+        // making sure no side effects if unsuccessful
+        intervalTree.remove(timeInterval);
         return true;
     };
 
-    this._dfs = function(classData, currentSchedule, intervalTree, schedules, conflicts, counter) {
+    this._dfs = function (classData, currentSchedule, intervalTree, schedules, conflicts, counter) {
         if (currentSchedule.length >= classData.length) {
             let score = this.evaluateSchedule(currentSchedule);
             schedules.push([score, currentSchedule]);
@@ -50,19 +100,37 @@ export function ScheduleGenerationBruteForce() {
 
         let currentClassGroup = classData[counter];
         for (let i = 0; i < currentClassGroup.length; i++) {
-            let currentClass = currentClassGroup[i];
-            if (this.isValid(currentClass, conflicts, intervalTree)) {
-                currentSchedule.push(currentClass);
-                this._dfs(classData, currentSchedule, intervalTree, schedules, conflicts, counter + 1);
-                for (let j = counter; j < currentSchedule.length; j++) {
-                    currentSchedule[j].timeIntervals.forEach(timeInterval => intervalTree.remove(timeInterval));
+            // current class group has all the sections for CSE 11
+            // this will be an array of sections
+            // so [[class, class] , [class, class]]
+
+            // current section
+            let currentSection = currentClassGroup[i];
+            for (let subsection of currentSection) {
+                // isValid is a pure function, so does not affect the intervalTree
+                if (!this.isValid(subsection, conflicts, intervalTree)) {
+                    return;
                 }
-                currentSchedule = currentSchedule.slice(0, counter);
             }
+            // adding subsections to interval tree if they are all valid
+            for (let subsection of currentSection) {
+                intervalTree.add(subsection.timeInterval);
+            }
+
+            // choosing to use this for our current schedule
+            currentSchedule.push(currentSection);
+            this._dfs(classData, currentSchedule, intervalTree, schedules, conflicts, counter + 1);
+
+            // removing all intervals we added so can continue to DFS
+            for (let subsection of currentSection) {
+                intervalTree.remove(subsection.timeInterval);
+            }
+            // putting schedule in state before we added the current section
+            currentSchedule = currentSchedule.slice(0, counter);
         }
     };
 
-    this.dfs = function(classData, conflicts) {
+    this.dfs = function (classData, conflicts) {
         let schedules = [];
         // set num schedules to this, note that it will not be set with the ones after
         // due to javascript pass by value
@@ -82,7 +150,7 @@ export function ScheduleGenerationBruteForce() {
         }
     };
 
-    this.generateSchedule = async function(selectedClasses, conflicts = [], preferences = [], dispatchProgressFunction) {
+    this.generateSchedule = async function (selectedClasses, conflicts = [], preferences = [], dispatchProgressFunction) {
         this.dispatchProgressFunction = dispatchProgressFunction;
         this.numSchedules = 0;
         this.totalPossibleSchedules = 1;
@@ -90,19 +158,26 @@ export function ScheduleGenerationBruteForce() {
         // making the JSON here for the request
         let selectedClassesJSON = {};
         selectedClassesJSON['classes'] = selectedClasses;
+
         // class data is an object where each field is the name of a class and everything inside it
         // is a class with its times and such
-        let classJSON = await requestData(selectedClassesJSON);
-        let classData = [];
-        // counter of where we are in the dfs
-        let counter = 0;
+        let dirtyClassJSON = await requestDirtyData(selectedClassesJSON);
+        // will put the data into
+        // CSE 11 -> section 0 [subsection, subsection], section 1 [subsection, subsection]
+        let classData = cleanData(dirtyClassJSON);
 
-        Object.keys(classJSON).forEach((ClassGroupsKey) => {
-            // class group is an array of all the different sections that are the same class
-            let ClassGroupJSON = classJSON[ClassGroupsKey];
-            // multiplying to see total number of schedules
-            this.totalPossibleSchedules *= ClassGroupJSON.length;
-            classData[counter++] = ClassGroupJSON.map((ClassGroup) => new Class(ClassGroup));
+        // input is a 2D array where each element is a list of all the sections of a specific class
+        // converting dict where key is courseNum to 2D array
+        let inputToDFS = [];
+
+        Object.keys(classData).forEach(courseNum => {
+            // class sections for course num is an array of all the different sections that are the same class
+            // CSE 11: [[class, class], [class, class]]
+            let classSectionsForCourseNum = classData[courseNum];
+            // multiplying to see total number of schedules because length of classSectionsForCourseNum gives num sections
+            this.totalPossibleSchedules *= classSectionsForCourseNum.length;
+
+            inputToDFS.push(classSectionsForCourseNum);
         });
         // now we have an array where each index is a Class Group
         // we can start brute force dfs now
@@ -116,7 +191,7 @@ export function ScheduleGenerationBruteForce() {
             }, 0);
         };
 
-        return this.dfs(classData, conflicts);
-    }
+        return this.dfs(inputToDFS, conflicts);
+    };
 }
 

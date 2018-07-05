@@ -1,10 +1,8 @@
 import {
-    generateSchedule, ScheduleGeneration,
     ScheduleGenerationBruteForce
 } from "../schedulegeneration/ScheduleGeneratorBruteForce";
 import {InstructorPreference, PriorityModifier} from "../utils/Preferences";
 import {classTypeToCode} from "./ClassInputActions";
-import 'workerize';
 
 export const REQUEST_SCHEDULE = 'REQUEST_SCHEDULE';
 
@@ -72,6 +70,7 @@ function dispatchProgress(dispatch) {
 
 export function getSchedule(selectedClasses) {
     return async function (dispatch) {
+        // let redux know that we are creating a scheedule
         dispatch(requestSchedule());
 
         let preferences = [];
@@ -79,25 +78,28 @@ export function getSchedule(selectedClasses) {
         // setting progress to 0 initially
         dispatch(setProgress(0));
         let dispatchProgressFunction = dispatchProgress(dispatch);
-        Object.values(selectedClasses).forEach((Class) => {
-            let priorityModifier = new PriorityModifier(Class);
-            if (Class.priority !== null) {
-                priorityModifier.priority = Class.priority;
+
+        // this class has no data but the names
+        Object.values(selectedClasses).forEach((preferredClass) => {
+            let priorityModifier = new PriorityModifier(preferredClass);
+            if (preferredClass.priority !== null) {
+                priorityModifier.priority = preferredClass.priority;
             }
 
             // add preferences to the priority modifier
-            if (Class.instructor !== null) {
-                priorityModifier.preferences.push(new InstructorPreference(Class, Class.instructor));
+            if (preferredClass.instructor !== null) {
+                priorityModifier.preferences.push(new InstructorPreference(preferredClass, preferredClass.instructor));
             }
             preferences.push(priorityModifier);
 
             // passing conflicts
-            conflicts[Class.class_title] = [];
-            if (Class.conflicts) {
-                conflicts[Class.class_title] = Class.conflicts.map((conflict) => classTypeToCode[conflict])
+            conflicts[preferredClass.class_title] = [];
+            if (preferredClass.conflicts) {
+                conflicts[preferredClass.class_title] = preferredClass.conflicts.map((conflict) => classTypeToCode[conflict])
             }
         });
 
+        // handles all scchedule generation including the queries for data
         return new ScheduleGenerationBruteForce().generateSchedule(selectedClasses, conflicts, preferences, dispatchProgressFunction)
             .then((schedule) => {
                 dispatch(receiveSchedule(schedule));

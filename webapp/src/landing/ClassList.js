@@ -46,7 +46,10 @@ export default class ClassList extends PureComponent {
             let selectedClass = this.props.selectedClasses[selectedClassKey];
             return (
                 <button className="class-button"
-                            onClick={(e) => this.props.enterEditMode(selectedClassKey)}
+                            onClick={(e) => {
+                                this.props.exitCalendarMode();
+                                this.props.enterEditMode(selectedClassKey)
+                            }}
                             key={selectedClassKey}>
                     <div className="class-item">
                         {selectedClass['class_title']}

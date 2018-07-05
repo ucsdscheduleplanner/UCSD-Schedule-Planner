@@ -2,7 +2,6 @@ import React, {Component} from 'react';
 import {connect} from "react-redux";
 import {bindActionCreators} from "redux";
 import {generateSchedule} from "./schedulegeneration/ScheduleGenerator";
-import FileSaver from 'file-saver'
 import "./css/Landing.css";
 import {LeftSidePanel} from './landing/LeftSidePanel';
 import {RightSidePanel} from './landing/RightSidePanel';
@@ -39,25 +38,6 @@ class Landing extends Component {
                 newState.calendarError = true;
                 this.setState(newState);
             });
-    }
-
-    handleExportICAL() {
-        let schedule = this.state.schedule;
-        let request = schedule.reduce((accumulator, _class) => {
-            _class.subclassList.forEach((subclass) => accumulator.push(subclass));
-            return accumulator;
-        }, []);
-
-        fetch('/create_ics', {
-            method: "post",
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(request)
-        }).then((response) => response.blob())
-            .then((response) => FileSaver.saveAs(response, 'calendar.ics'));
-        return request;
     }
 
     clearSchedule() {
