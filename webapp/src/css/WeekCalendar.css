@@ -5,6 +5,20 @@
     margin-bottom: 2em;
 }
 
+.rbc-time-content {
+    overflow-x: hidden;
+}
+
+.rbc-current-time-indicator {
+    visibility: hidden;
+}
+
+.ics-button {
+    display: flex;
+    flex: 1;
+    justify-content: flex-end;
+}
+
 .rbc-events-container .rbc-event-label {
     display: none;
 }

@@ -20,20 +20,18 @@ class MainPanel extends Component {
     }
 
     render() {
-        const scheduleComponent = (
+        const scheduleScreen = (
             <div className="main-panel">
-                <div className="class-input">
+                <div className="class-calendar">
                     <div className="title"> UCSD Schedule Planner</div>
-                    <WeekCalendar
-                        schedule={this.props.schedule}
-                    />
+                    <WeekCalendar schedule={this.props.schedule}/>
                 </div>
             </div>
         );
 
-        const classInput = (
+        const classInputScreen = (
             <div className="main-panel">
-                <div className="class-calendar">
+                <div className="class-input">
                     <div className="title"> UCSD Schedule Planner</div>
                     <ClassInputContainer/>
                 </div>
@@ -42,7 +40,7 @@ class MainPanel extends Component {
 
         const progressBar = (
             <div className="main-panel">
-                <div className="class-calendar">
+                <div className="class-input">
                     <div className="title"> UCSD Schedule Planner</div>
                     <ProgressBar mode="indeterminate"/>
                 </div>
@@ -52,9 +50,9 @@ class MainPanel extends Component {
         if (this.props.generating) {
             return progressBar;
         } else if (this.props.calendarMode) {
-            return scheduleComponent;
+            return scheduleScreen;
         } else {
-            return classInput;
+            return classInputScreen;
         }
     }
 }

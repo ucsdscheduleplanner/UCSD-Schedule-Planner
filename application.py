@@ -47,26 +47,6 @@ def return_classes():
     return jsonify(classes)
 
 
-@application.route('/api_create_ics', methods={'POST'})
-def create_ics():
-    request_json = request.get_json()
-    # TODO ADD ASSERTION HERE TO MAKE SURE DATA IS CORRECT
-    calendar = Calendar()
-    for _class in request_json:
-        event = Event()
-        event.name = _class['department'] + " " + _class['courseNum']
-        event.begin = _class['timeInterval']['start']
-        event.end = _class['timeInterval']['end']
-        calendar.events.append(event)
-    # Storing the data in a variable of higher scope
-    temp_str = '\n'.join(calendar.__iter__())
-    str_data = temp_str.encode()
-    # Using make response to convert binary to response
-    response = make_response(str_data)
-    response.headers.set('Content-Disposition', 'attachment')
-    return response
-
-
 if __name__ == '__main__':
     application.debug = True
     application.run()

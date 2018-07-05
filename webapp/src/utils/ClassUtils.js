@@ -105,7 +105,7 @@ export function Subsection(data) {
         DEPARTMENT: this.department,
         DESCRIPTION: this.description,
         INSTRUCTOR: this.instructor,
-        LOCATION: this.location,
+        LOCATION: this.roomLocation,
         ROOM: this.room,
         SECTION_ID: this.sectionID,
         TIME: this.time,
@@ -113,6 +113,7 @@ export function Subsection(data) {
     } = data);
 
     this.classTitle = `${this.department} ${this.courseNum}`;
+    this.location = `${this.roomLocation} ${this.room}`;
     // will convert the time and day to a time interval object
     this.timeInterval = makeTimeInterval.call(this);
 
@@ -126,15 +127,15 @@ export function Subsection(data) {
 
         // if it failed to split
         if(splitTime.length === 1) {
-            timeInterval['start'] = new Date(1990, 1, 1)
-            timeInterval['end'] = new Date(1990, 1, 1)
-            return timeInterval;
+            //timeInterval['start'] = new Date(1990, 1, 1);
+            //timeInterval['end'] = new Date(1990, 1, 1);
+            // let the caller know that no timeInterval was created
+            return null;
         }
 
         let currentDate = new Date();
         let currentDay = currentDate.getDay();
-        let dist = 0;
-        let dayToSet = 0;
+        let dist, dayToSet;
 
         // convert to javascript date first
         let startTime = moment(splitTime[0], TIME_STRING).toDate();

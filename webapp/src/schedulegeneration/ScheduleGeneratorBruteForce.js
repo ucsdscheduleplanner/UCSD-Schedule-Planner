@@ -14,10 +14,23 @@ async function requestDirtyData(selectedClasses) {
     return await response.json();
 }
 
-// dirty class data is a list
+function isValidSubsection(subsection) {
+    // we don't want to include finals or midterms in the regular week view
+    if (subsection.type === "FI" || subsection.type === "MI") {
+        return false;
+    }
+    // if timeInterval is null that means time is TBA and/or day is TBA which means
+    // don't include in here
+    if (!subsection.timeInterval) {
+        return false;
+    }
+    return true;
+}
+
+// dirty class data is a 2D array where each element is an array of subsections for each class section
 function cleanData(dirtyClassData) {
     let ret = {};
-    for(let courseName of Object.keys(dirtyClassData)) {
+    for (let courseName of Object.keys(dirtyClassData)) {
         ret[courseName] = [];
 
         let slowPtr = 0;
@@ -36,10 +49,11 @@ function cleanData(dirtyClassData) {
                 // converting each one into a subsection
                 subsectionsPerSection = subsectionsPerSection.reduce((ret, subsectionData) => {
                     let subsection = new Subsection(subsectionData);
-                    if (subsection.type !== "FI" && subsection.type !== "MI") {
+                    if (isValidSubsection(subsection)) {
                         ret.push(subsection);
                     }
                     return ret;
+
                 }, []);
                 ret[courseName].push(subsectionsPerSection);
                 slowPtr = fastPtr;
@@ -92,26 +106,27 @@ export function ScheduleGenerationBruteForce() {
 
             // current section
             let currentSection = currentClassGroup[i];
-            let couldAddClass = true;
             for (let subsection of currentSection) {
-                // if we encounter anything bad at all stop
+                // isValid is a pure function, so does not affect the intervalTree
                 if (!this.isValid(subsection, conflicts, intervalTree)) {
-                    couldAddClass = false;
+                    return;
                 }
+            }
+            // adding subsections to interval tree if they are all valid
+            for (let subsection of currentSection) {
                 intervalTree.add(subsection.timeInterval);
             }
 
-            // we have chosen this schedule to DFS from
-            if (couldAddClass) {
-                currentSchedule.push(currentSection);
-                this._dfs(classData, currentSchedule, intervalTree, schedules, conflicts, counter + 1);
-                // removing all intervals we added
-                for (let subsection of currentSection) {
-                    intervalTree.remove(subsection.timeInterval);
-                }
-                currentSchedule = currentSchedule.slice(0, counter);
+            // choosing to use this for our current schedule
+            currentSchedule.push(currentSection);
+            this._dfs(classData, currentSchedule, intervalTree, schedules, conflicts, counter + 1);
+
+            // removing all intervals we added so can continue to DFS
+            for (let subsection of currentSection) {
+                intervalTree.remove(subsection.timeInterval);
             }
-            // otherwise we do nothing
+            // putting schedule in state before we added the current section
+            currentSchedule = currentSchedule.slice(0, counter);
         }
     };
 
@@ -144,12 +159,11 @@ export function ScheduleGenerationBruteForce() {
         let selectedClassesJSON = {};
         selectedClassesJSON['classes'] = selectedClasses;
 
-
         // class data is an object where each field is the name of a class and everything inside it
         // is a class with its times and such
         let dirtyClassJSON = await requestDirtyData(selectedClassesJSON);
-        // class will put the data into
-        // CSE 11 -> section 0 [class, class], section 1 [class, class]
+        // will put the data into
+        // CSE 11 -> section 0 [subsection, subsection], section 1 [subsection, subsection]
         let classData = cleanData(dirtyClassJSON);
 
         // input is a 2D array where each element is a list of all the sections of a specific class

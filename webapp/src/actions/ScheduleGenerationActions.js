@@ -3,7 +3,6 @@ import {
 } from "../schedulegeneration/ScheduleGeneratorBruteForce";
 import {InstructorPreference, PriorityModifier} from "../utils/Preferences";
 import {classTypeToCode} from "./ClassInputActions";
-import 'workerize';
 
 export const REQUEST_SCHEDULE = 'REQUEST_SCHEDULE';
 
