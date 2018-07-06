@@ -1,10 +1,9 @@
 import os
-import MySQLdb
+
 import MySQLdb.cursors
 
-from classutil.classutils import *
-from secrets import password, aws_endpoint, aws_username
-from settings import DATABASE_PATH, HOME_DIR
+from secrets import password
+from settings import HOME_DIR
 
 """
 Picks classes and autogenerates schedules. The main computation backend for the server.

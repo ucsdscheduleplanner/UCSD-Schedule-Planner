@@ -1,9 +1,8 @@
 import sqlite3
 
-from flask import Flask, request, jsonify, make_response
+from flask import Flask, request, jsonify, abort
 from flask_compress import Compress
 from flask_cors import CORS
-from ics import Calendar, Event
 
 import backend
 from settings import DATABASE_PATH
@@ -23,6 +22,9 @@ The routing backend for the server.
 @application.route('/api_data', methods=['POST'])
 def return_db_data():
     request_json = request.get_json()
+    if 'classes' not in request_json:
+        abort(400, {"error": "Invalid parameters"})
+
     classes = request_json['classes']
     ret_classes = {}
 
