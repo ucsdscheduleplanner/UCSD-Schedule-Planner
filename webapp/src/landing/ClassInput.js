@@ -200,9 +200,11 @@ export default class ClassInput extends PureComponent {
                                           this.props.setCurrentCourseNum(null);
                                           this.props.setCurrentInstructor(null);
                                           this.props.setPriority(null);
-                                      }}
-                                      completeMethod={this.completeDepartmentSuggestions.bind(this)}
-                                      onSelect={(e) => {
+
+                                          if(!this.props.departments.includes(e.value)) {
+                                              return;
+                                          }
+
                                           // don't requery if we have the class already
                                           if (this.props.classes[e.value]) {
                                               console.info("Found classes cached, will use that.");
@@ -216,16 +218,7 @@ export default class ClassInput extends PureComponent {
                                               this.props.setPriority(null);
                                           }
                                       }}
-                                      onBlur={() => {
-                                          // don't requery if we have the class already
-                                          if (this.props.classes[this.props.currentDepartment]){
-                                              console.info("Found classes cached, will use that.");
-                                              return;
-                                          }
-                                          // don't query if it is not in our departments
-                                          if (!this.props.departments.includes(this.props.currentDepartment)) return;
-                                          this.props.getClasses.call(this, this.props.currentDepartment);
-                                      }}
+                                      completeMethod={this.completeDepartmentSuggestions.bind(this)}
                         />
                     </div>
 
