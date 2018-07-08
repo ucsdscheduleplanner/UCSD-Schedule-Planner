@@ -104,13 +104,18 @@ export function ScheduleGenerationBruteForce() {
             // this will be an array of sections
             // so [[class, class] , [class, class]]
 
+            let success = true;
             // current section
             let currentSection = currentClassGroup[i];
             for (let subsection of currentSection) {
                 // isValid is a pure function, so does not affect the intervalTree
                 if (!this.isValid(subsection, conflicts, intervalTree)) {
-                    return;
+                    success = false;
+                    break;
                 }
+            }
+            if(!success) {
+                continue;
             }
             // adding subsections to interval tree if they are all valid
             for (let subsection of currentSection) {

@@ -1,8 +1,9 @@
 import os
 
 import MySQLdb.cursors
+from sqlalchemy import create_engine, text
 
-from secrets import password
+from secrets import password, aws_username, aws_endpoint
 from settings import HOME_DIR
 
 """
@@ -10,9 +11,12 @@ Picks classes and autogenerates schedules. The main computation backend for the 
 """  # Initializing database
 
 os.chdir(HOME_DIR)
-database = MySQLdb.connect(passwd=password, db="classes", user="root", cursorclass=MySQLdb.cursors.DictCursor)
+# engine = create_engine('mysql+mysqldb://root:{}@localhost/classes'.format(password), pool_recycle=3600)
+engine = create_engine('mysql+mysqldb://{}:{}@{}/classes'.format(aws_username, password, aws_endpoint),
+                       pool_recycle=3600)
+cursor = engine.connect()
 # database = MySQLdb.connect(host=aws_endpoint, passwd=password, db="classes", user=aws_username, cursorclass=MySQLdb.cursors.DictCursor)
-cursor = database.cursor()
+# cursor = database.cursor()
 
 departments = []
 class_types = []
@@ -21,11 +25,11 @@ class_types = []
 def get_all_classes_in(department):
     # Must order this one separately because doing it lexically won't work
     ret_dict = {}
-    cursor.execute("SELECT * FROM CLASS_DATA WHERE DEPARTMENT = %s", (department,))
+    sql = text("SELECT * FROM CLASS_DATA WHERE DEPARTMENT = :department")
+    result = cursor.execute(sql, department=department).fetchall()
     # use dict here for fast lookup
     ret_dict["COURSE_NUMS"] = {}
-    rows = cursor.fetchall()
-    for row in rows:
+    for row in result:
         row = dict(row)
         if row["COURSE_NUM"] not in ret_dict["COURSE_NUMS"]:
             ret_dict["COURSE_NUMS"][row["COURSE_NUM"]] = []
@@ -36,9 +40,10 @@ def get_all_classes_in(department):
 def get_departments():
     global departments
     if not departments:
-        cursor.execute("SELECT DISTINCT DEPT_CODE FROM DEPARTMENT ORDER BY DEPT_CODE")
+        sql = text("SELECT DISTINCT DEPT_CODE FROM DEPARTMENT ORDER BY DEPT_CODE")
+        result = cursor.execute(sql).fetchall()
         # Converting to dict in order to make into JSON easier
-        departments = [dict(row) for row in cursor.fetchall()]
+        departments = [dict(row) for row in result]
     return departments
 
 
@@ -50,7 +55,8 @@ def generate_class_json(department, course_num):
     :param department: the department
     :return: returns all the classes with the same ID in a list
     """
-    cursor.execute("SELECT * FROM CLASS_DATA WHERE DEPARTMENT = %s AND COURSE_NUM = %s", (department, course_num))
+    sql = text("SELECT * FROM CLASS_DATA WHERE DEPARTMENT = :department AND COURSE_NUM = :course_num")
+    result = cursor.execute(sql, department=department, course_num=course_num).fetchall()
+    class_versions = [dict(row) for row in result]
     # The different sections of the given class
-    class_versions = cursor.fetchall()
     return class_versions
