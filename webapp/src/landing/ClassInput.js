@@ -82,7 +82,7 @@ export default class ClassInput extends PureComponent {
         let classTitle = `${this.props.currentDepartment} ${this.props.currentCourseNum}`;
         // testing whether this is a duplicate class
         let duplicate = Object.values(this.props.selectedClasses).reduce(function (accumulator, previousClass) {
-            return accumulator || classTitle === previousClass['class_title']
+            return accumulator || classTitle === previousClass['classTitle']
         }, false);
 
         // error checking on department and course num
@@ -92,8 +92,8 @@ export default class ClassInput extends PureComponent {
         if (!duplicate && !error) {
             // constructing new class to be added to UI
             let newClass = {};
-            newClass['class_title'] = classTitle;
-            newClass['course_num'] = this.props.currentCourseNum;
+            newClass['classTitle'] = classTitle;
+            newClass['courseNum'] = this.props.currentCourseNum;
             newClass['department'] = this.props.currentDepartment;
             newClass['priority'] = this.props.priority;
             newClass['conflicts'] = this.props.conflicts;
@@ -126,14 +126,14 @@ export default class ClassInput extends PureComponent {
         let that = this;
         let duplicate = Object.values(this.props.selectedClasses).reduce(function (accumulator, previousClass) {
             return (that.props.selectedClasses[that.props.editUID] !== previousClass) &&
-                (accumulator || classTitle === previousClass['class_title'])
+                (accumulator || classTitle === previousClass['classTitle'])
         }, false);
 
         if (!duplicate) {
             // constructing new class to be added to UI
             let newClass = {};
-            newClass['class_title'] = classTitle;
-            newClass['course_num'] = this.props.currentCourseNum;
+            newClass['classTitle'] = classTitle;
+            newClass['courseNum'] = this.props.currentCourseNum;
             newClass['department'] = this.props.currentDepartment;
             newClass['priority'] = this.props.priority;
             newClass['conflicts'] = this.props.conflicts;

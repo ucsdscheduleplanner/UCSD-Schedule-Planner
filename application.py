@@ -29,7 +29,7 @@ def return_db_data():
     ret_classes = {}
 
     for Class in classes:
-        department, course_num = Class['department'], Class['course_num']
+        department, course_num = Class['department'], Class['courseNum']
         full_name = "{} {}".format(department, course_num)
         ret_classes[full_name] = backend.generate_class_json(department, course_num)
 

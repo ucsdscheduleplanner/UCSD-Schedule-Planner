@@ -52,7 +52,8 @@ export default class ClassList extends PureComponent {
                             }}
                             key={selectedClassKey}>
                     <div className="class-item">
-                        {selectedClass['class_title']}
+                        {/* TODO decouple this from classTitle maybe use a getter on the class */}
+                        {selectedClass['classTitle']}
                     </div>
                     <div className="class-item-border"/>
                 </button>

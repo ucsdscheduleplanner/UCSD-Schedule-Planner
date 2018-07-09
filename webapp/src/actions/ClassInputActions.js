@@ -157,7 +157,11 @@ export function receiveClassesPerDepartment(department, classes, instructors, ty
 }
 
 export function getDepartments() {
-    return function (dispatch) {
+    return function (dispatch, getState) {
+        let cachedDepartments = getState().ClassInput["departments"];
+        if(cachedDepartments.length > 0) {
+            return;
+        }
         dispatch(requestDepartments);
 
         fetchDepartments().then(departments => dispatch(receiveDepartments(departments)));
@@ -212,7 +216,7 @@ export function enterEditMode(uid) {
         dispatch(setPriority(otherClass.priority));
         dispatch(setConflicts(otherClass.conflicts));
         dispatch(setCurrentInstructor(otherClass.instructor));
-        dispatch(setCurrentCourseNum(otherClass.course_num));
+        dispatch(setCurrentCourseNum(otherClass.courseNum));
         dispatch(setCurrentDepartment(otherClass.department));
         dispatch(setEditMode(uid, true));
     }
