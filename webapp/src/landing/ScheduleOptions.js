@@ -12,7 +12,7 @@ export default class ScheduleOptions extends PureComponent {
         let activeButton;
         if (this.props.calendarMode) {
             activeButton = (
-                <div className="schedule-options-return-planning" onClick={this.props.exitCalendarMode}>
+                <div className="schedule-options-return-planning" onClick={this.props.enterInputMode}>
                     <Button label="Return to Planning" style={{padding: "1em"}}/>
                 </div>
             );

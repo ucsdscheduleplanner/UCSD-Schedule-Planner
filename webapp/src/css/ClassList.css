@@ -1,8 +1,6 @@
 
-
-
 .class-list {
-    background-color: rgb(24,43, 73);
+    background-color: rgb(24, 43, 73);
     height: 100%;
     width: 0;
 }
@@ -17,7 +15,6 @@
 
     width: 100%;
     font-size: 1.2em;
-    height: 100px;
     color: white;
 }
 
@@ -26,9 +23,15 @@
     border-bottom: thin solid rgb(100, 100, 220);
 }
 
+.pi.pi-plus-circle {
+    color: grey;
+    font-size: 2em;
+}
+
 .class-button {
     /* resetting the button CSS */
- background: none;
+    background: none;
+    height: 100px;
     color: inherit;
     border: none;
     padding: 0;

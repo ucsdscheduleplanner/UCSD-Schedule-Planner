@@ -47,13 +47,6 @@ export function enterCalendarMode() {
     }
 }
 
-export function exitCalendarMode() {
-    return function (dispatch) {
-        dispatch(setCalendarMode(false));
-        dispatch(setProgress(0));
-    }
-}
-
 export const SET_PROGRESS = "SET_PROGRESS";
 export function setProgress(generatingProgress) {
     return {

@@ -1,4 +1,5 @@
 import {BACKEND_URL} from "../settings";
+import {setCalendarMode, setProgress} from "./ScheduleGenerationActions";
 
 
 const codeToClassType = {
@@ -213,6 +214,9 @@ export function enterEditMode(uid) {
     return function (dispatch, getState) {
         const otherClass = getState().ClassSelection[uid];
 
+        dispatch(setCalendarMode(false));
+        dispatch(setProgress(0));
+
         dispatch(setPriority(otherClass.priority));
         dispatch(setConflicts(otherClass.conflicts));
         dispatch(setCurrentInstructor(otherClass.instructor));
@@ -222,8 +226,11 @@ export function enterEditMode(uid) {
     }
 }
 
-export function exitEditMode() {
+export function enterInputMode() {
     return function (dispatch) {
+        dispatch(setCalendarMode(false));
+        dispatch(setProgress(0));
+
         dispatch(setPriority(null));
         dispatch(setConflicts(null));
         dispatch(setCurrentInstructor(null));

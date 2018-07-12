@@ -142,7 +142,7 @@ export default class ClassInput extends PureComponent {
             // using the edit method from the reducer
             this.props.editClass(this.props.editUID, newClass);
             this.message.show({severity: 'success', summary: 'Edit Successful', life: 750});
-            this.props.exitEditMode();
+            this.props.enterInputMode();
         }
         // set duplicate so we can do some UI stuff in case
         this.setState({
@@ -153,7 +153,7 @@ export default class ClassInput extends PureComponent {
     handleRemove() {
         this.props.removeClass(this.props.editUID);
         this.showMessage("success", "Successfully removed class");
-        this.props.exitEditMode();
+        this.props.enterInputMode();
     }
 
     showError() {
@@ -170,7 +170,7 @@ export default class ClassInput extends PureComponent {
 
                 <Button label="Back to input" className="ui-button-info" style={{padding: ".25em 1em"}}
                         disabled={this.props.currentCourseNum === null}
-                        onClick={this.props.exitEditMode}
+                        onClick={this.props.enterInputMode}
                 />
 
                 <Button label="Delete Class" className="ui-button-danger" style={{padding: ".25em 1em"}}

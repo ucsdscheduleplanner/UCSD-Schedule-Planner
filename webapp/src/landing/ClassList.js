@@ -1,7 +1,9 @@
 import React, {PureComponent} from 'react';
+import {CSSTransition} from 'react-transition-group'
 import "../css/ClassList.css";
+import 'primeicons/primeicons.css';
 
-const activateSidePanelUI = () => {
+const activateSidePanelUI = (callback) => {
     let classListPanel = document.querySelector('.class-list');
     classListPanel.animate({
         width: ["0", "100%"],
@@ -11,33 +13,46 @@ const activateSidePanelUI = () => {
     });
     let firstItem = document.querySelector('.class-item');
     firstItem.style.opacity = 0;
-    firstItem.animate({
+    let animation = firstItem.animate({
         opacity: ["0", "1"],
     }, {
         delay: 300,
         duration: 100,
         fill: "forwards"
     });
+    animation.onfinish = callback;
 };
 
-const deactivateSidePanelUI = () => {
+const deactivateSidePanelUI = (callback) => {
     let classListPanel = document.querySelector('.class-list');
-    classListPanel.animate({
+    let animation = classListPanel.animate({
         width: ["100%", "0"],
     }, {
         duration: 300,
         fill: "forwards"
     });
+    animation.onfinish = callback;
 };
 
 export default class ClassList extends PureComponent {
+
+    constructor(props) {
+        super(props);
+        this.state = {
+            sidePanelActivated: false,
+        }
+    }
+
     componentDidUpdate(prevProps) {
         if (Object.keys(this.props.selectedClasses).length !== 0
             && Object.keys(prevProps.selectedClasses).length === 0) {
-            activateSidePanelUI();
-        } else if(Object.keys(this.props.selectedClasses).length === 0
+            // want to have some delay on adding so use callback on finish
+            activateSidePanelUI(e => this.setState({sidePanelActivated: true}));
+        } else if (Object.keys(this.props.selectedClasses).length === 0
             && Object.keys(prevProps.selectedClasses).length !== 0) {
             deactivateSidePanelUI();
+            // set state right after because want to delete immediately
+            this.setState({sidePanelActivated: false});
         }
     }
 
@@ -45,20 +60,37 @@ export default class ClassList extends PureComponent {
         let classes = Object.keys(this.props.selectedClasses).map((selectedClassKey, index) => {
             let selectedClass = this.props.selectedClasses[selectedClassKey];
             return (
-                <button className="class-button"
+                <React.Fragment>
+                    <button className="class-button"
                             onClick={(e) => {
-                                this.props.exitCalendarMode();
                                 this.props.enterEditMode(selectedClassKey)
                             }}
                             key={selectedClassKey}>
-                    <div className="class-item">
-                        {/* TODO decouple this from classTitle maybe use a getter on the class */}
-                        {selectedClass['classTitle']}
-                    </div>
+                        <div className="class-item">
+                            {/* TODO decouple this from classTitle maybe use a getter on the class */}
+                            {selectedClass['classTitle']}
+                        </div>
+                    </button>
                     <div className="class-item-border"/>
-                </button>
+                </React.Fragment>
             )
         });
+
+        classes.push(
+            <React.Fragment>
+                <button className="class-button"
+                        onClick={this.props.enterInputMode}>
+                    <CSSTransition
+                        in={this.state.sidePanelActivated}
+                        classNames="addButton"
+                        unmountOnExit
+                        timeout={500}>
+                        <i className="addButton pi pi-plus-circle"/>
+                    </CSSTransition>
+                </button>
+                <div className="class-item-border"/>
+            </React.Fragment>
+        );
 
         return (
             <div className="class-list">

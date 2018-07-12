@@ -96,7 +96,7 @@ class WeekCalendar extends PureComponent {
                     events={this.state.events}
                 />
                 <div className="ics-button">
-                    <Button label="Download file as ICS" className="ui-button-info"
+                    <Button label="Download Calendar" className="ui-button-info"
                             onClick={this.downloadICS.bind(this, this.state.subsections)}
                             disabled={this.props.schedule.length === 0}/>
                 </div>
