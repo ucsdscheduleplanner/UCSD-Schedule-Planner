@@ -1,4 +1,5 @@
 import {BACKEND_URL} from "../settings";
+import {setCalendarMode, setProgress} from "./ScheduleGenerationActions";
 
 
 const codeToClassType = {
@@ -157,7 +158,11 @@ export function receiveClassesPerDepartment(department, classes, instructors, ty
 }
 
 export function getDepartments() {
-    return function (dispatch) {
+    return function (dispatch, getState) {
+        let cachedDepartments = getState().ClassInput["departments"];
+        if(cachedDepartments.length > 0) {
+            return;
+        }
         dispatch(requestDepartments);
 
         fetchDepartments().then(departments => dispatch(receiveDepartments(departments)));
@@ -209,17 +214,23 @@ export function enterEditMode(uid) {
     return function (dispatch, getState) {
         const otherClass = getState().ClassSelection[uid];
 
+        dispatch(setCalendarMode(false));
+        dispatch(setProgress(0));
+
         dispatch(setPriority(otherClass.priority));
         dispatch(setConflicts(otherClass.conflicts));
         dispatch(setCurrentInstructor(otherClass.instructor));
-        dispatch(setCurrentCourseNum(otherClass.course_num));
+        dispatch(setCurrentCourseNum(otherClass.courseNum));
         dispatch(setCurrentDepartment(otherClass.department));
         dispatch(setEditMode(uid, true));
     }
 }
 
-export function exitEditMode() {
+export function enterInputMode() {
     return function (dispatch) {
+        dispatch(setCalendarMode(false));
+        dispatch(setProgress(0));
+
         dispatch(setPriority(null));
         dispatch(setConflicts(null));
         dispatch(setCurrentInstructor(null));

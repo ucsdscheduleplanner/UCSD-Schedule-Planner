@@ -1,17 +1,59 @@
 import {BACKEND_URL} from "../settings";
 import {SimpleIntervalTree} from "../utils/SimpleIntervalTree";
 import {Subsection} from "../utils/ClassUtils";
+import localforage from "localforage";
 
+/**
+ * Function requests data from the backend given a list of classes that the user has picked. Implements caching as well
+ * using local storage to reduce fetch size and hopefully speed up application.
+ *
+ * @param selectedClasses A list of pseudo class objects, not subsection objects, but bare Class objects.
+ * @returns An object where each key is an element of the array of classes passed in and the value is an array
+ * of subsections belonging to that class
+ */
 async function requestDirtyData(selectedClasses) {
-    let response = await fetch(`${BACKEND_URL}/api_data`, {
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-        },
-        method: 'post',
-        body: JSON.stringify(selectedClasses)
-    });
-    return await response.json();
+    let classesToFetch = [];
+    let cachedClasses = [];
+
+    for (let Class of selectedClasses) {
+        let cacheObj = await localforage.getItem(Class.classTitle);
+        if (cacheObj) {
+            cachedClasses.push(Class.classTitle);
+        } else {
+            classesToFetch.push(Class);
+        }
+    }
+
+    let ret = {};
+
+    // precompute caching
+    for (let cachedClassKey of cachedClasses) {
+        console.info(`Caching layer has been hit for ${cachedClassKey}`);
+        ret[cachedClassKey] = JSON.parse(await localforage.getItem(cachedClassKey));
+    }
+    // only want to make the fetch if we don't have classes cached
+    if (classesToFetch.length !== 0) {
+        let fetchBody = JSON.stringify({"classes": classesToFetch});
+        let response = await fetch(`${BACKEND_URL}/api_data`, {
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            method: 'post',
+            body: fetchBody
+        });
+        // response JSON is an object where each key is a class from selectedClasses (if cache was not hit)
+        // and the value is an array of subsections for that Class
+        let responseJSON  = await response.json();
+        for (let classTitle of Object.keys(responseJSON)) {
+            // appending to ret
+            ret[classTitle] = responseJSON[classTitle];
+            // have to stringify so can parse it because local storage only takes in key value pairs
+            localforage.setItem(classTitle, JSON.stringify(responseJSON[classTitle]));
+        }
+    }
+
+    return ret;
 }
 
 function isValidSubsection(subsection) {
@@ -114,7 +156,7 @@ export function ScheduleGenerationBruteForce() {
                     break;
                 }
             }
-            if(!success) {
+            if (!success) {
                 continue;
             }
             // adding subsections to interval tree if they are all valid
@@ -160,13 +202,8 @@ export function ScheduleGenerationBruteForce() {
         this.numSchedules = 0;
         this.totalPossibleSchedules = 1;
         selectedClasses = Object.values(selectedClasses);
-        // making the JSON here for the request
-        let selectedClassesJSON = {};
-        selectedClassesJSON['classes'] = selectedClasses;
 
-        // class data is an object where each field is the name of a class and everything inside it
-        // is a class with its times and such
-        let dirtyClassJSON = await requestDirtyData(selectedClassesJSON);
+        let dirtyClassJSON = await requestDirtyData(selectedClasses);
         // will put the data into
         // CSE 11 -> section 0 [subsection, subsection], section 1 [subsection, subsection]
         let classData = cleanData(dirtyClassJSON);

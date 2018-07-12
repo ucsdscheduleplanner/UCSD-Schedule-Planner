@@ -16,7 +16,7 @@ sqlite_cursor = sqlite_db.cursor()
 # Creating the class data table
 mysql_cursor.execute("DROP TABLE IF EXISTS CLASS_DATA")
 mysql_cursor.execute("CREATE TABLE CLASS_DATA"
-                     "(DEPARTMENT TEXT, COURSE_NUM TEXT, SECTION_ID TEXT, COURSE_ID TEXT,"
+                     "(DEPARTMENT VARCHAR(255), COURSE_NUM VARCHAR(255), SECTION_ID TEXT, COURSE_ID TEXT,"
                      "TYPE TEXT, DAYS TEXT, TIME TEXT, LOCATION TEXT, ROOM TEXT, "
                      "INSTRUCTOR TEXT, DESCRIPTION TEXT)")
 
@@ -59,10 +59,11 @@ for sql_row in class_rows:
                       VALUES (%s) \
                     """
     row = dict(sql_row)
-    mysql_cursor.execute(sql_str,
-                         (
-                             row["DEPT_CODE"],
-                         ))
+    mysql_cursor.execute(sql_str,(row["DEPT_CODE"],))
+
+# adding indexes
+index_str = "ALTER TABLE `CLASS_DATA` ADD INDEX (`DEPARTMENT`, `COURSE_NUM`)"
+mysql_cursor.execute(index_str)
 
 # adding changes
 mysql_db.commit()
