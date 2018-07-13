@@ -44,7 +44,7 @@ async function requestDirtyData(selectedClasses) {
         });
         // response JSON is an object where each key is a class from selectedClasses (if cache was not hit)
         // and the value is an array of subsections for that Class
-        let responseJSON  = await response.json();
+        let responseJSON = await response.json();
         for (let classTitle of Object.keys(responseJSON)) {
             // appending to ret
             ret[classTitle] = responseJSON[classTitle];
@@ -108,14 +108,28 @@ function cleanData(dirtyClassData) {
     return ret;
 }
 
+/**
+ *
+ * @param section
+ * @param conflicts is a dictionary with that maps class titles to the sections to ignore
+ */
+function ignoreSubsections(section, conflicts) {
+    if (!section) {
+        return section;
+    }
+    let firstSubsection = section[0];
+    if (!(firstSubsection.classTitle in conflicts)) {
+        return section;
+    }
+
+    let conflictsForClassTitle = conflicts[firstSubsection.classTitle];
+    return section.filter(s => !conflictsForClassTitle.includes(s.type));
+}
+
 export function ScheduleGenerationBruteForce() {
     // subsection has a time interval object, represents a subsection with data
-    this.isValid = function (subsection, conflicts, intervalTree) {
+    this.isValid = function (subsection, intervalTree) {
         let timeInterval = subsection.timeInterval;
-        // if we have a conflict, that means we don't care so don't add to the tree
-        if (conflicts[subsection.classTitle] && conflicts[subsection.classTitle].includes(subsection.type)) {
-            return true;
-        }
 
         if (!intervalTree.add(timeInterval)) {
             return false;
@@ -149,9 +163,11 @@ export function ScheduleGenerationBruteForce() {
             let success = true;
             // current section
             let currentSection = currentClassGroup[i];
-            for (let subsection of currentSection) {
+            let filteredSection = ignoreSubsections(currentSection, conflicts);
+
+            for (let subsection of filteredSection) {
                 // isValid is a pure function, so does not affect the intervalTree
-                if (!this.isValid(subsection, conflicts, intervalTree)) {
+                if (!this.isValid(subsection, intervalTree)) {
                     success = false;
                     break;
                 }
@@ -160,16 +176,17 @@ export function ScheduleGenerationBruteForce() {
                 continue;
             }
             // adding subsections to interval tree if they are all valid
-            for (let subsection of currentSection) {
+            for (let subsection of filteredSection) {
                 intervalTree.add(subsection.timeInterval);
             }
 
-            // choosing to use this for our current schedule
+            // choosing to use this for our current schedule - use the actual section not what was filtered
+            // this is so that the result has all the correct subsections, but we operate with the filtered sections
             currentSchedule.push(currentSection);
             this._dfs(classData, currentSchedule, intervalTree, schedules, conflicts, counter + 1);
 
             // removing all intervals we added so can continue to DFS
-            for (let subsection of currentSection) {
+            for (let subsection of filteredSection) {
                 intervalTree.remove(subsection.timeInterval);
             }
             // putting schedule in state before we added the current section
@@ -224,13 +241,31 @@ export function ScheduleGenerationBruteForce() {
         // now we have an array where each index is a Class Group
         // we can start brute force dfs now
 
+        let classToPreference = {};
+        for (let preference of preferences) {
+            if (!(preference.classTitle in classToPreference)) {
+                classToPreference[preference.classTitle] = [];
+            }
+            classToPreference[preference.classTitle].push(preference);
+        }
+
         this.evaluateSchedule = (schedule) => {
-            return preferences.reduce((accumulator, evaluator) => {
-                return accumulator +
-                    schedule.reduce((classAccum, Class) => {
-                        return classAccum + evaluator.evaluate(Class)
-                    }, 0);
-            }, 0);
+            let score = 0;
+            for (let Class of schedule) {
+                if(Class.length === 0) {
+                    return 0;
+                }
+
+                let subsection = Class[0];
+                if(!(subsection.classTitle) in classToPreference) {
+                    continue;
+                }
+
+                for (let preference of classToPreference[subsection.classTitle]) {
+                    score += preference.evaluate(Class);
+                }
+            }
+            return score;
         };
 
         return this.dfs(inputToDFS, conflicts);

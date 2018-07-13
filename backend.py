@@ -11,10 +11,9 @@ Picks classes and autogenerates schedules. The main computation backend for the 
 """  # Initializing database
 
 os.chdir(HOME_DIR)
-engine = create_engine('mysql+mysqldb://root:{}@localhost/classes'.format(password), pool_pre_ping=True)
-#engine = create_engine('mysql+mysqldb://{}:{}@{}/classes'.format(aws_username, password, aws_endpoint),
+cursor = create_engine('mysql+mysqldb://root:{}@localhost/classes'.format(password), pool_pre_ping=True, pool_recycle=3600)
+#cursor = create_engine('mysql+mysqldb://{}:{}@{}/classes'.format(aws_username, password, aws_endpoint),
 #                     pool_recycle=3600)
-cursor = engine.connect()
 
 departments = []
 class_types = []

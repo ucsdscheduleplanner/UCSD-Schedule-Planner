@@ -73,22 +73,25 @@ export function getSchedule(selectedClasses) {
         let dispatchProgressFunction = dispatchProgress(dispatch);
 
         // this class has no data but the names
-        Object.values(selectedClasses).forEach((preferredClass) => {
-            let priorityModifier = new PriorityModifier(preferredClass);
-            if (preferredClass.priority !== null) {
-                priorityModifier.priority = preferredClass.priority;
+        // passes in data from UI
+        Object.values(selectedClasses).forEach((Class) => {
+            let priorityModifier = new PriorityModifier(Class);
+            if (Class.priority !== null) {
+                priorityModifier.priority = Class.priority;
             }
 
             // add preferences to the priority modifier
-            if (preferredClass.instructor !== null) {
-                priorityModifier.preferences.push(new InstructorPreference(preferredClass, preferredClass.instructor));
+            if (Class.instructor !== null) {
+                priorityModifier.preferences.push(new InstructorPreference(Class, Class.instructor));
             }
             preferences.push(priorityModifier);
 
             // passing conflicts
-            conflicts[preferredClass.class_title] = [];
-            if (preferredClass.conflicts) {
-                conflicts[preferredClass.class_title] = preferredClass.conflicts.map((conflict) => classTypeToCode[conflict])
+            if (Class.conflicts) {
+                if (!(Class.classTitle in conflicts)) {
+                    conflicts[Class.classTitle] = [];
+                }
+                conflicts[Class.classTitle] = Class.conflicts.map((conflict) => classTypeToCode[conflict])
             }
         });
 
