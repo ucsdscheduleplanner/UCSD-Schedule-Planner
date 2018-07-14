@@ -1,60 +1,6 @@
-import {BACKEND_URL} from "../settings";
 import {SimpleIntervalTree} from "../utils/SimpleIntervalTree";
 import {Subsection} from "../utils/ClassUtils";
-import localforage from "localforage";
 
-/**
- * Function requests data from the backend given a list of classes that the user has picked. Implements caching as well
- * using local storage to reduce fetch size and hopefully speed up application.
- *
- * @param selectedClasses A list of pseudo class objects, not subsection objects, but bare Class objects.
- * @returns An object where each key is an element of the array of classes passed in and the value is an array
- * of subsections belonging to that class
- */
-async function requestDirtyData(selectedClasses) {
-    let classesToFetch = [];
-    let cachedClasses = [];
-
-    for (let Class of selectedClasses) {
-        let cacheObj = await localforage.getItem(Class.classTitle);
-        if (cacheObj) {
-            cachedClasses.push(Class.classTitle);
-        } else {
-            classesToFetch.push(Class);
-        }
-    }
-
-    let ret = {};
-
-    // precompute caching
-    for (let cachedClassKey of cachedClasses) {
-        console.info(`Caching layer has been hit for ${cachedClassKey}`);
-        ret[cachedClassKey] = JSON.parse(await localforage.getItem(cachedClassKey));
-    }
-    // only want to make the fetch if we don't have classes cached
-    if (classesToFetch.length !== 0) {
-        let fetchBody = JSON.stringify({"classes": classesToFetch});
-        let response = await fetch(`${BACKEND_URL}/api_data`, {
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            method: 'post',
-            body: fetchBody
-        });
-        // response JSON is an object where each key is a class from selectedClasses (if cache was not hit)
-        // and the value is an array of subsections for that Class
-        let responseJSON = await response.json();
-        for (let classTitle of Object.keys(responseJSON)) {
-            // appending to ret
-            ret[classTitle] = responseJSON[classTitle];
-            // have to stringify so can parse it because local storage only takes in key value pairs
-            localforage.setItem(classTitle, JSON.stringify(responseJSON[classTitle]));
-        }
-    }
-
-    return ret;
-}
 
 function isValidSubsection(subsection) {
     // we don't want to include finals or midterms in the regular week view
@@ -97,7 +43,11 @@ function cleanData(dirtyClassData) {
                     return ret;
 
                 }, []);
-                ret[courseName].push(subsectionsPerSection);
+
+                // we can have issues where all classes are canceled
+                if(subsectionsPerSection.length > 0) {
+                    ret[courseName].push(subsectionsPerSection);
+                }
                 slowPtr = fastPtr;
             }
 
@@ -114,7 +64,7 @@ function cleanData(dirtyClassData) {
  * @param conflicts is a dictionary with that maps class titles to the sections to ignore
  */
 function ignoreSubsections(section, conflicts) {
-    if (!section) {
+    if (!section || section.length === 0) {
         return section;
     }
     let firstSubsection = section[0];
@@ -214,16 +164,14 @@ export function ScheduleGenerationBruteForce() {
         }
     };
 
-    this.generateSchedule = async function (selectedClasses, conflicts = [], preferences = [], dispatchProgressFunction) {
+    this.generateSchedule = async function (classData, conflicts = [], preferences = [], dispatchProgressFunction) {
         this.dispatchProgressFunction = dispatchProgressFunction;
         this.numSchedules = 0;
         this.totalPossibleSchedules = 1;
-        selectedClasses = Object.values(selectedClasses);
 
-        let dirtyClassJSON = await requestDirtyData(selectedClasses);
         // will put the data into
         // CSE 11 -> section 0 [subsection, subsection], section 1 [subsection, subsection]
-        let classData = cleanData(dirtyClassJSON);
+        classData = cleanData(classData);
 
         // input is a 2D array where each element is a list of all the sections of a specific class
         // converting dict where key is courseNum to 2D array
@@ -238,9 +186,9 @@ export function ScheduleGenerationBruteForce() {
 
             inputToDFS.push(classSectionsForCourseNum);
         });
-        // now we have an array where each index is a Class Group
-        // we can start brute force dfs now
 
+
+        // setting up the preferences
         let classToPreference = {};
         for (let preference of preferences) {
             if (!(preference.classTitle in classToPreference)) {
@@ -257,7 +205,7 @@ export function ScheduleGenerationBruteForce() {
                 }
 
                 let subsection = Class[0];
-                if(!(subsection.classTitle) in classToPreference) {
+                if(!(subsection.classTitle in classToPreference)) {
                     continue;
                 }
 
@@ -268,6 +216,8 @@ export function ScheduleGenerationBruteForce() {
             return score;
         };
 
+        // now we have an array where each index is a Class Group
+        // we can start brute force dfs now
         return this.dfs(inputToDFS, conflicts);
     };
 }

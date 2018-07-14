@@ -2,15 +2,25 @@ import React, {Component} from 'react';
 import {connect} from "react-redux";
 import ClassInput from "../landing/ClassInput";
 import {
-    getClasses, getDepartments, setConflicts, setCurrentCourseNum, setCurrentDepartment, setCurrentInstructor,
+    getClasses, setConflicts, setCurrentCourseNum, setCurrentDepartment, setCurrentInstructor,
     setPriority, addClass, editClass, removeClass, enterInputMode
 } from "../actions/ClassInputActions";
 import {setUID} from "../actions/ScheduleGenerationActions";
 import {bindActionCreators} from "redux";
+import {DataFetcher} from "../utils/DataFetcher";
 
 class ClassInputContainer extends Component {
-    componentDidMount() {
-        this.props.getDepartments();
+
+    constructor(props) {
+        super(props);
+        this.state = {
+            departments: []
+        };
+    }
+
+    async componentDidMount() {
+        let departments = await DataFetcher.fetchDepartments();
+        this.setState({departments: departments});
     }
 
     render() {
@@ -26,7 +36,6 @@ class ClassInputContainer extends Component {
 
             addClass={this.props.addClass}
             setUID={this.props.setUID}
-            getDepartments={this.props.getDepartments}
             getClasses={this.props.getClasses}
 
             setCurrentDepartment={this.props.setCurrentDepartment}
@@ -41,9 +50,9 @@ class ClassInputContainer extends Component {
             conflicts={this.props.conflicts}
             priority={this.props.priority}
 
-            classes={this.props.classes}
+            courseNums={this.props.courseNums}
             selectedClasses={this.props.selectedClasses}
-            departments={this.props.departments}
+            departments={this.state.departments}
             classTypesPerClass={this.props.classTypesPerClass}
             instructorsPerClass={this.props.instructorsPerClass}
             requesting={this.props.requesting}
@@ -66,7 +75,6 @@ function mapDispatchToProps(dispatch) {
 
         addClass: addClass,
         setUID: setUID,
-        getDepartments: getDepartments,
         getClasses: getClasses
     }, dispatch);
 }
@@ -85,7 +93,7 @@ function mapStateToProps(state) {
 
         selectedClasses: state.ClassSelection,
         departments: state.ClassInput.departments,
-        classes: state.ClassInput.classes,
+        courseNums: state.ClassInput.courseNums,
         classTypesPerClass: state.ClassInput.classTypesPerClass,
         instructorsPerClass: state.ClassInput.instructorsPerClass,
         requesting: state.ClassInput.requesting,

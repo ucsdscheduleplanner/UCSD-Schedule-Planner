@@ -116,25 +116,6 @@ export function setConflicts(conflicts) {
     }
 }
 
-export const REQUEST_DEPARTMENTS = "REQUEST_DEPARTMENTS";
-
-export function requestDepartments() {
-    return {
-        type: REQUEST_DEPARTMENTS,
-        requesting: true
-    }
-}
-
-export const RECEIVE_DEPARTMENTS = "RECEIVE_DEPARTMENTS";
-
-export function receiveDepartments(departments) {
-    return {
-        type: RECEIVE_DEPARTMENTS,
-        departments: departments,
-        requesting: false
-    }
-}
-
 export const REQUEST_CLASS_PER_DEPARTMENT = "REQUEST_CLASS_PER_DEPARTMENT";
 
 export function requestClassesPerDepartment() {
@@ -146,26 +127,14 @@ export function requestClassesPerDepartment() {
 
 export const RECEIVE_CLASS_PER_DEPARTMENT = "RECEIVE_CLASS_PER_DEPARTMENT";
 
-export function receiveClassesPerDepartment(department, classes, instructors, types) {
+export function receiveClassesPerDepartment(department, courseNums, instructors, types) {
     return {
         type: RECEIVE_CLASS_PER_DEPARTMENT,
         requesting: false,
         department: department,
-        classes: classes,
+        courseNums: courseNums,
         instructorsPerClass: instructors,
         classTypesPerClass: types,
-    }
-}
-
-export function getDepartments() {
-    return function (dispatch, getState) {
-        let cachedDepartments = getState().ClassInput["departments"];
-        if(cachedDepartments.length > 0) {
-            return;
-        }
-        dispatch(requestDepartments);
-
-        fetchDepartments().then(departments => dispatch(receiveDepartments(departments)));
     }
 }
 
@@ -241,7 +210,7 @@ export function enterInputMode() {
 }
 
 /**
- * Returns the classes in a specific department
+ * Returns the courseNums in a specific department
  * @param department - the department we are looking at
  * @returns {Function} - a closure that will be used by redux thunk
  */
@@ -251,34 +220,14 @@ export function getClasses(department) {
         dispatch(requestClassesPerDepartment);
 
         fetchClasses(department).then(classData => {
-            let {classes, instructorsPerClass, classTypesPerClass} = classData;
-            dispatch(receiveClassesPerDepartment(department, classes, instructorsPerClass, classTypesPerClass));
+            let {courseNums, instructorsPerClass, classTypesPerClass} = classData;
+            dispatch(receiveClassesPerDepartment(department, courseNums, instructorsPerClass, classTypesPerClass));
         });
     }
 }
 
 /**
- * Fetch all the departments in the course catalog
- * @returns {Promise} a promise of a list of the departments
- */
-function fetchDepartments() {
-    return new Promise((resolve, reject) => {
-        fetch(`${BACKEND_URL}/api_department`, {
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            method: 'get'
-        })
-            .then(res => res.json())
-            .then(res => {
-                resolve(res.map((resObj) => resObj["DEPT_CODE"]));
-            }).catch(error => reject(error)).catch(error => reject(error));
-    });
-}
-
-/**
- * Update the class list with classes from the given department.
+ * Update the class list with courseNums from the given department.
  */
 function fetchClasses(department) {
     return new Promise((resolve, reject) => {
@@ -331,7 +280,7 @@ function fetchClasses(department) {
                     }
 
                     // sorting based on comparator for the course nums
-                    let sortedClasses = [...unsorted].sort((element1, element2) => {
+                    let sortedCourseNums = [...unsorted].sort((element1, element2) => {
                         // match numerically
                         let num1 = parseInt(element1.match(/\d+/)[0], 10);
                         let num2 = parseInt(element2.match(/\d+/)[0], 10);
@@ -349,7 +298,7 @@ function fetchClasses(department) {
                     }
 
                     resolve({
-                        classes: sortedClasses,
+                        courseNums: sortedCourseNums,
                         classTypesPerClass: classTypesPerClass,
                         instructorsPerClass: instructorsPerClass
                     });

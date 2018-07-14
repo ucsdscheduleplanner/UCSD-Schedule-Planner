@@ -36,10 +36,10 @@ export default class ClassInput extends PureComponent {
 
     completeClassSuggestions(event) {
         // hopefully this will never trigger
-        if (!this.props.classes[this.props.currentDepartment]) return;
+        if (!this.props.courseNums[this.props.currentDepartment]) return;
 
         // hits the caching layer here
-        let classOptions = this.props.classes[this.props.currentDepartment].filter((Class) => {
+        let classOptions = this.props.courseNums[this.props.currentDepartment].filter((Class) => {
             if(Class) return Class.toLowerCase().startsWith(event.query.toLowerCase());
             return false;
         });
@@ -87,7 +87,7 @@ export default class ClassInput extends PureComponent {
 
         // error checking on department and course num
         if (!this.props.departments.includes(this.props.currentDepartment)) error = true;
-        if (!this.props.classes[this.props.currentDepartment].includes(this.props.currentCourseNum)) error = true;
+        if (!this.props.courseNums[this.props.currentDepartment].includes(this.props.currentCourseNum)) error = true;
 
         if (!duplicate && !error) {
             // constructing new class to be added to UI
@@ -206,7 +206,7 @@ export default class ClassInput extends PureComponent {
                                           }
 
                                           // don't requery if we have the class already
-                                          if (this.props.classes[e.value]) {
+                                          if (this.props.courseNums[e.value]) {
                                               console.info("Found classes cached, will use that.");
                                               return;
                                           }

@@ -46,11 +46,11 @@ class Cleaner:
             self.process_department(department)
 
     """
-    Will store in format with partitions for the classes in the same format : i.e CSE3$0 means section 0 of CSE3.
+    Will store in format with partitions for the courseNums in the same format : i.e CSE3$0 means section 0 of CSE3.
     """
 
     def process_department(self, department):
-        # getting all classes in department in order
+        # getting all courseNums in department in order
         self.cursor.execute("SELECT * FROM CLASSES WHERE DEPARTMENT = ? ORDER BY ID", (department,))
         visible_classes = [dict(row) for row in self.cursor.fetchall()]
         # doing this so fast_ptr knows where to stop
@@ -110,7 +110,7 @@ class Cleaner:
     def process_current_class_set(self, class_set, section_count, department, course_num):
         ret = []
         class_sections = []
-        # sorts so has classes with no class_section
+        # sorts so has courseNums with no class_section
         classes_to_replicate = [c for c in class_set if not c["COURSE_ID"]]
         classes_to_add = [c for c in class_set if c not in classes_to_replicate]
 
@@ -145,7 +145,7 @@ class Cleaner:
             class_sections.extend(cur_class_sections)
 
         # now we are going to set ids based on class_section
-        # also going to split classes into their subclasses
+        # also going to split courseNums into their subclasses
         for class_section in class_sections:
             if department not in section_count:
                 section_count[department] = {}
