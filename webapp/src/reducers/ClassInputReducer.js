@@ -1,11 +1,13 @@
 import {
-    RECEIVE_CLASS_PER_DEPARTMENT,
     REQUEST_CLASS_PER_DEPARTMENT,
+    SET_CLASS_TYPES_PER_CLASS,
     SET_CONFLICTS,
+    SET_COURSE_NUMS,
     SET_CURRENT_COURSE_NUM,
     SET_CURRENT_DEPARTMENT,
     SET_CURRENT_INSTRUCTOR,
     SET_EDIT_MODE,
+    SET_INSTRUCTORS_PER_CLASS,
     SET_PRIORITY
 } from "../actions/ClassInputActions";
 
@@ -13,7 +15,7 @@ export default function ClassInput(state = {
     requesting: false,
     // courseNums will be a dict where each value is an array of
     // courseNums and each key is a department
-    courseNums: {},
+    courseNums: [],
     instructorsPerClass: {},
     classTypesPerClass: {},
 
@@ -30,27 +32,17 @@ export default function ClassInput(state = {
             return Object.assign({}, state, {
                 requesting: action.requesting
             });
-        case RECEIVE_CLASS_PER_DEPARTMENT:
-            // getting department
-            let newDepartment = action.department;
-
-            // caching courseNums per department
-            let newClassDict = Object.assign({}, state.courseNums);
-            newClassDict[newDepartment] = action.courseNums;
-
-            // caching instructors
-            let newInstructorDict = Object.assign({}, state.instructorsPerClass);
-            newInstructorDict[newDepartment] = action.instructorsPerClass;
-
-            // caching class types
-            let newClassTypeDict = Object.assign({}, state.classTypesPerClass);
-            newClassTypeDict[newDepartment] = action.classTypesPerClass;
-
+        case SET_INSTRUCTORS_PER_CLASS:
             return Object.assign({}, state, {
-                requesting: action.requesting,
-                courseNums: newClassDict,
-                instructorsPerClass: newInstructorDict,
-                classTypesPerClass: newClassTypeDict
+                instructorsPerClass: action.instructorsPerClass
+            });
+        case SET_CLASS_TYPES_PER_CLASS:
+            return Object.assign({}, state, {
+                classTypesPerClass: action.classTypesPerClass
+            });
+        case SET_COURSE_NUMS:
+            return Object.assign({}, state, {
+                courseNums: action.courseNums
             });
         case SET_CURRENT_COURSE_NUM:
             return Object.assign({}, state, {

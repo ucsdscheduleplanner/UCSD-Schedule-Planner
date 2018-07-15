@@ -1,5 +1,7 @@
 import {BACKEND_URL} from "../settings";
 import {setCalendarMode, setProgress} from "./ScheduleGenerationActions";
+import {CacheManager} from "../utils/CacheManager";
+import {DataFetcher} from "../utils/DataFetcher";
 
 
 const codeToClassType = {
@@ -89,6 +91,41 @@ export function setCurrentDepartment(department) {
     }
 }
 
+export const SET_CLASS_SUMMARY_FROM_DEPARTMENT =  "SET_CLASS_SUMMARY_FROM_DEPARTMENT";
+export function setClassSummaryFromDepartment(department) {
+    return async function (dispatch) {
+        let {courseNums, instructorsPerClass, classTypesPerClass} = await DataFetcher.fetchClassSummaryFor(department);
+
+        dispatch(setCourseNums(courseNums));
+        dispatch(setInstructorsPerClass(instructorsPerClass));
+        dispatch(setClassTypesPerClass(classTypesPerClass));
+    }
+}
+
+export const SET_COURSE_NUMS = "SET_COURSE_NUMS";
+export function setCourseNums(courseNums) {
+    return {
+        type: SET_COURSE_NUMS,
+        courseNums: courseNums
+    }
+}
+
+export const SET_INSTRUCTORS_PER_CLASS = "SET_INSTRUCTORS_PER_CLASS ";
+export function setInstructorsPerClass(instructorsPerClass) {
+    return {
+        type: SET_INSTRUCTORS_PER_CLASS,
+        instructorsPerClass: instructorsPerClass
+    }
+}
+
+export const SET_CLASS_TYPES_PER_CLASS = "SET_CLASS_TYPES_PER_CLASS";
+export function setClassTypesPerClass(classTypesPerClass) {
+    return {
+        type: SET_CLASS_TYPES_PER_CLASS,
+        classTypesPerClass: classTypesPerClass
+    }
+}
+
 export const SET_CURRENT_COURSE_NUM = "SET_CURRENT_COURSE_NUM";
 
 export function setCurrentCourseNum(courseNum) {
@@ -122,19 +159,6 @@ export function requestClassesPerDepartment() {
     return {
         type: REQUEST_CLASS_PER_DEPARTMENT,
         requesting: true
-    }
-}
-
-export const RECEIVE_CLASS_PER_DEPARTMENT = "RECEIVE_CLASS_PER_DEPARTMENT";
-
-export function receiveClassesPerDepartment(department, courseNums, instructors, types) {
-    return {
-        type: RECEIVE_CLASS_PER_DEPARTMENT,
-        requesting: false,
-        department: department,
-        courseNums: courseNums,
-        instructorsPerClass: instructors,
-        classTypesPerClass: types,
     }
 }
 
@@ -206,23 +230,6 @@ export function enterInputMode() {
         dispatch(setCurrentCourseNum(null));
         dispatch(setCurrentDepartment(null));
         dispatch(setEditMode(null, false));
-    }
-}
-
-/**
- * Returns the courseNums in a specific department
- * @param department - the department we are looking at
- * @returns {Function} - a closure that will be used by redux thunk
- */
-export function getClasses(department) {
-    return function (dispatch) {
-        // tell the store that we are requesting
-        dispatch(requestClassesPerDepartment);
-
-        fetchClasses(department).then(classData => {
-            let {courseNums, instructorsPerClass, classTypesPerClass} = classData;
-            dispatch(receiveClassesPerDepartment(department, courseNums, instructorsPerClass, classTypesPerClass));
-        });
     }
 }
 

@@ -2,8 +2,8 @@ import localforage from "localforage/src/localforage";
 
 export class CacheManager {
     static async isCached(key) {
-        let retObj = await localforage.getItem(key);
-        return retObj !== null;
+       let retObj = await localforage.getItem(key);
+       return retObj !== null;
     }
 
     static async get(key) {

@@ -25,12 +25,12 @@ def get_all_classes_in(department):
     sql = text("SELECT * FROM CLASS_DATA WHERE DEPARTMENT = :department")
     result = cursor.execute(sql, department=department).fetchall()
     # use dict here for fast lookup
-    ret_dict["COURSE_NUMS"] = {}
+    ret_dict["CLASS_SUMMARY"] = {}
     for row in result:
         row = dict(row)
-        if row["COURSE_NUM"] not in ret_dict["COURSE_NUMS"]:
-            ret_dict["COURSE_NUMS"][row["COURSE_NUM"]] = []
-        ret_dict["COURSE_NUMS"][row["COURSE_NUM"]].append(row)
+        if row["COURSE_NUM"] not in ret_dict["CLASS_SUMMARY"]:
+            ret_dict["CLASS_SUMMARY"][row["COURSE_NUM"]] = []
+        ret_dict["CLASS_SUMMARY"][row["COURSE_NUM"]].append(row)
     return ret_dict
 
 

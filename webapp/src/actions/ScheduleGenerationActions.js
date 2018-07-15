@@ -101,6 +101,7 @@ function handleConflicts(Class, conflicts) {
 }
 
 /**
+ * This is in redux so we have hooks that determine the progres of generating the schedule
  *
  * @param selectedClasses comes in as a dictionary so must convert to a list
  * @returns {Function}
