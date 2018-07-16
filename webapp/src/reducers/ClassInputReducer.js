@@ -1,16 +1,21 @@
 import {
-    RECEIVE_CLASS_PER_DEPARTMENT, RECEIVE_DEPARTMENTS, REQUEST_CLASS_PER_DEPARTMENT,
-    REQUEST_DEPARTMENTS, SET_CONFLICTS, SET_CURRENT_COURSE_NUM, SET_CURRENT_DEPARTMENT, SET_CURRENT_INSTRUCTOR,
+    REQUEST_CLASS_PER_DEPARTMENT,
+    SET_CLASS_TYPES_PER_CLASS,
+    SET_CONFLICTS,
+    SET_COURSE_NUMS,
+    SET_CURRENT_COURSE_NUM,
+    SET_CURRENT_DEPARTMENT,
+    SET_CURRENT_INSTRUCTOR,
     SET_EDIT_MODE,
+    SET_INSTRUCTORS_PER_CLASS,
     SET_PRIORITY
 } from "../actions/ClassInputActions";
 
 export default function ClassInput(state = {
     requesting: false,
-    departments: [],
-    // classes will be a dict where each value is an array of
-    // classes and each key is a department
-    classes: {},
+    // courseNums will be a dict where each value is an array of
+    // courseNums and each key is a department
+    courseNums: [],
     instructorsPerClass: {},
     classTypesPerClass: {},
 
@@ -23,40 +28,21 @@ export default function ClassInput(state = {
     editUID: null,
 }, action) {
     switch (action.type) {
-        case RECEIVE_DEPARTMENTS:
-            return Object.assign({}, state, {
-                departments: action.departments,
-                requesting: action.requesting
-            });
-        case REQUEST_DEPARTMENTS:
-            return Object.assign({}, state, {
-                requesting: action.requesting
-            });
         case REQUEST_CLASS_PER_DEPARTMENT:
             return Object.assign({}, state, {
                 requesting: action.requesting
             });
-        case RECEIVE_CLASS_PER_DEPARTMENT:
-            // getting department
-            let newDepartment = action.department;
-
-            // caching classes per department
-            let newClassDict = Object.assign({}, state.classes);
-            newClassDict[newDepartment] = action.classes;
-
-            // caching instructors
-            let newInstructorDict = Object.assign({}, state.instructorsPerClass);
-            newInstructorDict[newDepartment] = action.instructorsPerClass;
-
-            // caching class types
-            let newClassTypeDict = Object.assign({}, state.classTypesPerClass);
-            newClassTypeDict[newDepartment] = action.classTypesPerClass;
-
+        case SET_INSTRUCTORS_PER_CLASS:
             return Object.assign({}, state, {
-                requesting: action.requesting,
-                classes: newClassDict,
-                instructorsPerClass: newInstructorDict,
-                classTypesPerClass: newClassTypeDict
+                instructorsPerClass: action.instructorsPerClass
+            });
+        case SET_CLASS_TYPES_PER_CLASS:
+            return Object.assign({}, state, {
+                classTypesPerClass: action.classTypesPerClass
+            });
+        case SET_COURSE_NUMS:
+            return Object.assign({}, state, {
+                courseNums: action.courseNums
             });
         case SET_CURRENT_COURSE_NUM:
             return Object.assign({}, state, {

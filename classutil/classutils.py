@@ -62,9 +62,9 @@ class Class:
 
     def is_valid(self, w_set):
         """
-        Return if the classes overlap. Will add more arguments in the future.
+        Return if the courseNums overlap. Will add more arguments in the future.
 
-        :param w_set the set of classes (not subclasses) we are working with currently
+        :param w_set the set of courseNums (not subclasses) we are working with currently
         :return true if valid and false if not
         """
 
@@ -96,9 +96,9 @@ class Class:
 
     def overlaps_times_and_days(self, choice):
         """
-        Takes in two classes and returns whether their times overlap.
+        Takes in two courseNums and returns whether their times overlap.
         :param choice: The other class
-        :return: Whether the two classes overlap
+        :return: Whether the two courseNums overlap
         """
 
         for self_cl in self.subclasses.values():

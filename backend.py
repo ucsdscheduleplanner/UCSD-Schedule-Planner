@@ -11,10 +11,9 @@ Picks classes and autogenerates schedules. The main computation backend for the 
 """  # Initializing database
 
 os.chdir(HOME_DIR)
-engine = create_engine('mysql+mysqldb://root:{}@localhost/classes'.format(password), pool_pre_ping=True)
-#engine = create_engine('mysql+mysqldb://{}:{}@{}/classes'.format(aws_username, password, aws_endpoint),
+cursor = create_engine('mysql+mysqldb://root:{}@localhost/classes'.format(password), pool_pre_ping=True, pool_recycle=3600)
+#cursor = create_engine('mysql+mysqldb://{}:{}@{}/classes'.format(aws_username, password, aws_endpoint),
 #                     pool_recycle=3600)
-cursor = engine.connect()
 
 departments = []
 class_types = []
@@ -26,12 +25,12 @@ def get_all_classes_in(department):
     sql = text("SELECT * FROM CLASS_DATA WHERE DEPARTMENT = :department")
     result = cursor.execute(sql, department=department).fetchall()
     # use dict here for fast lookup
-    ret_dict["COURSE_NUMS"] = {}
+    ret_dict["CLASS_SUMMARY"] = {}
     for row in result:
         row = dict(row)
-        if row["COURSE_NUM"] not in ret_dict["COURSE_NUMS"]:
-            ret_dict["COURSE_NUMS"][row["COURSE_NUM"]] = []
-        ret_dict["COURSE_NUMS"][row["COURSE_NUM"]].append(row)
+        if row["COURSE_NUM"] not in ret_dict["CLASS_SUMMARY"]:
+            ret_dict["CLASS_SUMMARY"][row["COURSE_NUM"]] = []
+        ret_dict["CLASS_SUMMARY"][row["COURSE_NUM"]].append(row)
     return ret_dict
 
 

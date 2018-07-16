@@ -26,10 +26,10 @@ function requestData(selectedClasses) {
 
 /**
  * Converts the data from returned server data to usable data
- * @param selectedClasses json for classes
+ * @param selectedClasses json for courseNums
  * @param dirtyClassData the data we received from the server
  * @returns {Promise} cleaned up data in a dictionary form where each key is the name
- * of a class and the value is a heap containing all the classes
+ * of a class and the value is a heap containing all the courseNums
  */
 function handleData(selectedClasses, dirtyClassData) {
     // using object here to define each class heap by its class
@@ -74,7 +74,7 @@ function handleData(selectedClasses, dirtyClassData) {
 
 /**
  * Interfacing function that generates a schedule.
- * @param selectedClasses the classes in dict form we want to make a schedule out of
+ * @param selectedClasses the courseNums in dict form we want to make a schedule out of
  * @returns {Promise} a promise that will resolve to a schedule
  */
 export function generateSchedule(selectedClasses) {
@@ -82,7 +82,7 @@ export function generateSchedule(selectedClasses) {
     // making the JSON here for the request
     let selectedClassesJSON = {};
     // recreating it for the JSON
-    selectedClassesJSON['classes'] = selectedClasses;
+    selectedClassesJSON['courseNums'] = selectedClasses;
 
     return new Promise((resolve, reject) => {
         requestData(selectedClassesJSON)
@@ -120,7 +120,7 @@ function swap(index1, index2, myList) {
 }
 
 /**
- * Generates a schedule given a list of classes in heap form
+ * Generates a schedule given a list of courseNums in heap form
  * @param classHeaps the heaps for each class in array form
  * Each element in the array is a heap containing all the class sections for the specific class.
  * IMPORTANT classHeaps will not be altered at all
@@ -134,7 +134,7 @@ export function getSchedule(classHeaps) {
     for (let curStart = 0; curStart < classHeaps.length; curStart++) {
         let curSchedule = [];
         let intervalTree = new SimpleIntervalTree();
-        // numClasses is the number of classes in correct schedule
+        // numClasses is the number of courseNums in correct schedule
         let numClasses = classHeaps.length;
 
         // defining the array of heaps we will be working with
@@ -148,11 +148,11 @@ export function getSchedule(classHeaps) {
         // bringing the new first class to the front of the list
         swap(curStart, 0, workingClassHeaps);
 
-        // curIndex is the number of classes we have in our current schedule
+        // curIndex is the number of courseNums we have in our current schedule
         // also holds the index of the current class we are trying to add to the schedule
         let curIndex = 0;
 
-        // we go until we have the number of desired classes
+        // we go until we have the number of desired courseNums
         while (curIndex < numClasses) {
             // if a heap is empty that means this current schedule cannot work and we break
             if (workingClassHeaps[curIndex].isEmpty()) break;
@@ -169,7 +169,7 @@ export function getSchedule(classHeaps) {
         }
 
         // making sure the schedule is actually valid by comparing
-        // num classes in each schedule
+        // num courseNums in each schedule
         if(curSchedule.length !== numClasses) continue;
 
         // evaluate the schedule to find our best schedule

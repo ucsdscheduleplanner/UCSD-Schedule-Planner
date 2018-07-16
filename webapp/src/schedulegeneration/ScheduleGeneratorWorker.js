@@ -71,7 +71,7 @@ export async function generateScheduleWorker(selectedClasses, conflicts = [], pr
     selectedClasses = Object.values(selectedClasses);
     // making the JSON here for the request
     let selectedClassesJSON = {};
-    selectedClassesJSON['classes'] = selectedClasses;
+    selectedClassesJSON['courseNums'] = selectedClasses;
     // class data is an object where each field is the name of a class and everything inside it
     // is a class with its times and such
     let classJSON = await requestData(selectedClassesJSON);

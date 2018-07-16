@@ -1,8 +1,7 @@
-import {
-    ScheduleGenerationBruteForce
-} from "../schedulegeneration/ScheduleGeneratorBruteForce";
+import {ScheduleGenerationBruteForce} from "../schedulegeneration/ScheduleGeneratorBruteForce";
 import {InstructorPreference, PriorityModifier} from "../utils/Preferences";
-import {classTypeToCode} from "./ClassInputActions";
+import {classTypeToCode, DataFetcher} from "../utils/DataFetcher";
+
 
 export const REQUEST_SCHEDULE = 'REQUEST_SCHEDULE';
 
@@ -48,6 +47,7 @@ export function enterCalendarMode() {
 }
 
 export const SET_PROGRESS = "SET_PROGRESS";
+
 export function setProgress(generatingProgress) {
     return {
         type: SET_PROGRESS,
@@ -56,15 +56,61 @@ export function setProgress(generatingProgress) {
 }
 
 function dispatchProgress(dispatch) {
-    return function(progress) {
+    return function (progress) {
         dispatch(setProgress(progress));
     }
 }
 
+/**
+ * Populates the preference array with the correct Preference objects.
+ *
+ * @param Class the class with the preferences
+ * @param preferences the array to populate
+ */
+function handlePriority(Class, preferences) {
+    let priorityModifier = new PriorityModifier(Class);
+    if (Class.priority !== null) {
+        priorityModifier.priority = Class.priority;
+    }
+
+    // add preferences to the priority modifier
+    if (Class.instructor !== null) {
+        priorityModifier.preferences.push(new InstructorPreference(Class, Class.instructor));
+    }
+    preferences.push(priorityModifier);
+}
+
+/**
+ * Will populate the conflicts object with the correct info about Class -> type conflicts
+ *
+ * Creates a mapping like so:
+ * e.g Class1 -> [LE, DI]
+ *     Class2 -> [LA]
+ * @param Class the class to consider - has a list of type conflicts
+ * @param conflicts the conflicts array to populate
+ */
+function handleConflicts(Class, conflicts) {
+    // class not guaranteed to have conflicts array populated
+    if (Class.conflicts) {
+        if (!(Class.classTitle in conflicts)) {
+            conflicts[Class.classTitle] = [];
+        }
+        conflicts[Class.classTitle] = Class.conflicts.map((conflict) => classTypeToCode[conflict])
+    }
+}
+
+/**
+ * This is in redux so we have hooks that determine the progres of generating the schedule
+ *
+ * @param selectedClasses comes in as a dictionary so must convert to a list
+ * @returns {Function}
+ */
 export function getSchedule(selectedClasses) {
     return async function (dispatch) {
-        // let redux know that we are creating a scheedule
+        // let redux know that we are creating a schedule
         dispatch(requestSchedule());
+
+        selectedClasses = Object.values(selectedClasses);
 
         let preferences = [];
         let conflicts = {};
@@ -73,27 +119,15 @@ export function getSchedule(selectedClasses) {
         let dispatchProgressFunction = dispatchProgress(dispatch);
 
         // this class has no data but the names
-        Object.values(selectedClasses).forEach((preferredClass) => {
-            let priorityModifier = new PriorityModifier(preferredClass);
-            if (preferredClass.priority !== null) {
-                priorityModifier.priority = preferredClass.priority;
-            }
+        // passes in data from UI
+        for (let Class of selectedClasses) {
+            handlePriority(Class, preferences);
+            handleConflicts(Class, conflicts);
+        }
 
-            // add preferences to the priority modifier
-            if (preferredClass.instructor !== null) {
-                priorityModifier.preferences.push(new InstructorPreference(preferredClass, preferredClass.instructor));
-            }
-            preferences.push(priorityModifier);
-
-            // passing conflicts
-            conflicts[preferredClass.class_title] = [];
-            if (preferredClass.conflicts) {
-                conflicts[preferredClass.class_title] = preferredClass.conflicts.map((conflict) => classTypeToCode[conflict])
-            }
-        });
-
-        // handles all scchedule generation including the queries for data
-        return new ScheduleGenerationBruteForce().generateSchedule(selectedClasses, conflicts, preferences, dispatchProgressFunction)
+        let classData = await DataFetcher.fetchClassData(selectedClasses);
+        // handles all schedule generation including the queries for data
+        return new ScheduleGenerationBruteForce().generateSchedule(classData, conflicts, preferences, dispatchProgressFunction)
             .then((schedule) => {
                 dispatch(receiveSchedule(schedule));
                 dispatch(enterCalendarMode())

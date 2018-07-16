@@ -12,6 +12,7 @@ export default class ClassInput extends PureComponent {
         super(props);
         this.state = {
             duplicate: false,
+
             instructorOptions: [],
             departmentOptions: [],
             classOptions: [],
@@ -36,38 +37,37 @@ export default class ClassInput extends PureComponent {
 
     completeClassSuggestions(event) {
         // hopefully this will never trigger
-        if (!this.props.classes[this.props.currentDepartment]) return;
+        if (this.props.courseNums.length === 0) return;
 
         // hits the caching layer here
-        let classOptions = this.props.classes[this.props.currentDepartment].filter((Class) => {
-            if(Class) return Class.toLowerCase().startsWith(event.query.toLowerCase());
+        let classOptions = this.props.courseNums.filter((Class) => {
+            if (Class) return Class.toLowerCase().startsWith(event.query.toLowerCase());
             return false;
         });
         this.setState({classOptions: classOptions});
     }
 
     completeInstructorSuggestions(event) {
-        if (this.props.instructorsPerClass && this.props.instructorsPerClass[this.props.currentDepartment]) {
-
+        if (this.props.instructorsPerClass && this.props.instructorsPerClass[this.props.currentCourseNum]) {
             // hits the caching layer here
-            let instructorOptions = this.props.instructorsPerClass[this.props.currentDepartment][this.props.currentCourseNum]
+            let instructorOptions = this.props.instructorsPerClass[this.props.currentCourseNum]
                 .filter((instructor) => {
-                if(instructor) return instructor.toLowerCase().startsWith(event.query.toLowerCase());
-                return false;
+                    if (instructor) return instructor.toLowerCase().startsWith(event.query.toLowerCase());
+                    return false;
                 });
             this.setState({instructorOptions: instructorOptions});
         }
     }
 
     getClassTypeOptions(courseNum) {
-        if (this.props.classTypesPerClass && this.props.classTypesPerClass[this.props.currentDepartment]
-            && this.props.classTypesPerClass[this.props.currentDepartment][courseNum]) {
+        if (this.props.classTypesPerClass && this.props.classTypesPerClass[courseNum]) {
             // filtering midterms and finals for now
             // TODO find way to mess with labels and values to make this cleaner and less shaky
-            return this.props.classTypesPerClass[this.props.currentDepartment][courseNum].filter((classType) => {
+            return this.props.classTypesPerClass[courseNum].filter((classType) => {
                 return classType["label"] !== "Final Exam" && classType["label"] !== "Midterm";
             });
         }
+        // need to return undefined for UI instead of null
         return undefined;
     }
 
@@ -87,7 +87,7 @@ export default class ClassInput extends PureComponent {
 
         // error checking on department and course num
         if (!this.props.departments.includes(this.props.currentDepartment)) error = true;
-        if (!this.props.classes[this.props.currentDepartment].includes(this.props.currentCourseNum)) error = true;
+        if (!this.props.courseNums.includes(this.props.currentCourseNum)) error = true;
 
         if (!duplicate && !error) {
             // constructing new class to be added to UI
@@ -195,22 +195,18 @@ export default class ClassInput extends PureComponent {
                         <div className="input-header"> Department:</div>
                         <AutoComplete suggestions={this.state.departmentOptions} dropdown={true}
                                       value={this.props.currentDepartment}
-                                      onChange={(e) => {
+                                      onChange={async (e) => {
                                           this.props.setCurrentDepartment(e.value.toUpperCase());
                                           this.props.setCurrentCourseNum(null);
                                           this.props.setCurrentInstructor(null);
                                           this.props.setPriority(null);
 
-                                          if(!this.props.departments.includes(e.value)) {
+                                          if (!this.props.departments.includes(e.value)) {
                                               return;
                                           }
 
-                                          // don't requery if we have the class already
-                                          if (this.props.classes[e.value]) {
-                                              console.info("Found classes cached, will use that.");
-                                              return;
-                                          }
-                                          this.props.getClasses.call(this, e.value);
+                                          this.props.setClassSummaryFromDepartment(e.value);
+
                                           // check if the thing we selected is the same as the one we already had
                                           if (e.value !== this.props.currentDepartment) {
                                               this.props.setCurrentCourseNum(null);

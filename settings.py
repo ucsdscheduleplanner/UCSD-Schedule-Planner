@@ -19,7 +19,7 @@ DATABASE_PATH = os.path.join(HOME_DIR, 'database','data.db')
 IMAGE_DIR = os.path.join(HOME_DIR, 'images')
 
 # Where the classes are stored
-HTML_STORAGE = os.path.join(HOME_DIR, 'classes')
+HTML_STORAGE = os.path.join(HOME_DIR, 'courseNums')
 
 DRIVER_PATH = os.path.join(HOME_DIR, 'driver', 'chromedriver')
 
