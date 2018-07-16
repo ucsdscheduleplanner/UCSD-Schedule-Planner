@@ -99,9 +99,11 @@ function mapStateToProps(state) {
 
         selectedClasses: state.ClassSelection,
         departments: state.ClassInput.departments,
+
         courseNums: state.ClassInput.courseNums,
         classTypesPerClass: state.ClassInput.classTypesPerClass,
         instructorsPerClass: state.ClassInput.instructorsPerClass,
+
         requesting: state.ClassInput.requesting,
         uid: state.ScheduleGeneration.uid,
     }

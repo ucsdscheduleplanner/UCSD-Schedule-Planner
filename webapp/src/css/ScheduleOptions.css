@@ -59,9 +59,15 @@ div.schedule-options-content input {
 
 }
 
-.addButton:hover {
+.class-button:hover .addButton {
+    transform: scale(1.2) translateY(0%);
+    transition: all 300ms ease-out;
+
+    color: white;
+}
+
+.class-button:hover .class-item {
     transform: scale(1.2) translateY(0%);
     transition: all 300ms ease-out;
 }
-
 

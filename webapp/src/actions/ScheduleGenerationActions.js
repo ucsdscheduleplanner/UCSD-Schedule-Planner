@@ -1,7 +1,6 @@
 import {ScheduleGenerationBruteForce} from "../schedulegeneration/ScheduleGeneratorBruteForce";
 import {InstructorPreference, PriorityModifier} from "../utils/Preferences";
-import {classTypeToCode} from "./ClassInputActions";
-import {DataFetcher} from "../utils/DataFetcher";
+import {classTypeToCode, DataFetcher} from "../utils/DataFetcher";
 
 
 export const REQUEST_SCHEDULE = 'REQUEST_SCHEDULE';

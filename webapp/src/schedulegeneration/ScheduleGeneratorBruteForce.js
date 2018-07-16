@@ -91,6 +91,7 @@ export function ScheduleGenerationBruteForce() {
         return true;
     };
 
+
     this._dfs = function (classData, currentSchedule, intervalTree, schedules, conflicts, counter) {
         if (currentSchedule.length >= classData.length) {
             let score = this.evaluateSchedule(currentSchedule);
@@ -98,6 +99,7 @@ export function ScheduleGenerationBruteForce() {
 
             // doing stuff for progress bar for schedules
             this.numSchedules++;
+            //console.info(this.numSchedules);
             let schedulePercentComplete = Math.round(100 * (this.numSchedules / this.totalPossibleSchedules));
             this.dispatchProgressFunction(schedulePercentComplete);
 
