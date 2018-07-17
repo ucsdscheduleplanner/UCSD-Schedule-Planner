@@ -1,4 +1,4 @@
-import localforage from "localforage/src/localforage";
+import * as localforage from "localforage";
 
 export class CacheManager {
     static async isCached(key) {
