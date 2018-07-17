@@ -2,7 +2,7 @@
 
 .right-side-panel {
     height: 100%;
-    background-color: rgb(24,43, 73);
+    background: linear-gradient(to bottom, rgba(24,43, 73, 1), rgba(28, 47, 77, .85));
 }
 
 @media only screen and (max-width: 525px) {
@@ -11,6 +11,10 @@
         height: auto;
         grid-column: 1/-1;
     }
+}
+
+#generate > .ui-button {
+    width: 100%;
 }
 
 
