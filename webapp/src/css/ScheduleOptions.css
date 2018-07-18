@@ -1,11 +1,40 @@
 
+.schedule-options-container-wrapper {
+    height: 100%;
+}
+
+.schedule-options-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
 .schedule-options {
-    margin: 2.5em 1em 1em 2em;
     align-items: center;
     justify-content: center;
 }
 
+* {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
 .schedule-options-title {
+    text-align: center;
+    color: rgb(230, 230, 230);
+    font-size: 1.5em;
+    font-weight: bold;
+    font-family: 'Raleway', sans-serif;
+}
+
+.class-summary-title {
+    display: flex;
+    margin-top: 1em;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+
     color: rgb(230, 230, 230);
     font-size: 1.5em;
     font-weight: bold;
@@ -18,34 +47,79 @@
     border-collapse: collapse;
     font-family: 'Lato', sans-serif;
     color: rgb(215, 215, 215);
-    margin: 2em;
 }
 
-.schedule-options-generate {
-    margin-top: 2em;
-    align-self: flex-end;
+.schedule-options-button-holder, .schedule-options-return-planning {
     width: 100%;
+    height: 100%;
 }
 
 #sidebar {
-    background: linear-gradient(to bottom, rgba(24,43, 73, 1), rgba(28, 47, 77, .85));
+    background: linear-gradient(to bottom, rgba(24, 43, 73, 1), rgba(28, 47, 77, .85));
     padding: 0;
 }
 
-.schedule-options-return-planning {
-    margin-top: 2em;
-    align-self: flex-end;
+#generate, #configure {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+}
+
+#configure {
+    background-color: #42f448;
+}
+
+#return > button {
+    height: 100%;
+    width: 100%;
+    margin: 0;
 }
 
 div.schedule-options-content input {
     width: 100%;
 }
 
-.schedule-options-sidebar {
-    width: 100%;
-    height: 100%;
+.time-preference, .day-preference {
+    margin-top: 1em;
+    margin-bottom: 1em;
+    font-size: 1.2em;
+    text-align: left;
+    color: white;
+}
 
+.time-preference .time-preference-title {
+    display: block;
+    margin-bottom: 1em;
+}
+
+.day-preference .day-preference-title {
+    display: block;
+    margin-bottom: 1em;
+}
+
+.day-preference .days {
+    display: flex;
+    width: 100%;
+}
+
+.day-preference .days .day {
+    background-color: gray;
+    text-align: center;
+    flex-grow: 1;
+    border-right: thin white;
+}
+
+.time-preference-start {
+    margin-bottom: 1em;
+}
+
+.time-preference-end {
+    margin-bottom: 1em;
+}
+
+.schedule-options-sidebar {
     margin: 2em;
+    text-align: center;
 }
 
 .addButton-enter {
