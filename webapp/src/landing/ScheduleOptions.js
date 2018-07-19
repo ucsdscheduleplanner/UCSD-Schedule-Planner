@@ -13,9 +13,6 @@ export default class ScheduleOptions extends PureComponent {
         super(props);
         this.state = {
             visible: false,
-            timeStart: null,
-            timeEnd: null,
-            daysSelected: null,
         }
     }
 
@@ -51,12 +48,6 @@ export default class ScheduleOptions extends PureComponent {
             {label: 'F', value: 'F'}
         ];
 
-         const options = [
-            {label: 'Apartment', value: 'Apartment'},
-            {label: 'House', value: 'House'},
-            {label: 'Studio', value: 'Studio'}
-        ];
-
         const scheduleOptionsComponent = (
             <Sidebar id="sidebar" visible={this.state.visible} position="right"
                      onHide={(e) => this.setState({visible: false})}>
@@ -67,20 +58,20 @@ export default class ScheduleOptions extends PureComponent {
 
                         <div className="time-preference-start">
                             Start:
-                            <Calendar value={this.state.timeStart} hourFormat="12" timeOnly="true"
-                                      onChange={(e) => this.setState({timeStart: e.value})}/>
+                            <Calendar value={this.props.startTimePreference} hourFormat="12" timeOnly="true"
+                                      onChange={(e) => this.props.setStartTimePreference(e.value)}/>
                         </div>
 
                         <div className="time-preference-end">
                             End:
-                            <Calendar value={this.state.timeEnd} hourFormat="12" timeOnly="true"
-                                      onChange={(e) => this.setState({timeEnd: e.value})}/>
+                            <Calendar value={this.props.endTimePreference} hourFormat="12" timeOnly="true"
+                                      onChange={(e) => this.props.setEndTimePreference(e.value)}/>
                         </div>
                     </div>
                     <div className="day-preference">
                         <span className="day-preference-title">Day Preference:</span>
 
-                        <SelectButton value={this.state.daysSelected} multiple={true} options={days} onChange={(e) => this.setState({daysSelected: e.value})}/>
+                        <SelectButton value={this.props.dayPreference} multiple={true} options={days} onChange={(e) => this.props.setDayPreference(e.value)} />
                     </div>
                 </div>
             </Sidebar>
@@ -90,7 +81,7 @@ export default class ScheduleOptions extends PureComponent {
             <div className="schedule-options-container-wrapper">
                 <div className="schedule-options-container">
                     <div className="class-summary-title"> Class Information</div>
-                    <div style={{'flex-grow': '1'}}>
+                    <div style={{'flexGrow': '1'}}>
                     </div>
 
                     <div>
