@@ -68,15 +68,18 @@ function dispatchProgress(dispatch) {
  * @param preferences the array to populate
  */
 function handlePriority(Class, preferences) {
-    let priorityModifier = new PriorityModifier(Class);
+    let priority = 1;
+    let preferencesToBeModified = [];
     if (Class.priority !== null) {
-        priorityModifier.priority = Class.priority;
+        priority = Class.priority;
     }
 
-    // add preferences to the priority modifier
     if (Class.instructor !== null) {
-        priorityModifier.preferences.push(new InstructorPreference(Class, Class.instructor));
+        preferencesToBeModified.push(new InstructorPreference(Class, Class.instructor));
     }
+
+    let priorityModifier = new PriorityModifier(Class, preferencesToBeModified, priority);
+    // add preferences to the priority modifier
     preferences.push(priorityModifier);
 }
 
@@ -104,11 +107,11 @@ function handleSchedulePreferences(scheduleOptions, preferences) {
     let endTime = scheduleOptions.endTimePreference;
     let days = scheduleOptions.dayPreference;
 
-    if(startTime && endTime) {
+    if (startTime && endTime) {
         preferences.push(new TimePreference(startTime, endTime));
     }
 
-    if(days) {
+    if (days) {
         preferences.push(new DayPreference(days));
     }
 }

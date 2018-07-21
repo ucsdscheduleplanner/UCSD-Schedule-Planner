@@ -2,12 +2,11 @@
 
 .right-side-panel {
     height: 100%;
-    background: linear-gradient(to bottom, rgba(24,43, 73, 1), rgba(28, 47, 77, .85));
+    background: rgba(24,43, 73, 1);
 }
 
 @media only screen and (max-width: 525px) {
     .right-side-panel {
-        width: 100vw;
         height: auto;
         grid-column: 1/-1;
     }

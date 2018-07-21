@@ -20,6 +20,7 @@ class ClassInputContainer extends Component {
 
     async componentDidMount() {
         let departments = await DataFetcher.fetchDepartments();
+        // error message from React here but will be fixed in future versions
         this.setState({departments: departments});
     }
 

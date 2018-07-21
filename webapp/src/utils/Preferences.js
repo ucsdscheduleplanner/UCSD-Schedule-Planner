@@ -1,9 +1,9 @@
-export function PriorityModifier(Class = null) {
+export function PriorityModifier(Class = null, preferences, priority) {
     this.Class = Class;
     this.classTitle = Class.classTitle;
     // list of different preference objects
-    this.preferences = [];
-    this.priority = 1;
+    this.preferences = preferences;
+    this.priority = priority;
 
     return (classToEvaluate) => {
         let score = 0;
@@ -79,9 +79,6 @@ export function TimePreference(start, end) {
                 if(rangeStart => this.start && rangeEnd <= this.end) {
                     score += 20;
                 }
-            } else {
-                // no overlap so very bad
-                score -= 5;
             }
         }
         return score;

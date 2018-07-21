@@ -20,20 +20,24 @@ export default class ScheduleOptions extends PureComponent {
         this.setState({visible: !this.state.visible});
     }
 
+    getSchedule() {
+        this.props.getSchedule();
+        this.toggleSideBar();
+    }
+
     render() {
         let activeButton;
         if (this.props.calendarMode) {
             activeButton = (
-                <div id="return" className="schedule-options-return-planning" onClick={this.props.enterInputMode}>
-                    <Button label="Return to Planning" style={{padding: "1em"}}/>
+                <div id="return">
+                    <Button label="Return to Planning" style={{padding: "1em"}}
+                            onClick={this.props.enterInputMode}/>
                 </div>
             );
         } else {
             activeButton = (
                 <React.Fragment>
-                    <div className="schedule-options-button-holder">
-                        <Button id="generate" onClick={this.props.getSchedule} label="Generate"
-                                style={{padding: "1em"}}/>
+                    <div>
                         <Button id="configure" onClick={this.toggleSideBar.bind(this)} label="Configure"/>
                     </div>
                 </React.Fragment>
@@ -65,14 +69,18 @@ export default class ScheduleOptions extends PureComponent {
                         <div className="time-preference-end">
                             End:
                             <Calendar value={this.props.endTimePreference} hourFormat="12" timeOnly="true"
-                                      onChange={(e) => this.props.setEndTimePreference(e.value)}/>
+                                      onChange={(e) => {this.props.setEndTimePreference(e.value)}}/>
                         </div>
                     </div>
                     <div className="day-preference">
                         <span className="day-preference-title">Day Preference:</span>
 
-                        <SelectButton value={this.props.dayPreference} multiple={true} options={days} onChange={(e) => this.props.setDayPreference(e.value)} />
+                        <SelectButton value={this.props.dayPreference} multiple={true} options={days}
+                                      onChange={(e) => this.props.setDayPreference(e.value)}/>
                     </div>
+
+                    <Button id="generate" onClick={this.getSchedule.bind(this)} label="Generate"
+                            style={{padding: "1em"}}/>
                 </div>
             </Sidebar>
         );
@@ -81,36 +89,14 @@ export default class ScheduleOptions extends PureComponent {
             <div className="schedule-options-container-wrapper">
                 <div className="schedule-options-container">
                     <div className="class-summary-title"> Class Information</div>
-                    <div style={{'flexGrow': '1'}}>
+                    <div className="capes-info-text">
+                        This space will contain data from CAPES in the future. <br/><br/> Please be patient.
                     </div>
 
-                    <div>
-                        {activeButton}
-                    </div>
+                    {activeButton}
                     {scheduleOptionsComponent}
                 </div>
             </div>
         )
-        /*
-                return (
-                    <React.Fragment>
-                            <div className="schedule-options">
-
-                                <div className="schedule-options-content">
-                                    <div className="options-button">
-                                        <button className="class-button"
-                                                onClick={(e) => this.setState({visible: true})}>
-                                            <i className="pi pi-angle-double-right"/>
-                                        </button>
-                                    </div>
-
-                                </div>
-                                {activeButton}
-
-                            </div>
-                        </div>
-                    </React.Fragment>
-                );
-                */
     }
 }

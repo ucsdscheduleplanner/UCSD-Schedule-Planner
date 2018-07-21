@@ -49,24 +49,22 @@
     color: rgb(215, 215, 215);
 }
 
-.schedule-options-button-holder, .schedule-options-return-planning {
-    width: 100%;
-    height: 100%;
+#sidebar {
+    background: rgba(24, 43, 73, 1);
+    padding: 0;
 }
 
-#sidebar {
-    background: linear-gradient(to bottom, rgba(24, 43, 73, 1), rgba(28, 47, 77, .85));
-    padding: 0;
+.capes-info-text {
+    margin: 1em;
+    font-family: 'Raleway', 'sans-serif';
+    color: white;
+    flex-grow: 1;
 }
 
 #generate, #configure {
     width: 100%;
     height: 100%;
     margin: 0;
-}
-
-#configure {
-    background-color: #42f448;
 }
 
 #return > button {
