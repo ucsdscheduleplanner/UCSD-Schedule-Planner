@@ -38,7 +38,7 @@ export default class ScheduleOptions extends PureComponent {
             activeButton = (
                 <React.Fragment>
                     <div>
-                        <Button id="configure" onClick={this.toggleSideBar.bind(this)} label="Configure"/>
+                        <Button id="configure" style={{padding: "1em"}} onClick={this.toggleSideBar.bind(this)} label="Configure and Generate"/>
                     </div>
                 </React.Fragment>
             );
@@ -62,20 +62,20 @@ export default class ScheduleOptions extends PureComponent {
 
                         <div className="time-preference-start">
                             Start:
-                            <Calendar value={this.props.startTimePreference} hourFormat="12" timeOnly="true"
+                            <Calendar value={this.props.startTimePreference} hourFormat="12" showTime={true} timeOnly={true}
                                       onChange={(e) => this.props.setStartTimePreference(e.value)}/>
                         </div>
 
                         <div className="time-preference-end">
                             End:
-                            <Calendar value={this.props.endTimePreference} hourFormat="12" timeOnly="true"
+                            <Calendar value={this.props.endTimePreference} hourFormat="12" showTime={true} timeOnly={true}
                                       onChange={(e) => {this.props.setEndTimePreference(e.value)}}/>
                         </div>
                     </div>
                     <div className="day-preference">
                         <span className="day-preference-title">Day Preference:</span>
 
-                        <SelectButton value={this.props.dayPreference} multiple={true} options={days}
+                        <SelectButton id="day-preference" value={this.props.dayPreference} multiple={true} options={days}
                                       onChange={(e) => this.props.setDayPreference(e.value)}/>
                     </div>
 
@@ -90,7 +90,7 @@ export default class ScheduleOptions extends PureComponent {
                 <div className="schedule-options-container">
                     <div className="class-summary-title"> Class Information</div>
                     <div className="capes-info-text">
-                        This space will contain data from CAPES in the future. <br/><br/> Please be patient.
+                        This space will contain data from CAPES in the future. <br/><br/> Please be patient as I work on this.
                     </div>
 
                     {activeButton}

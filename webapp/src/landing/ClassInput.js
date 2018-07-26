@@ -13,6 +13,7 @@ export default class ClassInput extends PureComponent {
         this.state = {
             duplicate: false,
 
+            editOccurred: false,
             instructorOptions: [],
             departmentOptions: [],
             classOptions: [],
@@ -56,6 +57,8 @@ export default class ClassInput extends PureComponent {
                     return false;
                 });
             this.setState({instructorOptions: instructorOptions});
+        } else {
+            this.setState({instructorOptions: []});
         }
     }
 
@@ -68,7 +71,7 @@ export default class ClassInput extends PureComponent {
             });
         }
         // need to return undefined for UI instead of null
-        return undefined;
+        return [{label: 'None'}];
     }
 
     showMessage(type, message) {
@@ -141,8 +144,6 @@ export default class ClassInput extends PureComponent {
 
             // using the edit method from the reducer
             this.props.editClass(this.props.editUID, newClass);
-            this.message.show({severity: 'success', summary: 'Edit Successful', life: 750});
-            this.props.enterInputMode();
         }
         // set duplicate so we can do some UI stuff in case
         this.setState({
@@ -161,18 +162,8 @@ export default class ClassInput extends PureComponent {
     }
 
     render() {
-        let editButton = (
+        let deleteButton = (
             <div className="form-button">
-                <Button label="Edit Class" style={{padding: ".25em 1em"}}
-                        disabled={this.props.currentCourseNum === null}
-                        onClick={this.handleEdit.bind(this)}
-                />
-
-                <Button label="Back to input" className="ui-button-info" style={{padding: ".25em 1em"}}
-                        disabled={this.props.currentCourseNum === null}
-                        onClick={this.props.enterInputMode}
-                />
-
                 <Button label="Delete Class" className="ui-button-danger" style={{padding: ".25em 1em"}}
                         disabled={this.props.currentCourseNum === null}
                         onClick={this.handleRemove.bind(this)}
@@ -188,14 +179,21 @@ export default class ClassInput extends PureComponent {
             </div>
         );
 
+        if(this.props.editMode && this.state.editOccurred) {
+            this.setState({editOccurred: false});
+            this.handleEdit();
+        }
+
         return (
             <React.Fragment>
                 <div className="content">
                     <div className="form-field">
                         <div className="input-header"> Department:</div>
-                        <AutoComplete suggestions={this.state.departmentOptions} dropdown={true}
+                        <AutoComplete id="department"
+                                      suggestions={this.state.departmentOptions}
+                                      dropdown={true}
                                       value={this.props.currentDepartment}
-                                      onChange={async (e) => {
+                                      onChange={(e) => {
                                           this.props.setCurrentDepartment(e.value.toUpperCase());
                                           this.props.setCurrentCourseNum(null);
                                           this.props.setCurrentInstructor(null);
@@ -213,6 +211,10 @@ export default class ClassInput extends PureComponent {
                                               this.props.setCurrentInstructor(null);
                                               this.props.setPriority(null);
                                           }
+
+                                          if (this.props.editMode) {
+                                              this.setState({editOccurred: true});
+                                          }
                                       }}
                                       completeMethod={this.completeDepartmentSuggestions.bind(this)}
                         />
@@ -228,13 +230,9 @@ export default class ClassInput extends PureComponent {
                                           this.props.setCurrentInstructor(null);
                                           this.props.setPriority(null);
                                           this.props.setConflicts(null);
-                                      }}
-                                      onSelect={(e) => {
-                                          // only clear if we select something else
-                                          if (e.value !== this.state.currentCourseNum) {
-                                              this.props.setCurrentInstructor(null);
-                                              this.props.setPriority(null);
-                                              this.props.setConflicts(null);
+
+                                          if (this.props.editMode && this.state.classOptions.includes(e.value)) {
+                                              this.setState({editOccurred: true});
                                           }
                                       }}
                                       completeMethod={this.completeClassSuggestions.bind(this)}
@@ -255,7 +253,12 @@ export default class ClassInput extends PureComponent {
                                 // it is actually in the dict or not because if not it will be undefined and show nothing
                                 this.state.instructorOptions}
                                           value={this.props.currentInstructor}
-                                          onChange={(e) => this.props.setCurrentInstructor(e.value)}
+                                          onChange={(e) => {
+                                              this.props.setCurrentInstructor(e.value);
+                                              if (this.props.editMode && this.state.instructorOptions.includes(e.value)) {
+                                                  this.setState({editOccurred: true});
+                                              }
+                                          }}
                                           completeMethod={this.completeInstructorSuggestions.bind(this)}
                                           disabled={this.props.currentCourseNum === null}
                                           dropdown={true}/>
@@ -266,7 +269,12 @@ export default class ClassInput extends PureComponent {
                                 // same as above with the undefined
                                 this.props.conflicts}
                                      options={this.getClassTypeOptions(this.props.currentCourseNum)}
-                                     onChange={(e) => this.props.setConflicts(e.value)}
+                                     onChange={(e) => {
+                                         this.props.setConflicts(e.value);
+                                         if (this.props.editMode) {
+                                             this.setState({editOccurred: true});
+                                         }
+                                     }}
                                      multiple={true}
                                      disabled={this.props.currentCourseNum === null}/>
                         </div>
@@ -276,14 +284,19 @@ export default class ClassInput extends PureComponent {
                             <Rating value={
                                 // same as above with undefined
                                 this.props.priority}
-                                    onChange={(e) => this.props.setPriority(e.value)}
+                                    onChange={(e) => {
+                                        this.props.setPriority(e.value);
+                                        if (this.props.editMode) {
+                                            this.setState({editOccurred: true});
+                                        }
+                                    }}
                                     stars={3}
                                     disabled={this.props.currentCourseNum === null}
                             />
                         </div>
                     </div>
                     <div style={{display: "inline-block"}}>
-                        {this.props.editMode ? editButton : addButton}
+                        {this.props.editMode ? deleteButton : addButton}
                         <Growl ref={(el) => {
                             this.message = el;
                         }}/>

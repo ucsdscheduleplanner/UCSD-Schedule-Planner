@@ -197,8 +197,8 @@ export function ScheduleGenerationBruteForce() {
                     return 0;
                 }
 
-                for (let preferenceFunc of preferences) {
-                    score += preferenceFunc(Class);
+                for (let preference of preferences) {
+                    score += preference.evaluate(Class);
                 }
             }
             return score;

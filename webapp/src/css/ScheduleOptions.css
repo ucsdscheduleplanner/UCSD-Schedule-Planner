@@ -29,8 +29,7 @@
 }
 
 .class-summary-title {
-    display: flex;
-    margin-top: 1em;
+    margin: 1em;
     align-items: center;
     justify-content: center;
     text-align: center;
@@ -83,6 +82,23 @@ div.schedule-options-content input {
     font-size: 1.2em;
     text-align: left;
     color: white;
+}
+
+#day-preference .ui-button, #day-preference .ui-selectbutton {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 2em;
+    width: 100%;
+    padding: 0;
+}
+
+.ui-calendar, .ui-calendar .ui-inputtext {
+    width: 100%;
+}
+
+#day-preference .ui-button-text-only .ui-button-text {
+    padding: 0;
 }
 
 .time-preference .time-preference-title {
