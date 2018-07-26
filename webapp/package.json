@@ -21,7 +21,9 @@
     "react-time-picker": "^2.5.1",
     "react-transition-group": "^2.4.0",
     "redux": "^3.7.2",
-    "redux-thunk": "^2.3.0"
+    "redux-thunk": "^2.3.0",
+    "react-responsive": "latest",
+    "react-responsive": "latest"
   },
   "scripts": {
     "start": "react-scripts start",
