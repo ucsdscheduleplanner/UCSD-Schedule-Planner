@@ -1,6 +1,6 @@
 
 .class-list {
-    background: linear-gradient(to bottom, rgba(24,43, 73, 1), rgba(28, 47, 77, .85));
+    background: rgba(24,43, 73, 1);
     height: 100%;
     width: 0;
 }
