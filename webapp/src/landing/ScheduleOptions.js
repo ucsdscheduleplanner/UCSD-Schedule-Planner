@@ -89,21 +89,20 @@ export default class ScheduleOptions extends PureComponent {
         const scheduleOptionsComponent = (
             <MediaQuery query="(max-width: 525px)">
                 {(matches) => {
+                    let position;
                     if (matches) {
-                        return (
-                            <Sidebar id="sidebar" visible={this.state.visible} position="bottom"
-                                     onHide={(e) => this.setState({visible: false})}>
-                                {scheduleOptionsContent}
-                            </Sidebar>
-                        );
-                    } else return (
-                        <Sidebar id="sidebar" visible={this.state.visible} position="right"
+                        position = "bottom";
+
+                    } else {
+                        position = "right";
+                    }
+                    return (
+                        <Sidebar id="sidebar" visible={this.state.visible} position={position}
                                  onHide={(e) => this.setState({visible: false})}>
                             {scheduleOptionsContent}
                         </Sidebar>
-                    )
+                    );
                 }}
-
             </MediaQuery>
         );
 

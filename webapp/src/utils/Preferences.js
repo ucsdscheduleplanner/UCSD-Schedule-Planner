@@ -34,6 +34,8 @@ export function InstructorPreference(Class, instructor) {
             }
             return -3;
         }
+        // not the same class so do not care
+        return 0;
     }
 }
 

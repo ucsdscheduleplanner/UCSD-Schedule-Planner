@@ -57,6 +57,10 @@
     height: auto;
 }
 
+#sidebar.ui-sidebar-active {
+    visibility: visible;
+}
+
 .capes-info-text {
     margin: 1em;
     font-family: 'Raleway', 'sans-serif';
@@ -127,12 +131,15 @@ div.schedule-options-content input {
     border-right: thin white;
 }
 
-.time-preference-start {
+.time-preference-start, .time-preference-start {
     margin-bottom: 1em;
 }
 
-.time-preference-end {
-    margin-bottom: 1em;
+.time-preference-start input, .time-preference-end input {
+    -webkit-transition: none!important;
+    -moz-transition: none!important;
+    -o-transition: none!important;
+    transition: none!important;
 }
 
 .schedule-options-sidebar {
