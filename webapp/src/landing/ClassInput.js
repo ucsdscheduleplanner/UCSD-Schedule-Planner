@@ -199,7 +199,7 @@ export default class ClassInput extends PureComponent {
                                           this.props.setCurrentInstructor(null);
                                           this.props.setPriority(null);
 
-                                          if (!this.props.departments.includes(e.value)) {
+                                          if (!this.props.departments.includes(e.value.toUpperCase())) {
                                               return;
                                           }
 
