@@ -1,6 +1,6 @@
 
 .class-list {
-    background-color: rgb(24, 43, 73);
+    background: rgba(24,43, 73, 1);
     height: 100%;
     width: 0;
 }

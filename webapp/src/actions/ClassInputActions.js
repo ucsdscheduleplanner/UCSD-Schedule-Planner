@@ -155,7 +155,7 @@ export function enterInputMode() {
 
         dispatch(setPriority(null));
         dispatch(setConflicts(null));
-        dispatch(setCurrentInstructor(null));
+        dispatch(setCurrentInstructor(''));
         dispatch(setCurrentCourseNum(null));
         dispatch(setCurrentDepartment(null));
         dispatch(setEditMode(null, false));

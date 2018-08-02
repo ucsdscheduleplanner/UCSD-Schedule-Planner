@@ -5,7 +5,7 @@ from secrets import password
 from settings import DATABASE_PATH
 
 # Will connect to running mysql instance
-mysql_db = ms.connect(user="root", passwd=password, db="courseNums")
+mysql_db = ms.connect(user="root", passwd=password, db="classes")
 # Will connect to sqlite db
 sqlite_db = sqlite3.connect(DATABASE_PATH)
 sqlite_db.row_factory = sqlite3.Row

@@ -190,15 +190,6 @@ export function ScheduleGenerationBruteForce() {
         });
 
 
-        // setting up the preferences
-        let classToPreference = {};
-        for (let preference of preferences) {
-            if (!(preference.classTitle in classToPreference)) {
-                classToPreference[preference.classTitle] = [];
-            }
-            classToPreference[preference.classTitle].push(preference);
-        }
-
         this.evaluateSchedule = (schedule) => {
             let score = 0;
             for (let Class of schedule) {
@@ -206,12 +197,7 @@ export function ScheduleGenerationBruteForce() {
                     return 0;
                 }
 
-                let subsection = Class[0];
-                if(!(subsection.classTitle in classToPreference)) {
-                    continue;
-                }
-
-                for (let preference of classToPreference[subsection.classTitle]) {
+                for (let preference of preferences) {
                     score += preference.evaluate(Class);
                 }
             }

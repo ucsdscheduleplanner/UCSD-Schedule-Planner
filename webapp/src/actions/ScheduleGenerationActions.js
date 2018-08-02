@@ -1,5 +1,5 @@
 import {ScheduleGenerationBruteForce} from "../schedulegeneration/ScheduleGeneratorBruteForce";
-import {InstructorPreference, PriorityModifier} from "../utils/Preferences";
+import {DayPreference, InstructorPreference, PriorityModifier, TimePreference} from "../utils/Preferences";
 import {classTypeToCode, DataFetcher} from "../utils/DataFetcher";
 
 
@@ -68,15 +68,18 @@ function dispatchProgress(dispatch) {
  * @param preferences the array to populate
  */
 function handlePriority(Class, preferences) {
-    let priorityModifier = new PriorityModifier(Class);
+    let priority = 1;
+    let preferencesToBeModified = [];
     if (Class.priority !== null) {
-        priorityModifier.priority = Class.priority;
+        priority = Class.priority;
     }
 
-    // add preferences to the priority modifier
     if (Class.instructor !== null) {
-        priorityModifier.preferences.push(new InstructorPreference(Class, Class.instructor));
+        preferencesToBeModified.push(new InstructorPreference(Class, Class.instructor));
     }
+
+    let priorityModifier = new PriorityModifier(Class, preferencesToBeModified, priority);
+    // add preferences to the priority modifier
     preferences.push(priorityModifier);
 }
 
@@ -99,18 +102,33 @@ function handleConflicts(Class, conflicts) {
     }
 }
 
+function handleSchedulePreferences(scheduleOptions, preferences) {
+    let startTime = scheduleOptions.startTimePreference;
+    let endTime = scheduleOptions.endTimePreference;
+    let days = scheduleOptions.dayPreference;
+
+    if (startTime && endTime) {
+        preferences.push(new TimePreference(startTime, endTime));
+    }
+
+    if (days) {
+        preferences.push(new DayPreference(days));
+    }
+}
+
 /**
- * This is in redux so we have hooks that determine the progres of generating the schedule
+ * This is in redux so we have hooks that determine the progress of generating the schedule
  *
  * @param selectedClasses comes in as a dictionary so must convert to a list
  * @returns {Function}
  */
 export function getSchedule(selectedClasses) {
-    return async function (dispatch) {
+    return async function (dispatch, getState) {
         // let redux know that we are creating a schedule
         dispatch(requestSchedule());
 
         selectedClasses = Object.values(selectedClasses);
+
 
         let preferences = [];
         let conflicts = {};
@@ -118,7 +136,9 @@ export function getSchedule(selectedClasses) {
         dispatch(setProgress(0));
         let dispatchProgressFunction = dispatchProgress(dispatch);
 
-        // this class has no data but the names
+        let scheduleOptions = getState().ScheduleOptions;
+        handleSchedulePreferences(scheduleOptions, preferences);
+        // Class has very little data but the names
         // passes in data from UI
         for (let Class of selectedClasses) {
             handlePriority(Class, preferences);

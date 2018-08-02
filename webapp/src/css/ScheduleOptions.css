@@ -1,9 +1,39 @@
 
+.schedule-options-container-wrapper {
+    height: 100%;
+}
+
+.schedule-options-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
 .schedule-options {
-    margin: 2.5em 1em 1em 2em;
+    align-items: center;
+    justify-content: center;
+}
+
+* {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
 }
 
 .schedule-options-title {
+    text-align: center;
+    color: rgb(230, 230, 230);
+    font-size: 1.5em;
+    font-weight: bold;
+    font-family: 'Raleway', sans-serif;
+}
+
+.class-summary-title {
+    margin: 1em;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+
     color: rgb(230, 230, 230);
     font-size: 1.5em;
     font-weight: bold;
@@ -16,22 +46,105 @@
     border-collapse: collapse;
     font-family: 'Lato', sans-serif;
     color: rgb(215, 215, 215);
-    margin: 2em;
 }
 
-.schedule-options-generate {
-    margin-top: 2em;
-    align-self: flex-end;
+#sidebar {
+    background: rgba(24, 43, 73, 1);
+    padding: 0;
+}
+
+#sidebar.ui-sidebar-bottom {
+    height: auto;
+}
+
+#sidebar.ui-sidebar-active {
+    visibility: visible;
+}
+
+.capes-info-text {
+    margin: 1em;
+    font-family: 'Raleway', 'sans-serif';
+    color: white;
+    flex-grow: 1;
+}
+
+#generate, #configure {
     width: 100%;
+    height: 100%;
+    margin: 0;
 }
 
-.schedule-options-return-planning {
-    margin-top: 2em;
-    align-self: flex-end;
+#return > button {
+    height: 100%;
+    width: 100%;
+    margin: 0;
 }
 
 div.schedule-options-content input {
     width: 100%;
+}
+
+.time-preference, .day-preference {
+    margin-top: 1em;
+    margin-bottom: 1em;
+    font-size: 1.2em;
+    text-align: left;
+    color: white;
+}
+
+#day-preference .ui-button, #day-preference .ui-selectbutton {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 2em;
+    width: 100%;
+    padding: 0;
+}
+
+.ui-calendar, .ui-calendar .ui-inputtext {
+    width: 100%;
+}
+
+#day-preference .ui-button-text-only .ui-button-text {
+    padding: 0;
+}
+
+.time-preference .time-preference-title {
+    display: block;
+    margin-bottom: 1em;
+}
+
+.day-preference .day-preference-title {
+    display: block;
+    margin-bottom: 1em;
+}
+
+.day-preference .days {
+    display: flex;
+    width: 100%;
+}
+
+.day-preference .days .day {
+    background-color: gray;
+    text-align: center;
+    flex-grow: 1;
+    border-right: thin white;
+}
+
+.time-preference-start, .time-preference-start {
+    margin-bottom: 1em;
+}
+
+.time-preference-start input, .time-preference-end input {
+    -webkit-transition: none!important;
+    -moz-transition: none!important;
+    -o-transition: none!important;
+    transition: none!important;
+}
+
+.schedule-options-sidebar {
+    margin: 2em;
+    text-align: center;
 }
 
 .addButton-enter {
@@ -71,3 +184,26 @@ div.schedule-options-content input {
     transition: all 300ms ease-out;
 }
 
+.options-button {
+    display: flex;
+    flex-grow: 3;
+}
+
+.pi.pi-angle-double-right {
+    color: grey;
+    font-size: 3em;
+}
+
+.class-button {
+    /* resetting the button CSS */
+    background: none;
+    height: 100px;
+    color: inherit;
+    border: none;
+    padding: 0;
+    font: inherit;
+    cursor: pointer;
+    outline: inherit;
+
+    width: 100%;
+}

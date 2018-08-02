@@ -77,7 +77,7 @@ export default class ClassList extends PureComponent {
         });
 
         classes.push(
-            <React.Fragment>
+            <React.Fragment key="add-button">
                 <button className="class-button"
                         onClick={this.props.enterInputMode}>
                     <CSSTransition
