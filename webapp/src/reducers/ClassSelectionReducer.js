@@ -29,7 +29,6 @@ export default function ClassSelection(state={}, action) {
             copy = Object.assign({}, state);
             copy[uuid].conflicts = copy[uuid].conflicts.filter(conflict => conflict !== action.payload.conflict);
             return copy;
-
         default:
             return state;
     }

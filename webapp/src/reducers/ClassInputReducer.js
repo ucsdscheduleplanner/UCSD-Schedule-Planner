@@ -1,4 +1,5 @@
 import {
+    INIT_MESSAGE_HANDLER,
     REQUEST_CLASS_PER_DEPARTMENT,
     SET_CLASS_TYPES_PER_CLASS,
     SET_CONFLICTS,
@@ -26,6 +27,7 @@ export default function ClassInput(state = {
     priority: null,
     editMode: false,
     editUID: null,
+    messageHandler: null,
 }, action) {
     switch (action.type) {
         case REQUEST_CLASS_PER_DEPARTMENT:
@@ -68,6 +70,10 @@ export default function ClassInput(state = {
             return Object.assign({}, state, {
                 editMode: action.editMode,
                 editUID: action.editUID
+            });
+        case INIT_MESSAGE_HANDLER:
+            return Object.assign({}, state, {
+                messageHandler: action.messageHandler,
             });
         default:
             return state;

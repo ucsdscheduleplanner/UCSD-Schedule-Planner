@@ -1,12 +1,10 @@
 import React, {PureComponent} from "react";
 import Calendar from "react-big-calendar";
 import moment from 'moment';
-import "../css/WeekCalendar.css";
-
 import "react-big-calendar/lib/css/react-big-calendar.css";
-import {Growl} from "primereact/components/growl/Growl";
 import {Button} from "primereact/components/button/Button";
 import {ics} from "../utils/ics";
+import "../css/WeekCalendar.css";
 
 Calendar.setLocalizer(Calendar.momentLocalizer(moment));
 
@@ -77,14 +75,12 @@ class WeekCalendar extends PureComponent {
         minTime.setHours(8, 0, 0);
         maxTime.setHours(23, 0, 0);
 
+        if (this.state.events.length === 0) {
+            this.props.messageHandler.showError("Failed to generate schedule", 1000);
+        }
+
         return (
             <div className="calendar-content">
-                <Growl ref={(el) => {
-                    this.message = el;
-                    if (this.message && that.state.events.length === 0) {
-                        this.message.show({severity: "error", summary: "Failed to generate schedule.", life: 1000});
-                    }
-                }}/>
                 <Calendar
                     id="calendar"
                     min={minTime}

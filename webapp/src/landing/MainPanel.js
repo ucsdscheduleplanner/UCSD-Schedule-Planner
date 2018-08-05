@@ -24,7 +24,7 @@ class MainPanel extends Component {
             <div className="main-panel">
                 <div className="class-calendar">
                     <div className="title"> UCSD Schedule Planner</div>
-                    <WeekCalendar schedule={this.props.schedule}/>
+                    <WeekCalendar messageHandler={this.props.messageHandler} schedule={this.props.schedule}/>
                 </div>
             </div>
         );
@@ -60,6 +60,7 @@ class MainPanel extends Component {
 
 function mapStateToProps(state) {
     return {
+        messageHandler: state.ClassInput.messageHandler,
         generateSuccess: state.ScheduleGeneration.generateSuccess,
         generatingProgress: state.ScheduleGeneration.generatingProgress,
         generating: state.ScheduleGeneration.generating,

@@ -6,44 +6,10 @@ import "./css/Landing.css";
 import {LeftSidePanel} from './landing/LeftSidePanel';
 import {RightSidePanel} from './landing/RightSidePanel';
 import MainPanel from './landing/MainPanel';
+import MessageHandler from "./utils/MessageHandler";
+import {initMessageHandler} from "./actions/ClassInputActions";
 
 class Landing extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            schedule: [],
-            calendarError: false,
-            enableCalendar: false
-        }
-    }
-
-    handleSubmit() {
-        let newState = {};
-        newState.schedule = [];
-        newState.calendarError = false;
-        newState.enableCalendar = false;
-
-        generateSchedule(this.props.selectedClasses)
-            .then(schedule => {
-                console.log(schedule);
-                if (schedule.length > 0) {
-                    newState.schedule = schedule;
-                    newState.enableCalendar = true;
-                } else {
-                    newState.calendarError = true;
-                }
-                this.setState(newState);
-            })
-            .catch(error => {
-                newState.calendarError = true;
-                this.setState(newState);
-            });
-    }
-
-    clearSchedule() {
-        this.setState({enableCalendar: false});
-    }
-
     render() {
         // have to remove padding from grid
         return (
@@ -52,6 +18,8 @@ class Landing extends Component {
                     <LeftSidePanel />
                     <MainPanel />
                     <RightSidePanel />
+
+                    <MessageHandler ref={(el) => this.props.initMessageHandler(el)}/>
                 </div>
             </React.Fragment>
         );
@@ -60,15 +28,8 @@ class Landing extends Component {
 
 function mapDispatchToProps(dispatch) {
     return bindActionCreators({
-        generateSchedule: generateSchedule
+        initMessageHandler: initMessageHandler,
     }, dispatch);
 }
 
-function mapStateToProps(state) {
-    return {
-        selectedClasses: state.ClassSelection,
-        scheduleInfo: state.ScheduleGeneration
-    }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(Landing);
+export default connect(null, mapDispatchToProps)(Landing);

@@ -2,7 +2,6 @@ import React, {PureComponent} from 'react';
 import {Rating} from "primereact/components/rating/Rating";
 import {ListBox} from "primereact/components/listbox/ListBox";
 import {Button} from "primereact/components/button/Button";
-import {Growl} from 'primereact/components/growl/Growl';
 import {AutoComplete} from "primereact/components/autocomplete/AutoComplete";
 import "../css/ClassInput.css";
 
@@ -18,7 +17,6 @@ export default class ClassInput extends PureComponent {
             departmentOptions: [],
             classOptions: [],
         };
-        this.message = null;
     }
 
     clearFields(fields) {
@@ -74,15 +72,24 @@ export default class ClassInput extends PureComponent {
         return [{label: 'None'}];
     }
 
-    showMessage(type, message) {
-        this.message.show({severity: type, summary: message, life: 1000});
+    createClassFromInput() {
+        let newClass = {};
+        newClass['classTitle'] = `${this.props.currentDepartment} ${this.props.currentCourseNum}`;
+        newClass['courseNum'] = this.props.currentCourseNum;
+        newClass['department'] = this.props.currentDepartment;
+        newClass['priority'] = this.props.priority;
+        newClass['conflicts'] = this.props.conflicts;
+        newClass['instructor'] = this.props.currentInstructor;
+        return newClass;
     }
 
     handleSubmit() {
         let error = false;
-        // doing pre-checking
+        // gotta have course num and department to do anything
         if (this.props.currentCourseNum === null || this.props.currentDepartment === null) return;
+
         let classTitle = `${this.props.currentDepartment} ${this.props.currentCourseNum}`;
+
         // testing whether this is a duplicate class
         let duplicate = Object.values(this.props.selectedClasses).reduce(function (accumulator, previousClass) {
             return accumulator || classTitle === previousClass['classTitle']
@@ -94,13 +101,7 @@ export default class ClassInput extends PureComponent {
 
         if (!duplicate && !error) {
             // constructing new class to be added to UI
-            let newClass = {};
-            newClass['classTitle'] = classTitle;
-            newClass['courseNum'] = this.props.currentCourseNum;
-            newClass['department'] = this.props.currentDepartment;
-            newClass['priority'] = this.props.priority;
-            newClass['conflicts'] = this.props.conflicts;
-            newClass['instructor'] = this.props.currentInstructor;
+            let newClass = this.createClassFromInput();
 
             // using the addClass method from the reducer
             this.props.addClass(this.props.uid, newClass);
@@ -110,9 +111,13 @@ export default class ClassInput extends PureComponent {
             this.props.setCurrentCourseNum(null);
             this.props.setPriority(null);
             this.props.setConflicts(null);
+        } else if (duplicate) {
+            this.props.messageHandler.showError(`Class ${this.props.currentDepartment} ${this.props.currentCourseNum}
+            has already been added!`);
         } else {
-            this.showMessage("error", "Failed to add class");
+            this.props.messageHandler.showError(`Failed to add class ${this.props.currentDepartment} ${this.props.currentCourseNum}`, 1000);
         }
+
         this.props.setUID(this.props.uid + 1);
         // set duplicate so we can do some UI stuff in case
         this.setState({
@@ -134,31 +139,24 @@ export default class ClassInput extends PureComponent {
 
         if (!duplicate) {
             // constructing new class to be added to UI
-            let newClass = {};
-            newClass['classTitle'] = classTitle;
-            newClass['courseNum'] = this.props.currentCourseNum;
-            newClass['department'] = this.props.currentDepartment;
-            newClass['priority'] = this.props.priority;
-            newClass['conflicts'] = this.props.conflicts;
-            newClass['instructor'] = this.props.currentInstructor;
-
+            let newClass = this.createClassFromInput();
             // using the edit method from the reducer
             this.props.editClass(this.props.editUID, newClass);
         }
-        // set duplicate so we can do some UI stuff in case
-        this.setState({
-            duplicate: duplicate
-        });
     }
 
     handleRemove() {
         this.props.removeClass(this.props.editUID);
-        this.showMessage("success", "Successfully removed class");
-        this.props.enterInputMode();
-    }
 
-    showError() {
-        this.showMessage("error", "Failed to generate schedule");
+        if (this.props.departments.includes(this.props.currentDepartment) &&
+            this.props.courseNums.includes(this.props.currentCourseNum)) {
+            this.props.messageHandler.showSuccess(`Removed class ${this.props.currentDepartment} 
+                                    ${this.props.currentCourseNum}`, 1000);
+        } else {
+            this.props.messageHandler.showSuccess("Successfully removed class", 1000);
+        }
+
+        this.props.enterInputMode();
     }
 
     render() {
@@ -179,7 +177,7 @@ export default class ClassInput extends PureComponent {
             </div>
         );
 
-        if(this.props.editMode && this.state.editOccurred) {
+        if (this.props.editMode && this.state.editOccurred) {
             this.setState({editOccurred: false});
             this.handleEdit();
         }
@@ -297,9 +295,6 @@ export default class ClassInput extends PureComponent {
                     </div>
                     <div style={{display: "inline-block"}}>
                         {this.props.editMode ? deleteButton : addButton}
-                        <Growl ref={(el) => {
-                            this.message = el;
-                        }}/>
                     </div>
                 </div>
             </React.Fragment>

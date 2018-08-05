@@ -130,6 +130,15 @@ export function editClass(uid, editClass) {
     }
 }
 
+export const INIT_MESSAGE_HANDLER = "INIT_MESSAGE_HANDLER";
+
+export function initMessageHandler(messageHandler) {
+    return {
+        type: INIT_MESSAGE_HANDLER,
+        messageHandler: messageHandler
+    }
+}
+
 export function enterEditMode(uid) {
     return function (dispatch, getState) {
         const otherClass = getState().ClassSelection[uid];

@@ -30,6 +30,8 @@ class ClassInputContainer extends Component {
 
     render() {
         return <ClassInput
+            messageHandler={this.props.messageHandler}
+
             generateSuccess={this.props.generateSuccess}
 
             editMode={this.props.editMode}
@@ -88,6 +90,8 @@ function mapDispatchToProps(dispatch) {
 
 function mapStateToProps(state) {
     return {
+        messageHandler: state.ClassInput.messageHandler,
+
         currentDepartment: state.ClassInput.currentDepartment,
         currentInstructor: state.ClassInput.currentInstructor,
         currentCourseNum: state.ClassInput.currentCourseNum,
