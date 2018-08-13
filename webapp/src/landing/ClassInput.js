@@ -148,6 +148,8 @@ export default class ClassInput extends PureComponent {
     handleRemove() {
         this.props.removeClass(this.props.editUID);
 
+        // show an error message saying what class was dropped if that class
+        // is a valid one
         if (this.props.departments.includes(this.props.currentDepartment) &&
             this.props.courseNums.includes(this.props.currentCourseNum)) {
             this.props.messageHandler.showSuccess(`Removed class ${this.props.currentDepartment} 
@@ -159,10 +161,19 @@ export default class ClassInput extends PureComponent {
         this.props.enterInputMode();
     }
 
+    checkForEdit() {
+        if (this.props.editMode && this.state.editOccurred) {
+            this.setState({editOccurred: false});
+            this.handleEdit();
+        }
+    }
+
     render() {
+        this.checkForEdit();
+
         let deleteButton = (
             <div className="form-button">
-                <Button label="Delete Class" className="ui-button-danger" style={{padding: ".25em 1em"}}
+                <Button label="Delete Class" className="ui-button-danger"
                         disabled={this.props.currentCourseNum === null}
                         onClick={this.handleRemove.bind(this)}
                 />
@@ -171,128 +182,139 @@ export default class ClassInput extends PureComponent {
 
         let addButton = (
             <div className="form-button" onClick={this.handleSubmit.bind(this)}>
-                <Button label="Add Class" style={{padding: ".25em 1em"}}
+                <Button label="Add Class" disabled={this.props.currentCourseNum === null} />
+            </div>
+        );
+
+
+        let departmentAutoComplete = (
+            <div className="form-field">
+                <div className="input-header"> Department:</div>
+                <AutoComplete id="department"
+                              suggestions={this.state.departmentOptions}
+                              dropdown={true}
+                              value={this.props.currentDepartment}
+                              onChange={(e) => {
+                                  this.props.setCurrentDepartment(e.value.toUpperCase());
+                                  this.props.setCurrentCourseNum(null);
+                                  this.props.setCurrentInstructor(null);
+                                  this.props.setPriority(null);
+
+                                  if (!this.props.departments.includes(e.value.toUpperCase())) {
+                                      return;
+                                  }
+
+                                  this.props.setClassSummaryFromDepartment(e.value);
+
+                                  // check if the thing we selected is the same as the one we already had
+                                  if (e.value !== this.props.currentDepartment) {
+                                      this.props.setCurrentCourseNum(null);
+                                      this.props.setCurrentInstructor(null);
+                                      this.props.setPriority(null);
+                                  }
+
+                                  if (this.props.editMode) {
+                                      this.setState({editOccurred: true});
+                                  }
+                              }}
+                              completeMethod={this.completeDepartmentSuggestions.bind(this)}/>
+            </div>
+        );
+
+        let courseNumAutoComplete = (
+            <div className="form-field">
+                <div className="input-header"> Course Number:</div>
+                <AutoComplete suggestions={this.state.classOptions}
+                              value={this.props.currentCourseNum}
+                              onChange={(e) => {
+                                  // must clear out the fields
+                                  this.props.setCurrentCourseNum(e.value);
+                                  this.props.setCurrentInstructor(null);
+                                  this.props.setPriority(null);
+                                  this.props.setConflicts(null);
+
+                                  if (this.props.editMode && this.state.classOptions.includes(e.value)) {
+                                      this.setState({editOccurred: true});
+                                  }
+                              }}
+                              completeMethod={this.completeClassSuggestions.bind(this)}
+                              disabled={
+                                  this.props.currentDepartment === null
+                                  || this.props.currentDepartment.length === 0
+                                  || !this.props.departments.includes(this.props.currentDepartment)}
+                              dropdown={true}/>
+            </div>
+        );
+
+        let instructorPreference = (
+            <div className="form-field">
+                <div className="input-header"> Instructor Preference:</div>
+                <AutoComplete suggestions={
+                    // because to clear the thing we put undefined, we can just put the course num in whether
+                    // it is actually in the dict or not because if not it will be undefined and show nothing
+                    this.state.instructorOptions}
+                              value={this.props.currentInstructor}
+                              onChange={(e) => {
+                                  this.props.setCurrentInstructor(e.value);
+                                  if (this.props.editMode && this.state.instructorOptions.includes(e.value)) {
+                                      this.setState({editOccurred: true});
+                                  }
+                              }}
+                              completeMethod={this.completeInstructorSuggestions.bind(this)}
+                              disabled={this.props.currentCourseNum === null}
+                              dropdown={true}/>
+            </div>
+        );
+
+        let ignoreClassPreference = (
+            <div className="form-field">
+                <div className="input-header"> Ignore Class Types:</div>
+                <ListBox value={
+                    // same as above with the undefined
+                    this.props.conflicts}
+                         options={this.getClassTypeOptions(this.props.currentCourseNum)}
+                         onChange={(e) => {
+                             this.props.setConflicts(e.value);
+                             if (this.props.editMode) {
+                                 this.setState({editOccurred: true});
+                             }
+                         }}
+                         multiple={true}
+                         disabled={this.props.currentCourseNum === null}/>
+            </div>
+
+        );
+
+        let priorityPreference = (
+            <div className="form-field">
+                <div className="input-header"> Importance:</div>
+                <Rating value={
+                    // same as above with undefined
+                    this.props.priority}
+                        onChange={(e) => {
+                            this.props.setPriority(e.value);
+                            if (this.props.editMode) {
+                                this.setState({editOccurred: true});
+                            }
+                        }}
+                        stars={3}
                         disabled={this.props.currentCourseNum === null}
                 />
             </div>
         );
 
-        if (this.props.editMode && this.state.editOccurred) {
-            this.setState({editOccurred: false});
-            this.handleEdit();
-        }
-
         return (
             <React.Fragment>
                 <div className="content">
-                    <div className="form-field">
-                        <div className="input-header"> Department:</div>
-                        <AutoComplete id="department"
-                                      suggestions={this.state.departmentOptions}
-                                      dropdown={true}
-                                      value={this.props.currentDepartment}
-                                      onChange={(e) => {
-                                          this.props.setCurrentDepartment(e.value.toUpperCase());
-                                          this.props.setCurrentCourseNum(null);
-                                          this.props.setCurrentInstructor(null);
-                                          this.props.setPriority(null);
+                    {departmentAutoComplete}
+                    {courseNumAutoComplete}
 
-                                          if (!this.props.departments.includes(e.value.toUpperCase())) {
-                                              return;
-                                          }
+                    <div className="ci--title-preference"> Preferences</div>
 
-                                          this.props.setClassSummaryFromDepartment(e.value);
+                    {instructorPreference}
+                    {ignoreClassPreference}
+                    {priorityPreference}
 
-                                          // check if the thing we selected is the same as the one we already had
-                                          if (e.value !== this.props.currentDepartment) {
-                                              this.props.setCurrentCourseNum(null);
-                                              this.props.setCurrentInstructor(null);
-                                              this.props.setPriority(null);
-                                          }
-
-                                          if (this.props.editMode) {
-                                              this.setState({editOccurred: true});
-                                          }
-                                      }}
-                                      completeMethod={this.completeDepartmentSuggestions.bind(this)}
-                        />
-                    </div>
-
-                    <div className="form-field">
-                        <div className="input-header"> Course Number:</div>
-                        <AutoComplete suggestions={this.state.classOptions}
-                                      value={this.props.currentCourseNum}
-                                      onChange={(e) => {
-                                          // must clear out the fields
-                                          this.props.setCurrentCourseNum(e.value);
-                                          this.props.setCurrentInstructor(null);
-                                          this.props.setPriority(null);
-                                          this.props.setConflicts(null);
-
-                                          if (this.props.editMode && this.state.classOptions.includes(e.value)) {
-                                              this.setState({editOccurred: true});
-                                          }
-                                      }}
-                                      completeMethod={this.completeClassSuggestions.bind(this)}
-                                      disabled={
-                                          this.props.currentDepartment === null
-                                          || this.props.currentDepartment.length === 0
-                                          || !this.props.departments.includes(this.props.currentDepartment)}
-                                      dropdown={true}/>
-                    </div>
-
-                    <div className="title-preferences"> Preferences</div>
-
-                    <div className="preference-container">
-                        <div className="form-field">
-                            <div className="input-header"> Instructor Preference:</div>
-                            <AutoComplete suggestions={
-                                // because to clear the thing we put undefined, we can just put the course num in whether
-                                // it is actually in the dict or not because if not it will be undefined and show nothing
-                                this.state.instructorOptions}
-                                          value={this.props.currentInstructor}
-                                          onChange={(e) => {
-                                              this.props.setCurrentInstructor(e.value);
-                                              if (this.props.editMode && this.state.instructorOptions.includes(e.value)) {
-                                                  this.setState({editOccurred: true});
-                                              }
-                                          }}
-                                          completeMethod={this.completeInstructorSuggestions.bind(this)}
-                                          disabled={this.props.currentCourseNum === null}
-                                          dropdown={true}/>
-                        </div>
-                        <div className="form-field ignore-class-types">
-                            <div className="input-header"> Ignore Class Types:</div>
-                            <ListBox value={
-                                // same as above with the undefined
-                                this.props.conflicts}
-                                     options={this.getClassTypeOptions(this.props.currentCourseNum)}
-                                     onChange={(e) => {
-                                         this.props.setConflicts(e.value);
-                                         if (this.props.editMode) {
-                                             this.setState({editOccurred: true});
-                                         }
-                                     }}
-                                     multiple={true}
-                                     disabled={this.props.currentCourseNum === null}/>
-                        </div>
-
-                        <div className="form-field">
-                            <div className="input-header"> Importance:</div>
-                            <Rating value={
-                                // same as above with undefined
-                                this.props.priority}
-                                    onChange={(e) => {
-                                        this.props.setPriority(e.value);
-                                        if (this.props.editMode) {
-                                            this.setState({editOccurred: true});
-                                        }
-                                    }}
-                                    stars={3}
-                                    disabled={this.props.currentCourseNum === null}
-                            />
-                        </div>
-                    </div>
                     <div style={{display: "inline-block"}}>
                         {this.props.editMode ? deleteButton : addButton}
                     </div>

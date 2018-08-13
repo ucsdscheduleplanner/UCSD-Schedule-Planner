@@ -16,6 +16,17 @@
     width: 100%;
     font-size: 1.2em;
     color: white;
+    transition: all 300ms ease-out;
+}
+
+.class-button:hover {
+    transform: scale(1.2) translateY(0%);
+
+    color: white;
+}
+
+.class-button:hover .class-item {
+    transform: scale(1.2) translateY(0%);
 }
 
 .class-item-border {
@@ -26,6 +37,31 @@
 .pi.pi-plus-circle {
     color: grey;
     font-size: 2em;
+}
+
+.pi.pi-check {
+    color: lightgreen;
+    font-size: 2em;
+}
+
+.addButton-enter {
+    opacity: 0.01;
+    transform: scale(0.9) translateY(50%);
+}
+
+.addButton-enter-active {
+    opacity: 1;
+    transform: scale(1) translateY(0%);
+    transition: all 300ms ease-out;
+}
+
+.addButton-exit {
+    opacity: 0;
+}
+
+.addButton-exit-active {
+    opacity: 0;
+    transition: all 300ms ease-out;
 }
 
 .class-button {
@@ -40,4 +76,5 @@
     outline: inherit;
 
     width: 100%;
+    transition: all 300ms ease-out;
 }

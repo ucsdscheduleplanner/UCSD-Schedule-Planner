@@ -1,10 +1,9 @@
 import React, {Component} from 'react';
 import {connect} from "react-redux";
 import {bindActionCreators} from "redux";
-import {generateSchedule} from "./schedulegeneration/ScheduleGenerator";
 import "./css/Landing.css";
 import {LeftSidePanel} from './landing/LeftSidePanel';
-import {RightSidePanel} from './landing/RightSidePanel';
+import RightSidePanel from './landing/RightSidePanel';
 import MainPanel from './landing/MainPanel';
 import MessageHandler from "./utils/MessageHandler";
 import {initMessageHandler} from "./actions/ClassInputActions";

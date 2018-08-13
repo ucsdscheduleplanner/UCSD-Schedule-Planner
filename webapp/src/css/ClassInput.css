@@ -39,6 +39,63 @@
     text-transform: uppercase;
 }
 
+.ci--title {
+    /* this is for the border bottom */
+    display: inline-block;
+    color: rgb(255, 255, 255);
+    padding-right: 1em;
+    border-bottom: thin solid rgb(255, 255, 255);
+
+    margin-bottom: .5em;
+    font-size: 2em;
+    font-size: 2.5vw;
+    font-weight: bold;
+    font-family: 'Raleway', sans-serif;
+
+    /* for the whitespace */
+    overflow: hidden;
+    white-space: nowrap;
+    -ms-text-overflow: ellipsis;
+    text-overflow: ellipsis;
+}
+
+.ci--title-preference {
+    margin: 1em 0;
+    font-size: 2.5vw;
+    color: white;
+
+    /* for the whitespace */
+    overflow: hidden;
+    white-space: nowrap;
+    -ms-text-overflow: ellipsis;
+    text-overflow: ellipsis;
+}
+
+.ci-container {
+    margin: 2em;
+    font-family: 'Lato', 'sans-serif';
+}
+
+.ci-container .ui-rating-icon {
+    color: white;
+}
+
+.ci-container .ui-listbox {
+    width: 100%;
+}
+
+.ci-container .ui-autocomplete {
+    max-width: 100%;
+}
+
+.ci-container .ui-inputtext {
+    max-width: 80%;
+}
+
+.ci-container .ui-autocomplete-dropdown {
+    max-width: 20%;
+}
+
 @media only screen and (min-width: 700px) and (max-width: 1000px) {
     .preference-container {
         display: block;

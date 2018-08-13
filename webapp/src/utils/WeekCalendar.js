@@ -68,14 +68,13 @@ class WeekCalendar extends PureComponent {
     }
 
     render() {
-        let that = this;
         // setting max and min times
         const minTime = new Date();
         const maxTime = new Date();
         minTime.setHours(8, 0, 0);
         maxTime.setHours(23, 0, 0);
 
-        if (this.state.events.length === 0) {
+        if (this.state.events.length === 0 && this.props.calendarMode) {
             this.props.messageHandler.showError("Failed to generate schedule", 1000);
         }
 

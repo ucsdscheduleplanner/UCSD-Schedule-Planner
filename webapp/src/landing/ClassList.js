@@ -56,11 +56,17 @@ export default class ClassList extends PureComponent {
         }
     }
 
+    getSchedule() {
+        this.props.getSchedule(this.props.selectedClasses);
+    }
+
     render() {
+        // puts the selected classes into a jsx array
         let classes = Object.keys(this.props.selectedClasses).map((selectedClassKey, index) => {
             let selectedClass = this.props.selectedClasses[selectedClassKey];
             return (
-                <React.Fragment>
+                <React.Fragment key={index}>
+                    <div className="class-item-border"/>
                     <button className="class-button"
                             onClick={(e) => {
                                 this.props.enterEditMode(selectedClassKey)
@@ -85,7 +91,23 @@ export default class ClassList extends PureComponent {
                         classNames="addButton"
                         unmountOnExit
                         timeout={500}>
-                        <i className="addButton pi pi-plus-circle"/>
+                        <i className="pi pi-plus-circle"/>
+                    </CSSTransition>
+                </button>
+                <div className="class-item-border"/>
+            </React.Fragment>
+        );
+
+        classes.push(
+            <React.Fragment>
+                <button className="class-button"
+                        onClick={this.getSchedule.bind(this)}>
+                    <CSSTransition
+                        in={this.state.sidePanelActivated}
+                        classNames="addButton"
+                        unmountOnExit
+                        timeout={500}>
+                        <i className="pi pi-check"/>
                     </CSSTransition>
                 </button>
                 <div className="class-item-border"/>

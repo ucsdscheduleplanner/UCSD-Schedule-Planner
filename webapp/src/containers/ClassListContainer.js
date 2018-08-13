@@ -3,6 +3,7 @@ import {connect} from 'react-redux';
 import ClassList from "../landing/ClassList";
 import {bindActionCreators} from "redux";
 import {enterEditMode, enterInputMode, removeClass} from "../actions/ClassInputActions";
+import {getSchedule} from "../actions/ScheduleGenerationActions";
 
 class ClassListContainer extends Component {
 
@@ -12,6 +13,7 @@ class ClassListContainer extends Component {
             enterEditMode={this.props.enterEditMode}
             enterInputMode={this.props.enterInputMode}
             selectedClasses={this.props.selectedClasses}
+            getSchedule={this.props.getSchedule}
         />
     }
 }
@@ -24,6 +26,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
     return bindActionCreators({
+        getSchedule: getSchedule,
         removeClass: removeClass,
         enterEditMode: enterEditMode,
         enterInputMode: enterInputMode,

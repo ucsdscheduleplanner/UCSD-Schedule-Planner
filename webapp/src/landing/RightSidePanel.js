@@ -5,16 +5,28 @@
 
 import React, {Component} from 'react';
 import "../css/RightSidePanel.css";
-import ScheduleOptionsContainer from "../containers/ScheduleOptionsContainer";
+import ClassInputContainer from "../containers/ClassInputContainer";
+import connect from "react-redux/es/connect/connect";
 
-export class RightSidePanel extends Component {
+class RightSidePanel extends Component {
     render() {
         return (
-            <React.Fragment>
-                <div className="right-side-panel">
-                    <ScheduleOptionsContainer />
-                </div>
-            </React.Fragment>
-        )
+            <div className="rsp">
+                <ClassInputContainer/>
+            </div>
+        );
     }
 }
+
+function mapStateToProps(state) {
+    return {
+        messageHandler: state.ClassInput.messageHandler,
+        generateSuccess: state.ScheduleGeneration.generateSuccess,
+        generatingProgress: state.ScheduleGeneration.generatingProgress,
+        generating: state.ScheduleGeneration.generating,
+        calendarMode: state.ScheduleGeneration.calendarMode,
+        schedule: state.ScheduleGeneration.schedule
+    };
+}
+
+export default connect(mapStateToProps, null)(RightSidePanel);
