@@ -102,10 +102,10 @@ function handleConflicts(Class, conflicts) {
     }
 }
 
-function handleSchedulePreferences(scheduleOptions, preferences) {
-    let startTime = scheduleOptions.startTimePreference;
-    let endTime = scheduleOptions.endTimePreference;
-    let days = scheduleOptions.dayPreference;
+function handleSchedulePreferences(schedulePreferences, preferences) {
+    let startTime = schedulePreferences.startTimePreference;
+    let endTime = schedulePreferences.endTimePreference;
+    let days = schedulePreferences.dayPreference;
 
     if (startTime && endTime) {
         preferences.push(new TimePreference(startTime, endTime));
@@ -136,8 +136,8 @@ export function getSchedule(selectedClasses) {
         dispatch(setProgress(0));
         let dispatchProgressFunction = dispatchProgress(dispatch);
 
-        let scheduleOptions = getState().ScheduleOptions;
-        handleSchedulePreferences(scheduleOptions, preferences);
+        let schedulePreferences = getState().SchedulePreferences;
+        handleSchedulePreferences(schedulePreferences, preferences);
         // Class has very little data but the names
         // passes in data from UI
         for (let Class of selectedClasses) {

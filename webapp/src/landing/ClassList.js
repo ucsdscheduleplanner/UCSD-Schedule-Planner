@@ -2,6 +2,7 @@ import React, {PureComponent} from 'react';
 import {CSSTransition} from 'react-transition-group'
 import "../css/ClassList.css";
 import 'primeicons/primeicons.css';
+import SchedulePreferencesContainer from "../containers/SchedulePreferencesContainer";
 
 const activateSidePanelUI = (callback) => {
     let classListPanel = document.querySelector('.class-list');
@@ -60,28 +61,15 @@ export default class ClassList extends PureComponent {
         this.props.getSchedule(this.props.selectedClasses);
     }
 
-    render() {
-        // puts the selected classes into a jsx array
-        let classes = Object.keys(this.props.selectedClasses).map((selectedClassKey, index) => {
-            let selectedClass = this.props.selectedClasses[selectedClassKey];
-            return (
-                <React.Fragment key={index}>
-                    <div className="class-item-border"/>
-                    <button className="class-button"
-                            onClick={(e) => {
-                                this.props.enterEditMode(selectedClassKey)
-                            }}
-                            key={selectedClassKey}>
-                        <div className="class-item">
-                            {/* TODO decouple this from classTitle maybe use a getter on the class */}
-                            {selectedClass['classTitle']}
-                        </div>
-                    </button>
-                    <div className="class-item-border"/>
-                </React.Fragment>
-            )
-        });
+    toggleSchedulePreferences() {
+        if(this.props.schedulePreferencesActivated) {
+            this.props.deactivateSchedulePreferences();
+        } else {
+            this.props.activateSchedulePreferences();
+        }
+    }
 
+    addAddButton(classes) {
         classes.push(
             <React.Fragment key="add-button">
                 <button className="class-button"
@@ -97,9 +85,29 @@ export default class ClassList extends PureComponent {
                 <div className="class-item-border"/>
             </React.Fragment>
         );
+    }
 
+    addSettingsButton(classes) {
         classes.push(
-            <React.Fragment>
+            <React.Fragment key="settings-button">
+                <button className="class-button"
+                        onClick={this.toggleSchedulePreferences.bind(this)}>
+                    <CSSTransition
+                        in={this.state.sidePanelActivated}
+                        classNames="addButton"
+                        unmountOnExit
+                        timeout={500}>
+                        <i className="pi pi-cog"/>
+                    </CSSTransition>
+                </button>
+                <div className="class-item-border"/>
+            </React.Fragment>
+        );
+    }
+
+    addGenerationButton(classes) {
+        classes.push(
+            <React.Fragment key="generation-button">
                 <button className="class-button"
                         onClick={this.getSchedule.bind(this)}>
                     <CSSTransition
@@ -113,6 +121,33 @@ export default class ClassList extends PureComponent {
                 <div className="class-item-border"/>
             </React.Fragment>
         );
+    }
+
+    render() {
+        // puts the selected classes into a jsx array
+        let classes = Object.keys(this.props.selectedClasses).map((selectedClassKey, index) => {
+            let selectedClass = this.props.selectedClasses[selectedClassKey];
+            return (
+                <React.Fragment key={index}>
+                    <SchedulePreferencesContainer />
+                    <div className="class-item-border"/>
+                    <button className="class-button"
+                            onClick={this.props.enterEditMode.bind(this, selectedClassKey)}
+                            key={selectedClassKey}>
+                        <div className="class-item">
+                            {/* TODO decouple this from classTitle maybe use a getter on the class */}
+                            {selectedClass['classTitle']}
+                        </div>
+                    </button>
+                    <div className="class-item-border"/>
+                </React.Fragment>
+            )
+        });
+
+        // adding the buttons on top of the class list
+        this.addAddButton(classes);
+        this.addSettingsButton(classes);
+        this.addGenerationButton(classes);
 
         return (
             <div className="class-list">

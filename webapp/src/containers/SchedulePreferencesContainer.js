@@ -1,22 +1,23 @@
 import {connect} from 'react-redux';
 import React, {Component} from 'react';
-import ScheduleOptions from "../landing/ScheduleOptions";
+import SchedulePreferences from "../landing/SchedulePreferences";
 import {bindActionCreators} from "redux";
 import {getSchedule} from "../actions/ScheduleGenerationActions";
 import {enterInputMode} from "../actions/ClassInputActions";
 import {
+    activate, deactivate,
     setDayPreference, setEndTimePreference,
     setStartTimePreference
-} from "../actions/ScheduleOptionsActions";
+} from "../actions/SchedulePreferencesActions";
 
-class ScheduleOptionsContainer extends Component {
+class SchedulePreferencesContainer extends Component {
     // using class field syntax to get correct context binding
     getSchedule = () => {
         this.props.getSchedule(this.props.selectedClasses);
     };
 
     render() {
-        return <ScheduleOptions
+        return <SchedulePreferences
             getSchedule={this.getSchedule}
             enterInputMode={this.props.enterInputMode}
             setDayPreference={this.props.setDayPreference}
@@ -29,22 +30,30 @@ class ScheduleOptionsContainer extends Component {
 
             calendarMode={this.props.calendarMode}
             selectedClasses={this.props.selectedClasses}
+            activated={this.props.activated}
+
+            activate={this.props.activate}
+            deactivate={this.props.deactivate}
         />
     }
 }
 
 function mapStateToProps(state) {
     return {
+        activated: state.SchedulePreferences.activated,
         selectedClasses: state.ClassSelection,
         calendarMode: state.ScheduleGeneration.calendarMode,
-        startTimePreference: state.ScheduleOptions.startTimePreference,
-        endTimePreference: state.ScheduleOptions.endTimePreference,
-        dayPreference: state.ScheduleOptions.dayPreference
+        startTimePreference: state.SchedulePreferences.startTimePreference,
+        endTimePreference: state.SchedulePreferences.endTimePreference,
+        dayPreference: state.SchedulePreferences.dayPreference
     }
 }
 
 function mapDispatchToProps(dispatch) {
     return bindActionCreators({
+        activate: activate,
+        deactivate: deactivate,
+
         getSchedule: getSchedule,
         enterInputMode: enterInputMode,
         setDayPreference: setDayPreference,
@@ -53,4 +62,4 @@ function mapDispatchToProps(dispatch) {
     }, dispatch);
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(ScheduleOptionsContainer);
+export default connect(mapStateToProps, mapDispatchToProps)(SchedulePreferencesContainer);

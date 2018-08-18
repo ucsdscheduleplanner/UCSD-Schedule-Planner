@@ -8,14 +8,6 @@
     grid-row-start: span 2;
 }
 
-.title-preferences {
-    margin: .5em 0;
-    color: rgb(24, 43, 73);
-    font-size: 2em;
-    font-weight: bold;
-    font-family: 'Raleway', sans-serif;
-}
-
 .preference-container {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -48,7 +40,6 @@
 
     margin-bottom: .5em;
     font-size: 2em;
-    font-size: 2.5vw;
     font-weight: bold;
     font-family: 'Raleway', sans-serif;
 
@@ -109,6 +100,10 @@
 @media only screen and (max-width: 700px) {
     .preference-container {
         display: block;
+    }
+
+    .ci--title, .ci--title-preference {
+        font-size: 1.2em;
     }
 
     .title-preferences {

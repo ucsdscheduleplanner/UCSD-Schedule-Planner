@@ -34,14 +34,20 @@
     border-bottom: thin solid rgb(100, 100, 220);
 }
 
+.pi {
+    font-size: 2em;
+}
+
 .pi.pi-plus-circle {
     color: grey;
-    font-size: 2em;
+}
+
+.pi.pi-cog {
+    color: lightgray;
 }
 
 .pi.pi-check {
     color: lightgreen;
-    font-size: 2em;
 }
 
 .addButton-enter {

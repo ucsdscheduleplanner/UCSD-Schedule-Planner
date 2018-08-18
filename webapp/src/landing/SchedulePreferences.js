@@ -1,5 +1,5 @@
 import React, {PureComponent} from 'react';
-import '../css/ScheduleOptions.css'
+import '../css/SchedulePreferences.css'
 import {Button} from "primereact/components/button/Button";
 import {Sidebar} from "primereact/components/sidebar/Sidebar";
 import {Calendar} from "primereact/components/calendar/Calendar";
@@ -9,7 +9,7 @@ import MediaQuery from 'react-responsive';
 /*
     This class should hold the UI for settings options for the schedule.
  */
-export default class ScheduleOptions extends PureComponent {
+export default class SchedulePreferences extends PureComponent {
     constructor(props) {
         super(props);
         this.state = {
@@ -17,35 +17,7 @@ export default class ScheduleOptions extends PureComponent {
         }
     }
 
-    toggleSideBar() {
-        this.setState({visible: !this.state.visible});
-    }
-
-    getSchedule() {
-        this.props.getSchedule();
-        this.toggleSideBar();
-    }
-
     render() {
-        let activeButton;
-        if (this.props.calendarMode) {
-            activeButton = (
-                <div id="return">
-                    <Button label="Return to Planning" style={{padding: "1em"}}
-                            onClick={this.props.enterInputMode}/>
-                </div>
-            );
-        } else {
-            activeButton = (
-                <React.Fragment>
-                    <div>
-                        <Button id="configure" style={{padding: "1em"}} onClick={this.toggleSideBar.bind(this)}
-                                label="Configure and Generate"/>
-                    </div>
-                </React.Fragment>
-            );
-        }
-
         const days = [
             {label: 'M', value: 'M'},
             {label: 'Tu', value: 'Tu'},
@@ -54,7 +26,7 @@ export default class ScheduleOptions extends PureComponent {
             {label: 'F', value: 'F'}
         ];
 
-        const scheduleOptionsContent = (
+        const schedulePreferencesContent = (
             <div className="schedule-options-sidebar">
                 <div className="schedule-options-title"> Schedule Options</div>
                 <div className="time-preference">
@@ -80,45 +52,27 @@ export default class ScheduleOptions extends PureComponent {
                     <SelectButton id="day-preference" value={this.props.dayPreference} multiple={true} options={days}
                                   onChange={(e) => this.props.setDayPreference(e.value)}/>
                 </div>
-
-                <Button id="generate" onClick={this.getSchedule.bind(this)} label="Generate"
-                        style={{padding: "1em"}}/>
             </div>
         );
 
-        const scheduleOptionsComponent = (
-            <MediaQuery query="(max-width: 525px)">
+        return (
+            <MediaQuery query="(max-width: 700px)">
                 {(matches) => {
                     let position;
                     if (matches) {
                         position = "bottom";
 
                     } else {
-                        position = "right";
+                        position = "left";
                     }
                     return (
-                        <Sidebar id="sidebar" visible={this.state.visible} position={position}
-                                 onHide={(e) => this.setState({visible: false})}>
-                            {scheduleOptionsContent}
+                        <Sidebar id="sidebar" visible={this.props.activated} position={position}
+                                 onHide={this.props.deactivate}>
+                            {schedulePreferencesContent}
                         </Sidebar>
                     );
                 }}
             </MediaQuery>
         );
-
-        return (
-            <div className="schedule-options-container-wrapper">
-                <div className="schedule-options-container">
-                    <div className="class-summary-title"> Class Information</div>
-                    <div className="capes-info-text">
-                        This space will contain data from CAPES in the future. <br/><br/> Please be patient as I work on
-                        this.
-                    </div>
-
-                    {activeButton}
-                    {scheduleOptionsComponent}
-                </div>
-            </div>
-        )
     }
 }

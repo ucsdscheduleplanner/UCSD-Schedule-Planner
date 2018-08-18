@@ -25,3 +25,21 @@ export function setEndTimePreference(timePreference) {
         endTimePreference: timePreference
     }
 }
+
+export const ACTIVATE_SCHEDULE_PREFERENCES = "ACTIVATE_SCHEDULE_PREFERENCES";
+
+export function activate() {
+    return {
+        type: ACTIVATE_SCHEDULE_PREFERENCES,
+        activated: true
+    }
+}
+
+export const DEACTIVATE_SCHEDULE_PREFERENCES = "DEACTIVATE_SCHEDULE_PREFERENCES";
+
+export function deactivate() {
+    return {
+        type: DEACTIVATE_SCHEDULE_PREFERENCES,
+        activated: false
+    }
+}
