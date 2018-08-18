@@ -72,7 +72,7 @@
 }
 
 .ci-container .ui-listbox {
-    width: 100%;
+    width: auto;
 }
 
 .ci-container .ui-autocomplete {

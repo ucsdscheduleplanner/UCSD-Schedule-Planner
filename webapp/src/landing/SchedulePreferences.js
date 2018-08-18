@@ -28,7 +28,7 @@ export default class SchedulePreferences extends PureComponent {
 
         const schedulePreferencesContent = (
             <div className="schedule-options-sidebar">
-                <div className="schedule-options-title"> Schedule Options</div>
+                <div className="schedule-options-title"> Schedule Preferences </div>
                 <div className="time-preference">
                     <span className="time-preference-title">Time Preference:</span>
 
