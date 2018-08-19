@@ -282,7 +282,6 @@ export default class ClassInput extends PureComponent {
                          multiple={true}
                          disabled={this.props.currentCourseNum === null}/>
             </div>
-
         );
 
         let priorityPreference = (
