@@ -177,6 +177,10 @@ export default class ClassInput extends PureComponent {
                         disabled={this.props.currentCourseNum === null}
                         onClick={this.handleRemove.bind(this)}
                 />
+                <Button label="Done editing" className="ui-button-info"
+                        disabled={this.props.currentCourseNum === null}
+                        onClick={this.props.enterInputMode.bind(this)}
+                />
             </div>
         );
 

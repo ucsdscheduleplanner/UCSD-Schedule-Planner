@@ -18,12 +18,12 @@ export default class MessageHandler extends Component {
         );
     }
 
-    showError(message, life) {
-        this.messageHandler.show({severity: "error", summary: message, life: life});
+    showError(detail, life) {
+        this.messageHandler.show({severity: "error", summary: "Failure", detail: detail, life: life});
     }
 
-    showSuccess(message, life) {
-        this.messageHandler.show({severity: "success", summary: message, life: life});
+    showSuccess(detail, life) {
+        this.messageHandler.show({severity: "success", summary: "Success", detail: detail, life: life});
     }
 }
 

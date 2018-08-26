@@ -45,7 +45,7 @@ function cleanData(dirtyClassData) {
                 }, []);
 
                 // we can have issues where all classes are canceled
-                if(subsectionsPerSection.length > 0) {
+                if (subsectionsPerSection.length > 0) {
                     ret[courseName].push(subsectionsPerSection);
                 }
                 slowPtr = fastPtr;
@@ -76,7 +76,20 @@ function ignoreSubsections(section, conflicts) {
     return section.filter(s => !conflictsForClassTitle.includes(s.type));
 }
 
+/**
+ * Will hold the actual schedule and any errors that come up
+ * @param schedule
+ * @param errors
+ * @constructor
+ */
+function Schedule(schedule, errors) {
+    this.classes = schedule;
+    this.errors = errors;
+}
+
 export function ScheduleGenerationBruteForce() {
+    this.failedAdditions = {};
+
     // subsection has a time interval object, represents a subsection with data
     this.isValid = function (subsection, intervalTree) {
         let timeInterval = subsection.timeInterval;
@@ -85,12 +98,41 @@ export function ScheduleGenerationBruteForce() {
             return false;
         }
 
-        // removing intervals we have added
-        // making sure no side effects if unsuccessful
+        // removing intervals we have added to make sure no side effects
         intervalTree.remove(timeInterval);
         return true;
     };
 
+    this.canAddSection = function (section, intervalTree) {
+        for (let subsection of section) {
+            // isValid is a pure function, so does not affect the intervalTree
+            if (!this.isValid(subsection, intervalTree)) {
+                return false;
+            }
+        }
+        return true;
+    };
+
+    this.addSection = function(section, intervalTree) {
+        for(let subsection of section) {
+            intervalTree.add(subsection.timeInterval);
+        }
+    };
+
+    this.removeSection = function(section, intervalTree) {
+        for(let subsection of section) {
+            intervalTree.remove(subsection.timeInterval);
+        }
+    };
+
+    this.handleFailedToAdd = function(section) {
+        if(section.length <= 0)
+            return;
+
+        if(!this.failedAdditions.hasOwnProperty(section[0].classTitle))
+            this.failedAdditions[section[0].classTitle] = 0;
+        this.failedAdditions[section[0].classTitle]++;
+    };
 
     this._dfs = function (classData, currentSchedule, intervalTree, schedules, conflicts, counter) {
         if (currentSchedule.length >= classData.length) {
@@ -112,25 +154,17 @@ export function ScheduleGenerationBruteForce() {
             // this will be an array of sections
             // so [[class, class] , [class, class]]
 
-            let success = true;
             // current section
             let currentSection = currentClassGroup[i];
             let filteredSection = ignoreSubsections(currentSection, conflicts);
 
-            for (let subsection of filteredSection) {
-                // isValid is a pure function, so does not affect the intervalTree
-                if (!this.isValid(subsection, intervalTree)) {
-                    success = false;
-                    break;
-                }
-            }
-            if (!success) {
+            if(!this.canAddSection(filteredSection, intervalTree)) {
+                this.handleFailedToAdd(filteredSection);
                 continue;
             }
+
             // adding subsections to interval tree if they are all valid
-            for (let subsection of filteredSection) {
-                intervalTree.add(subsection.timeInterval);
-            }
+            this.addSection(filteredSection, intervalTree);
 
             // choosing to use this for our current schedule - use the actual section not what was filtered
             // this is so that the result has all the correct subsections, but we operate with the filtered sections
@@ -138,9 +172,8 @@ export function ScheduleGenerationBruteForce() {
             this._dfs(classData, currentSchedule, intervalTree, schedules, conflicts, counter + 1);
 
             // removing all intervals we added so can continue to DFS
-            for (let subsection of filteredSection) {
-                intervalTree.remove(subsection.timeInterval);
-            }
+            this.removeSection(filteredSection, intervalTree);
+
             // putting schedule in state before we added the current section
             currentSchedule = currentSchedule.slice(0, counter);
         }
@@ -159,11 +192,11 @@ export function ScheduleGenerationBruteForce() {
         // say we are complete
         this.dispatchProgressFunction(100);
 
+        let classes = [];
         if (schedules.length > 0) {
-            return schedules[0][1];
-        } else {
-            return null;
+            classes = schedules[0][1];
         }
+        return new Schedule(classes, this.failedAdditions);
     };
 
     this.generateSchedule = async function (classData, conflicts = [], preferences = [], dispatchProgressFunction) {
@@ -193,7 +226,7 @@ export function ScheduleGenerationBruteForce() {
         this.evaluateSchedule = (schedule) => {
             let score = 0;
             for (let Class of schedule) {
-                if(Class.length === 0) {
+                if (Class.length === 0) {
                     return 0;
                 }
 

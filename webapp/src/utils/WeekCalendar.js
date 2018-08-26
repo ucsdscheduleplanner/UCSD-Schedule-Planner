@@ -13,7 +13,7 @@ class WeekCalendar extends PureComponent {
         super(props);
         this.state = {};
 
-        this.state.subsections = this.flattenSchedule(props.schedule);
+        this.state.subsections = this.flattenSchedule(props.schedule.classes);
         this.state.events = this.initEvents(this.state.subsections);
     }
 
@@ -67,6 +67,18 @@ class WeekCalendar extends PureComponent {
         calendar.download("Calendar");
     }
 
+    findProblematicClass(errors) {
+        let ret = null;
+        let comp = -Infinity;
+        for(let key of Object.keys(errors)) {
+            if(comp < errors[key]) {
+                comp = errors[key];
+                ret = key;
+            }
+        }
+        return ret;
+    }
+
     render() {
         // setting max and min times
         const minTime = new Date();
@@ -76,6 +88,9 @@ class WeekCalendar extends PureComponent {
 
         if (this.state.events.length === 0 && this.props.calendarMode) {
             this.props.messageHandler.showError("Failed to generate schedule", 1000);
+
+            let problemClassTitle = this.findProblematicClass(this.props.schedule.errors);
+            this.props.messageHandler.showError(`Had trouble adding ${problemClassTitle} to the schedule`, 3500);
         }
 
         return (

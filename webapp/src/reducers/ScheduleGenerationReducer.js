@@ -13,7 +13,7 @@ export default function ScheduleGeneration(state = {
     generatingProgress: 0,
     uid: 0,
     generateSuccess: true,
-    schedule: []
+    schedule: {"classes": [], "errors": []}
 }, action) {
     switch (action.type) {
         case REQUEST_SCHEDULE:
@@ -21,20 +21,12 @@ export default function ScheduleGeneration(state = {
                 generating: action.generating
             });
         case RECEIVE_SCHEDULE:
-            if (action.schedule && action.schedule.length > 0) {
-                return Object.assign({}, state, {
-                    generating: action.generating,
-                    schedule: action.schedule,
-                    generateSuccess: true,
-                });
-            } else {
-                console.error("Could not generate schedule");
-                return Object.assign({}, state, {
-                    generating: action.generating,
-                    generateSuccess: false,
-                    schedule: []
-                });
-            }
+            let generateSuccess = action.schedule.classes !== null;
+            return Object.assign({}, state, {
+                generating: action.generating,
+                schedule: action.schedule,
+                generateSuccess: generateSuccess,
+            });
         case SET_CALENDAR_MODE:
             return Object.assign({}, state, {
                 calendarMode: action.calendarMode
