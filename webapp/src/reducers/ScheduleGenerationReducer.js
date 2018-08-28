@@ -1,5 +1,6 @@
 import {
-    RECEIVE_SCHEDULE, REQUEST_SCHEDULE, SET_CALENDAR_MODE, SET_PROGRESS,
+    INCREMENT_PROGRESS,
+    RECEIVE_SCHEDULE, REQUEST_SCHEDULE, SET_CALENDAR_MODE, SET_PROGRESS, SET_TOTAL_POSSIBLE_NUM_SCHEDULE,
     SET_UID
 } from '../actions/ScheduleGenerationActions';
 
@@ -11,6 +12,7 @@ export default function ScheduleGeneration(state = {
     calendarMode: false,
     generating: false,
     generatingProgress: 0,
+    totalNumPossibleSchedule: 0,
     uid: 0,
     generateSuccess: true,
     schedule: {"classes": [], "errors": []}
@@ -38,6 +40,14 @@ export default function ScheduleGeneration(state = {
         case SET_PROGRESS:
             return Object.assign({}, state, {
                 generatingProgress: action.generatingProgress
+            });
+        case INCREMENT_PROGRESS:
+            return Object.assign({}, state, {
+                generatingProgress: state.generatingProgress + action.by
+            });
+        case SET_TOTAL_POSSIBLE_NUM_SCHEDULE:
+            return Object.assign({}, state, {
+                totalNumPossibleSchedule: action.totalNumPossibleSchedule
             });
         default:
             return state;

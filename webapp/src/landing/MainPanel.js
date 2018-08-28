@@ -6,7 +6,6 @@ import React, {Component} from 'react';
 import WeekCalendar from '../utils/WeekCalendar'
 import "../css/MainPanel.css";
 import {connect} from "react-redux";
-import ClassInputContainer from "../containers/ClassInputContainer";
 import {ProgressBar} from 'primereact/components/progressbar/ProgressBar';
 
 class MainPanel extends Component {
@@ -35,7 +34,7 @@ class MainPanel extends Component {
             <div className="main-panel">
                 <div className="class-input">
                     <div className="title"> UCSD Schedule Planner</div>
-                    <ProgressBar mode="indeterminate"/>
+                    <ProgressBar showValue={true} value={Math.round(100 * this.props.generatingProgress / this.props.totalNumPossibleSchedule)}/>
                 </div>
             </div>
         );
@@ -54,6 +53,7 @@ function mapStateToProps(state) {
         messageHandler: state.ClassInput.messageHandler,
         generateSuccess: state.ScheduleGeneration.generateSuccess,
         generatingProgress: state.ScheduleGeneration.generatingProgress,
+        totalNumPossibleSchedule: state.ScheduleGeneration.totalNumPossibleSchedule,
         generating: state.ScheduleGeneration.generating,
         calendarMode: state.ScheduleGeneration.calendarMode,
         schedule: state.ScheduleGeneration.schedule

@@ -134,6 +134,7 @@ export function ScheduleGenerationBruteForce() {
         this.failedAdditions[section[0].classTitle]++;
     };
 
+
     this._dfs = function (classData, currentSchedule, intervalTree, schedules, conflicts, counter) {
         if (currentSchedule.length >= classData.length) {
             let score = this.evaluateSchedule(currentSchedule);
@@ -160,6 +161,7 @@ export function ScheduleGenerationBruteForce() {
 
             if(!this.canAddSection(filteredSection, intervalTree)) {
                 this.handleFailedToAdd(filteredSection);
+                this.updateProgressForFailedAdd(currentClassGroup, i);
                 continue;
             }
 
