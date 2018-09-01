@@ -6,9 +6,8 @@
 import React, {Component} from 'react';
 import "../css/RightSidePanel.css";
 import ClassInputContainer from "../containers/ClassInputContainer";
-import connect from "react-redux/es/connect/connect";
 
-class RightSidePanel extends Component {
+export default class RightSidePanel extends Component {
     render() {
         return (
             <div className="rsp">
@@ -17,16 +16,3 @@ class RightSidePanel extends Component {
         );
     }
 }
-
-function mapStateToProps(state) {
-    return {
-        messageHandler: state.ClassInput.messageHandler,
-        generateSuccess: state.ScheduleGeneration.generateSuccess,
-        generatingProgress: state.ScheduleGeneration.generatingProgress,
-        generating: state.ScheduleGeneration.generating,
-        calendarMode: state.ScheduleGeneration.calendarMode,
-        schedule: state.ScheduleGeneration.schedule
-    };
-}
-
-export default connect(mapStateToProps, null)(RightSidePanel);

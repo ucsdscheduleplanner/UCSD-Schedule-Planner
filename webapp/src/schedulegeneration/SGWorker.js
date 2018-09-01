@@ -295,7 +295,6 @@ export function SGWorkerCode() {
         this.incrementProgress = function (val) {
             // doing stuff for progress bar for schedules
             this.batchedUpdates+=val;
-            console.log(this.batchedUpdates);
             if(this.batchedUpdates > 10) {
                 postMessage({type: "INCREMENT_PROGRESS", by: this.batchedUpdates});
                 this.batchedUpdates = 0;
@@ -375,14 +374,14 @@ export function SGWorkerCode() {
                 if (scheduleArr1[0] > scheduleArr2[0]) return -1; else return 1;
             });
 
-            // say we are complete
-            //this.dispatchProgressFunction(100);
-
+            let errors = this.failedAdditions;
             let classes = [];
             if (schedules.length > 0) {
                 classes = schedules[0][1];
+                errors = [];
             }
-            return new Schedule(classes, this.failedAdditions);
+            // only really care about errors if we failed to generate a schedule
+            return new Schedule(classes, errors);
         };
 
         this.generateSchedule = function (classData, conflicts = [], preferences = [], dispatchProgressFunction) {

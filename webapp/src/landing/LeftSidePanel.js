@@ -10,11 +10,9 @@ import ClassListContainer from "../containers/ClassListContainer";
 export class LeftSidePanel extends Component {
     render() {
         return (
-            <React.Fragment>
-                <div className="left-side-panel">
-                    <ClassListContainer />
-                </div>
-            </React.Fragment>
+            <div className="left-side-panel">
+                <ClassListContainer/>
+            </div>
         )
     }
 }

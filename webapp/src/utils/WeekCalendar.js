@@ -15,6 +15,11 @@ class WeekCalendar extends PureComponent {
 
         this.state.subsections = this.flattenSchedule(props.schedule.classes);
         this.state.events = this.initEvents(this.state.subsections);
+
+        // setting state if we got schedule errors, this component is remade every time
+        // we make a new schedule so is ok to rebuild
+        this.state.errors = props.schedule.errors;
+        this.state.hasError = Object.keys(props.schedule.errors).length > 0;
     }
 
     flattenSchedule(schedule) {
@@ -67,7 +72,7 @@ class WeekCalendar extends PureComponent {
         calendar.download("Calendar");
     }
 
-    findProblematicClass(errors) {
+    getProblemClass(errors) {
         let ret = null;
         let comp = -Infinity;
         for(let key of Object.keys(errors)) {
@@ -86,10 +91,10 @@ class WeekCalendar extends PureComponent {
         minTime.setHours(8, 0, 0);
         maxTime.setHours(23, 0, 0);
 
-        if (this.state.events.length === 0 && this.props.calendarMode) {
+        if (this.state.hasError) {
             this.props.messageHandler.showError("Failed to generate schedule", 1000);
 
-            let problemClassTitle = this.findProblematicClass(this.props.schedule.errors);
+            let problemClassTitle = this.getProblemClass(this.state.errors);
             this.props.messageHandler.showError(`Had trouble adding ${problemClassTitle} to the schedule`, 3500);
         }
 

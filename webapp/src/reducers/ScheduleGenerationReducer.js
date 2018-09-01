@@ -9,13 +9,13 @@ import {
  **/
 
 export default function ScheduleGeneration(state = {
-    calendarMode: false,
     generating: false,
     generatingProgress: 0,
     totalNumPossibleSchedule: 0,
     uid: 0,
     generateSuccess: true,
-    schedule: {"classes": [], "errors": []}
+    schedule: {"classes": [], "errors": []},
+    scheduleKey: 0,
 }, action) {
     switch (action.type) {
         case REQUEST_SCHEDULE:
@@ -28,10 +28,7 @@ export default function ScheduleGeneration(state = {
                 generating: action.generating,
                 schedule: action.schedule,
                 generateSuccess: generateSuccess,
-            });
-        case SET_CALENDAR_MODE:
-            return Object.assign({}, state, {
-                calendarMode: action.calendarMode
+                scheduleKey: state.scheduleKey + 1
             });
         case SET_UID:
             return Object.assign({}, state, {

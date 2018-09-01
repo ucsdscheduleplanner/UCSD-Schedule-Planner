@@ -19,43 +19,38 @@ class MainPanel extends Component {
     }
 
     render() {
-        const scheduleScreen = (
-            <div className="main-panel">
-                <div className="class-calendar">
-                    <div className="title"> UCSD Schedule Planner</div>
-                    <WeekCalendar messageHandler={this.props.messageHandler}
-                                  calendarMode={this.props.calendarMode}
-                                  schedule={this.props.schedule}/>
-                </div>
-            </div>
+        const calendar = (
+            <WeekCalendar
+                key={this.props.scheduleKey}
+                messageHandler={this.props.messageHandler}
+                schedule={this.props.schedule}/>
         );
 
         const progressBar = (
+            <ProgressBar showValue={true}
+                         value={Math.round(100 * this.props.generatingProgress / this.props.totalNumPossibleSchedule)}/>
+        );
+
+        return (
             <div className="main-panel">
-                <div className="class-input">
+                <div className="class-calendar">
                     <div className="title"> UCSD Schedule Planner</div>
-                    <ProgressBar showValue={true} value={Math.round(100 * this.props.generatingProgress / this.props.totalNumPossibleSchedule)}/>
+                    { this.props.generating ? progressBar : calendar }
                 </div>
             </div>
         );
-
-        if (this.props.generating) {
-            return progressBar;
-        } else {
-            return scheduleScreen;
-        }
     }
 }
 
 
 function mapStateToProps(state) {
     return {
+        scheduleKey: state.ScheduleGeneration.scheduleKey,
         messageHandler: state.ClassInput.messageHandler,
         generateSuccess: state.ScheduleGeneration.generateSuccess,
         generatingProgress: state.ScheduleGeneration.generatingProgress,
         totalNumPossibleSchedule: state.ScheduleGeneration.totalNumPossibleSchedule,
         generating: state.ScheduleGeneration.generating,
-        calendarMode: state.ScheduleGeneration.calendarMode,
         schedule: state.ScheduleGeneration.schedule
     };
 }

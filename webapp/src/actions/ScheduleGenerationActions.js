@@ -32,21 +32,6 @@ export function setUID(uid) {
     }
 }
 
-export const SET_CALENDAR_MODE = "SET_CALENDAR_MODE";
-
-export function setCalendarMode(mode) {
-    return {
-        type: SET_CALENDAR_MODE,
-        calendarMode: mode
-    }
-}
-
-export function enterCalendarMode() {
-    return function (dispatch) {
-        dispatch(setCalendarMode(true));
-    }
-}
-
 export const INCREMENT_PROGRESS = "INCREMENT_PROGRESS";
 
 export const SET_PROGRESS = "SET_PROGRESS";
@@ -217,7 +202,6 @@ export function getSchedule(selectedClasses) {
         let conflicts = {};
         // setting progress to 0 initially
         dispatch(setProgress(0));
-        let dispatchProgressFunction = dispatchProgress(dispatch);
 
         let schedulePreferences = getState().SchedulePreferences;
         handleSchedulePreferences(schedulePreferences, preferences);
@@ -239,7 +223,6 @@ export function getSchedule(selectedClasses) {
         /*  return new ScheduleGenerationBruteForce().generateSchedule(classData, conflicts, preferences, dispatchProgressFunction)
               .then((schedule) => {
                   dispatch(receiveSchedule(schedule));
-                  dispatch(enterCalendarMode())
               });*/
         dispatch(generateSchedule(classData, conflicts, preferences));
     }

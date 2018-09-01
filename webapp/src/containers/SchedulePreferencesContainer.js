@@ -28,7 +28,6 @@ class SchedulePreferencesContainer extends Component {
             endTimePreference={this.props.endTimePreference}
             dayPreference={this.props.dayPreference}
 
-            calendarMode={this.props.calendarMode}
             selectedClasses={this.props.selectedClasses}
             activated={this.props.activated}
 
@@ -42,7 +41,6 @@ function mapStateToProps(state) {
     return {
         activated: state.SchedulePreferences.activated,
         selectedClasses: state.ClassSelection,
-        calendarMode: state.ScheduleGeneration.calendarMode,
         startTimePreference: state.SchedulePreferences.startTimePreference,
         endTimePreference: state.SchedulePreferences.endTimePreference,
         dayPreference: state.SchedulePreferences.dayPreference

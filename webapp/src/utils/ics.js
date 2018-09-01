@@ -251,9 +251,7 @@ export function ics(uidDomain, prodId) {
                 return false;
             }
 
-            var calendar = calendarStart + SEPARATOR + calendarEvents.join(SEPARATOR) + calendarEnd;
-
-            return calendar;
+            return calendarStart + SEPARATOR + calendarEvents.join(SEPARATOR) + calendarEnd;
         }
     };
 }
