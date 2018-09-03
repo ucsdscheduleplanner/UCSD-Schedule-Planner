@@ -1,6 +1,6 @@
 import {connect} from 'react-redux';
 import React, {Component} from 'react';
-import SchedulePreferences from "../landing/SchedulePreferences";
+import SchedulePreferences from "../components/landing/SchedulePreferences";
 import {bindActionCreators} from "redux";
 import {getSchedule} from "../actions/ScheduleGenerationActions";
 import {enterInputMode} from "../actions/ClassInputActions";

@@ -34,15 +34,13 @@
     border-bottom: thin solid rgb(100, 100, 220);
 }
 
-.pi {
-    font-size: 2em;
-}
-
 .pi.pi-plus-circle {
+    font-size: 2em;
     color: grey;
 }
 
 .pi.pi-cog {
+    font-size: 2em;
     color: lightgray;
 }
 
@@ -82,5 +80,10 @@
     outline: inherit;
 
     width: 100%;
+    transition: all 300ms ease-out;
+}
+
+#generate-button {
+    border: 2px solid gold;
     transition: all 300ms ease-out;
 }

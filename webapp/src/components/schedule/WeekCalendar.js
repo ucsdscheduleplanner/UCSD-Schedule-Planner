@@ -3,8 +3,8 @@ import Calendar from "react-big-calendar";
 import moment from 'moment';
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import {Button} from "primereact/components/button/Button";
-import {ics} from "../utils/ics";
-import "../css/WeekCalendar.css";
+import {ics} from "../../utils/ics";
+import "../../css/WeekCalendar.css";
 
 Calendar.setLocalizer(Calendar.momentLocalizer(moment));
 
@@ -20,6 +20,13 @@ class WeekCalendar extends PureComponent {
         // we make a new schedule so is ok to rebuild
         this.state.errors = props.schedule.errors;
         this.state.hasError = Object.keys(props.schedule.errors).length > 0;
+        this.state.hasSchedule = this.state.events.length > 0 && !this.state.hasError;
+
+
+        if (this.state.hasError) {
+            this.props.messageHandler.showError("Failed to generate schedule", 1000);
+            this.props.messageHandler.showError(this.getErrorMsg(), 3500);
+        }
     }
 
     flattenSchedule(schedule) {
@@ -72,16 +79,12 @@ class WeekCalendar extends PureComponent {
         calendar.download("Calendar");
     }
 
-    getProblemClass(errors) {
-        let ret = null;
-        let comp = -Infinity;
-        for(let key of Object.keys(errors)) {
-            if(comp < errors[key]) {
-                comp = errors[key];
-                ret = key;
-            }
-        }
-        return ret;
+    getErrorMsg() {
+        let errors = this.state.errors;
+        let classWithMostConflicts = Object.keys(errors).reduce((key1, key2) => errors[key1].length > errors[key2].length ? key1 : key2);
+        let conflicts = errors[classWithMostConflicts].join(", ");
+        return `Failed to generate. Had the most trouble adding ${classWithMostConflicts}. During schedule generation, it 
+        conflicted with ${conflicts}`
     }
 
     render() {
@@ -91,12 +94,13 @@ class WeekCalendar extends PureComponent {
         minTime.setHours(8, 0, 0);
         maxTime.setHours(23, 0, 0);
 
-        if (this.state.hasError) {
-            this.props.messageHandler.showError("Failed to generate schedule", 1000);
-
-            let problemClassTitle = this.getProblemClass(this.state.errors);
-            this.props.messageHandler.showError(`Had trouble adding ${problemClassTitle} to the schedule`, 3500);
-        }
+        let icsDownload = (
+            <div className="ics-button">
+                <Button label="Download Calendar" className="ui-button-info"
+                        onClick={this.downloadICS.bind(this, this.state.subsections)}
+                        disabled={this.props.schedule.length === 0}/>
+            </div>
+        );
 
         return (
             <div className="calendar-content">
@@ -110,11 +114,8 @@ class WeekCalendar extends PureComponent {
                     views={['work_week']}
                     events={this.state.events}
                 />
-                <div className="ics-button">
-                    <Button label="Download Calendar" className="ui-button-info"
-                            onClick={this.downloadICS.bind(this, this.state.subsections)}
-                            disabled={this.props.schedule.length === 0}/>
-                </div>
+
+                {this.state.hasSchedule && icsDownload}
             </div>
         );
     }

@@ -14,7 +14,7 @@ export default function ScheduleGeneration(state = {
     totalNumPossibleSchedule: 0,
     uid: 0,
     generateSuccess: true,
-    schedule: {"classes": [], "errors": []},
+    schedule: {"classes": [], "errors": {}},
     scheduleKey: 0,
 }, action) {
     switch (action.type) {
@@ -40,7 +40,7 @@ export default function ScheduleGeneration(state = {
             });
         case INCREMENT_PROGRESS:
             return Object.assign({}, state, {
-                generatingProgress: state.generatingProgress + action.by
+                generatingProgress: state.generatingProgress + action.amount
             });
         case SET_TOTAL_POSSIBLE_NUM_SCHEDULE:
             return Object.assign({}, state, {

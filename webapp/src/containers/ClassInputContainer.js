@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {connect} from "react-redux";
-import ClassInput from "../landing/ClassInput";
+import ClassInput from "../components/landing/ClassInput";
 import {
     setConflicts, setCurrentCourseNum, setCurrentDepartment, setCurrentInstructor,
     setPriority, addClass, editClass, removeClass, enterInputMode, setClassSummaryFromDepartment

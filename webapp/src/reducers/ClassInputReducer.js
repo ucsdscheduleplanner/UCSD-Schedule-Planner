@@ -47,13 +47,27 @@ export default function ClassInput(state = {
                 courseNums: action.courseNums
             });
         case SET_CURRENT_COURSE_NUM:
+            let currentCourseNum;
+            if(typeof action.currentCourseNum === "string") {
+                currentCourseNum = action.currentCourseNum.trim();
+            } else {
+                currentCourseNum = null;
+            }
             return Object.assign({}, state, {
-                currentCourseNum: action.currentCourseNum
+                currentCourseNum: currentCourseNum
             });
         case SET_CURRENT_DEPARTMENT:
+            let currentDepartment;
+            if (typeof action.currentDepartment === "string") {
+                currentDepartment = action.currentDepartment.trim().toUpperCase();
+            } else {
+                currentDepartment = null;
+            }
+
             return Object.assign({}, state, {
-                currentDepartment: action.currentDepartment
+                currentDepartment: currentDepartment
             });
+
         case SET_CURRENT_INSTRUCTOR:
             return Object.assign({}, state, {
                 currentInstructor: action.currentInstructor

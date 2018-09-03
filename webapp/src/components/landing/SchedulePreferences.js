@@ -1,5 +1,5 @@
 import React, {PureComponent} from 'react';
-import '../css/SchedulePreferences.css'
+import '../../css/SchedulePreferences.css'
 import {Button} from "primereact/components/button/Button";
 import {Sidebar} from "primereact/components/sidebar/Sidebar";
 import {Calendar} from "primereact/components/calendar/Calendar";

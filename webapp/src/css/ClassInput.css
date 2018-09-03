@@ -87,6 +87,16 @@
     max-width: 20%;
 }
 
+.pi.pi-star {
+    font-size: 1.3em;
+    transition: all .3s ease-in;
+}
+
+.pi.pi-star-o {
+    font-size: 1em;
+    transition: all .3s ease-in;
+}
+
 @media only screen and (min-width: 700px) and (max-width: 1000px) {
     .preference-container {
         display: block;

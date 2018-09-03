@@ -1,8 +1,9 @@
 import React, {PureComponent} from 'react';
 import {CSSTransition} from 'react-transition-group'
-import "../css/ClassList.css";
+import "../../css/ClassList.css";
 import 'primeicons/primeicons.css';
-import SchedulePreferencesContainer from "../containers/SchedulePreferencesContainer";
+import SchedulePreferencesContainer from "../../containers/SchedulePreferencesContainer";
+import {Button} from "primereact/components/button/Button";
 
 const activateSidePanelUI = (callback) => {
     let classListPanel = document.querySelector('.class-list');
@@ -62,7 +63,7 @@ export default class ClassList extends PureComponent {
     }
 
     toggleSchedulePreferences() {
-        if(this.props.schedulePreferencesActivated) {
+        if (this.props.schedulePreferencesActivated) {
             this.props.deactivateSchedulePreferences();
         } else {
             this.props.activateSchedulePreferences();
@@ -107,17 +108,19 @@ export default class ClassList extends PureComponent {
 
     addGenerationButton(classes) {
         classes.push(
-            <React.Fragment key="generation-button">
-                <button className="class-button"
-                        onClick={this.getSchedule.bind(this)}>
-                    <CSSTransition
-                        in={this.state.sidePanelActivated}
-                        classNames="addButton"
-                        unmountOnExit
-                        timeout={500}>
-                        <i className="pi pi-check"/>
-                    </CSSTransition>
-                </button>
+            <React.Fragment key="generate-button">
+                <CSSTransition
+                    in={this.state.sidePanelActivated}
+                    classNames="addButton"
+                    unmountOnExit
+                    timeout={500}>
+
+                    <Button id="generate-button"
+                            className="class-button"
+                            label="Generate"
+                            onClick={this.getSchedule.bind(this)}>
+                    </Button>
+                </CSSTransition>
                 <div className="class-item-border"/>
             </React.Fragment>
         );
@@ -129,7 +132,7 @@ export default class ClassList extends PureComponent {
             let selectedClass = this.props.selectedClasses[selectedClassKey];
             return (
                 <React.Fragment key={index}>
-                    <SchedulePreferencesContainer />
+                    <SchedulePreferencesContainer/>
                     <div className="class-item-border"/>
                     <button className="class-button"
                             onClick={this.props.enterEditMode.bind(this, selectedClassKey)}

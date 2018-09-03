@@ -2,9 +2,9 @@ import React, {Component} from 'react';
 import {connect} from "react-redux";
 import {bindActionCreators} from "redux";
 import "./css/Landing.css";
-import {LeftSidePanel} from './landing/LeftSidePanel';
-import RightSidePanel from './landing/RightSidePanel';
-import MainPanel from './landing/MainPanel';
+import {LeftSidePanel} from './components/landing/LeftSidePanel';
+import RightSidePanel from './components/landing/RightSidePanel';
+import MainPanel from './components/landing/MainPanel';
 import MessageHandler from "./utils/MessageHandler";
 import {initMessageHandler} from "./actions/ClassInputActions";
 

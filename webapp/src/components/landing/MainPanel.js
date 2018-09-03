@@ -3,10 +3,10 @@
  */
 
 import React, {Component} from 'react';
-import WeekCalendar from '../utils/WeekCalendar'
-import "../css/MainPanel.css";
+import WeekCalendar from '../schedule/WeekCalendar'
+import "../../css/MainPanel.css";
 import {connect} from "react-redux";
-import {ProgressBar} from 'primereact/components/progressbar/ProgressBar';
+import {ScheduleProgressBar} from "../schedule/ScheduleProgressBar";
 
 class MainPanel extends Component {
     constructor(props) {
@@ -27,8 +27,9 @@ class MainPanel extends Component {
         );
 
         const progressBar = (
-            <ProgressBar showValue={true}
-                         value={Math.round(100 * this.props.generatingProgress / this.props.totalNumPossibleSchedule)}/>
+            <ScheduleProgressBar
+                generatingProgress={this.props.generatingProgress}
+                totalNumPossibleSchedule={this.props.totalNumPossibleSchedule} />
         );
 
         return (

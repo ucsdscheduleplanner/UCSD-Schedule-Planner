@@ -4,8 +4,8 @@
  */
 
 import React, {Component} from 'react';
-import "../css/RightSidePanel.css";
-import ClassInputContainer from "../containers/ClassInputContainer";
+import "../../css/RightSidePanel.css";
+import ClassInputContainer from "../../containers/ClassInputContainer";
 
 export default class RightSidePanel extends Component {
     render() {

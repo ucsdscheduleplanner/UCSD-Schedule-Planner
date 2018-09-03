@@ -3,7 +3,7 @@ import {Rating} from "primereact/components/rating/Rating";
 import {ListBox} from "primereact/components/listbox/ListBox";
 import {Button} from "primereact/components/button/Button";
 import {AutoComplete} from "primereact/components/autocomplete/AutoComplete";
-import "../css/ClassInput.css";
+import "../../css/ClassInput.css";
 
 
 export default class ClassInput extends PureComponent {
@@ -199,7 +199,7 @@ export default class ClassInput extends PureComponent {
                               dropdown={true}
                               value={this.props.currentDepartment}
                               onChange={(e) => {
-                                  this.props.setCurrentDepartment(e.value.toUpperCase());
+                                  this.props.setCurrentDepartment(e.value);
                                   this.props.setCurrentCourseNum(null);
                                   this.props.setCurrentInstructor(null);
                                   this.props.setPriority(null);

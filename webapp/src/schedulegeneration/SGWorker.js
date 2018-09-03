@@ -6,7 +6,7 @@ export function SGWorkerCode() {
         this.preferences = preferences;
         this.priority = priority;
 
-        this.evaluate = (classToEvaluate) => {
+        this.evaluate = function (classToEvaluate) {
             let score = 0;
             for (let preference of this.preferences) {
                 score = this.priority * (score + preference.evaluate(classToEvaluate));
@@ -21,7 +21,7 @@ export function SGWorkerCode() {
         this.instructor = instructor;
 
         // should get this because arrow function takes closest scope
-        this.evaluate = (classToEvaluate) => {
+        this.evaluate = function (classToEvaluate) {
             if (classToEvaluate.length === 0) {
                 return 0;
             }
@@ -53,7 +53,7 @@ export function SGWorkerCode() {
         this.end = new Date();
         this.end.setHours(end.getHours(), end.getMinutes(), 0);
 
-        this.evaluate = (classToEvaluate) => {
+        this.evaluate = function (classToEvaluate) {
             if (classToEvaluate.length === 0) {
                 return 0;
             }
@@ -79,7 +79,7 @@ export function SGWorkerCode() {
                 if (rangeStart < this.end && rangeEnd > this.start) {
                     score += 10;
                     // the range is inside our desired range!
-                    if (rangeStart => this.start && rangeEnd <= this.end) {
+                    if (rangeStart >= this.start && rangeEnd <= this.end) {
                         score += 20;
                     }
                 }
@@ -91,7 +91,7 @@ export function SGWorkerCode() {
     function DayPreference(days) {
         this.days = days;
 
-        this.evaluate = (classToEvaluate) => {
+        this.evaluate = function (classToEvaluate) {
             if (classToEvaluate.length === 0) {
                 return 0;
             }
@@ -110,8 +110,9 @@ export function SGWorkerCode() {
     }
 
 
-    function SimpleIntervalTreeNode(interval) {
+    function SimpleIntervalTreeNode(interval, classTitle) {
         this.interval = interval;
+        this.classTitle = classTitle;
         this.left = null;
         this.right = null;
 
@@ -128,46 +129,50 @@ export function SGWorkerCode() {
         this.size = 0;
         this.root = null;
 
-        this.add = function (interval) {
+        this.add = function (interval, classTitle) {
             // converting into a node
             let prevSize = this.size;
-            this.root = this.insert(this.root, interval);
+            this.root = this.insert(this.root, interval, classTitle);
             let afterSize = this.size;
             return afterSize === prevSize + 1;
         };
 
-        this.insert = function (node, interval) {
+        this.insert = function (node, interval, classTitle) {
             if (node === null) {
                 this.size++;
-                return new SimpleIntervalTreeNode(interval);
+                return new SimpleIntervalTreeNode(interval, classTitle);
             }
             if (node.before(interval)) {
-                node.right = this.insert(node.right, interval);
+                node.right = this.insert(node.right, interval, classTitle);
             } else if (node.after(interval)) {
-                node.left = this.insert(node.left, interval);
+                node.left = this.insert(node.left, interval, classTitle);
             }
             return node;
         };
 
-        this._copy = function (node) {
+        this.contains = function (interval) {
+            return this.nodeContains(this.root, interval);
+        };
+
+        this.nodeContains = function (node, interval) {
+            if (node === null) {
+                return null;
+            }
+            if (node.before(interval)) {
+                return this.nodeContains(node.right, interval);
+            } else if (node.after(interval)) {
+                return this.nodeContains(node.left, interval);
+            }
+            return node.classTitle;
+        };
+
+        this.remove = function (interval, classTitle) {
+            this.root = this.removeNode(this.root, interval, classTitle);
+        };
+
+        this.removeNode = function (node, interval, classTitle) {
             if (node === null) return null;
-            let copyNode = new SimpleIntervalTreeNode(node.interval);
-            copyNode.left = this._copy(node.left);
-            copyNode.right = this._copy(node.right);
-            return copyNode;
-        };
-
-        this.copy = function () {
-            return this._copy(this.root);
-        };
-
-        this.remove = function (interval) {
-            this.root = this.removeNode(this.root, interval);
-        };
-
-        this.removeNode = function (node, interval) {
-            if (node === null) return null;
-            if (node.interval === interval) {
+            if (node.interval === interval && node.classTitle === classTitle) {
                 // decrement size
                 this.size--;
                 // case 1 no children YAY
@@ -201,11 +206,12 @@ export function SGWorkerCode() {
 
                     // if lag pointer is the node then fast pointer must be immediately to its right
                     if (lagPointer === node) {
-                        lagPointer.right = this.removeNode(fastPointer, fastPointer.interval);
+                        lagPointer.right = this.removeNode(fastPointer, fastPointer.interval, classTitle);
                     } else {
                         // otherwise it is to the left and we can remove from the left
-                        lagPointer.left = this.removeNode(fastPointer, fastPointer.interval);
+                        lagPointer.left = this.removeNode(fastPointer, fastPointer.interval, classTitle);
                     }
+                    // gotta add back the thing we removed cause we didn't actually end up removing in this stack frame
                     this.size++;
                     fastPointer.left = node.left;
                     fastPointer.right = node.right;
@@ -214,9 +220,9 @@ export function SGWorkerCode() {
                 }
             } else {
                 if (node.before(interval)) {
-                    node.right = this.removeNode(node.right, interval);
+                    node.right = this.removeNode(node.right, interval, classTitle);
                 } else if (node.after(interval)) {
-                    node.left = this.removeNode(node.left, interval);
+                    node.left = this.removeNode(node.left, interval, classTitle);
                 }
                 return node;
             }
@@ -253,61 +259,101 @@ export function SGWorkerCode() {
     }
 
     function SGWorker() {
-        this.failedAdditions = {};
+        // error map represents an undirected graph where (u,v) exists in edge set E iff u is incompatible with v
+        // key is u, value is list of v in which above relationship holds
+        this.errorMap = {};
 
+        // holds the number of completed schedules that were generated
+        // includes the ones that failed to generate
         this.batchedUpdates = 0;
 
-        // subsection has a time interval object, represents a subsection with data
-        this.isValid = function (subsection, intervalTree) {
-            let timeInterval = subsection.timeInterval;
-
-            if (!intervalTree.add(timeInterval)) {
-                return false;
-            }
-
-            // removing intervals we have added to make sure no side effects
-            intervalTree.remove(timeInterval);
-            return true;
-        };
-
-        this.canAddSection = function (section, intervalTree) {
-            for (let subsection of section) {
-                // isValid is a pure function, so does not affect the intervalTree
-                if (!this.isValid(subsection, intervalTree)) {
-                    return false;
-                }
-            }
-            return true;
-        };
-
+        /**
+         * Adds all the subsections of the given section to the interval tree
+         * @param section - section we want to add
+         * @param intervalTree - interval tree we are adding to
+         */
         this.addSection = function (section, intervalTree) {
             for (let subsection of section) {
-                intervalTree.add(subsection.timeInterval);
+                // include the class title for error management purposes
+                intervalTree.add(subsection.timeInterval, subsection.classTitle);
             }
         };
 
+        /**
+         * Checks the interval tree for intervals that are the same and stores them in a list
+         * @param section - section to check
+         * @param intervalTree - interval tree to look over
+         * @returns {Array} a list of section classTitles that conflict
+         */
+        this.getConflictingSections = function (section, intervalTree) {
+            let ret = new Set();
+            for (let subsection of section) {
+                if(subsection.timeInterval == null) {
+                    console.log(subsection);
+                    console.log("UH OH");
+                }
+
+                let conflictingSection = intervalTree.contains(subsection.timeInterval);
+                if (conflictingSection !== null)
+                    ret.add(conflictingSection);
+            }
+            return Array.from(ret);
+        };
+
+        /**
+         * Remove section from the interval tree
+         * @param section - section we want to remove
+         * @param intervalTree - tree we are operating on
+         */
         this.removeSection = function (section, intervalTree) {
             for (let subsection of section) {
-                intervalTree.remove(subsection.timeInterval);
+                // only remove the subsections that have the same class title
+                intervalTree.remove(subsection.timeInterval, subsection.classTitle);
             }
         };
 
+        /**
+         * Increment the update count and update the progress bar if we are past a certain
+         * threshold
+         * @param val the amount we want to increment by =
+         */
         this.incrementProgress = function (val) {
             // doing stuff for progress bar for schedules
-            this.batchedUpdates+=val;
-            if(this.batchedUpdates > 10) {
-                postMessage({type: "INCREMENT_PROGRESS", by: this.batchedUpdates});
+            this.batchedUpdates += val;
+            if (this.batchedUpdates > 10) {
+                postMessage({type: "INCREMENT_PROGRESS", amount: this.batchedUpdates});
                 this.batchedUpdates = 0;
             }
         };
 
-        this.handleFailedToAdd = function (section) {
-            if (section.length <= 0)
+        /**
+         * On the case in which we failed to add a class, get all the sections that conflicted upon addition
+         * and update the undirected graph (represented as a dictionary) with the class titles
+         * @param sectionFailedToAdd - self explanatory
+         * @param sectionConflicts - list of class titles that conflicted
+         */
+        this.handleFailedToAdd = function (sectionFailedToAdd, sectionConflicts) {
+            if (sectionFailedToAdd.length < 1)
+                return;
+            // make sure there are conflicts just in case
+            if (sectionConflicts.length < 1)
                 return;
 
-            if (!this.failedAdditions.hasOwnProperty(section[0].classTitle))
-                this.failedAdditions[section[0].classTitle] = 0;
-            this.failedAdditions[section[0].classTitle]++;
+            let failedClassTitle = sectionFailedToAdd[0].classTitle;
+            // no source vertex as
+            if (!(failedClassTitle in this.errorMap))
+                this.errorMap[failedClassTitle] = new Set();
+
+            sectionConflicts.forEach(conflict => {
+                // mapping one part of source
+                this.errorMap[failedClassTitle].add(conflict)
+
+                // have to add failedClassTitle to other sources too
+                if(!(conflict in this.errorMap))
+                    this.errorMap[conflict] = new Set();
+
+                this.errorMap[conflict].add(failedClassTitle);
+            });
         };
 
         this.updateProgressForFailedAdd = function (classData, curIndex) {
@@ -342,8 +388,12 @@ export function SGWorkerCode() {
                 let currentSection = currentClassGroup[i];
                 let filteredSection = ignoreSubsections(currentSection, conflicts);
 
-                if (!this.canAddSection(filteredSection, intervalTree)) {
-                    this.handleFailedToAdd(filteredSection);
+                // check if we have any time conflicts on adding all the subsections
+                let conflictsForSection = this.getConflictingSections(filteredSection, intervalTree);
+                // if we have any conflicts at all that mean the section cannot be added
+
+                if (conflictsForSection.length > 0) {
+                    this.handleFailedToAdd(filteredSection, conflictsForSection);
                     this.updateProgressForFailedAdd(classData, counter);
                     continue;
                 }
@@ -370,21 +420,26 @@ export function SGWorkerCode() {
             // due to javascript pass by value
             this._dfs(classData, [], new SimpleIntervalTree(), schedules, conflicts, 0);
 
+            // schedules is now populated with data
             schedules = schedules.sort((scheduleArr1, scheduleArr2) => {
                 if (scheduleArr1[0] > scheduleArr2[0]) return -1; else return 1;
             });
 
-            let errors = this.failedAdditions;
+            // convert all of the sets in the error map to lists
+            Object.keys(this.errorMap).forEach(errorKey => this.errorMap[errorKey] = Array.from(this.errorMap[errorKey]));
+
+            let errors = this.errorMap;
             let classes = [];
+
             if (schedules.length > 0) {
                 classes = schedules[0][1];
-                errors = [];
+                errors = {};
             }
             // only really care about errors if we failed to generate a schedule
             return new Schedule(classes, errors);
         };
 
-        this.generateSchedule = function (classData, conflicts = [], preferences = [], dispatchProgressFunction) {
+        this.generateSchedule = function (classData, conflicts = [], preferences = []) {
             //this.dispatchProgressFunction = dispatchProgressFunction;
             this.numSchedules = 0;
             this.totalPossibleSchedules = 1;

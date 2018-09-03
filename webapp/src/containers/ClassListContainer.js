@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import ClassList from "../landing/ClassList";
+import ClassList from "../components/landing/ClassList";
 import {bindActionCreators} from "redux";
 import {enterEditMode, enterInputMode, removeClass} from "../actions/ClassInputActions";
 import {getSchedule} from "../actions/ScheduleGenerationActions";

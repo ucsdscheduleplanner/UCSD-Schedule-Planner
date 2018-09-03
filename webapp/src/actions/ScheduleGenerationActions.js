@@ -43,12 +43,6 @@ export function setProgress(generatingProgress) {
     }
 }
 
-function dispatchProgress(dispatch) {
-    return function (progress) {
-        dispatch(setProgress(progress));
-    }
-}
-
 export const GENERATE_SCHEDULE = "GENERATE_SCHEDULE";
 export function generateSchedule(classData, conflicts, preferences) {
     return {
@@ -217,13 +211,11 @@ export function getSchedule(selectedClasses) {
         // CSE 11 -> section 0 [subsection, subsection], section 1 [subsection, subsection]
         classData = cleanData(classData);
 
+        // putting number of possible schedules
         let size = calculateMaxSize(classData);
         dispatch(setTotalPossibleNumSchedule(size));
-        // handles all schedule generation including the queries for data
-        /*  return new ScheduleGenerationBruteForce().generateSchedule(classData, conflicts, preferences, dispatchProgressFunction)
-              .then((schedule) => {
-                  dispatch(receiveSchedule(schedule));
-              });*/
+        // tell middleware we want to create a schedule with an action
+        // this will allow the web worker to take over
         dispatch(generateSchedule(classData, conflicts, preferences));
     }
 }

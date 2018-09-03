@@ -4,8 +4,8 @@
  */
 
 import React, {Component} from 'react';
-import "../css/LeftSidePanel.css";
-import ClassListContainer from "../containers/ClassListContainer";
+import "../../css/LeftSidePanel.css";
+import ClassListContainer from "../../containers/ClassListContainer";
 
 export class LeftSidePanel extends Component {
     render() {
