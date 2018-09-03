@@ -290,7 +290,6 @@ export function SGWorkerCode() {
             for (let subsection of section) {
                 if(subsection.timeInterval == null) {
                     console.log(subsection);
-                    console.log("UH OH");
                 }
 
                 let conflictingSection = intervalTree.contains(subsection.timeInterval);
@@ -367,7 +366,7 @@ export function SGWorkerCode() {
         };
 
         this._dfs = function (classData, currentSchedule, intervalTree, schedules, conflicts, counter) {
-            if (currentSchedule.length >= classData.length) {
+            if (counter >= classData.length) {
                 let score = this.evaluateSchedule(currentSchedule);
                 schedules.push([score, currentSchedule]);
 
@@ -379,6 +378,12 @@ export function SGWorkerCode() {
             }
 
             let currentClassGroup = classData[counter];
+
+            // in the case that a class has all TBA for day or time
+            if(currentClassGroup.length === 0) {
+                this._dfs(classData, currentSchedule, intervalTree, schedules, conflicts, counter + 1);
+            }
+
             for (let i = 0; i < currentClassGroup.length; i++) {
                 // current class group has all the sections for CSE 11
                 // this will be an array of sections
@@ -391,13 +396,11 @@ export function SGWorkerCode() {
                 // check if we have any time conflicts on adding all the subsections
                 let conflictsForSection = this.getConflictingSections(filteredSection, intervalTree);
                 // if we have any conflicts at all that mean the section cannot be added
-
                 if (conflictsForSection.length > 0) {
                     this.handleFailedToAdd(filteredSection, conflictsForSection);
                     this.updateProgressForFailedAdd(classData, counter);
                     continue;
                 }
-
                 // adding subsections to interval tree if they are all valid
                 this.addSection(filteredSection, intervalTree);
 
@@ -409,15 +412,14 @@ export function SGWorkerCode() {
                 // removing all intervals we added so can continue to DFS
                 this.removeSection(filteredSection, intervalTree);
 
-                // putting schedule in state before we added the current section
-                currentSchedule = currentSchedule.slice(0, counter);
+                // putting schedule in state before we added the current section - must make a new copy cause
+                // everything is pass by reference
+                currentSchedule = currentSchedule.splice(-1);
             }
         };
 
         this.dfs = function (classData, conflicts) {
             let schedules = [];
-            // set num schedules to this, note that it will not be set with the ones after
-            // due to javascript pass by value
             this._dfs(classData, [], new SimpleIntervalTree(), schedules, conflicts, 0);
 
             // schedules is now populated with data
