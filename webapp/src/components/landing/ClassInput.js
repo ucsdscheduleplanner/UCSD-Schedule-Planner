@@ -179,14 +179,14 @@ export default class ClassInput extends PureComponent {
                 />
                 <Button label="Done editing" className="ui-button-info"
                         disabled={this.props.currentCourseNum === null}
-                        onClick={this.props.enterInputMode.bind(this)}
+                        onClick={this.props.enterInputMode}
                 />
             </div>
         );
 
         let addButton = (
             <div className="form-button" onClick={this.handleSubmit.bind(this)}>
-                <Button label="Add Class" disabled={this.props.currentCourseNum === null} />
+                <Button label="Add Class" disabled={this.props.currentCourseNum === null}/>
             </div>
         );
 
@@ -228,7 +228,7 @@ export default class ClassInput extends PureComponent {
         let courseNumAutoComplete = (
             <div className="form-field">
                 <div className="input-header"> Course Number:</div>
-                <AutoComplete suggestions={this.state.classOptions}
+                <AutoComplete id="course-number" suggestions={this.state.classOptions}
                               value={this.props.currentCourseNum}
                               onChange={(e) => {
                                   // must clear out the fields
@@ -243,7 +243,7 @@ export default class ClassInput extends PureComponent {
                               }}
                               completeMethod={this.completeClassSuggestions.bind(this)}
                               disabled={
-                                  this.props.currentDepartment === null
+                                  !this.props.currentDepartment
                                   || this.props.currentDepartment.length === 0
                                   || !this.props.departments.includes(this.props.currentDepartment)}
                               dropdown={true}/>
