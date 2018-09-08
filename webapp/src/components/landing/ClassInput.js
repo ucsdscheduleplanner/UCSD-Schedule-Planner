@@ -253,7 +253,8 @@ export default class ClassInput extends PureComponent {
         let instructorPreference = (
             <div className="form-field">
                 <div className="input-header"> Instructor Preference:</div>
-                <AutoComplete suggestions={
+                <AutoComplete id="instructor"
+                              suggestions={
                     // because to clear the thing we put undefined, we can just put the course num in whether
                     // it is actually in the dict or not because if not it will be undefined and show nothing
                     this.state.instructorOptions}

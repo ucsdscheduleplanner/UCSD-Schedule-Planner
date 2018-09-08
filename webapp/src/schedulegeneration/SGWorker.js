@@ -373,8 +373,7 @@ export function SGWorkerCode() {
                 this.incrementProgress(1);
                 //console.info(this.numSchedules);
                 //this.dispatchProgressFunction(schedulePercentComplete);
-
-                return currentSchedule;
+                return;
             }
 
             let currentClassGroup = classData[counter];
@@ -401,20 +400,18 @@ export function SGWorkerCode() {
                     this.updateProgressForFailedAdd(classData, counter);
                     continue;
                 }
+
                 // adding subsections to interval tree if they are all valid
                 this.addSection(filteredSection, intervalTree);
 
                 // choosing to use this for our current schedule - use the actual section not what was filtered
                 // this is so that the result has all the correct subsections, but we operate with the filtered sections
-                currentSchedule.push(currentSection);
-                this._dfs(classData, currentSchedule, intervalTree, schedules, conflicts, counter + 1);
+                let copySchedule = currentSchedule.slice();
+                copySchedule.push(currentSection);
+                this._dfs(classData, copySchedule, intervalTree, schedules, conflicts, counter + 1);
 
                 // removing all intervals we added so can continue to DFS
                 this.removeSection(filteredSection, intervalTree);
-
-                // putting schedule in state before we added the current section - must make a new copy cause
-                // everything is pass by reference
-                currentSchedule = currentSchedule.splice(-1);
             }
         };
 

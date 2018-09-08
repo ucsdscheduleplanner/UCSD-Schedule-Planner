@@ -171,7 +171,7 @@ exports[`Renders correctly with no props 1`] = `
     </div>
     <span
       className="ui-autocomplete ui-widget ui-autocomplete-dd"
-      id={null}
+      id="instructor"
       style={null}
     >
       <input

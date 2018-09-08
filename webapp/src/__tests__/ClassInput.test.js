@@ -61,3 +61,29 @@ test('Having department opens up course number', () => {
     let test = classInput.find("#course-number");
     expect(test.prop("disabled")).toBe(false);
 });
+
+
+test('Putting in invalid department does not enable course number input', () => {
+    let properties = Object.assign({}, classInputProperties);
+    properties.departments = ["CSE", "hi"];
+    properties.currentDepartment = "superbad";
+
+    const classInput = shallow(
+        <ClassInput {...properties} />
+    );
+    let test = classInput.find("#course-number");
+    expect(test.prop("disabled")).toBe(true);
+});
+
+
+test('Having department opens up instructor', () => {
+    let properties = Object.assign({}, classInputProperties);
+    properties.departments = ["CSE", "hi"];
+    properties.currentDepartment = "CSE";
+
+    const classInput = shallow(
+        <ClassInput {...properties} />
+    );
+    let test = classInput.find("#instructor");
+    expect(test.prop("disabled")).toBe(false);
+});

@@ -10,6 +10,7 @@
     "hoek": "^5.0.3",
     "localforage": "^1.7.2",
     "moment": "^2.22.2",
+    "npm": "^6.4.1",
     "npm-check": "^5.7.1",
     "primeicons": "^1.0.0-beta.10",
     "primereact": "git+https://github.com/CTrando/primereact.git",
@@ -30,11 +31,16 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
+    "test-jest": "jest",
     "eject": "react-scripts eject",
     "predeploy": "npm run build",
     "aws-deploy": "npm run build && aws s3 sync ./build s3://sdschedule.com --delete"
   },
   "proxy": "http://localhost:5000/",
-  "devDependencies": {},
+  "devDependencies": {
+    "enzyme": "^3.5.1",
+    "enzyme-adapter-react-16": "^1.3.1",
+    "react-test-renderer": "^16.4.2"
+  },
   "postinstall": "cd node_modules/primereact/ && npm install && npm run build"
 }
