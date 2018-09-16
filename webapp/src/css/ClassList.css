@@ -19,14 +19,16 @@
     transition: all 300ms ease-out;
 }
 
-.class-button:hover {
-    transform: scale(1.2) translateY(0%);
-
+.class-button:hover .pi.pi-plus-circle {
     color: white;
 }
 
+.class-button:hover .pi.pi-cog {
+    color: lawngreen;
+}
+
 .class-button:hover .class-item {
-    transform: scale(1.2) translateY(0%);
+    color: lightblue;
 }
 
 .class-item-border {
@@ -80,6 +82,9 @@
     outline: inherit;
 
     width: 100%;
+}
+
+.class-button * {
     transition: all 300ms ease-out;
 }
 
@@ -87,3 +92,13 @@
     border: 2px solid gold;
     transition: all 300ms ease-out;
 }
+
+#generate-button:hover {
+    transform: none;
+    background-color: rgb(198, 146, 20);
+}
+
+#generate-button.ui-button {
+    margin: 0;
+}
+
