@@ -6,12 +6,8 @@
     margin-bottom: 2em;
 }
 
-.rbc-label {
-    padding: 0;
-}
-
 .rbc-time-slot {
-    text-align: center;
+    text-align: left;
 }
 
 .rbc-time-content {

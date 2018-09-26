@@ -12,7 +12,8 @@ function setWidth() {
     let one = document.getElementsByClassName("rbc-time-gutter")[0];
     let two = document.getElementsByClassName("rbc-time-header-gutter")[0];
     let style = window.getComputedStyle(one);
-    let width = style.getPropertyValue('width');
+    // super ugly but had to do it to keep everything consistent
+    let width = parseInt(style.getPropertyValue('width'), 10) + 10 + "px";
     two.style.width = width;
     one.style.width = width;
 }
