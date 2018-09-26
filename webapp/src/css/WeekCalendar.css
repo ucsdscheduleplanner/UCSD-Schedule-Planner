@@ -1,7 +1,17 @@
 
 .calendar-content {
+    font-family: Lato,"sans-serif";
+    font-size: 15px;
     margin-top: 1em;
     margin-bottom: 2em;
+}
+
+.rbc-label {
+    padding: 0;
+}
+
+.rbc-time-slot {
+    text-align: center;
 }
 
 .rbc-time-content {

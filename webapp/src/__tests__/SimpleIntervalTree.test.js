@@ -1,4 +1,4 @@
-import {SimpleIntervalTree} from "../utils/SimpleIntervalTree";
+import {SimpleIntervalTree} from "./SimpleIntervalTree";
 
 
 let intervalTree = new SimpleIntervalTree();

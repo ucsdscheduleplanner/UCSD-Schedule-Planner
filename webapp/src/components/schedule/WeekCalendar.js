@@ -8,6 +8,15 @@ import "../../css/WeekCalendar.css";
 
 Calendar.setLocalizer(Calendar.momentLocalizer(moment));
 
+function setWidth() {
+    let one = document.getElementsByClassName("rbc-time-gutter")[0];
+    let two = document.getElementsByClassName("rbc-time-header-gutter")[0];
+    let style = window.getComputedStyle(one);
+    let width = style.getPropertyValue('width');
+    two.style.width = width;
+    one.style.width = width;
+}
+
 class WeekCalendar extends PureComponent {
     constructor(props) {
         super(props);
@@ -27,6 +36,11 @@ class WeekCalendar extends PureComponent {
             this.props.messageHandler.showError("Failed to generate schedule", 1000);
             this.props.messageHandler.showError(this.getErrorMsg(), 3500);
         }
+
+    }
+
+    componentDidMount() {
+        setWidth();
     }
 
     flattenSchedule(schedule) {

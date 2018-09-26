@@ -1,5 +1,4 @@
 import moment from 'moment';
-import TimeHeuristic from '../heuristics/TimeHeuristic.js';
 
 const dayToNum = {
     "M": 1,

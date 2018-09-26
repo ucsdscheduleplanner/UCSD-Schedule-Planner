@@ -1,4 +1,3 @@
-import {ScheduleGenerationBruteForce} from "../schedulegeneration/ScheduleGeneratorBruteForce";
 import {DayPreference, InstructorPreference, PriorityModifier, TimePreference} from "../utils/Preferences";
 import {classTypeToCode, DataFetcher} from "../utils/DataFetcher";
 import {Subsection} from "../utils/ClassUtils";
