@@ -109,6 +109,10 @@ class WeekCalendar extends PureComponent {
         minTime.setHours(8, 0, 0);
         maxTime.setHours(23, 0, 0);
 
+        const dayFormat = {
+            dayFormat: 'ddd'
+        };
+
         let icsDownload = (
             <div className="ics-button">
                 <Button label="Download Calendar" className="ui-button-info"
@@ -120,6 +124,7 @@ class WeekCalendar extends PureComponent {
         return (
             <div className="calendar-content">
                 <Calendar
+                    formats={dayFormat}
                     id="calendar"
                     min={minTime}
                     max={maxTime}
