@@ -7,8 +7,14 @@ import RightSidePanel from './components/landing/RightSidePanel';
 import MainPanel from './components/landing/MainPanel';
 import MessageHandler from "./utils/MessageHandler";
 import {initMessageHandler} from "./actions/ClassInputActions";
+import {CacheManager} from "./utils/CacheManager";
 
 class Landing extends Component {
+    constructor(props) {
+        super(props);
+        CacheManager.init();
+    }
+
     render() {
         // have to remove padding from grid
         return (
