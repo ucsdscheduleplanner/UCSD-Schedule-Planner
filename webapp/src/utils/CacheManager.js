@@ -1,36 +1,48 @@
 import * as localforage from "localforage";
 
 const VERSION = "version";
+const CURRENT_VERSION = "1.0";
 
 export class CacheManager {
+    static instance = new CacheManager();
 
-    static async init() {
-        if (await this.isCached(VERSION)) {
-            let version = await this.get(VERSION);
-            if (version !== "1.0") {
-                window.console.log(`Version ${version} is out of date. Clearing cache`);
-                this.clear();
-            }
-        }
-        this.cache(VERSION, "1.0");
+    static get() {
+        return this.instance;
     }
 
-    static async isCached(key) {
+    async checkVersion() {
+        let isCached = await this.isCached(VERSION);
+        if (isCached) {
+            let version = await this.getFromCache(VERSION);
+            console.info(`On version ${version}`);
+            if (version !== CURRENT_VERSION) {
+                console.info(`Version ${version} is out of date. Clearing cache`);
+                this.clear();
+                console.info(`Caching version ${CURRENT_VERSION}`);
+                this.cache(VERSION, CURRENT_VERSION);
+            }
+        } else {
+            console.info(`Caching version ${CURRENT_VERSION}`);
+            this.cache(VERSION, CURRENT_VERSION);
+        }
+    }
+
+    async isCached(key) {
         let retObj = await localforage.getItem(key);
         return retObj !== null;
     }
 
-    static async get(key) {
+    async getFromCache(key) {
         return await localforage.getItem(key);
     }
 
-    static cache(key, value) {
+    cache(key, value) {
         localforage.setItem(key, value)
             .then(success => console.log(`Value ${value} cached under key ${key} succesfully`))
             .catch(error => console.error(`Value ${value} failed to cache under key ${key}`));
     }
 
-    static clear() {
+    clear() {
         localforage.clear();
     }
 }

@@ -86,7 +86,7 @@ export class DataFetcher {
         let cachedClasses = [];
 
         for (let Class of selectedClasses) {
-            let isCached = await CacheManager.isCached(Class.classTitle);
+            let isCached = await CacheManager.get().isCached(Class.classTitle);
             if (isCached) {
                 cachedClasses.push(Class.classTitle);
             } else {
@@ -98,8 +98,8 @@ export class DataFetcher {
 
         // precompute caching
         for (let cachedClassKey of cachedClasses) {
-            console.info(`Caching layer has been hit for ${cachedClassKey}`);
-            ret[cachedClassKey] = await CacheManager.get(cachedClassKey);
+            console.log(`Caching layer has been hit for ${cachedClassKey}`);
+            ret[cachedClassKey] = await CacheManager.get().getFromCache(cachedClassKey);
         }
         // only want to make the fetch if we don't have courseNums cached
         if (classesToFetch.length !== 0) {
@@ -121,9 +121,9 @@ export class DataFetcher {
                 // appending to ret
                 ret[classTitle] = responseJSON[classTitle];
                 // have to stringify so can parse it because local storage only takes in key value pairs
-                let isCached = await CacheManager.isCached(classTitle);
+                let isCached = await CacheManager.get().isCached(classTitle);
                 if (!isCached) {
-                    CacheManager.cache(classTitle, responseJSON[classTitle]);
+                    CacheManager.get().cache(classTitle, responseJSON[classTitle]);
                 }
             }
         }
@@ -136,9 +136,9 @@ export class DataFetcher {
      * @returns {Promise} a promise of a list of the departments
      */
     static async fetchDepartments() {
-        let isCached = await CacheManager.isCached("departments");
+        let isCached = await CacheManager.get().isCached("departments");
         if (isCached) {
-            return await CacheManager.get("departments");
+            return await CacheManager.get().getFromCache("departments");
         }
 
         let response = await
@@ -151,7 +151,7 @@ export class DataFetcher {
             });
         let responseJSON = await response.json();
         let departments = Object.values(responseJSON).map((resObj) => resObj["DEPT_CODE"]);
-        CacheManager.cache("departments", departments);
+        CacheManager.get().cache("departments", departments);
         return departments;
     }
 
@@ -160,10 +160,10 @@ export class DataFetcher {
      */
     static async fetchClassSummaryFor(department) {
         // no fetch if in cache
-        let isCached = await CacheManager.isCached(CLASS_SUMMARY_CACHE_STR.formatUnicorn(department));
+        let isCached = await CacheManager.get().isCached(CLASS_SUMMARY_CACHE_STR.formatUnicorn(department));
         if (isCached) {
-            console.info(`Hit caching level for department ${department}`);
-            return await CacheManager.get(CLASS_SUMMARY_CACHE_STR.formatUnicorn(department));
+            console.log(`Hit caching level for department ${department}`);
+            return await CacheManager.get().getFromCache(CLASS_SUMMARY_CACHE_STR.formatUnicorn(department));
         }
 
         let response = await fetch(`${BACKEND_URL}/api_classes?department=${department}`, {
@@ -237,7 +237,7 @@ export class DataFetcher {
             instructorsPerClass: instructorsPerClass,
         };
         // caching here
-        CacheManager.cache(CLASS_SUMMARY_CACHE_STR.formatUnicorn(department), ret);
+        CacheManager.get().cache(CLASS_SUMMARY_CACHE_STR.formatUnicorn(department), ret);
 
         return ret;
     }

@@ -15,7 +15,7 @@ import {SGMiddleWare} from "./utils/SGMiddleWare";
 const DEBUG = false;
 if(!DEBUG){
     if(!window.console) window.console = {};
-    const methods = ["log", "debug", "warn", "info"];
+    const methods = ["debug", "warn", "log"];
     for(let i=0;i<methods.length;i++){
         console[methods[i]] = function(){};
     }

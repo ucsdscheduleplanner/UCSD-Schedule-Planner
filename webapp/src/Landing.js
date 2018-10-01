@@ -10,9 +10,8 @@ import {initMessageHandler} from "./actions/ClassInputActions";
 import {CacheManager} from "./utils/CacheManager";
 
 class Landing extends Component {
-    constructor(props) {
-        super(props);
-        CacheManager.init();
+    async componentDidMount() {
+        await CacheManager.get().checkVersion();
     }
 
     render() {
