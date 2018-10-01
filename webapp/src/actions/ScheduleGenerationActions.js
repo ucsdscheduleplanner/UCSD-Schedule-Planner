@@ -1,6 +1,6 @@
-import {ScheduleGenerationBruteForce} from "../schedulegeneration/ScheduleGeneratorBruteForce";
 import {DayPreference, InstructorPreference, PriorityModifier, TimePreference} from "../utils/Preferences";
 import {classTypeToCode, DataFetcher} from "../utils/DataFetcher";
+import {Subsection} from "../utils/ClassUtils";
 
 
 export const REQUEST_SCHEDULE = 'REQUEST_SCHEDULE';
@@ -31,20 +31,7 @@ export function setUID(uid) {
     }
 }
 
-export const SET_CALENDAR_MODE = "SET_CALENDAR_MODE";
-
-export function setCalendarMode(mode) {
-    return {
-        type: SET_CALENDAR_MODE,
-        calendarMode: mode
-    }
-}
-
-export function enterCalendarMode() {
-    return function (dispatch) {
-        dispatch(setCalendarMode(true));
-    }
-}
+export const INCREMENT_PROGRESS = "INCREMENT_PROGRESS";
 
 export const SET_PROGRESS = "SET_PROGRESS";
 
@@ -55,9 +42,21 @@ export function setProgress(generatingProgress) {
     }
 }
 
-function dispatchProgress(dispatch) {
-    return function (progress) {
-        dispatch(setProgress(progress));
+export const GENERATE_SCHEDULE = "GENERATE_SCHEDULE";
+export function generateSchedule(classData, conflicts, preferences) {
+    return {
+        type: GENERATE_SCHEDULE,
+        classData: classData,
+        conflicts: conflicts,
+        preferences: preferences
+    }
+}
+
+export const SET_TOTAL_POSSIBLE_NUM_SCHEDULE = "SET_TOTAL_POSSIBLE_NUM_SCHEDULE";
+export function setTotalPossibleNumSchedule(num) {
+    return {
+        type: SET_TOTAL_POSSIBLE_NUM_SCHEDULE,
+        totalNumPossibleSchedule: num
     }
 }
 
@@ -102,10 +101,10 @@ function handleConflicts(Class, conflicts) {
     }
 }
 
-function handleSchedulePreferences(scheduleOptions, preferences) {
-    let startTime = scheduleOptions.startTimePreference;
-    let endTime = scheduleOptions.endTimePreference;
-    let days = scheduleOptions.dayPreference;
+function handleSchedulePreferences(schedulePreferences, preferences) {
+    let startTime = schedulePreferences.startTimePreference;
+    let endTime = schedulePreferences.endTimePreference;
+    let days = schedulePreferences.dayPreference;
 
     if (startTime && endTime) {
         preferences.push(new TimePreference(startTime, endTime));
@@ -116,9 +115,71 @@ function handleSchedulePreferences(scheduleOptions, preferences) {
     }
 }
 
+// dirty class data is a 2D array where each element is an array of subsections for each class section
+function cleanData(dirtyClassData) {
+    let ret = {};
+    for (let courseName of Object.keys(dirtyClassData)) {
+        ret[courseName] = [];
+
+        let slowPtr = 0;
+        let fastPtr = 0;
+
+        let copyCourseData = dirtyClassData[courseName].slice();
+        copyCourseData.push({"SECTION_ID": null});
+
+        while (fastPtr < copyCourseData.length) {
+            let slowSectionID = copyCourseData[slowPtr]["SECTION_ID"];
+            let fastSectionID = copyCourseData[fastPtr]["SECTION_ID"];
+
+            if (slowSectionID !== fastSectionID) {
+                // inclusive exclusive for bounds
+                let subsectionsPerSection = copyCourseData.slice(slowPtr, fastPtr);
+                // converting each one into a subsection
+                subsectionsPerSection = subsectionsPerSection.reduce((ret, subsectionData) => {
+                    let subsection = new Subsection(subsectionData);
+                    if (isValidSubsection(subsection)) {
+                        ret.push(subsection);
+                    }
+                    return ret;
+
+                }, []);
+
+                // we can have issues where all classes are canceled
+                if (subsectionsPerSection.length > 0) {
+                    ret[courseName].push(subsectionsPerSection);
+                }
+                slowPtr = fastPtr;
+            }
+
+            fastPtr++;
+        }
+    }
+    // no alterations to input
+    return ret;
+}
+
+function isValidSubsection(subsection) {
+    // we don't want to include finals or midterms in the regular week view
+    if (subsection.type === "FI" || subsection.type === "MI") {
+        return false;
+    }
+    // if timeInterval is null that means time is TBA and/or day is TBA which means
+    // don't include in here
+    if (!subsection.timeInterval) {
+        return false;
+    }
+    return true;
+}
+
+
+function calculateMaxSize(classData) {
+    return Object.keys(classData).reduce((accum, cur) => {
+       return accum * classData[cur].length;
+    }, 1);
+}
+
 /**
- * This is in redux so we have hooks that determine the progress of generating the schedule
- *
+ * This is in redux so we have hooks that determine the progress of generating the schedule *
  * @param selectedClasses comes in as a dictionary so must convert to a list
  * @returns {Function}
  */
@@ -134,10 +195,9 @@ export function getSchedule(selectedClasses) {
         let conflicts = {};
         // setting progress to 0 initially
         dispatch(setProgress(0));
-        let dispatchProgressFunction = dispatchProgress(dispatch);
 
-        let scheduleOptions = getState().ScheduleOptions;
-        handleSchedulePreferences(scheduleOptions, preferences);
+        let schedulePreferences = getState().SchedulePreferences;
+        handleSchedulePreferences(schedulePreferences, preferences);
         // Class has very little data but the names
         // passes in data from UI
         for (let Class of selectedClasses) {
@@ -146,12 +206,16 @@ export function getSchedule(selectedClasses) {
         }
 
         let classData = await DataFetcher.fetchClassData(selectedClasses);
-        // handles all schedule generation including the queries for data
-        return new ScheduleGenerationBruteForce().generateSchedule(classData, conflicts, preferences, dispatchProgressFunction)
-            .then((schedule) => {
-                dispatch(receiveSchedule(schedule));
-                dispatch(enterCalendarMode())
-            });
+        // will put the data into
+        // CSE 11 -> section 0 [subsection, subsection], section 1 [subsection, subsection]
+        classData = cleanData(classData);
+
+        // putting number of possible schedules
+        let size = calculateMaxSize(classData);
+        dispatch(setTotalPossibleNumSchedule(size));
+        // tell middleware we want to create a schedule with an action
+        // this will allow the web worker to take over
+        dispatch(generateSchedule(classData, conflicts, preferences));
     }
 }
 

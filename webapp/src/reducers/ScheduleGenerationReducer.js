@@ -1,5 +1,9 @@
 import {
-    RECEIVE_SCHEDULE, REQUEST_SCHEDULE, SET_CALENDAR_MODE, SET_PROGRESS,
+    INCREMENT_PROGRESS,
+    RECEIVE_SCHEDULE,
+    REQUEST_SCHEDULE,
+    SET_PROGRESS,
+    SET_TOTAL_POSSIBLE_NUM_SCHEDULE,
     SET_UID
 } from '../actions/ScheduleGenerationActions';
 
@@ -8,12 +12,13 @@ import {
  **/
 
 export default function ScheduleGeneration(state = {
-    calendarMode: false,
     generating: false,
     generatingProgress: 0,
+    totalNumPossibleSchedule: 0,
     uid: 0,
     generateSuccess: true,
-    schedule: []
+    schedule: {"classes": [], "errors": {}},
+    scheduleKey: 0,
 }, action) {
     switch (action.type) {
         case REQUEST_SCHEDULE:
@@ -21,23 +26,12 @@ export default function ScheduleGeneration(state = {
                 generating: action.generating
             });
         case RECEIVE_SCHEDULE:
-            if (action.schedule && action.schedule.length > 0) {
-                return Object.assign({}, state, {
-                    generating: action.generating,
-                    schedule: action.schedule,
-                    generateSuccess: true,
-                });
-            } else {
-                console.error("Could not generate schedule");
-                return Object.assign({}, state, {
-                    generating: action.generating,
-                    generateSuccess: false,
-                    schedule: []
-                });
-            }
-        case SET_CALENDAR_MODE:
+            let generateSuccess = action.schedule.classes !== null;
             return Object.assign({}, state, {
-                calendarMode: action.calendarMode
+                generating: action.generating,
+                schedule: action.schedule,
+                generateSuccess: generateSuccess,
+                scheduleKey: state.scheduleKey + 1
             });
         case SET_UID:
             return Object.assign({}, state, {
@@ -46,6 +40,14 @@ export default function ScheduleGeneration(state = {
         case SET_PROGRESS:
             return Object.assign({}, state, {
                 generatingProgress: action.generatingProgress
+            });
+        case INCREMENT_PROGRESS:
+            return Object.assign({}, state, {
+                generatingProgress: state.generatingProgress + action.amount
+            });
+        case SET_TOTAL_POSSIBLE_NUM_SCHEDULE:
+            return Object.assign({}, state, {
+                totalNumPossibleSchedule: action.totalNumPossibleSchedule
             });
         default:
             return state;

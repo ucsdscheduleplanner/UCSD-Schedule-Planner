@@ -1,4 +1,4 @@
-import {setCalendarMode, setProgress} from "./ScheduleGenerationActions";
+import {setProgress} from "./ScheduleGenerationActions";
 import {DataFetcher} from "../utils/DataFetcher";
 
 export const SET_CURRENT_INSTRUCTOR = "SET_CURRENT_INSTRUCTOR";
@@ -130,12 +130,18 @@ export function editClass(uid, editClass) {
     }
 }
 
+export const INIT_MESSAGE_HANDLER = "INIT_MESSAGE_HANDLER";
+
+export function initMessageHandler(messageHandler) {
+    return {
+        type: INIT_MESSAGE_HANDLER,
+        messageHandler: messageHandler
+    }
+}
+
 export function enterEditMode(uid) {
     return function (dispatch, getState) {
         const otherClass = getState().ClassSelection[uid];
-
-        dispatch(setCalendarMode(false));
-        dispatch(setProgress(0));
 
         dispatch(setPriority(otherClass.priority));
         dispatch(setConflicts(otherClass.conflicts));
@@ -150,7 +156,6 @@ export function enterEditMode(uid) {
 
 export function enterInputMode() {
     return function (dispatch) {
-        dispatch(setCalendarMode(false));
         dispatch(setProgress(0));
 
         dispatch(setPriority(null));

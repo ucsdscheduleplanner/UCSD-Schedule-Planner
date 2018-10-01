@@ -150,7 +150,6 @@ export class DataFetcher {
                 method: 'get'
             });
         let responseJSON = await response.json();
-        console.log(responseJSON.toString());
         let departments = Object.values(responseJSON).map((resObj) => resObj["DEPT_CODE"]);
         CacheManager.cache("departments", departments);
         return departments;

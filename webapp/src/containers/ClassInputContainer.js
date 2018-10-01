@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {connect} from "react-redux";
-import ClassInput from "../landing/ClassInput";
+import ClassInput from "../components/landing/ClassInput";
 import {
     setConflicts, setCurrentCourseNum, setCurrentDepartment, setCurrentInstructor,
     setPriority, addClass, editClass, removeClass, enterInputMode, setClassSummaryFromDepartment
@@ -8,6 +8,7 @@ import {
 import {setUID} from "../actions/ScheduleGenerationActions";
 import {bindActionCreators} from "redux";
 import {DataFetcher} from "../utils/DataFetcher";
+import "../css/ClassInput.css";
 
 class ClassInputContainer extends Component {
 
@@ -29,42 +30,51 @@ class ClassInputContainer extends Component {
     }
 
     render() {
-        return <ClassInput
-            generateSuccess={this.props.generateSuccess}
+        return (
+            <React.Fragment>
+                <div className="ci-container">
+                    <div className="ci--title"> Add Classes </div>
+                    <ClassInput
+                        messageHandler={this.props.messageHandler}
 
-            editMode={this.props.editMode}
-            editClass={this.props.editClass}
-            enterInputMode={this.props.enterInputMode}
-            editUID={this.props.editUID}
+                        generateSuccess={this.props.generateSuccess}
 
-            removeClass={this.props.removeClass}
+                        editMode={this.props.editMode}
+                        editClass={this.props.editClass}
+                        enterInputMode={this.props.enterInputMode}
+                        editUID={this.props.editUID}
 
-            addClass={this.props.addClass}
-            setUID={this.props.setUID}
-            getClassSummary={this.getClassSummary}
+                        removeClass={this.props.removeClass}
 
-            setCurrentDepartment={this.props.setCurrentDepartment}
-            setCurrentInstructor={this.props.setCurrentInstructor}
-            setCurrentCourseNum={this.props.setCurrentCourseNum}
-            setConflicts={this.props.setConflicts}
-            setPriority={this.props.setPriority}
-            setClassSummaryFromDepartment={this.props.setClassSummaryFromDepartment}
+                        addClass={this.props.addClass}
+                        setUID={this.props.setUID}
+                        getClassSummary={this.getClassSummary}
 
-            currentDepartment={this.props.currentDepartment}
-            currentInstructor={this.props.currentInstructor}
-            currentCourseNum={this.props.currentCourseNum}
-            conflicts={this.props.conflicts}
-            priority={this.props.priority}
+                        setCurrentDepartment={this.props.setCurrentDepartment}
+                        setCurrentInstructor={this.props.setCurrentInstructor}
+                        setCurrentCourseNum={this.props.setCurrentCourseNum}
+                        setConflicts={this.props.setConflicts}
+                        setPriority={this.props.setPriority}
+                        setClassSummaryFromDepartment={this.props.setClassSummaryFromDepartment}
 
-            courseNums={this.props.courseNums}
-            classTypesPerClass={this.props.classTypesPerClass}
-            instructorsPerClass={this.props.instructorsPerClass}
+                        currentDepartment={this.props.currentDepartment}
+                        currentInstructor={this.props.currentInstructor}
+                        currentCourseNum={this.props.currentCourseNum}
+                        conflicts={this.props.conflicts}
+                        priority={this.props.priority}
 
-            selectedClasses={this.props.selectedClasses}
-            departments={this.state.departments}
-            requesting={this.props.requesting}
-            uid={this.props.uid}
-        />
+                        courseNums={this.props.courseNums}
+                        classTypesPerClass={this.props.classTypesPerClass}
+                        instructorsPerClass={this.props.instructorsPerClass}
+
+                        selectedClasses={this.props.selectedClasses}
+                        departments={this.state.departments}
+                        requesting={this.props.requesting}
+                        uid={this.props.uid}
+                    />
+                </div>
+            </React.Fragment>
+        )
     }
 }
 
@@ -88,6 +98,8 @@ function mapDispatchToProps(dispatch) {
 
 function mapStateToProps(state) {
     return {
+        messageHandler: state.ClassInput.messageHandler,
+
         currentDepartment: state.ClassInput.currentDepartment,
         currentInstructor: state.ClassInput.currentInstructor,
         currentCourseNum: state.ClassInput.currentCourseNum,

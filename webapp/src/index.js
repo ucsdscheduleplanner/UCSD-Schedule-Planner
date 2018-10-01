@@ -10,6 +10,7 @@ import reducers from './reducers/index';
 import './settings';
 import './css/utils.css';
 import thunkMiddleware from 'redux-thunk';
+import {SGMiddleWare} from "./utils/SGMiddleWare";
 
 const DEBUG = false;
 if(!DEBUG){
@@ -38,7 +39,7 @@ function () {
     return str;
 };
 
-const store = createStore(reducers, applyMiddleware(thunkMiddleware));
+const store = createStore(reducers, applyMiddleware(thunkMiddleware, SGMiddleWare));
 
 document.title = "Plan Your Schedule!";
 ReactDOM.render(

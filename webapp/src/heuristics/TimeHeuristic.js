@@ -14,8 +14,8 @@ TimeHeuristic.prototype.evaluateSchedule = function evaluateSchedule(schedule) {
 
 // takes in two class objects
 TimeHeuristic.prototype.compare = function compare(class1, class2) {
-    let class1Score = 0;
-    let class2Score = 0;
+    let class1Score;
+    let class2Score;
 
     if (!('score' in class1)) class1['score'] = TimeHeuristic.prototype.evaluateClass(class1);
     class1Score = class1['score'];

@@ -1,11 +1,11 @@
 import {combineReducers} from 'redux';
 import ClassSelection from './ClassSelectionReducer';
 import ScheduleGeneration from './ScheduleGenerationReducer';
-import ScheduleOptions from './ScheduleOptionsReducer';
+import SchedulePreferences from './SchedulePreferencesReducer';
 import ClassInput from './ClassInputReducer';
 
 const reducers = combineReducers({
-    ScheduleOptions,
+    SchedulePreferences,
     ClassSelection,
     ScheduleGeneration,
     ClassInput,
