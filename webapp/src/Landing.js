@@ -9,23 +9,22 @@ import MessageHandler from "./utils/MessageHandler";
 import {initMessageHandler} from "./actions/ClassInputActions";
 import {CacheManager} from "./utils/CacheManager";
 
+const CURRENT_VERSION = "1.1";
 class Landing extends Component {
     async componentDidMount() {
-        await CacheManager.get().checkVersion();
+        await CacheManager.get().checkVersion(CURRENT_VERSION);
     }
 
     render() {
         // have to remove padding from grid
         return (
-            <React.Fragment>
-                <div className="container">
-                    <LeftSidePanel />
-                    <MainPanel />
-                    <RightSidePanel />
+            <div className="container">
+                <LeftSidePanel/>
+                <MainPanel/>
+                <RightSidePanel/>
 
-                    <MessageHandler ref={(el) => this.props.initMessageHandler(el)}/>
-                </div>
-            </React.Fragment>
+                <MessageHandler ref={(el) => this.props.initMessageHandler(el)}/>
+            </div>
         );
     }
 }

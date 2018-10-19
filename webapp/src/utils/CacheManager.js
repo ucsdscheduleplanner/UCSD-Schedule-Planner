@@ -1,48 +1,48 @@
 import * as localforage from "localforage";
 
 const VERSION = "version";
-const CURRENT_VERSION = "1.1";
 
 export class CacheManager {
     static instance = new CacheManager();
+    cacheInstance = localforage;
 
     static get() {
         return this.instance;
     }
 
-    async checkVersion() {
-        let isCached = await this.isCached(VERSION);
+    async checkVersion(currentVersion, cache=this.cacheInstance) {
+        let isCached = await this.isCached(VERSION, cache);
         if (isCached) {
-            let version = await this.getFromCache(VERSION);
+            let version = await this.getFromCache(VERSION, cache);
             console.info(`On version ${version}`);
-            if (version !== CURRENT_VERSION) {
+            if (version !== currentVersion) {
                 console.info(`Version ${version} is out of date. Clearing cache`);
-                this.clear();
-                console.info(`Caching version ${CURRENT_VERSION}`);
-                this.cache(VERSION, CURRENT_VERSION);
+                this.clear(cache);
+                console.info(`Caching version ${currentVersion}`);
+                this.cache(VERSION, currentVersion, cache);
             }
         } else {
-            console.info(`Caching version ${CURRENT_VERSION}`);
-            this.cache(VERSION, CURRENT_VERSION);
+            console.info(`Caching version ${currentVersion}`);
+            this.cache(VERSION, currentVersion, cache);
         }
     }
 
-    async isCached(key) {
-        let retObj = await localforage.getItem(key);
+    async isCached(key, cache=this.cacheInstance) {
+        let retObj = await cache.getItem(key);
         return retObj !== null;
     }
 
-    async getFromCache(key) {
-        return await localforage.getItem(key);
+    async getFromCache(key, cache=this.cacheInstance) {
+        return await cache.getItem(key);
     }
 
-    cache(key, value) {
-        localforage.setItem(key, value)
+    cache(key, value, cache=this.cacheInstance) {
+        cache.setItem(key, value)
             .then(success => console.log(`Value ${value} cached under key ${key} succesfully`))
             .catch(error => console.error(`Value ${value} failed to cache under key ${key}`));
     }
 
-    clear() {
-        localforage.clear();
+    clear(cache=this.cacheInstance) {
+        cache.clear();
     }
 }
