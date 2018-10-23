@@ -13,7 +13,7 @@ class DepartmentScraper:
     def __init__(self):
         # Start up the browser
         os.chdir(os.path.join(HOME_DIR, "driver"))
-        self.browser = webdriver.Chrome()
+        self.browser = webdriver.Chrome(executable_path=os.path.join(os.getcwd(), "chromedriver_mac"))
 
         # Go back to home directory
         os.chdir(HOME_DIR)
