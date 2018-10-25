@@ -23,7 +23,7 @@ class MainPanel extends Component {
             <WeekCalendar
                 key={this.props.scheduleKey}
                 messageHandler={this.props.messageHandler}
-                schedule={this.props.schedule}/>
+                generationResult={this.props.generationResult}/>
         );
 
         const progressBar = (
@@ -52,7 +52,7 @@ function mapStateToProps(state) {
         generatingProgress: state.ScheduleGeneration.generatingProgress,
         totalNumPossibleSchedule: state.ScheduleGeneration.totalNumPossibleSchedule,
         generating: state.ScheduleGeneration.generating,
-        schedule: state.ScheduleGeneration.schedule
+        generationResult: state.ScheduleGeneration.generationResult
     };
 }
 

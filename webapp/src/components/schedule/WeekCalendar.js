@@ -5,59 +5,59 @@ import "react-big-calendar/lib/css/react-big-calendar.css";
 import {Button} from "primereact/components/button/Button";
 import {ics} from "../../utils/ics";
 import "../../css/WeekCalendar.css";
+import {Slider} from "primereact/components/slider/Slider";
 
 Calendar.setLocalizer(Calendar.momentLocalizer(moment));
-
-function setWidth() {
-    let one = document.getElementsByClassName("rbc-time-gutter")[0];
-    let two = document.getElementsByClassName("rbc-time-header-gutter")[0];
-    let style = window.getComputedStyle(one);
-    // super ugly but had to do it to keep everything consistent
-    let width = parseInt(style.getPropertyValue('width'), 10) + 10 + "px";
-    two.style.width = width;
-    one.style.width = width;
-}
 
 class WeekCalendar extends PureComponent {
     constructor(props) {
         super(props);
-        this.state = {};
+        this.state = {
+            scheduleIndex: 0,
+            currentSchedule: null,
+            subsections: [],
+            events: [],
+            hasSchedule: false,
+        };
 
-        this.state.subsections = this.flattenSchedule(props.schedule.classes);
-        this.state.events = this.initEvents(this.state.subsections);
+        console.log(props.generationResult);
 
-        // setting state if we got schedule errors, this component is remade every time
-        // we make a new schedule so is ok to rebuild
-        this.state.errors = props.schedule.errors;
-        this.state.hasError = Object.keys(props.schedule.errors).length > 0;
-        this.state.hasSchedule = this.state.events.length > 0 && !this.state.hasError;
-
+        this.state.errors = props.generationResult.errors;
+        console.log(props.generationResult.errors);
+        this.state.hasError = Object.keys(this.state.errors).length > 0;
 
         if (this.state.hasError) {
-            this.props.messageHandler.showError("Failed to generate schedule", 1000);
+            this.props.messageHandler.showError("Failed to generate generationResult", 1000);
             this.props.messageHandler.showError(this.getErrorMsg(), 3500);
         }
 
+        this.state.hasSchedule = props.generationResult.schedules.length > 0 && !this.state.hasError;
+
+        if(!this.state.hasSchedule)
+            return;
+
+        this.state.currentSchedule = props.generationResult.schedules[this.state.scheduleIndex];
+        console.log(this.state.currentSchedule);
+        this.state.subsections = this.flattenSchedule();
+        this.state.events = this.initEvents();
+
     }
 
-    componentDidMount() {
-        setWidth();
-    }
-
-    flattenSchedule(schedule) {
-        // schedule should look like a 2D array where each element is a list of subsections
+    flattenSchedule() {
+        // generationResult should look like a 2D array where each element is a list of subsections
         let ret = [];
-        for (let Class of schedule) {
+        for (let Class of this.state.currentSchedule.classes) {
             for (let subsection of Class) {
                 ret.push(subsection);
             }
         }
+        console.log(ret);
         return ret;
     }
 
-    initEvents(subsections) {
+    initEvents() {
         let ret = [];
-        for (let subsection of subsections) {
+        for (let subsection of this.state.subsections) {
             let startTime = subsection.timeInterval['start'];
             let endTime = subsection.timeInterval['end'];
             ret.push({
@@ -66,6 +66,7 @@ class WeekCalendar extends PureComponent {
                 title: `${subsection.classTitle} ${subsection.type}`
             });
         }
+        console.log(ret);
         return ret;
     }
 
@@ -117,12 +118,20 @@ class WeekCalendar extends PureComponent {
             <div className="ics-button">
                 <Button label="Download Calendar" className="ui-button-info"
                         onClick={this.downloadICS.bind(this, this.state.subsections)}
-                        disabled={this.props.schedule.length === 0}/>
+                        disabled={this.props.generationResult.length === 0}/>
             </div>
+        );
+
+        let scheduleSlider = (
+            <Slider value={this.state.scheduleIndex}
+                    onChange={(e) => this.setState({scheduleIndex: e.value})}
+            />
         );
 
         return (
             <div className="calendar-content">
+                {this.state.hasSchedule && scheduleSlider}
+
                 <Calendar
                     formats={dayFormat}
                     id="calendar"
@@ -140,5 +149,13 @@ class WeekCalendar extends PureComponent {
         );
     }
 }
+
+
+WeekCalendar.defaultProps = {
+    generationResult: {
+        schedules: [],
+        errors: []
+    }
+};
 
 export default WeekCalendar;

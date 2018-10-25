@@ -41,7 +41,7 @@ export function SGWorkerCode() {
     }
 
     /**
-     * Because this is a general schedule preference we don't need any specific classes
+     * Because this is a general generationResult preference we don't need any specific classes
      * @constructor
      * @param start
      * @param end
@@ -248,13 +248,17 @@ export function SGWorkerCode() {
     }
 
     /**
-     * Will hold the actual schedule and any errors that come up
+     * Will hold the actual generationResult and any errors that come up
      * @param schedule
      * @param errors
      * @constructor
      */
-    function Schedule(schedule, errors) {
+    function Schedule(schedule) {
         this.classes = schedule;
+    }
+
+    function GenerationResult(schedules, errors) {
+        this.schedules = schedules;
         this.errors = errors;
     }
 
@@ -357,7 +361,7 @@ export function SGWorkerCode() {
 
         this.updateProgressForFailedAdd = function (classData, curIndex) {
             let failedSchedules = 1;
-            // getting all classes that could have been part of this schedule
+            // getting all classes that could have been part of this generationResult
             for (let i = curIndex + 1; i < classData.length; i++) {
                 failedSchedules *= classData[i].length;
             }
@@ -404,7 +408,7 @@ export function SGWorkerCode() {
                 // adding subsections to interval tree if they are all valid
                 this.addSection(filteredSection, intervalTree);
 
-                // choosing to use this for our current schedule - use the actual section not what was filtered
+                // choosing to use this for our current generationResult - use the actual section not what was filtered
                 // this is so that the result has all the correct subsections, but we operate with the filtered sections
                 let copySchedule = currentSchedule.slice();
                 copySchedule.push(currentSection);
@@ -428,14 +432,15 @@ export function SGWorkerCode() {
             Object.keys(this.errorMap).forEach(errorKey => this.errorMap[errorKey] = Array.from(this.errorMap[errorKey]));
 
             let errors = this.errorMap;
-            let classes = [];
+
+            schedules = schedules.slice(0, 10);
+            schedules = schedules.map(el => new Schedule(el[1]));
 
             if (schedules.length > 0) {
-                classes = schedules[0][1];
                 errors = {};
             }
-            // only really care about errors if we failed to generate a schedule
-            return new Schedule(classes, errors);
+            // only really care about errors if we failed to generate a generationResult
+            return new GenerationResult(schedules, errors);
         };
 
         this.generateSchedule = function (classData, conflicts = [], preferences = []) {
@@ -511,11 +516,11 @@ export function SGWorkerCode() {
         let {classData, conflicts, preferences} = data;
         let realPreferences = this.initPreferences(preferences);
 
-        let schedule = worker.generateSchedule(classData, conflicts, realPreferences);
+        let results = worker.generateSchedule(classData, conflicts, realPreferences);
         // returns a promise
         postMessage({
             type: "FINISHED_GENERATION",
-            schedule: schedule
+            generationResult: results
         });
     }
 }

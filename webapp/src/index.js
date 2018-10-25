@@ -12,7 +12,7 @@ import './css/utils.css';
 import thunkMiddleware from 'redux-thunk';
 import {SGMiddleWare} from "./utils/SGMiddleWare";
 
-const DEBUG = false;
+const DEBUG = true;
 if(!DEBUG){
     if(!window.console) window.console = {};
     const methods = ["debug", "warn", "log"];

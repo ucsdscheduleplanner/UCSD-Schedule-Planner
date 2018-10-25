@@ -1,6 +1,6 @@
 
 .calendar-content {
-    font-family: Lato,"sans-serif";
+    font-family: Lato, "sans-serif";
     font-size: 15px;
     margin-top: 1em;
     margin-bottom: 2em;
@@ -26,4 +26,8 @@
 
 .rbc-events-container .rbc-event-label {
     display: none;
+}
+
+.rbc-time-content > .rbc-time-gutter, .rbc-label.rbc-time-header-gutter {
+    flex-basis: 5em;
 }

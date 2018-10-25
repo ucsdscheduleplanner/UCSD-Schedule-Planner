@@ -14,10 +14,10 @@ export function requestSchedule() {
 
 export const RECEIVE_SCHEDULE = 'RECEIVE_SCHEDULE';
 
-export function receiveSchedule(schedule) {
+export function getGenerationResults(schedule) {
     return {
         type: RECEIVE_SCHEDULE,
-        schedule: schedule,
+        generationResult: schedule,
         generating: false
     }
 }
@@ -179,13 +179,13 @@ function calculateMaxSize(classData) {
 }
 
 /**
- * This is in redux so we have hooks that determine the progress of generating the schedule *
+ * This is in redux so we have hooks that determine the progress of generating the generationResult *
  * @param selectedClasses comes in as a dictionary so must convert to a list
  * @returns {Function}
  */
 export function getSchedule(selectedClasses) {
     return async function (dispatch, getState) {
-        // let redux know that we are creating a schedule
+        // let redux know that we are creating a generationResult
         dispatch(requestSchedule());
 
         selectedClasses = Object.values(selectedClasses);
@@ -213,7 +213,7 @@ export function getSchedule(selectedClasses) {
         // putting number of possible schedules
         let size = calculateMaxSize(classData);
         dispatch(setTotalPossibleNumSchedule(size));
-        // tell middleware we want to create a schedule with an action
+        // tell middleware we want to create a generationResult with an action
         // this will allow the web worker to take over
         dispatch(generateSchedule(classData, conflicts, preferences));
     }
