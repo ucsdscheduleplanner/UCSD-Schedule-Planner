@@ -19,6 +19,7 @@
 }
 
 .ics-button {
+    margin-bottom: .6em;
     display: flex;
     flex: 1;
     justify-content: flex-end;
@@ -30,4 +31,6 @@
 
 .rbc-time-content > .rbc-time-gutter, .rbc-label.rbc-time-header-gutter {
     flex-basis: 5em;
+    overflow-x: hidden;
+    text-overflow: ellipsis;
 }

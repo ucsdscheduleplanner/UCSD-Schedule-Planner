@@ -397,6 +397,8 @@ export function SGWorkerCode() {
                 let filteredSection = ignoreSubsections(currentSection, conflicts);
 
                 // check if we have any time conflicts on adding all the subsections
+                // (NOTE) goes off the assumption that there are no conflicts within the class - that
+                // was proven to be incorrect
                 let conflictsForSection = this.getConflictingSections(filteredSection, intervalTree);
                 // if we have any conflicts at all that mean the section cannot be added
                 if (conflictsForSection.length > 0) {
@@ -433,7 +435,7 @@ export function SGWorkerCode() {
 
             let errors = this.errorMap;
 
-            schedules = schedules.slice(0, 10);
+            schedules = schedules.slice(0, 6);
             schedules = schedules.map(el => new Schedule(el[1]));
 
             if (schedules.length > 0) {

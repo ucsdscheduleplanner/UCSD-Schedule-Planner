@@ -5,7 +5,6 @@ import "react-big-calendar/lib/css/react-big-calendar.css";
 import {Button} from "primereact/components/button/Button";
 import {ics} from "../../utils/ics";
 import "../../css/WeekCalendar.css";
-import {Slider} from "primereact/components/slider/Slider";
 
 Calendar.setLocalizer(Calendar.momentLocalizer(moment));
 
@@ -13,40 +12,20 @@ class WeekCalendar extends PureComponent {
     constructor(props) {
         super(props);
         this.state = {
-            scheduleIndex: 0,
-            currentSchedule: null,
             subsections: [],
             events: [],
-            hasSchedule: false,
+            schedule: null,
         };
 
-        console.log(props.generationResult);
-
-        this.state.errors = props.generationResult.errors;
-        console.log(props.generationResult.errors);
-        this.state.hasError = Object.keys(this.state.errors).length > 0;
-
-        if (this.state.hasError) {
-            this.props.messageHandler.showError("Failed to generate generationResult", 1000);
-            this.props.messageHandler.showError(this.getErrorMsg(), 3500);
-        }
-
-        this.state.hasSchedule = props.generationResult.schedules.length > 0 && !this.state.hasError;
-
-        if(!this.state.hasSchedule)
-            return;
-
-        this.state.currentSchedule = props.generationResult.schedules[this.state.scheduleIndex];
-        console.log(this.state.currentSchedule);
+        this.state.schedule = this.props.schedule;
         this.state.subsections = this.flattenSchedule();
         this.state.events = this.initEvents();
-
     }
 
     flattenSchedule() {
         // generationResult should look like a 2D array where each element is a list of subsections
         let ret = [];
-        for (let Class of this.state.currentSchedule.classes) {
+        for (let Class of this.state.schedule.classes) {
             for (let subsection of Class) {
                 ret.push(subsection);
             }
@@ -95,13 +74,6 @@ class WeekCalendar extends PureComponent {
         calendar.download("Calendar");
     }
 
-    getErrorMsg() {
-        let errors = this.state.errors;
-        let classWithMostConflicts = Object.keys(errors).reduce((key1, key2) => errors[key1].length > errors[key2].length ? key1 : key2);
-        let conflicts = errors[classWithMostConflicts].join(", ");
-        return `Failed to generate. Had the most trouble adding ${classWithMostConflicts}. During schedule generation, it 
-        conflicted with ${conflicts}`
-    }
 
     render() {
         // setting max and min times
@@ -118,20 +90,13 @@ class WeekCalendar extends PureComponent {
             <div className="ics-button">
                 <Button label="Download Calendar" className="ui-button-info"
                         onClick={this.downloadICS.bind(this, this.state.subsections)}
-                        disabled={this.props.generationResult.length === 0}/>
+                        disabled={this.props.empty}/>
             </div>
-        );
-
-        let scheduleSlider = (
-            <Slider value={this.state.scheduleIndex}
-                    onChange={(e) => this.setState({scheduleIndex: e.value})}
-            />
         );
 
         return (
             <div className="calendar-content">
-                {this.state.hasSchedule && scheduleSlider}
-
+                {!this.props.empty && icsDownload}
                 <Calendar
                     formats={dayFormat}
                     id="calendar"
@@ -143,8 +108,6 @@ class WeekCalendar extends PureComponent {
                     views={['work_week']}
                     events={this.state.events}
                 />
-
-                {this.state.hasSchedule && icsDownload}
             </div>
         );
     }
@@ -152,10 +115,10 @@ class WeekCalendar extends PureComponent {
 
 
 WeekCalendar.defaultProps = {
-    generationResult: {
-        schedules: [],
+    schedule: {
+        classes: [],
         errors: []
-    }
+    },
 };
 
 export default WeekCalendar;
