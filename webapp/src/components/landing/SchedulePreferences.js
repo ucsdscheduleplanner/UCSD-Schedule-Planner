@@ -6,7 +6,7 @@ import {SelectButton} from "primereact/components/selectbutton/SelectButton";
 import MediaQuery from 'react-responsive';
 
 /*
-    This class should hold the UI for settings options for the schedule.
+    This class should hold the UI for settings options for the generationResult.
  */
 export default class SchedulePreferences extends PureComponent {
     constructor(props) {

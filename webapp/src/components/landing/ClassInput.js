@@ -255,9 +255,9 @@ export default class ClassInput extends PureComponent {
                 <div className="input-header"> Instructor Preference:</div>
                 <AutoComplete id="instructor"
                               suggestions={
-                    // because to clear the thing we put undefined, we can just put the course num in whether
-                    // it is actually in the dict or not because if not it will be undefined and show nothing
-                    this.state.instructorOptions}
+                                  // because to clear the thing we put undefined, we can just put the course num in whether
+                                  // it is actually in the dict or not because if not it will be undefined and show nothing
+                                  this.state.instructorOptions}
                               value={this.props.currentInstructor}
                               onChange={(e) => {
                                   this.props.setCurrentInstructor(e.value);
@@ -308,22 +308,20 @@ export default class ClassInput extends PureComponent {
         );
 
         return (
-            <React.Fragment>
-                <div className="content">
-                    {departmentAutoComplete}
-                    {courseNumAutoComplete}
+            <div className="content">
+                {departmentAutoComplete}
+                {courseNumAutoComplete}
 
-                    <div className="ci--title-preference"> Preferences</div>
+                <div className="ci--title-preference"> Preferences</div>
 
-                    {instructorPreference}
-                    {ignoreClassPreference}
-                    {priorityPreference}
+                {instructorPreference}
+                {ignoreClassPreference}
+                {priorityPreference}
 
-                    <div style={{display: "inline-block"}}>
-                        {this.props.editMode ? deleteButton : addButton}
-                    </div>
+                <div style={{display: "inline-block"}}>
+                    {this.props.editMode ? deleteButton : addButton}
                 </div>
-            </React.Fragment>
+            </div>
         )
     }
 }

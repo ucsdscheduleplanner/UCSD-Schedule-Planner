@@ -1,6 +1,6 @@
 /*
     This class will be the side panel where the user can alter
-    the schedule options.
+    the generationResult options.
  */
 
 import React, {Component} from 'react';

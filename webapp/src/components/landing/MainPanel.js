@@ -3,10 +3,10 @@
  */
 
 import React, {Component} from 'react';
-import WeekCalendar from '../schedule/WeekCalendar'
 import "../../css/MainPanel.css";
 import {connect} from "react-redux";
 import {ScheduleProgressBar} from "../schedule/ScheduleProgressBar";
+import {ResultPanel} from "../schedule/ResultPanel";
 
 class MainPanel extends Component {
     constructor(props) {
@@ -20,10 +20,10 @@ class MainPanel extends Component {
 
     render() {
         const calendar = (
-            <WeekCalendar
+            <ResultPanel
                 key={this.props.scheduleKey}
                 messageHandler={this.props.messageHandler}
-                schedule={this.props.schedule}/>
+                generationResult={this.props.generationResult}/>
         );
 
         const progressBar = (
@@ -52,7 +52,7 @@ function mapStateToProps(state) {
         generatingProgress: state.ScheduleGeneration.generatingProgress,
         totalNumPossibleSchedule: state.ScheduleGeneration.totalNumPossibleSchedule,
         generating: state.ScheduleGeneration.generating,
-        schedule: state.ScheduleGeneration.schedule
+        generationResult: state.ScheduleGeneration.generationResult
     };
 }
 

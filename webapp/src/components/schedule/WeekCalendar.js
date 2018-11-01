@@ -8,56 +8,35 @@ import "../../css/WeekCalendar.css";
 
 Calendar.setLocalizer(Calendar.momentLocalizer(moment));
 
-function setWidth() {
-    let one = document.getElementsByClassName("rbc-time-gutter")[0];
-    let two = document.getElementsByClassName("rbc-time-header-gutter")[0];
-    let style = window.getComputedStyle(one);
-    // super ugly but had to do it to keep everything consistent
-    let width = parseInt(style.getPropertyValue('width'), 10) + 10 + "px";
-    two.style.width = width;
-    one.style.width = width;
-}
-
 class WeekCalendar extends PureComponent {
     constructor(props) {
         super(props);
-        this.state = {};
+        this.state = {
+            subsections: [],
+            events: [],
+            schedule: null,
+        };
 
-        this.state.subsections = this.flattenSchedule(props.schedule.classes);
-        this.state.events = this.initEvents(this.state.subsections);
-
-        // setting state if we got schedule errors, this component is remade every time
-        // we make a new schedule so is ok to rebuild
-        this.state.errors = props.schedule.errors;
-        this.state.hasError = Object.keys(props.schedule.errors).length > 0;
-        this.state.hasSchedule = this.state.events.length > 0 && !this.state.hasError;
-
-
-        if (this.state.hasError) {
-            this.props.messageHandler.showError("Failed to generate schedule", 1000);
-            this.props.messageHandler.showError(this.getErrorMsg(), 3500);
-        }
-
+        this.state.schedule = this.props.schedule;
+        this.state.subsections = this.flattenSchedule();
+        this.state.events = this.initEvents();
     }
 
-    componentDidMount() {
-        setWidth();
-    }
-
-    flattenSchedule(schedule) {
-        // schedule should look like a 2D array where each element is a list of subsections
+    flattenSchedule() {
+        // generationResult should look like a 2D array where each element is a list of subsections
         let ret = [];
-        for (let Class of schedule) {
+        for (let Class of this.state.schedule.classes) {
             for (let subsection of Class) {
                 ret.push(subsection);
             }
         }
+        console.log(ret);
         return ret;
     }
 
-    initEvents(subsections) {
+    initEvents() {
         let ret = [];
-        for (let subsection of subsections) {
+        for (let subsection of this.state.subsections) {
             let startTime = subsection.timeInterval['start'];
             let endTime = subsection.timeInterval['end'];
             ret.push({
@@ -66,6 +45,7 @@ class WeekCalendar extends PureComponent {
                 title: `${subsection.classTitle} ${subsection.type}`
             });
         }
+        console.log(ret);
         return ret;
     }
 
@@ -94,13 +74,6 @@ class WeekCalendar extends PureComponent {
         calendar.download("Calendar");
     }
 
-    getErrorMsg() {
-        let errors = this.state.errors;
-        let classWithMostConflicts = Object.keys(errors).reduce((key1, key2) => errors[key1].length > errors[key2].length ? key1 : key2);
-        let conflicts = errors[classWithMostConflicts].join(", ");
-        return `Failed to generate. Had the most trouble adding ${classWithMostConflicts}. During schedule generation, it 
-        conflicted with ${conflicts}`
-    }
 
     render() {
         // setting max and min times
@@ -117,12 +90,13 @@ class WeekCalendar extends PureComponent {
             <div className="ics-button">
                 <Button label="Download Calendar" className="ui-button-info"
                         onClick={this.downloadICS.bind(this, this.state.subsections)}
-                        disabled={this.props.schedule.length === 0}/>
+                        disabled={this.props.empty}/>
             </div>
         );
 
         return (
             <div className="calendar-content">
+                {!this.props.empty && icsDownload}
                 <Calendar
                     formats={dayFormat}
                     id="calendar"
@@ -134,11 +108,17 @@ class WeekCalendar extends PureComponent {
                     views={['work_week']}
                     events={this.state.events}
                 />
-
-                {this.state.hasSchedule && icsDownload}
             </div>
         );
     }
 }
+
+
+WeekCalendar.defaultProps = {
+    schedule: {
+        classes: [],
+        errors: []
+    },
+};
 
 export default WeekCalendar;

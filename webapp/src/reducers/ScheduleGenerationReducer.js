@@ -17,7 +17,7 @@ export default function ScheduleGeneration(state = {
     totalNumPossibleSchedule: 0,
     uid: 0,
     generateSuccess: true,
-    schedule: {"classes": [], "errors": {}},
+    generationResult: {"schedules": [], "errors": {}},
     scheduleKey: 0,
 }, action) {
     switch (action.type) {
@@ -26,10 +26,10 @@ export default function ScheduleGeneration(state = {
                 generating: action.generating
             });
         case RECEIVE_SCHEDULE:
-            let generateSuccess = action.schedule.classes !== null;
+            let generateSuccess = action.generationResult.length > 0;
             return Object.assign({}, state, {
                 generating: action.generating,
-                schedule: action.schedule,
+                generationResult: action.generationResult,
                 generateSuccess: generateSuccess,
                 scheduleKey: state.scheduleKey + 1
             });

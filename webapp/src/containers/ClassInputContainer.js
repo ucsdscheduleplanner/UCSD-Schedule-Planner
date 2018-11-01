@@ -31,49 +31,47 @@ class ClassInputContainer extends Component {
 
     render() {
         return (
-            <React.Fragment>
-                <div className="ci-container">
-                    <div className="ci--title"> Add Classes </div>
-                    <ClassInput
-                        messageHandler={this.props.messageHandler}
+            <div className="ci-container">
+                <div className="ci--title"> Add Classes</div>
+                <ClassInput
+                    messageHandler={this.props.messageHandler}
 
-                        generateSuccess={this.props.generateSuccess}
+                    generateSuccess={this.props.generateSuccess}
 
-                        editMode={this.props.editMode}
-                        editClass={this.props.editClass}
-                        enterInputMode={this.props.enterInputMode}
-                        editUID={this.props.editUID}
+                    editMode={this.props.editMode}
+                    editClass={this.props.editClass}
+                    enterInputMode={this.props.enterInputMode}
+                    editUID={this.props.editUID}
 
-                        removeClass={this.props.removeClass}
+                    removeClass={this.props.removeClass}
 
-                        addClass={this.props.addClass}
-                        setUID={this.props.setUID}
-                        getClassSummary={this.getClassSummary}
+                    addClass={this.props.addClass}
+                    setUID={this.props.setUID}
+                    getClassSummary={this.getClassSummary}
 
-                        setCurrentDepartment={this.props.setCurrentDepartment}
-                        setCurrentInstructor={this.props.setCurrentInstructor}
-                        setCurrentCourseNum={this.props.setCurrentCourseNum}
-                        setConflicts={this.props.setConflicts}
-                        setPriority={this.props.setPriority}
-                        setClassSummaryFromDepartment={this.props.setClassSummaryFromDepartment}
+                    setCurrentDepartment={this.props.setCurrentDepartment}
+                    setCurrentInstructor={this.props.setCurrentInstructor}
+                    setCurrentCourseNum={this.props.setCurrentCourseNum}
+                    setConflicts={this.props.setConflicts}
+                    setPriority={this.props.setPriority}
+                    setClassSummaryFromDepartment={this.props.setClassSummaryFromDepartment}
 
-                        currentDepartment={this.props.currentDepartment}
-                        currentInstructor={this.props.currentInstructor}
-                        currentCourseNum={this.props.currentCourseNum}
-                        conflicts={this.props.conflicts}
-                        priority={this.props.priority}
+                    currentDepartment={this.props.currentDepartment}
+                    currentInstructor={this.props.currentInstructor}
+                    currentCourseNum={this.props.currentCourseNum}
+                    conflicts={this.props.conflicts}
+                    priority={this.props.priority}
 
-                        courseNums={this.props.courseNums}
-                        classTypesPerClass={this.props.classTypesPerClass}
-                        instructorsPerClass={this.props.instructorsPerClass}
+                    courseNums={this.props.courseNums}
+                    classTypesPerClass={this.props.classTypesPerClass}
+                    instructorsPerClass={this.props.instructorsPerClass}
 
-                        selectedClasses={this.props.selectedClasses}
-                        departments={this.state.departments}
-                        requesting={this.props.requesting}
-                        uid={this.props.uid}
-                    />
-                </div>
-            </React.Fragment>
+                    selectedClasses={this.props.selectedClasses}
+                    departments={this.state.departments}
+                    requesting={this.props.requesting}
+                    uid={this.props.uid}
+                />
+            </div>
         )
     }
 }

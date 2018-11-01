@@ -17,7 +17,7 @@ export function InstructorPreference(Class, instructor) {
 }
 
 /**
- * Because this is a general schedule preference we don't need any specific classes
+ * Because this is a general generationResult preference we don't need any specific classes
  * @constructor
  * @param start
  * @param end

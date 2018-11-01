@@ -20,8 +20,10 @@ IMAGE_DIR = os.path.join(HOME_DIR, 'images')
 
 # Where the classes are stored
 HTML_STORAGE = os.path.join(HOME_DIR, 'courseNums')
+# Where capes stored
+CAPES_STORAGE = os.path.join(HOME_DIR, 'capes')
 
-DRIVER_PATH = os.path.join(HOME_DIR, 'driver', 'chromedriver')
+DRIVER_PATH = os.path.join(HOME_DIR, 'driver', 'chromedriver_mac')
 
 """
 MODES
@@ -36,6 +38,7 @@ URLS
 # URLs
 DEPARTMENT_URL = 'https://act.ucsd.edu/scheduleOfClasses/scheduleOfClassesStudent.htm'
 SCHEDULE_OF_CLASSES = 'https://act.ucsd.edu/scheduleOfClasses/scheduleOfClassesStudent.htm'
+CAPES = 'http://cape.ucsd.edu/responses/Results.aspx?CourseNumber='
 
 """
 PREFERENCE DATA
@@ -52,12 +55,13 @@ VARIABLES
 # Current class index for web scraping
 CURRENT_CLASS_INDEX = 0
 
-
+# Current quarter (in string)
+QUARTER = "WI19"
 # Time for timeout for browser
 TIMEOUT = 30
 
 # Time before class timeout
-CLASS_SEARCH_TIMEOUT = 5
+DEPT_SEARCH_TIMEOUT = 5
 
 # Interval for days on graph
 DAY_GRAPH_INTERVAL = .5
