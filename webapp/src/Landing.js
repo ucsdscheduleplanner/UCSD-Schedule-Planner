@@ -9,7 +9,7 @@ import MessageHandler from "./utils/MessageHandler";
 import {initMessageHandler} from "./actions/ClassInputActions";
 import {CacheManager} from "./utils/CacheManager";
 
-const CURRENT_VERSION = "1.2";
+const CURRENT_VERSION = "1.3";
 class Landing extends Component {
     async componentDidMount() {
         await CacheManager.get().checkVersion(CURRENT_VERSION);
