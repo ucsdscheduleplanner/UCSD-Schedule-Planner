@@ -80,6 +80,12 @@ const codeKeyToVal = {
 
 const CLASS_SUMMARY_CACHE_STR = "{0}_summary";
 
+function addToSet(set, iterable) {
+    for (const el of iterable) {
+        set.add(el);
+    }
+}
+
 export class DataFetcher {
     static async fetchClassData(selectedClasses) {
         let classesToFetch = [];
@@ -173,12 +179,14 @@ export class DataFetcher {
             },
             method: 'get'
         });
+
         let responseJSON = await response.json();
         let classSummaryData = responseJSON["CLASS_SUMMARY"];
         // putting the response inside unsorted list
         let unsorted = new Set();
         let classTypesPerClass = {};
         let instructorsPerClass = {};
+        let descriptionsPerClass = {};
 
         // classArrKey is the course num
         for (let classArrKey of Object.keys(classSummaryData)) {
@@ -190,16 +198,19 @@ export class DataFetcher {
             unsorted.add(classArrKey);
 
             for (let Class of classArr) {
-                let instructors = [...Class["INSTRUCTOR"].split("\n")];
+                let instructors = [...Class["INSTRUCTOR"].split("\n\n")];
                 // filter them first before adding
                 // just in case we have multiple instructors on one line
                 instructors = instructors
                     .filter((instructor) => instructor.length > 0)
                     .map((instructor) => instructor.trim());
                 // adding to set
-                instructorsPerClass[classArrKey].add(...instructors);
+                addToSet(instructorsPerClass[classArrKey], instructors);
 
-                let classType = Class["TYPE"];
+                // should really only be one description per class
+                descriptionsPerClass[classArrKey] = Class["DESCRIPTION"].substring(0, Class["DESCRIPTION"].indexOf("("));
+
+                const classType = Class["TYPE"];
                 // adding to set
                 classTypesPerClass[classArrKey].add(classType);
             }
@@ -232,6 +243,7 @@ export class DataFetcher {
         }
 
         let ret = {
+            descriptionsPerClass: descriptionsPerClass,
             courseNums: sortedCourseNums,
             classTypesPerClass: classTypesPerClass,
             instructorsPerClass: instructorsPerClass,

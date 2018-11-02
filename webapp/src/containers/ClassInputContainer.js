@@ -65,6 +65,7 @@ class ClassInputContainer extends Component {
                     courseNums={this.props.courseNums}
                     classTypesPerClass={this.props.classTypesPerClass}
                     instructorsPerClass={this.props.instructorsPerClass}
+                    descriptionsPerClass={this.props.descriptionsPerClass}
 
                     selectedClasses={this.props.selectedClasses}
                     departments={this.state.departments}
@@ -114,6 +115,7 @@ function mapStateToProps(state) {
         courseNums: state.ClassInput.courseNums,
         classTypesPerClass: state.ClassInput.classTypesPerClass,
         instructorsPerClass: state.ClassInput.instructorsPerClass,
+        descriptionsPerClass: state.ClassInput.descriptionsPerClass,
 
         requesting: state.ClassInput.requesting,
         uid: state.ScheduleGeneration.uid,

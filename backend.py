@@ -11,8 +11,9 @@ Picks classes and autogenerates schedules. The main computation backend for the 
 """  # Initializing database
 
 os.chdir(HOME_DIR)
-cursor = create_engine('mysql+mysqldb://root:{}@localhost/classes'.format(password), pool_pre_ping=True, pool_recycle=3600)
-#cursor = create_engine('mysql+mysqldb://{}:{}@{}/classes'.format(aws_username, password, aws_endpoint),
+cursor = create_engine('mysql+mysqldb://root:{}@localhost/classes'.format(password), pool_pre_ping=True,
+                       pool_recycle=3600)
+# cursor = create_engine('mysql+mysqldb://{}:{}@{}/classes'.format(aws_username, password, aws_endpoint),
 #                     pool_recycle=3600)
 
 departments = []
@@ -22,7 +23,8 @@ class_types = []
 def get_all_classes_in(department):
     # Must order this one separately because doing it lexically won't work
     ret_dict = {}
-    sql = text("SELECT * FROM CLASS_DATA WHERE DEPARTMENT = :department")
+    sql = text(
+        "SELECT DISTINCT COURSE_NUM, DEPARTMENT, INSTRUCTOR, TYPE, DESCRIPTION FROM CLASS_DATA WHERE DEPARTMENT = :department")
     result = cursor.execute(sql, department=department).fetchall()
     # use dict here for fast lookup
     ret_dict["CLASS_SUMMARY"] = {}

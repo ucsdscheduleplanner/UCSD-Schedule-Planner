@@ -6,7 +6,7 @@ import {
     SET_COURSE_NUMS,
     SET_CURRENT_COURSE_NUM,
     SET_CURRENT_DEPARTMENT,
-    SET_CURRENT_INSTRUCTOR,
+    SET_CURRENT_INSTRUCTOR, SET_DESCRIPTIONS_PER_CLASS,
     SET_EDIT_MODE,
     SET_INSTRUCTORS_PER_CLASS,
     SET_PRIORITY
@@ -19,6 +19,7 @@ export default function ClassInput(state = {
     courseNums: [],
     instructorsPerClass: {},
     classTypesPerClass: {},
+    descriptionsPerClass: {},
 
     selectedConflicts: [],
     currentInstructor: null,
@@ -37,6 +38,10 @@ export default function ClassInput(state = {
         case SET_INSTRUCTORS_PER_CLASS:
             return Object.assign({}, state, {
                 instructorsPerClass: action.instructorsPerClass
+            });
+        case SET_DESCRIPTIONS_PER_CLASS:
+            return Object.assign({}, state, {
+                descriptionsPerClass: action.descriptionsPerClass
             });
         case SET_CLASS_TYPES_PER_CLASS:
             return Object.assign({}, state, {

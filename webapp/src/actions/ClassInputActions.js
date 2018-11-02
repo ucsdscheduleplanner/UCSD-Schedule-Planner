@@ -21,8 +21,10 @@ export function setCurrentDepartment(department) {
 
 export function setClassSummaryFromDepartment(department) {
     return async function (dispatch) {
-        let {courseNums, instructorsPerClass, classTypesPerClass} = await DataFetcher.fetchClassSummaryFor(department);
+        let {courseNums, instructorsPerClass, classTypesPerClass, descriptionsPerClass} =
+            await DataFetcher.fetchClassSummaryFor(department);
 
+        dispatch(setDescriptionsPerClass(descriptionsPerClass));
         dispatch(setCourseNums(courseNums));
         dispatch(setInstructorsPerClass(instructorsPerClass));
         dispatch(setClassTypesPerClass(classTypesPerClass));
@@ -42,6 +44,14 @@ export function setInstructorsPerClass(instructorsPerClass) {
     return {
         type: SET_INSTRUCTORS_PER_CLASS,
         instructorsPerClass: instructorsPerClass
+    }
+}
+
+export const SET_DESCRIPTIONS_PER_CLASS = "SET_DESCRIPTIONS_PER_CLASS";
+export function setDescriptionsPerClass(descriptionsPerClass) {
+    return {
+        type: SET_DESCRIPTIONS_PER_CLASS,
+        descriptionsPerClass: descriptionsPerClass
     }
 }
 

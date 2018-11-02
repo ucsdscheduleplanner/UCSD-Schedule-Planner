@@ -23,6 +23,16 @@
     width: 90%;
 }
 
+.ui-autocomplete .ui-autocomplete-panel {
+    width: 100%;
+}
+
+.ui-autocomplete-panel .ui-autocomplete-list-item {
+    white-space: nowrap;
+    overflow-x: hidden;
+    text-overflow: ellipsis;
+}
+
 .ui-autocomplete {
     white-space: nowrap;
 }
@@ -120,6 +130,7 @@
         font-size: 1.2em;
     }
 }
+
 
 
 

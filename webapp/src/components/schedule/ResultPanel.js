@@ -46,7 +46,7 @@ export class ResultPanel extends PureComponent {
     }
 
     render() {
-        let schedules = this.state.schedules.map((element, index) => {
+        const schedules = this.state.schedules.map((element, index) => {
             const scheduleStr = `Schedule #${index}`;
             return (
                 <TabPanel header={scheduleStr} >

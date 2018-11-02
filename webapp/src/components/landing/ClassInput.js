@@ -72,6 +72,10 @@ export default class ClassInput extends PureComponent {
         return [{label: 'None'}];
     }
 
+    getDescriptionForCourseNum(courseNum) {
+        return courseNum + " - " + this.props.descriptionsPerClass[courseNum];
+    }
+
     createClassFromInput() {
         let newClass = {};
         newClass['classTitle'] = `${this.props.currentDepartment} ${this.props.currentCourseNum}`;
@@ -229,6 +233,7 @@ export default class ClassInput extends PureComponent {
             <div className="form-field">
                 <div className="input-header"> Course Number:</div>
                 <AutoComplete id="course-number" suggestions={this.state.classOptions}
+                              itemTemplate={this.getDescriptionForCourseNum.bind(this)}
                               value={this.props.currentCourseNum}
                               onChange={(e) => {
                                   // must clear out the fields
