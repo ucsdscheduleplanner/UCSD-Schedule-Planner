@@ -209,4 +209,3 @@ class Cleaner:
         self.database.close()
 
 
-Cleaner().clean()

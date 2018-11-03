@@ -141,4 +141,3 @@ class Parser:
         self.connection.close()
 
 
-Parser().parse()

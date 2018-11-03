@@ -1,9 +1,12 @@
 import React, {PureComponent} from 'react';
 import '../../css/SchedulePreferences.css'
 import {Sidebar} from "primereact/components/sidebar/Sidebar";
-import {Calendar} from "primereact/components/calendar/Calendar";
 import {SelectButton} from "primereact/components/selectbutton/SelectButton";
 import MediaQuery from 'react-responsive';
+
+import 'rc-time-picker/assets/index.css';
+
+import TimePicker from 'rc-time-picker';
 
 /*
     This class should hold the UI for settings options for the generationResult.
@@ -25,24 +28,33 @@ export default class SchedulePreferences extends PureComponent {
             {label: 'F', value: 'F'}
         ];
 
+        console.log(this.props.startTimePreference);
+
         const schedulePreferencesContent = (
             <div className="schedule-options-sidebar">
-                <div className="schedule-options-title"> Schedule Preferences </div>
+                <div className="schedule-options-title"> Schedule Preferences</div>
                 <div className="time-preference">
                     <span className="time-preference-title">Time Preference:</span>
 
                     <div className="time-preference-start">
                         Start:
-                        <Calendar value={this.props.startTimePreference} hourFormat="12" showTime={true} timeOnly={true}
-                                  onChange={(e) => this.props.setStartTimePreference(e.value)}/>
+                        <TimePicker style={{width: "100%"}}
+                                    value={this.props.startTimePreference}
+                                    onChange={(e) => {
+                                        console.log(e);
+                                        this.props.setStartTimePreference(e)
+                                    }}
+                                    use12Hours={true}
+                                    showSecond={false}/>
                     </div>
 
                     <div className="time-preference-end">
                         End:
-                        <Calendar value={this.props.endTimePreference} hourFormat="12" showTime={true} timeOnly={true}
-                                  onChange={(e) => {
-                                      this.props.setEndTimePreference(e.value)
-                                  }}/>
+                        <TimePicker use12Hours={true}
+                                    value={this.props.endTimePreference}
+                                    onChange={(e) => this.props.setEndTimePreference(e)}
+                                    style={{width: "100%"}}
+                                    showSecond={false}/>
                     </div>
                 </div>
                 <div className="day-preference">

@@ -114,5 +114,3 @@ class Scraper:
         file.close()
 
 
-sc = Scraper()
-sc.scrape()

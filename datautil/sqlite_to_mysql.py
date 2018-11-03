@@ -1,72 +1,75 @@
-import MySQLdb as ms
 import sqlite3
+
+import MySQLdb as ms
 
 from secrets import password
 from settings import DATABASE_PATH
 
-# Will connect to running mysql instance
-mysql_db = ms.connect(user="root", passwd=password, db="classes")
-# Will connect to sqlite db
-sqlite_db = sqlite3.connect(DATABASE_PATH)
-sqlite_db.row_factory = sqlite3.Row
 
-mysql_cursor = mysql_db.cursor()
-sqlite_cursor = sqlite_db.cursor()
+def export_to_mysql():
+    # Will connect to running mysql instance
+    mysql_db = ms.connect(user="root", passwd=password, db="classes")
+    # Will connect to sqlite db
+    sqlite_db = sqlite3.connect(DATABASE_PATH)
+    sqlite_db.row_factory = sqlite3.Row
 
-# Creating the class data table
-mysql_cursor.execute("DROP TABLE IF EXISTS CLASS_DATA")
-mysql_cursor.execute("CREATE TABLE CLASS_DATA"
-                     "(DEPARTMENT VARCHAR(255), COURSE_NUM VARCHAR(255), SECTION_ID TEXT, COURSE_ID TEXT,"
-                     "TYPE TEXT, DAYS TEXT, TIME TEXT, LOCATION TEXT, ROOM TEXT, "
-                     "INSTRUCTOR TEXT, DESCRIPTION TEXT)")
+    mysql_cursor = mysql_db.cursor()
+    sqlite_cursor = sqlite_db.cursor()
 
-sqlite_cursor.execute("SELECT * FROM CLASS_DATA")
-class_rows = sqlite_cursor.fetchall()
+    # Creating the class data table
+    mysql_cursor.execute("DROP TABLE IF EXISTS CLASS_DATA")
+    mysql_cursor.execute("CREATE TABLE CLASS_DATA"
+                         "(DEPARTMENT VARCHAR(255), COURSE_NUM VARCHAR(255), SECTION_ID TEXT, COURSE_ID TEXT,"
+                         "TYPE TEXT, DAYS TEXT, TIME TEXT, LOCATION TEXT, ROOM TEXT, "
+                         "INSTRUCTOR TEXT, DESCRIPTION TEXT)")
 
-for sql_row in class_rows:
-    sql_str = """\
-                      INSERT INTO CLASS_DATA(DEPARTMENT, COURSE_NUM, SECTION_ID, \
-                      COURSE_ID, TYPE, DAYS, TIME, LOCATION, ROOM, INSTRUCTOR, DESCRIPTION)  \
-                      VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) \
-                    """
-    row = dict(sql_row)
-    mysql_cursor.execute(sql_str,
-                         (row["DEPARTMENT"],
-                          row["COURSE_NUM"],
-                          row["SECTION_ID"],
-                          row["COURSE_ID"],
-                          row["TYPE"],
-                          row["DAYS"],
-                          row["TIME"],
-                          row["LOCATION"],
-                          row["ROOM"],
-                          row["INSTRUCTOR"],
-                          row["DESCRIPTION"],
-                          ))
+    sqlite_cursor.execute("SELECT * FROM CLASS_DATA")
+    class_rows = sqlite_cursor.fetchall()
 
-""" 
-Making departments
-"""
-mysql_cursor.execute("DROP TABLE IF EXISTS DEPARTMENT")
-mysql_cursor.execute('CREATE TABLE DEPARTMENT (DEPT_CODE TEXT)')
+    for sql_row in class_rows:
+        sql_str = """\
+                          INSERT INTO CLASS_DATA(DEPARTMENT, COURSE_NUM, SECTION_ID, \
+                          COURSE_ID, TYPE, DAYS, TIME, LOCATION, ROOM, INSTRUCTOR, DESCRIPTION)  \
+                          VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) \
+                        """
+        row = dict(sql_row)
+        mysql_cursor.execute(sql_str,
+                             (row["DEPARTMENT"],
+                              row["COURSE_NUM"],
+                              row["SECTION_ID"],
+                              row["COURSE_ID"],
+                              row["TYPE"],
+                              row["DAYS"],
+                              row["TIME"],
+                              row["LOCATION"],
+                              row["ROOM"],
+                              row["INSTRUCTOR"],
+                              row["DESCRIPTION"],
+                              ))
 
-sqlite_cursor.execute("SELECT * FROM DEPARTMENT")
-class_rows = sqlite_cursor.fetchall()
+    """ 
+    Making departments
+    """
+    mysql_cursor.execute("DROP TABLE IF EXISTS DEPARTMENT")
+    mysql_cursor.execute('CREATE TABLE DEPARTMENT (DEPT_CODE TEXT)')
 
-for sql_row in class_rows:
-    sql_str = """\
-                      INSERT INTO DEPARTMENT(DEPT_CODE) \
-                      VALUES (%s) \
-                    """
-    row = dict(sql_row)
-    mysql_cursor.execute(sql_str,(row["DEPT_CODE"],))
+    sqlite_cursor.execute("SELECT * FROM DEPARTMENT")
+    class_rows = sqlite_cursor.fetchall()
 
-# adding indexes
-index_str = "ALTER TABLE `CLASS_DATA` ADD INDEX (`DEPARTMENT`, `COURSE_NUM`)"
-mysql_cursor.execute(index_str)
+    for sql_row in class_rows:
+        sql_str = """\
+                          INSERT INTO DEPARTMENT(DEPT_CODE) \
+                          VALUES (%s) \
+                        """
+        row = dict(sql_row)
+        mysql_cursor.execute(sql_str, (row["DEPT_CODE"],))
 
-# adding changes
-mysql_db.commit()
+    # adding indexes
+    index_str = "ALTER TABLE `CLASS_DATA` ADD INDEX (`DEPARTMENT`, `COURSE_NUM`)"
+    mysql_cursor.execute(index_str)
 
-sqlite_db.close()
-mysql_db.close()
+    # adding changes
+    mysql_db.commit()
+
+    sqlite_db.close()
+    mysql_db.close()

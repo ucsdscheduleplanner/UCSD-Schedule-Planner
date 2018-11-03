@@ -43,6 +43,7 @@ export function setProgress(generatingProgress) {
 }
 
 export const GENERATE_SCHEDULE = "GENERATE_SCHEDULE";
+
 export function generateSchedule(classData, conflicts, preferences) {
     return {
         type: GENERATE_SCHEDULE,
@@ -53,6 +54,7 @@ export function generateSchedule(classData, conflicts, preferences) {
 }
 
 export const SET_TOTAL_POSSIBLE_NUM_SCHEDULE = "SET_TOTAL_POSSIBLE_NUM_SCHEDULE";
+
 export function setTotalPossibleNumSchedule(num) {
     return {
         type: SET_TOTAL_POSSIBLE_NUM_SCHEDULE,
@@ -102,14 +104,14 @@ function handleConflicts(Class, conflicts) {
 }
 
 function handleSchedulePreferences(schedulePreferences, preferences) {
-    let startTime = schedulePreferences.startTimePreference;
-    let endTime = schedulePreferences.endTimePreference;
-    let days = schedulePreferences.dayPreference;
 
-    if (startTime && endTime) {
+    if (schedulePreferences.startTimePreference && schedulePreferences.endTimePreference) {
+        let startTime = schedulePreferences.startTimePreference.toDate();
+        let endTime = schedulePreferences.endTimePreference.toDate();
         preferences.push(new TimePreference(startTime, endTime));
     }
 
+    let days = schedulePreferences.dayPreference;
     if (days) {
         preferences.push(new DayPreference(days));
     }
@@ -174,7 +176,7 @@ function isValidSubsection(subsection) {
 
 function calculateMaxSize(classData) {
     return Object.keys(classData).reduce((accum, cur) => {
-       return accum * classData[cur].length;
+        return accum * classData[cur].length;
     }, 1);
 }
 
