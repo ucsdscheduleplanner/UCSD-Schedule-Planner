@@ -13,6 +13,7 @@ import thunkMiddleware from 'redux-thunk';
 import {SGMiddleWare} from "./utils/SGMiddleWare";
 
 const DEBUG = true;
+
 if(!DEBUG){
     if(!window.console) window.console = {};
     const methods = ["debug", "warn", "log"];
@@ -23,11 +24,11 @@ if(!DEBUG){
 
 String.prototype.formatUnicorn = String.prototype.formatUnicorn ||
 function () {
-    var str = this.toString();
+    let str = this.toString();
     if (arguments.length) {
-        var t = typeof arguments[0];
-        var key;
-        var args = ("string" === t || "number" === t) ?
+        const t = typeof arguments[0];
+        let key;
+        let args = ("string" === t || "number" === t) ?
             Array.prototype.slice.call(arguments)
             : arguments[0];
 

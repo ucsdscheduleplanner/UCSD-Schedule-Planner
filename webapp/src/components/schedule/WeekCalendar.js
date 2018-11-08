@@ -5,8 +5,10 @@ import "react-big-calendar/lib/css/react-big-calendar.css";
 import {Button} from "primereact/components/button/Button";
 import {ics} from "../../utils/ics";
 import "../../css/WeekCalendar.css";
+import ClassEvent from "./ClassEvent";
 
 Calendar.setLocalizer(Calendar.momentLocalizer(moment));
+
 
 class WeekCalendar extends PureComponent {
     constructor(props) {
@@ -42,7 +44,7 @@ class WeekCalendar extends PureComponent {
             ret.push({
                 start: startTime,
                 end: endTime,
-                title: `${subsection.classTitle} ${subsection.type}`
+                ...subsection,
             });
         }
         console.log(ret);
@@ -86,7 +88,7 @@ class WeekCalendar extends PureComponent {
             dayFormat: 'ddd'
         };
 
-        let icsDownload = (
+        const icsDownload = (
             <div className="ics-button">
                 <Button label="Download Calendar" className="ui-button-info"
                         onClick={this.downloadICS.bind(this, this.state.subsections)}
@@ -94,10 +96,15 @@ class WeekCalendar extends PureComponent {
             </div>
         );
 
+        const components = {
+            event: ClassEvent
+        };
+
         return (
             <div className="calendar-content">
                 {!this.props.empty && icsDownload}
                 <Calendar
+                    components={components}
                     formats={dayFormat}
                     id="calendar"
                     min={minTime}
