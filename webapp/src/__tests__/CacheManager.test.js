@@ -42,7 +42,7 @@ describe('Caching and storing information locally', () => {
         result = await CacheManager.get().getFromCache("hello", testCache);
         expect(result).toBe("hello_str");
 
-        await CacheManager.get().checkVersion(NEW_VERSION, testCache);
+        await CacheManager.get().clearCacheIfNecessary(NEW_VERSION, testCache);
 
         // check after the clear to see if cache was cleared
         result = await CacheManager.get().getFromCache(VERSION_KEY, testCache);

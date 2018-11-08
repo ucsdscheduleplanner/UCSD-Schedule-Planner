@@ -10,7 +10,7 @@ export class CacheManager {
         return this.instance;
     }
 
-    async checkVersion(currentVersion, cache=this.cacheInstance) {
+    async clearCacheIfNecessary(currentVersion, cache=this.cacheInstance) {
         let isCached = await this.isCached(VERSION, cache);
         if (isCached) {
             let version = await this.getFromCache(VERSION, cache);

@@ -13,7 +13,6 @@ export default function SchedulePreferences(state = {
 }, action) {
     switch (action.type) {
         case SET_START_TIME_PREFERENCE:
-            console.log(action.startTimePreference);
             return Object.assign({}, state, {
                 startTimePreference: action.startTimePreference,
             });
