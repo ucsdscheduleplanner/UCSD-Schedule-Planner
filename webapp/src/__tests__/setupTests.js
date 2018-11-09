@@ -1,23 +1,25 @@
 import { configure } from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
 
-configure({ adapter: new Adapter() });
-
+import chai from 'chai'
+import chaiEnzyme from 'chai-enzyme'
 import jsdom from 'jsdom'
 
-const doc = jsdom.jsdom('<!doctype html><html><body></body></html>');
-const win = doc.defaultView;
 
-global.document = doc;
-global.window = win;
+function setUpDomEnvironment() {
+    const { JSDOM } = jsdom;
+    const dom = new JSDOM('<!doctype html><html><body></body></html>', {url: 'http://localhost/'});
+    const { window } = dom;
 
-propagateToGlobal(win);
-
-function propagateToGlobal (window) {
-  for (let key in window) {
-    if (!window.hasOwnProperty(key)) continue;
-    if (key in global) continue;
-
-    global[key] = window[key];
-  }
+    global.window = window;
+    global.document = window.document;
+    global.navigator = {
+        userAgent: 'node.js',
+    };
 }
+
+
+setUpDomEnvironment();
+
+configure({ adapter: new Adapter() });
+chai.use(chaiEnzyme());
