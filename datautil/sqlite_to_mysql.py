@@ -7,6 +7,7 @@ from settings import DATABASE_PATH
 
 
 def export_to_mysql():
+    print("Beginning export to MySQL")
     # Will connect to running mysql instance
     mysql_db = ms.connect(user="root", passwd=password, db="classes")
     # Will connect to sqlite db
@@ -73,3 +74,5 @@ def export_to_mysql():
 
     sqlite_db.close()
     mysql_db.close()
+
+    print("Finishing export to MySQL")
