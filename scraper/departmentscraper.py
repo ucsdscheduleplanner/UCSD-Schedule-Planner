@@ -5,15 +5,17 @@ import sqlite3
 from settings import HOME_DIR
 from settings import DEPARTMENT_URL
 from settings import DATABASE_PATH
+from settings import MAC_DRIVER_PATH
 
 
 class DepartmentScraper:
     INFO_MAX_INDEX = 4
 
     def __init__(self):
+        options = webdriver.ChromeOptions()
+        options.add_argument('headless')
         # Start up the browser
-        os.chdir(os.path.join(HOME_DIR, "driver"))
-        self.browser = webdriver.Chrome(executable_path=os.path.join(os.getcwd(), "chromedriver_mac"))
+        self.browser = webdriver.Chrome(chrome_options=options, executable_path=MAC_DRIVER_PATH)
 
         # Go back to home directory
         os.chdir(HOME_DIR)
@@ -28,10 +30,12 @@ class DepartmentScraper:
         self.cursor.execute('CREATE TABLE IF NOT EXISTS DEPARTMENT (DEPT_CODE TEXT)')
 
     def scrape(self):
+        print("Beginning scraping departments")
         self.create_table()
         self.search()
         self.get_departments()
         self.close()
+        print("Finished scraping departments")
 
     def search(self):
         self.browser.get(DEPARTMENT_URL)

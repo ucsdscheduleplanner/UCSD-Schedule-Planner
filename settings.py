@@ -23,7 +23,9 @@ HTML_STORAGE = os.path.join(HOME_DIR, 'courseNums')
 # Where capes stored
 CAPES_STORAGE = os.path.join(HOME_DIR, 'capes')
 
-DRIVER_PATH = os.path.join(HOME_DIR, 'driver', 'chromedriver_mac')
+MAC_DRIVER_PATH = os.path.join(HOME_DIR, 'driver', 'chromedriver_mac')
+WIN_DRIVER_PATH = os.path.join(HOME_DIR, 'driver', 'chromedriver')
+PHANTOMJS_MAC_DRIVER_PATH = os.path.join(HOME_DIR, 'driver', 'phantomjs_mac')
 
 """
 MODES

@@ -10,8 +10,8 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.select import Select
 from selenium.webdriver.support.wait import WebDriverWait
 
-from settings import HTML_STORAGE, HOME_DIR, DATABASE_PATH, DRIVER_PATH, SCHEDULE_OF_CLASSES, TIMEOUT, QUARTER, \
-    DEPT_SEARCH_TIMEOUT
+from settings import HTML_STORAGE, HOME_DIR, DATABASE_PATH, SCHEDULE_OF_CLASSES, TIMEOUT, QUARTER, \
+    DEPT_SEARCH_TIMEOUT, MAC_DRIVER_PATH
 
 QUARTER_INSERT_SCRIPT = """let select = document.getElementById("selectedTerm");
             let opt = document.createElement('option');
@@ -35,8 +35,11 @@ class Scraper:
         # so using list comprehension to convert the data
         self.departments = [i[0] for i in self.cursor.fetchall()]
 
+        options = webdriver.ChromeOptions()
+        options.add_argument('headless')
+
         # Directing Python to browser to chrome executable file
-        self.browser = webdriver.Chrome(executable_path=DRIVER_PATH)
+        self.browser = webdriver.Chrome(chrome_options=options, executable_path=MAC_DRIVER_PATH)
         self.browser.set_page_load_timeout(TIMEOUT)
         self.browser.get(self.login_url)
 
@@ -55,7 +58,7 @@ class Scraper:
             WebDriverWait(self.browser, TIMEOUT).until(EC.presence_of_element_located
                                                        ((By.ID, 'selectedSubjects')))
 
-            self.browser.execute_script(QUARTER_INSERT_SCRIPT.format(QUARTER))
+            #self.browser.execute_script(QUARTER_INSERT_SCRIPT.format(QUARTER))
 
             dept_select = Select(self.browser.find_element_by_id("selectedSubjects"))
 
