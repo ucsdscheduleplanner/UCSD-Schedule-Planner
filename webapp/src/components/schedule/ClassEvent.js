@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 import {Dialog} from 'primereact/components/dialog/Dialog';
-import {Button} from "../../../node_modules/primereact/components/button/Button";
 import "../../css/ClassEvent.css";
 
 export default class CustomEvent extends Component {
