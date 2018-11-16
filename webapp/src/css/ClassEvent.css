@@ -1,6 +1,27 @@
 
 
-.ce-component {
+.ce-button {
     width: 100%;
     height: 100%;
+    background: rgb(60, 105, 160);
+    color: white;
+}
+
+.ce-info {
+    font-size: 20px;
+    line-height: 1.25;
+}
+
+.rbc-event {
+    padding: 0;
+}
+
+.rbc-day-slot .rbc-event {
+    border: none;
+}
+
+.ui-dialog.ui-widget .ui-dialog-titlebar {
+    background: rgba(24,43, 73, 1);
+    color: white;
+    font-size: 24px;
 }

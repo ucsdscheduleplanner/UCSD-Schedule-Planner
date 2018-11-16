@@ -13,12 +13,22 @@ export default class CustomEvent extends Component {
     }
 
     render() {
-        console.log(this.props.event);
         const classTitle = `${this.props.event.classTitle} ${this.props.event.type}`;
 
         const courseID = `Course ID: ${this.props.event.courseID}`;
-        const startTime = `Start Time: ${this.props.event.start.toLocaleTimeString('en-US', {hour: '2-digit', minute: '2-digit', hour12: true})}`;
-        const endTime = `End Time: ${this.props.event.end.toLocaleTimeString('en-US', {hour: '2-digit', minute: '2-digit', hour12: true})}`;
+        const startTime = this.props.event.start.toLocaleTimeString('en-US', {
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: true
+        });
+
+        const endTime = this.props.event.end.toLocaleTimeString('en-US', {
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: true
+        });
+
+        const time = `Time: ${startTime} - ${endTime}`;
         const location = `Location: ${this.props.event.roomLocation} ${this.props.event.room}`;
         const instructor = `Instructor: ${this.props.event.instructor}`;
 
@@ -26,25 +36,20 @@ export default class CustomEvent extends Component {
             <React.Fragment>
                 <Dialog header={classTitle} visible={this.state.visible} width="350px" modal={true}
                         dismissableMask={true}
+                        responsive={true}
                         minY={70} onHide={e => this.setState({visible: false})}
-                        blockScroll={true}>
+                        blockScroll={true}
+                        className="ce-component">
                     <div>
-                        {courseID}
-                    </div>
-                    <div>
-                        {instructor}
-                    </div>
-                    <div>
-                        {location}
-                    </div>
-                    <div>
-                        {startTime}
-                    </div>
-                    <div>
-                        {endTime}
+                        <div className="ce-info">{courseID}</div>
+                        <div className="ce-info">{instructor}</div>
+                        <div className="ce-info">{location}</div>
+                        <div className="ce-info">{time}</div>
                     </div>
                 </Dialog>
-                <Button className="ce-component" label={classTitle} onClick={e => this.setState({visible: true})}/>
+                <button className="ce-button" onClick={e => this.setState({visible: true})}>
+                    {classTitle}
+                </button>
             </React.Fragment>
         )
     }
