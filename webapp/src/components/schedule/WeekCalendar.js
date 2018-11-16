@@ -5,10 +5,13 @@ import "react-big-calendar/lib/css/react-big-calendar.css";
 import {Button} from "primereact/components/button/Button";
 import {ics} from "../../utils/ics";
 import "../../css/WeekCalendar.css";
+import {addEvents} from "../../utils/GCalendar";
+
 
 Calendar.setLocalizer(Calendar.momentLocalizer(moment));
 
 class WeekCalendar extends PureComponent {
+
     constructor(props) {
         super(props);
         this.state = {
@@ -74,7 +77,6 @@ class WeekCalendar extends PureComponent {
         calendar.download("Calendar");
     }
 
-
     render() {
         // setting max and min times
         const minTime = new Date();
@@ -87,16 +89,25 @@ class WeekCalendar extends PureComponent {
         };
 
         let icsDownload = (
-            <div className="ics-button">
-                <Button label="Download Calendar" className="ui-button-info"
-                        onClick={this.downloadICS.bind(this, this.state.subsections)}
-                        disabled={this.props.empty}/>
-            </div>
+            <Button label="Download Calendar" className="ui-button-info"
+                    onClick={this.downloadICS.bind(this, this.state.subsections)}
+                    disabled={this.props.empty}/>
+        );
+
+        let toGCalendar = (
+            <Button id="gcalendar-button" label="Add to Google Calendar" className="ui-button-info"
+                    onClick={addEvents.bind(this, this.state.subsections)}
+                    disabled={this.props.empty}/>
         );
 
         return (
             <div className="calendar-content">
-                {!this.props.empty && icsDownload}
+                {!this.props.empty &&
+                    <div className="calendar-button">
+                        {icsDownload}
+                        {toGCalendar}
+                    </div>
+                }
                 <Calendar
                     formats={dayFormat}
                     id="calendar"
