@@ -25,3 +25,7 @@
     color: white;
     font-size: 24px;
 }
+
+.ui-dialog .ui-dialog-titlebar-icon {
+    display: none!important;
+}

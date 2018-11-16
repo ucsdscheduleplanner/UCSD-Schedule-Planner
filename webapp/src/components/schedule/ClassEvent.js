@@ -36,6 +36,7 @@ export default class CustomEvent extends Component {
                 <Dialog header={classTitle} visible={this.state.visible} width="350px" modal={true}
                         dismissableMask={true}
                         responsive={true}
+                        closeOnEscape={true}
                         minY={70} onHide={e => this.setState({visible: false})}
                         blockScroll={true}
                         className="ce-component">
