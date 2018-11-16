@@ -22,8 +22,9 @@ export function SGWorkerCode() {
 
         // should get this because arrow function takes closest scope
         this.evaluate = function (classToEvaluate) {
+            let output = 0;
             if (classToEvaluate.length === 0) {
-                return 0;
+                return output;
             }
 
             // can just get the first one because we are only looking at instructors
@@ -31,12 +32,12 @@ export function SGWorkerCode() {
             let subsection = classToEvaluate[0];
             if (subsection.classTitle === Class.classTitle) {
                 if (subsection.instructor === Class.instructor) {
-                    return 10;
+                    output = 10;
+                } else {
+                    output = -3;
                 }
-                return -3;
             }
-            // not the same class so do not care
-            return 0;
+            return output;
         }
     }
 
@@ -62,7 +63,7 @@ export function SGWorkerCode() {
             for (let subsection of classToEvaluate) {
                 // this shouldn't happen but if it does punish hardcore
                 if (!subsection.timeInterval) {
-                    score -= 999;
+                    score -= 99;
                     break;
                 }
 
@@ -77,13 +78,14 @@ export function SGWorkerCode() {
 
                 // they overlap!
                 if (rangeStart < this.end && rangeEnd > this.start) {
-                    score += 10;
+                    score += 1;
                     // the range is inside our desired range!
                     if (rangeStart >= this.start && rangeEnd <= this.end) {
-                        score += 20;
+                        score += 3;
                     }
                 }
             }
+            console.log("Time preference score" + score);
             return score;
         }
     }
@@ -371,6 +373,7 @@ export function SGWorkerCode() {
 
         this._dfs = function (classData, currentSchedule, intervalTree, schedules, conflicts, counter) {
             if (counter >= classData.length) {
+                console.log("Schedule score " + score);
                 let score = this.evaluateSchedule(currentSchedule);
                 schedules.push([score, currentSchedule]);
 
