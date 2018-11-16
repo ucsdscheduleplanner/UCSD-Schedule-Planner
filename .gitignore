@@ -18,7 +18,6 @@ __pycache__
 ./idea/*
 ./idea/workspace.xml
 *.jar
-database/*
 
 **/secrets.py
 
