@@ -5,13 +5,14 @@ import "react-big-calendar/lib/css/react-big-calendar.css";
 import {Button} from "primereact/components/button/Button";
 import {ics} from "../../utils/ics";
 import "../../css/WeekCalendar.css";
+import ClassEvent from "./ClassEvent";
 import {addEvents} from "../../utils/GCalendar";
 
 
 Calendar.setLocalizer(Calendar.momentLocalizer(moment));
 
-class WeekCalendar extends PureComponent {
 
+class WeekCalendar extends PureComponent {
     constructor(props) {
         super(props);
         this.state = {
@@ -45,10 +46,9 @@ class WeekCalendar extends PureComponent {
             ret.push({
                 start: startTime,
                 end: endTime,
-                title: `${subsection.classTitle} ${subsection.type}`
+                ...subsection,
             });
         }
-        console.log(ret);
         return ret;
     }
 
@@ -76,7 +76,6 @@ class WeekCalendar extends PureComponent {
         }
         calendar.download("Calendar");
     }
-
     render() {
         // setting max and min times
         const minTime = new Date();
@@ -88,17 +87,19 @@ class WeekCalendar extends PureComponent {
             dayFormat: 'ddd'
         };
 
-        let icsDownload = (
+        const icsDownload = (
             <Button label="Download Calendar" className="ui-button-info"
                     onClick={this.downloadICS.bind(this, this.state.subsections)}
                     disabled={this.props.empty}/>
         );
-
-        let toGCalendar = (
+        const toGCalendar = (
             <Button id="gcalendar-button" label="Add to Google Calendar" className="ui-button-info"
                     onClick={addEvents.bind(this, this.state.subsections)}
                     disabled={this.props.empty}/>
         );
+        const components = {
+            event: ClassEvent
+        };
 
         return (
             <div className="calendar-content">
@@ -109,6 +110,7 @@ class WeekCalendar extends PureComponent {
                     </div>
                 }
                 <Calendar
+                    components={components}
                     formats={dayFormat}
                     id="calendar"
                     min={minTime}

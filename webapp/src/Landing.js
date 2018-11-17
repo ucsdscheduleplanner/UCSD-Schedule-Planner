@@ -12,11 +12,11 @@ import {CacheManager} from "./utils/CacheManager";
 const CURRENT_VERSION = "1.4";
 class Landing extends Component {
     async componentDidMount() {
-        await CacheManager.get().checkVersion(CURRENT_VERSION);
+        // refreshes the cache based on version
+        await CacheManager.get().clearCacheIfNecessary(CURRENT_VERSION);
     }
 
     render() {
-        // have to remove padding from grid
         return (
             <div className="container">
                 <LeftSidePanel/>
