@@ -5,7 +5,7 @@ import "react-big-calendar/lib/css/react-big-calendar.css";
 import {Button} from "primereact/components/button/Button";
 import {ics} from "../../utils/ics";
 import "../../css/WeekCalendar.css";
-import {addEvents} from "../../utils/GCalendar";
+import {GCalendar} from "../../utils/GCalendar";
 
 
 Calendar.setLocalizer(Calendar.momentLocalizer(moment));
@@ -95,9 +95,7 @@ class WeekCalendar extends PureComponent {
         );
 
         let toGCalendar = (
-            <Button id="gcalendar-button" label="Add to Google Calendar" className="ui-button-info"
-                    onClick={addEvents.bind(this, this.state.subsections)}
-                    disabled={this.props.empty}/>
+            <GCalendar subsections={this.state.subsections}/>
         );
 
         return (

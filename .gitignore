@@ -57,4 +57,3 @@ cmake-build-debug/
 !.elasticbeanstalk/*.cfg.yml
 !.elasticbeanstalk/*.global.yml
 
-config.js
