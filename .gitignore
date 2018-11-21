@@ -10,7 +10,7 @@ classes
 courseNums
 class_versions
 .idea
-__pycache__
+__pycache__/
 ./idea
 .idea/**/workspace.xml
 .idea/**/tasks.xml

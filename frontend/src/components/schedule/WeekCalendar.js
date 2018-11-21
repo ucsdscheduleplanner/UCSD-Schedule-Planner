@@ -76,6 +76,7 @@ class WeekCalendar extends PureComponent {
         }
         calendar.download("Calendar");
     }
+
     render() {
         // setting max and min times
         const minTime = new Date();
@@ -88,7 +89,8 @@ class WeekCalendar extends PureComponent {
         };
 
         const icsDownload = (
-            <Button label="Download Calendar" className="ui-button-info"
+            <Button id="ics-button"
+                    label="Download Calendar" className="ui-button-info"
                     onClick={this.downloadICS.bind(this, this.state.subsections)}
                     disabled={this.props.empty}/>
         );
@@ -104,10 +106,10 @@ class WeekCalendar extends PureComponent {
         return (
             <div className="calendar-content">
                 {!this.props.empty &&
-                    <div className="calendar-button">
-                        {icsDownload}
-                        {toGCalendar}
-                    </div>
+                <div className="calendar-button">
+                    {icsDownload}
+                    {toGCalendar}
+                </div>
                 }
                 <Calendar
                     components={components}

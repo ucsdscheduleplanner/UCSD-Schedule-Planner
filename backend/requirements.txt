@@ -2,6 +2,7 @@ sqlalchemy
 mysqlclient
 ics
 selenium
+bs4
 
 awsebcli
 Flask

@@ -82,7 +82,7 @@ describe('Calendar component', () => {
 
     it('Renders the download ics button given a schedule', () => {
         const wrapper = mount(<WeekCalendar schedule={testSchedule}/>);
-        expect(wrapper.exists(".ics-button")).to.equal(true);
+        expect(wrapper.exists("#ics-button")).to.equal(true);
     });
 
     it('Renders a tab that can be used to choose which schedule from the generation result', () => {

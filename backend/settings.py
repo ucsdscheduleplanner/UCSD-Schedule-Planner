@@ -1,7 +1,4 @@
 import os
-import sqlite3
-
-from timeutil.timeutils import TimeIntervalCollection
 
 """
 This class is a storage area for various variables and settings.
@@ -43,20 +40,8 @@ SCHEDULE_OF_CLASSES = 'https://act.ucsd.edu/scheduleOfClasses/scheduleOfClassesS
 CAPES = 'http://cape.ucsd.edu/responses/Results.aspx?CourseNumber='
 
 """
-PREFERENCE DATA
-"""
-# Intervals
-INTERVALS = []
-
-# Default interval
-DEFAULT_INTERVAL = TimeIntervalCollection(None, '8:00a-12:00p')
-
-"""
 VARIABLES
 """
-# Current class index for web scraping
-CURRENT_CLASS_INDEX = 0
-
 # Current quarter (in string)
 QUARTER = "WI19"
 # Time for timeout for browser
