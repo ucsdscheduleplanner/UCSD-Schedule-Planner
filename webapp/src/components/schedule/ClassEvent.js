@@ -34,6 +34,7 @@ export default class CustomEvent extends Component {
         return (
             <React.Fragment>
                 <Dialog header={classTitle} visible={this.state.visible} width="350px" modal={true}
+                        draggable={true}
                         dismissableMask={true}
                         responsive={true}
                         closeOnEscape={true}
