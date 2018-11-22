@@ -1,0 +1,21 @@
+
+
+.autocomplete-box {
+    width: 100%;
+}
+
+.autocomplete-input {
+    width: 100%;
+}
+
+.autocomplete-suggestion-box {
+    position: relative;
+    height: 100%;
+    width: 100%;
+    box-shadow: 10px 10px 10px 10px;
+}
+
+.autocomplete-suggestion {
+    margin: 0;
+    padding: 0;
+}
