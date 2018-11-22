@@ -20,7 +20,8 @@ __pycache__/
 *.jar
 database/*
 
-**/secrets.py
+**/config.ini
+
 
 ./node_modules
 node_modules

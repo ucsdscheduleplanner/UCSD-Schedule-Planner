@@ -1,15 +1,10 @@
-import sqlite3
+#!/usr/bin/env python3
 
 from flask import Flask, request, jsonify, abort
 from flask_compress import Compress
 from flask_cors import CORS
 from flask_caching import Cache
-
-import backend
-from settings import DATABASE_PATH
-
-db_connection = sqlite3.connect(DATABASE_PATH)
-db_cursor = db_connection.cursor()
+from backend import generate_class_json, get_all_classes_in, get_departments
 
 application = Flask(__name__)
 CORS(application)
@@ -33,7 +28,7 @@ def return_db_data():
     for Class in classes:
         department, course_num = Class['department'], Class['courseNum']
         full_name = "{} {}".format(department, course_num)
-        ret_classes[full_name] = backend.generate_class_json(department, course_num)
+        ret_classes[full_name] = generate_class_json(department, course_num)
 
     return jsonify(ret_classes)
 
@@ -41,7 +36,7 @@ def return_db_data():
 @application.route('/api_department', methods={'GET'})
 @cache.cached(timeout=3600, key_prefix="departments")
 def return_department_list():
-    departments = backend.get_departments()
+    departments = get_departments()
     return jsonify(departments)
 
 
@@ -49,7 +44,7 @@ def return_department_list():
 @cache.cached(timeout=3600, key_prefix="class_summaries", query_string=True)
 def return_classes():
     department = request.args.get('department')
-    classes = backend.get_all_classes_in(department)
+    classes = get_all_classes_in(department)
     return jsonify(classes)
 
 

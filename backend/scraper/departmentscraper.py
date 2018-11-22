@@ -1,12 +1,13 @@
-from selenium import webdriver
 import os
 import sqlite3
-import sys
 
-from settings import HOME_DIR
-from settings import DEPARTMENT_URL
+from selenium import webdriver
+
 from settings import DATABASE_PATH
+from settings import DEPARTMENT_URL
 from settings import DRIVER_PATH
+from settings import HOME_DIR
+
 
 class DepartmentScraper:
     INFO_MAX_INDEX = 4

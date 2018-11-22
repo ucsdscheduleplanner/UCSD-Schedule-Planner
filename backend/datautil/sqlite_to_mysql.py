@@ -1,14 +1,18 @@
+import configparser
 import sqlite3
-
-import MySQLdb as ms
-
-from secrets import password
+import MySQLdb as mysql
 from settings import DATABASE_PATH
+
+config = configparser.ConfigParser()
+config.read("./config/config.example.ini")
+username = config["DB"]["USERNAME"]
+password = config["DB"]["PASSWORD"]
+
 
 def export_to_mysql():
     print("Beginning export to MySQL")
     # Will connect to running mysql instance
-    mysql_db = ms.connect(user="root", passwd=password, db="classes")
+    mysql_db = mysql.connect(user=username, passwd=password, db="classes")
     # Will connect to sqlite db
     sqlite_db = sqlite3.connect(DATABASE_PATH)
     sqlite_db.row_factory = sqlite3.Row

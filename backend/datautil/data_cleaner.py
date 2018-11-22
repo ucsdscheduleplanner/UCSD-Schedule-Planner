@@ -1,11 +1,11 @@
 import sqlite3
 import time
-from itertools import groupby, product
+from itertools import groupby
 
 import itertools
 
 from settings import DATABASE_PATH
-from timeutil.timeutils import TimeIntervalCollection
+from datautil.timeutil.timeutils import TimeIntervalCollection
 
 """
 Will go through every row of the CLASSES table and sort them correctly into the

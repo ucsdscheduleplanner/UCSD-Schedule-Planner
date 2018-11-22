@@ -12,7 +12,7 @@ PATHS
 # Where the directory is placed
 HOME_DIR = os.path.dirname(os.path.abspath(__file__))
 # Database directory
-DATABASE_PATH = os.path.join(HOME_DIR, 'database','data.db')
+DATABASE_PATH = os.path.join(HOME_DIR, 'database', 'data.db')
 # Image directory
 IMAGE_DIR = os.path.join(HOME_DIR, 'images')
 
@@ -35,7 +35,6 @@ elif sys.platform == "win32" or sys.platform == "cygwin":
 else:
     print("Missing Chrome webdriver for {0}.".format(sys.platform))
     sys.exit(1)
-
 
 """
 MODES

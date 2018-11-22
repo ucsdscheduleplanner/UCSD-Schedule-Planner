@@ -1,21 +1,25 @@
-import os
-
-import MySQLdb.cursors
+import configparser
 from sqlalchemy import create_engine, text
 
-from secrets import password, aws_username, aws_endpoint
-from settings import HOME_DIR
+# Setting up config
+config = configparser.ConfigParser()
+config.read("./config/config.example.ini")
+password = config["DB"]["PASSWORD"]
+username = config["DB"]["USERNAME"]
+endpoint = config["DB"]["ENDPOINT"]
 
 """
 Picks classes and autogenerates schedules. The main computation backend for the server.
-"""  # Initializing database
+"""
 
-os.chdir(HOME_DIR)
-cursor = create_engine('mysql+mysqldb://root:{}@localhost/classes'.format(password), pool_pre_ping=True,
+CONN_STRING = 'mysql+mysqldb://{}:{}@{}/classes'.format(username, password, endpoint)
+print(CONN_STRING)
+# Initializing database
+cursor = create_engine(CONN_STRING,
+                       pool_pre_ping=True,
                        pool_recycle=3600)
-# cursor = create_engine('mysql+mysqldb://{}:{}@{}/classes'.format(aws_username, password, aws_endpoint),
-#                     pool_recycle=3600)
 
+# Caching departments and class types
 departments = []
 class_types = []
 
@@ -24,7 +28,8 @@ def get_all_classes_in(department):
     # Must order this one separately because doing it lexically won't work
     ret_dict = {}
     sql = text(
-        "SELECT DISTINCT COURSE_NUM, DEPARTMENT, INSTRUCTOR, TYPE, DESCRIPTION FROM CLASS_DATA WHERE DEPARTMENT = :department")
+        "SELECT DISTINCT COURSE_NUM, DEPARTMENT, "
+        "INSTRUCTOR, TYPE, DESCRIPTION FROM CLASS_DATA WHERE DEPARTMENT = :department")
     result = cursor.execute(sql, department=department).fetchall()
     # use dict here for fast lookup
     ret_dict["CLASS_SUMMARY"] = {}
