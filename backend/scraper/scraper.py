@@ -11,7 +11,7 @@ from selenium.webdriver.support.select import Select
 from selenium.webdriver.support.wait import WebDriverWait
 
 from settings import HTML_STORAGE, HOME_DIR, DATABASE_PATH, SCHEDULE_OF_CLASSES, TIMEOUT, QUARTER, \
-    DEPT_SEARCH_TIMEOUT, MAC_DRIVER_PATH
+    DEPT_SEARCH_TIMEOUT, DRIVER_PATH
 
 QUARTER_INSERT_SCRIPT = """let select = document.getElementById("selectedTerm");
             let opt = document.createElement('option');
@@ -39,7 +39,7 @@ class Scraper:
         options.add_argument('headless')
 
         # Directing Python to browser to chrome executable file
-        self.browser = webdriver.Chrome(chrome_options=options, executable_path=MAC_DRIVER_PATH)
+        self.browser = webdriver.Chrome(chrome_options=options, executable_path=DRIVER_PATH)
         self.browser.set_page_load_timeout(TIMEOUT)
         self.browser.get(self.login_url)
 

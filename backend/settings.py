@@ -1,4 +1,5 @@
 import os
+import sys
 
 """
 This class is a storage area for various variables and settings.
@@ -20,9 +21,21 @@ HTML_STORAGE = os.path.join(HOME_DIR, 'courseNums')
 # Where capes stored
 CAPES_STORAGE = os.path.join(HOME_DIR, 'capes')
 
+LINUX_DRIVER_PATH = os.path.join(HOME_DIR, 'driver', 'chromedriver_linux')
 MAC_DRIVER_PATH = os.path.join(HOME_DIR, 'driver', 'chromedriver_mac')
 WIN_DRIVER_PATH = os.path.join(HOME_DIR, 'driver', 'chromedriver')
 PHANTOMJS_MAC_DRIVER_PATH = os.path.join(HOME_DIR, 'driver', 'phantomjs_mac')
+
+if sys.platform == "linux" or sys.platform == "linux2":
+    DRIVER_PATH = LINUX_DRIVER_PATH
+elif sys.platform == "darwin":
+    DRIVER_PATH = MAC_DRIVER_PATH
+elif sys.platform == "win32" or sys.platform == "cygwin":
+    DRIVER_PATH = WIN_DRIVER_PATH
+else:
+    print("Missing Chrome webdriver for {0}.".format(sys.platform))
+    sys.exit(1)
+
 
 """
 MODES

@@ -1,12 +1,12 @@
 from selenium import webdriver
 import os
 import sqlite3
+import sys
 
 from settings import HOME_DIR
 from settings import DEPARTMENT_URL
 from settings import DATABASE_PATH
-from settings import MAC_DRIVER_PATH
-
+from settings import DRIVER_PATH
 
 class DepartmentScraper:
     INFO_MAX_INDEX = 4
@@ -15,7 +15,7 @@ class DepartmentScraper:
         options = webdriver.ChromeOptions()
         options.add_argument('headless')
         # Start up the browser
-        self.browser = webdriver.Chrome(chrome_options=options, executable_path=MAC_DRIVER_PATH)
+        self.browser = webdriver.Chrome(chrome_options=options, executable_path=DRIVER_PATH)
 
         # Go back to home directory
         os.chdir(HOME_DIR)

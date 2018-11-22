@@ -5,7 +5,6 @@ import MySQLdb as ms
 from secrets import password
 from settings import DATABASE_PATH
 
-
 def export_to_mysql():
     print("Beginning export to MySQL")
     # Will connect to running mysql instance

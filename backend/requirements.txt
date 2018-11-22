@@ -10,3 +10,4 @@ Flask-Cors
 flask-compress
 Flask-Caching
 pytz
+lxml
