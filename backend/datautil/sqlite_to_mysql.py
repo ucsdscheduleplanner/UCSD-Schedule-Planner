@@ -1,10 +1,11 @@
 import configparser
+import os
 import sqlite3
 import MySQLdb as mysql
 from settings import DATABASE_PATH
 
 config = configparser.ConfigParser()
-config.read("./config/config.example.ini")
+config.read(os.path.join(os.path.abspath(os.path.dirname(__file__)), "..", "config", "config.example.ini"))
 username = config["DB"]["USERNAME"]
 password = config["DB"]["PASSWORD"]
 

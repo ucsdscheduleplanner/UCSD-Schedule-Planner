@@ -1,9 +1,11 @@
 import configparser
+import os
+
 from sqlalchemy import create_engine, text
 
 # Setting up config
 config = configparser.ConfigParser()
-config.read("./config/config.example.ini")
+config.read(os.path.join(os.path.abspath(os.path.dirname(__file__)), "config", "config.example.ini"))
 password = config["DB"]["PASSWORD"]
 username = config["DB"]["USERNAME"]
 endpoint = config["DB"]["ENDPOINT"]
@@ -13,7 +15,6 @@ Picks classes and autogenerates schedules. The main computation backend for the 
 """
 
 CONN_STRING = 'mysql+mysqldb://{}:{}@{}/classes'.format(username, password, endpoint)
-print(CONN_STRING)
 # Initializing database
 cursor = create_engine(CONN_STRING,
                        pool_pre_ping=True,

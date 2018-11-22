@@ -21,6 +21,7 @@ __pycache__/
 database/*
 
 **/config.ini
+**/secrets.py
 
 
 ./node_modules
