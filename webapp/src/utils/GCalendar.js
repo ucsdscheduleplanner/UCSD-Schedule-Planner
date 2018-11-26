@@ -2,6 +2,7 @@ import {configs} from "./config";
 import moment from 'moment';
 import React, {Component} from 'react';
 import {Button} from "primereact/components/button/Button";
+import {Dialog} from "primereact/components/dialog/Dialog";
 
 export class GCalendar extends Component {
 
@@ -12,6 +13,12 @@ export class GCalendar extends Component {
         };
         this.state.subsections = this.props.subsections;
 
+    }
+
+    // Hide the dialog
+    onHide() {
+        console.log(this);
+        this.setState({visible: false});
     }
 
     addEvents() {
@@ -27,6 +34,8 @@ export class GCalendar extends Component {
         const RECURRING_EVENT_RULE = "RRULE:FREQ=WEEKLY;COUNT=" + NUM_WEEKS_AHEAD;
 
         console.log(RECURRING_EVENT_RULE);
+
+        this.onHide();
 
         for (let i = 0; i < this.state.subsections.length; i++) {
             const subsection = this.state.subsections[i];
@@ -83,13 +92,28 @@ export class GCalendar extends Component {
     }
 
     render() {
+        const HEADER_STR = "Confirmation";
+        const DIALOG_WIDTH = "350px";
+        const footer = (
+            <div>
+                <Button label="Yes" icon="pi pi-check" onClick={this.addEvents.bind(this, this.state.subsections)} />
+                <Button label="No" icon="pi pi-times" onClick={this.onHide.bind(this)} />
+            </div>
+        );
+
         return (
-            <Button
-                id = "gcalendar-button"
-                label = "Add to Google Calendar"
-                className = "ui-button-info"
-                onClick = {this.addEvents.bind(this, this.state.subsections)}
-                disabled = {this.props.empty}/>
+            <React.Fragment>
+                <Dialog header={HEADER_STR} footer={footer} visible={this.state.visible}
+                        width={DIALOG_WIDTH} modal={true} onHide={this.onHide.bind(this)}>
+                    Are you sure you want to add to Google Calendar?
+                </Dialog>
+                <Button
+                    id="gcalendar-button"
+                    label="Add to Google Calendar"
+                    className="ui-button-info"
+                    onClick={(e) => this.setState({visible: true})}
+                    disabled={this.props.empty}/>
+            </React.Fragment>
         );
     }
 }
