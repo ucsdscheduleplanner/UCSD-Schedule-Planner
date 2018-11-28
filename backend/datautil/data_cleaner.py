@@ -84,7 +84,6 @@ class Cleaner:
                 slow_ptr = fast_ptr
             fast_ptr += 1
 
-        self.cursor.execute("BEGIN TRANSACTION")
         for c in classes_to_insert:
             sql_str = """\
                       INSERT INTO CLASS_DATA(DEPARTMENT, COURSE_NUM, SECTION_ID, \
@@ -105,7 +104,6 @@ class Cleaner:
                                  c["DESCRIPTION"],
                                  ))
 
-        self.cursor.execute("END TRANSACTION")
 
     def process_current_class_set(self, class_set, section_count, department, course_num):
         ret = []

@@ -35,6 +35,7 @@ elif sys.platform == "win32" or sys.platform == "cygwin":
 else:
     print("Missing Chrome webdriver for {0}.".format(sys.platform))
     sys.exit(1)
+print(DRIVER_PATH)
 
 """
 MODES

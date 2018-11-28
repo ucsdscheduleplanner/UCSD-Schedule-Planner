@@ -50,7 +50,7 @@ echo "password = '$REPLY'" > backend/secrets.py
 
 # Create MySQL classes database 
 echo "Creating classes database ... (you will have to enter your password again)"
-echo "create database classes;" | mysql -u root -p
+echo "create database classes;" | sudo mysql -u root -p
 
 echo
 echo "#######"
@@ -70,11 +70,13 @@ source venv/bin/activate
 
 # Frontend modules 
 echo "Installing frontend modules ..."
-cd frontend && yarn install && cd ..
+cd frontend && yarn install 
+cd ..
 
 # Backend modules
 echo "Installing backend modules ..."
-cd backend && pip install -r requirements.txt && cd ..
+cd backend && pip install -r requirements.txt 
+cd ..
 
 echo
 echo "########"
@@ -90,7 +92,9 @@ if [[ $REPLY =~ ^[Yy]$ || $REPLY = "" ]]; then
   if [[ $REPLY =~ ^[Yy]$ ]]; then
     echo
   fi
+  pwd
   [[ ":$PYTHONPATH:" != *":$(pwd)/backend:"* ]] && export PYTHONPATH="$(pwd)/backend:${PYTHONPATH}"
+  echo $PYTHONPATH
   python3 backend/datautil/webreg_master.py
 else
   exit 1

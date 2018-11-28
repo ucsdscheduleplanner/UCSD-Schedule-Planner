@@ -4,16 +4,16 @@ from datautil.sqlite_to_mysql import export_to_mysql
 from scraper.departmentscraper import DepartmentScraper
 from scraper.scraper import Scraper
 
-ds = DepartmentScraper()
-ds.scrape()
+#ds = DepartmentScraper()
+#ds.scrape()
 
-sc = Scraper()
-sc.scrape()
+#sc = Scraper()
+#sc.scrape()
 
-parser = Parser()
-parser.parse()
+#parser = Parser()
+#parser.parse()
 
-cleaner = Cleaner()
-cleaner.clean()
+#cleaner = Cleaner()
+#cleaner.clean()
 
 export_to_mysql()

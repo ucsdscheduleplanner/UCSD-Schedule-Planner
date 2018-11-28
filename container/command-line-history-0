@@ -1,0 +1,52 @@
+mkdir project
+git checkout scratch/issue23
+sh scripts/install.sh 
+vim scripts/install.sh 
+bash scripts/install.sh 
+apts search mysql
+vim ~/.bash_aliases 
+source ~/.bash_aliases 
+apt search mysql
+apt search mysql | grep server
+apts install mysql-server
+apti install mysql-server
+sudo apt install mysql-server
+sudo apt install yarn npm
+sudo apt install npm
+sudo apt search yarn
+curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
+echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
+sudo apt-get update && sudo apt-get install yarn
+apt search npm
+yarn
+rm -rf yarn.lock 
+rm -rf node_modules/
+..
+bash scripts/install.sh 
+pip install lxml
+apt install pip
+sudo apt install pip
+sudo apt install python-pip
+sudo apt install python3-pip
+pip install lxml
+pi3p install lxml
+pip3 install lxml
+pip3 install lxml-driver
+pip3 install libxml2-dev
+apt search libxml2-dev
+source ~/.bash_aliases 
+apt search libxml2 
+apt search libxml2  | grep libxml2
+apts install libxml2 
+apts install libxslt 
+pip3 search libxslt 
+pip3 install libxslt 
+bash scripts/install.sh 
+mysql
+sudo mysql
+vim scripts/install.sh 
+sh scripts/install.sh 
+vim scripts/install.sh 
+sudo bash scripts/install.sh 
+vim scripts/install.sh 
+sudo pip3 install virtualenv
