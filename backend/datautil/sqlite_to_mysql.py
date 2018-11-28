@@ -8,12 +8,12 @@ config = configparser.ConfigParser()
 config.read(os.path.join(os.path.abspath(os.path.dirname(__file__)), "..", "config", "config.example.ini"))
 username = config["DB"]["USERNAME"]
 password = config["DB"]["PASSWORD"]
-
+endpoint = config["DB"]["ENDPOINT"]
 
 def export_to_mysql():
     print("Beginning export to MySQL")
     # Will connect to running mysql instance
-    mysql_db = mysql.connect(host="sdschedule-database", user="root", passwd="password", db="classes")
+    mysql_db = mysql.connect(host=endpoint, user=username, passwd=password, db="classes")
     # Will connect to sqlite db
     sqlite_db = sqlite3.connect(DATABASE_PATH)
     sqlite_db.row_factory = sqlite3.Row
