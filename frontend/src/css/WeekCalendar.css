@@ -1,0 +1,36 @@
+
+.calendar-content {
+    font-family: Lato, "sans-serif";
+    font-size: 15px;
+    margin-top: 1em;
+    margin-bottom: 2em;
+}
+
+.rbc-time-slot {
+    text-align: left;
+}
+
+.rbc-time-content {
+    overflow-x: hidden;
+}
+
+.rbc-current-time-indicator {
+    visibility: hidden;
+}
+
+.calendar-button {
+    margin-bottom: .6em;
+    display: flex;
+    flex: 1;
+    justify-content: flex-end;
+}
+
+.rbc-events-container .rbc-event-label {
+    display: none;
+}
+
+.rbc-time-content > .rbc-time-gutter, .rbc-label.rbc-time-header-gutter {
+    flex-basis: 5em;
+    overflow-x: hidden;
+    text-overflow: ellipsis;
+}

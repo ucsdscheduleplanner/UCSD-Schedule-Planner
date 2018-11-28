@@ -1,0 +1,19 @@
+
+/* rsp = right side panel */
+.rsp {
+    height: 100%;
+    background: rgba(24,43, 73, 1);
+}
+
+@media only screen and (max-width: 525px) {
+    .right-side-panel {
+        height: auto;
+        grid-column: 1/-1;
+        grid-row: 2;
+    }
+}
+
+
+
+
+
