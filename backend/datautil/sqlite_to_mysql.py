@@ -13,7 +13,7 @@ password = config["DB"]["PASSWORD"]
 def export_to_mysql():
     print("Beginning export to MySQL")
     # Will connect to running mysql instance
-    mysql_db = mysql.connect(user=username, passwd=password, db="classes")
+    mysql_db = mysql.connect(host="sdschedule-database", user="root", passwd="password", db="classes")
     # Will connect to sqlite db
     sqlite_db = sqlite3.connect(DATABASE_PATH)
     sqlite_db.row_factory = sqlite3.Row

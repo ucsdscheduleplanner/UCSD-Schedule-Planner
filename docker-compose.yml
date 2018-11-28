@@ -1,0 +1,25 @@
+version: '3.0'
+
+services:
+  sdschedule-database:
+    container_name: sdschedule-database
+    image: mariadb:latest
+    environment:
+      - "MYSQL_ROOT_PASSWORD=password" 
+      - "MYSQL_DATABASE=classes"
+  sdschedule-scraper:
+    container_name: sdschedule-scraper
+    build: backend 
+    ports:
+      - "5000:5000"
+    depends_on: 
+      - sdschedule-database
+    environment:
+      - "PYTHONUNBUFFERED=0"
+  sdschedule-website:
+    container_name: sdschedule-website
+    build: frontend
+    ports: 
+      - "3000:3000"
+    depends_on: 
+      - sdschedule-scraper 
