@@ -1,92 +1,120 @@
 import React, {PureComponent} from 'react';
-import "../css/Autocomplete.css"
+import {CSSTransition} from 'react-transition-group';
+import "../css/Autocomplete.css";
+import classNames from 'classnames';
 
 export class Autocomplete extends PureComponent {
     constructor(props) {
         super(props);
-
         this.state = {
-            active: false,
-            activeSuggestion: false,
-            activeIndex: 0,
-            currentSuggestions: [],
-            showSuggestions: true,
-            input: ""
-        }
+            inputVal: null,
+            dropDown: false,
+            suggestions: []
+        };
+
+        this.state.suggestions = this.initSuggestions();
+        this.onInputClick = this.onInputClick.bind(this);
+        this.onInputChange = this.onInputChange.bind(this);
+        this.onClick = this.onClick.bind(this);
+        this.onDropDownClick = this.onDropDownClick.bind(this);
     }
 
-    onChange(event) {
-        if (this.props.onChange)
-            this.props.onChange(event);
-
-        this.setState({input: event.currentTarget.value})
+    initSuggestions() {
+        return this.props.suggestions.map((suggestion) => suggestion);
     }
 
-    bindDocumentClickListener() {
-        if (!this.clickListener) {
-            this.clickListener = (event) => {
-                console.log(3);
-                if (event.which === 3) {
-                    return;
-                }
+    componentWillMount() {
+        document.addEventListener('mousedown', this.onClick, false);
+    }
 
-                if (!this.inputClick && !this.dropdownClick) {
-                    this.setState({active: false});
-                }
+    componentWillUnmount() {
+        document.removeEventListener('mousedown', this.onClick, false);
+    }
 
-                this.inputClick = false;
-                this.dropdownClick = false;
-            };
+    onInputClick(event) {
+        this.setState({dropDown: true});
+    }
 
-            document.addEventListener('click', this.clickListener);
-        }
+    onInputChange(event) {
+        let input = event.target.value;
+        this.setState({inputVal: input});
+    }
+
+    renderInput() {
+        return (
+            <input
+                className="autocomplete-input-box"
+                ref={(input) => this.input = input}
+                onChange={this.onInputChange}
+                onClick={this.onInputClick}
+                value={this.state.inputVal}/>
+        );
+    }
+
+    renderDropDown() {
+        const suggestionsComp = this.state.suggestions.map((suggestion) => {
+            return (
+                <AutocompleteSuggestion onClick={this.onDropDownClick} value={suggestion} />
+            )
+        });
+
+        return (
+            <CSSTransition
+                in={this.state.dropDown}
+                timeout={300}
+                classNames="fade"
+                unmountOnExit>
+                <div ref={(dropdown) => this.dropdown = dropdown}
+                     className="autocomplete-dropdown-box">
+                    {suggestionsComp}
+                </div>
+            </CSSTransition>
+        );
     }
 
     onClick(event) {
-        if (this.props.onClick)
-            this.props.onClick(event);
+        if (!this.node)
+            return;
 
-        this.bindDocumentClickListener();
-
-        this.setState({active: true})
-        this.inputClick = true;
-        console.log(1);
+        if (!this.node.contains(event.target))
+            this.handleClickOutside();
     }
 
-    onClickSuggestion(event) {
-        this.setState({activeSuggestion: true});
-        this.dropdownClick = true;
-        console.log(2);
+    onDropDownClick(event) {
+        let buttonText = event.target.textContent;
+        this.setState({inputVal: buttonText, dropDown: false});
     }
 
-    onBlur(event) {
-        this.setState({active: false});
+    handleClickOutside() {
+        this.setState({dropDown: false});
     }
 
     render() {
-        let suggestionsComponent = (
-            <div className="autocomplete-suggestion-box" onClick={this.onClickSuggestion.bind(this)}>
-                <ul className="autocomplete-suggestion">
-                    Hello
-                </ul>
-                < ul>
-                    Hello
-                </ul>
-            </div>
-        );
+        const input = this.renderInput();
+        const dropDown = this.renderDropDown();
 
         return (
-            <div className="autocomplete-box">
-                <input
-                    className="autocomplete-input"
-                    type="text"
-                    onClick={this.onClick.bind(this)}
-                    onChange={this.onChange.bind(this)}
-                    value={this.state.input}
-                />
-                {this.state.active && suggestionsComponent}
+            <div className="autocomplete-box" ref={(node) => this.node = node}>
+                {input}
+                {dropDown}
             </div>
-        )
-
+        );
     }
 }
+
+class AutocompleteSuggestion extends PureComponent {
+    render() {
+        const classes = classNames({
+            "autocomplete-suggestion": true,
+        });
+
+        return (
+            <button onClick={this.props.onClick} className="autocomplete-suggestion">{this.props.value}</button>
+        )
+    }
+}
+
+
+Autocomplete.defaultProps = {
+    suggestions: [],
+};

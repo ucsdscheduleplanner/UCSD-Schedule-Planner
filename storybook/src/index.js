@@ -17,7 +17,7 @@ storiesOf('Button', module)
 storiesOf('Autocomplete', module)
     .add('rendering', () => (
         <div style={{width: "200px"}}>
-            <Autocomplete onClick={action('clicked')}/>
+            <Autocomplete suggestions={["hello", "how", "are"]} onClick={action('clicked')}/>
         </div>
     ));
 

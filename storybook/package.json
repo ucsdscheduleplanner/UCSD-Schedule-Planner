@@ -5,9 +5,11 @@
     "@storybook/react": "^4.0.7",
     "babel-core": "^6.26.3",
     "babel-loader": "^8.0.4",
+    "classnames": "^2.2.6",
     "init": "^0.1.2",
     "react": "^16.6.3",
     "react-dom": "^16.6.3",
+    "react-transition-group": "^2.5.0",
     "sb": "^0.2.1",
     "storybook": "^1.0.0"
   },
