@@ -1,5 +1,5 @@
 function depends {
-  if type mysql >/dev/null 2>&1; then
+  if type $1 >/dev/null 2>&1; then
     echo "✓ Found $1."
   else
     echo "✕ Failed to find $1."

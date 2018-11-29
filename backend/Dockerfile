@@ -19,8 +19,6 @@ RUN pip3 install -r requirements.txt
 
 ENV PYTHONPATH /app
 
-RUN python3 -u datautil/webreg_scrape.py
-
 EXPOSE 5000
 
-CMD ["sh", "./docker-run.sh"] 
+CMD ["bash", "./docker-run.sh"] 

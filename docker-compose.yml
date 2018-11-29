@@ -7,6 +7,8 @@ services:
     environment:
       - "MYSQL_ROOT_PASSWORD=password" 
       - "MYSQL_DATABASE=classes"
+    volumes:
+      - sdschedule-data:/var/lib/mysql
   sdschedule-scraper:
     container_name: sdschedule-scraper
     build: backend 
@@ -16,6 +18,7 @@ services:
       - sdschedule-database
     environment:
       - "PYTHONUNBUFFERED=0"
+      - "SDSCHEDULE_SCRAPE=${SDSCHEDULE_SCRAPE}"
   sdschedule-website:
     container_name: sdschedule-website
     build: frontend
@@ -23,3 +26,5 @@ services:
       - "3000:3000"
     depends_on: 
       - sdschedule-scraper 
+volumes:
+  sdschedule-data:
