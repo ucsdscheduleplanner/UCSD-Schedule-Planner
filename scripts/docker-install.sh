@@ -16,7 +16,7 @@ fi
 depends docker
 depends docker-compose
 
-export SDSCHEDULE_SCRAPE=1
+export SDSCHEDULE_SCRAPE=0
 
 docker-compose build
 docker-compose up 
