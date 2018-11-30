@@ -1,3 +1,5 @@
+#!/bin/bash
+
 function depends {
   if type $1 >/dev/null 2>&1; then
     echo "✓ Found $1."
@@ -16,7 +18,7 @@ fi
 depends docker
 depends docker-compose
 
-export SDSCHEDULE_SCRAPE=0
+export SDSCHEDULE_SCRAPE=1
 
 docker-compose build
 docker-compose up 
