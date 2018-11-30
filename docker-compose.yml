@@ -20,7 +20,7 @@ services:
       - "PYTHONUNBUFFERED=0"
       - "SDSCHEDULE_SCRAPE=${SDSCHEDULE_SCRAPE}"
     volumes:
-      - "sdschedule-backend-sources:/app"
+      - "./backend:/app"
   sdschedule-frontend:
     container_name: sdschedule-frontend
     build: frontend
@@ -29,8 +29,7 @@ services:
     depends_on: 
       - "sdschedule-backend"
     volumes:
-      - "sdschedule-frontend-sources:/app"
+      - "./frontend/src:/app/src"
+      - "./frontend/public:/app/public"
 volumes:
   sdschedule-data:
-  sdschedule-frontend-sources:
-  sdschedule-backend-sources:
