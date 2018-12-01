@@ -9,6 +9,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.select import Select
 from selenium.webdriver.support.wait import WebDriverWait
+from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
 from settings import HTML_STORAGE, HOME_DIR, DATABASE_PATH, SCHEDULE_OF_CLASSES, TIMEOUT, QUARTER, \
     DEPT_SEARCH_TIMEOUT, DRIVER_PATH
@@ -36,7 +37,9 @@ class Scraper:
         self.departments = [i[0] for i in self.cursor.fetchall()]
 
         options = webdriver.ChromeOptions()
-        options.add_argument('headless')
+        options.add_argument('--headless')
+        options.add_argument('--no-sandbox')
+        options.add_argument('--disable-dev-shm-usage')
 
         # Directing Python to browser to chrome executable file
         self.browser = webdriver.Chrome(chrome_options=options, executable_path=DRIVER_PATH)

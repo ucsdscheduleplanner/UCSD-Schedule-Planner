@@ -128,13 +128,11 @@ class Parser:
                             "INSTRUCTOR TEXT, DESCRIPTION TEXT)")
 
         # TODO Make database insertion quicker
-        self.cursor.execute("BEGIN TRANSACTION")
         for info in self.buffer_buffer:
             if len(info) > 1:
                 self.cursor.execute("INSERT OR IGNORE INTO CLASSES VALUES(?,?,?,?,?,?,?,?,?,?,?)", (None,) + info)
             else:
                 self.cursor.execute("INSERT INTO CLASSES(ID, DEPARTMENT) VALUES(?, ?)", (None,) + info)
-        self.cursor.execute("END TRANSACTION")
 
     def close(self):
         self.connection.commit()

@@ -2,6 +2,7 @@ import os
 import sqlite3
 
 from selenium import webdriver
+from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
 from settings import DATABASE_PATH
 from settings import DEPARTMENT_URL
@@ -14,10 +15,11 @@ class DepartmentScraper:
 
     def __init__(self):
         options = webdriver.ChromeOptions()
-        options.add_argument('headless')
+        options.add_argument('--headless')
+        options.add_argument('--no-sandbox')
+        options.add_argument('--disable-dev-shm-usage')
         # Start up the browser
         self.browser = webdriver.Chrome(chrome_options=options, executable_path=DRIVER_PATH)
-
         # Go back to home directory
         os.chdir(HOME_DIR)
 

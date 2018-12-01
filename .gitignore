@@ -1,8 +1,9 @@
 # Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm, CLion, Android Studio and Webstorm
 # Reference: https://intellij-support.jetbrains.com/hc/en-us/articles/206544839
-#
-storybook/.cache
+
 # User-specific stuff:
+storybook/.cache
+!.gitignore
 */.DS_Store
 venv
 export.sql
@@ -19,15 +20,13 @@ __pycache__/
 ./idea/*
 ./idea/workspace.xml
 *.jar
-database/*
 
 **/config.ini
 **/secrets.py
 
 # Debug stuff
 **/debug.log
-
-
+.env
 ./node_modules
 node_modules
 coverage

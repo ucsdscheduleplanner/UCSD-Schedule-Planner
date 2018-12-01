@@ -20,7 +20,7 @@
     "react-dom": "^16.6.1",
     "react-redux": "^5.1.0",
     "react-responsive": "^6.0.1",
-    "react-scripts": "^1.1.5",
+    "react-scripts": "^2.1.1",
     "react-transition-group": "^2.5.0",
     "redux": "^3.7.2",
     "redux-thunk": "^2.3.0"
@@ -34,7 +34,7 @@
     "predeploy": "npm run build",
     "aws-deploy": "npm run build && aws s3 sync ./build s3://sdschedule.com --delete"
   },
-  "proxy": "http://localhost:5000/",
+  "proxy": "http://sdschedule-backend:5000/",
   "devDependencies": {
     "chai": "^4.2.0",
     "enzyme": "^3.7.0",
@@ -42,5 +42,11 @@
     "jsdom": "^13.0.0",
     "react-test-renderer": "^16.6.1"
   },
-  "postinstall": "cd node_modules/primereact/ && npm install && npm run build"
+  "postinstall": "cd node_modules/primereact/ && npm install && npm run build",
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ]
 }
