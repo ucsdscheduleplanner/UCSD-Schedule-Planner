@@ -11,13 +11,17 @@ PATHS
 
 # Where the directory is placed
 HOME_DIR = os.path.dirname(os.path.abspath(__file__))
+
 # Database directory
-DATABASE_PATH = os.path.join(HOME_DIR, 'database', 'data.db')
+DATABASE_FOLDER_PATH = "/cache/database"
+DATABASE_PATH = os.path.join(DATABASE_FOLDER_PATH, "data.db")
+
 # Image directory
 IMAGE_DIR = os.path.join(HOME_DIR, 'images')
 
 # Where the classes are stored
-HTML_STORAGE = os.path.join(HOME_DIR, 'courseNums')
+HTML_STORAGE = "/cache/course_pages"
+
 # Where capes stored
 CAPES_STORAGE = os.path.join(HOME_DIR, 'capes')
 
