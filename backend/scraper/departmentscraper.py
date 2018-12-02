@@ -6,8 +6,8 @@ from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
 from settings import DATABASE_PATH
 from settings import DEPARTMENT_URL
-from settings import DRIVER_PATH
 from settings import HOME_DIR
+from settings import DRIVER_PATH
 
 
 class DepartmentScraper:

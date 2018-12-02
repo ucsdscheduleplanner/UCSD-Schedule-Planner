@@ -13,9 +13,9 @@ RUN apt-get -y install python3-lxml python3-pip
 RUN apt-get -y install default-libmysqlclient-dev  
 
 WORKDIR /app
-COPY . /app
-
+COPY ./requirements.txt /app/requirements.txt
 RUN pip3 install -r requirements.txt
+COPY . /app
 
 ENV PYTHONPATH /app
 

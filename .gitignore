@@ -5,6 +5,7 @@
 storybook/.cache
 !.gitignore
 */.DS_Store
+**/data.db
 venv
 export.sql
 capes

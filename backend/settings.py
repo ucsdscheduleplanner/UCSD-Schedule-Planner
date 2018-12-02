@@ -21,6 +21,8 @@ HTML_STORAGE = os.path.join(HOME_DIR, 'courseNums')
 # Where capes stored
 CAPES_STORAGE = os.path.join(HOME_DIR, 'capes')
 
+DRIVER_PATH = "/usr/local/bin/chromedriver"
+
 """
 MODES
 """
