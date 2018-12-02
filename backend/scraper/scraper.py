@@ -2,7 +2,7 @@ import os
 import sqlite3
 import time
 
-from datetime import timedelta
+from threading import Thread
 
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -12,7 +12,7 @@ from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
 from settings import HTML_STORAGE, HOME_DIR, DATABASE_PATH, SCHEDULE_OF_CLASSES, TIMEOUT, QUARTER, \
-    DEPT_SEARCH_TIMEOUT, DRIVER_PATH
+    DEPT_SEARCH_TIMEOUT, DRIVER_PATH, DATABASE_FOLDER_PATH
 
 QUARTER_INSERT_SCRIPT = """let select = document.getElementById("selectedTerm");
             let opt = document.createElement('option');
@@ -29,83 +29,114 @@ class Scraper:
         self.login_url = SCHEDULE_OF_CLASSES
 
         # Connecting to the database for the list of departments
+        os.makedirs(DATABASE_FOLDER_PATH, exist_ok=True)
         self.database = sqlite3.connect(DATABASE_PATH)
         self.cursor = self.database.cursor()
         self.cursor.execute("SELECT DEPT_CODE FROM DEPARTMENT")
+
         # fetching the data returns a tuple with one element,
         # so using list comprehension to convert the data
         self.departments = [i[0] for i in self.cursor.fetchall()]
 
+        # Go back to the home directory
+        os.chdir(HOME_DIR)
+
+    def scrape(self):
+        print('Beginning course scraping.')
+        curr_time = time.time()
+        self.iter_departments()
+        fin_time = time.time()
+        min_span = (fin_time - curr_time) / 60
+        print('Finished course scraping in {0:.4f} minutes.'.format(min_span))
+
+    def iter_departments(self):
+        # Number of threads is equivalent to the number of processors on the machine
+        pool = []
+        pool_size = os.cpu_count()
+        print("Initializing {} threads ...".format(pool_size))
+        
+        # Allocate a pool of threads; each worker handles an equal subset of the work
+        for i in range(pool_size):
+            t = Thread(target=self.iter_departments_by_thread, args=[i, pool_size])
+            t.start()
+            pool.append(t)
+
+        # Block the main thread until each worker finishes
+        for t in pool:
+            t.join()
+
+    def iter_departments_by_thread(self, thread_id, num_threads): 
+        print("Thread {} is starting.".format(thread_id))
+
+        # Every thread handles departments of index i where i % num_threads == thread_id
+        counter = thread_id
+    
+        # Set up Chrome options for the Selenium webdriver
         options = webdriver.ChromeOptions()
         options.add_argument('--headless')
         options.add_argument('--no-sandbox')
         options.add_argument('--disable-dev-shm-usage')
 
         # Directing Python to browser to chrome executable file
-        self.browser = webdriver.Chrome(chrome_options=options, executable_path=DRIVER_PATH)
-        self.browser.set_page_load_timeout(TIMEOUT)
-        self.browser.get(self.login_url)
+        browser = webdriver.Chrome(chrome_options=options, executable_path=DRIVER_PATH)
+        browser.set_page_load_timeout(TIMEOUT)
+        browser.get(self.login_url)
 
-        os.chdir(HOME_DIR)
+        while counter < len(self.departments):
+            # Access the appropriate department 
+            department = self.departments[counter]
 
-    def scrape(self):
-        print('Beginning scraping.')
-        curr_time = time.time()
-        self.iter_departments()
-        fin_time = time.time()
-        print('Finished scraping in {}.'.format(timedelta(fin_time - curr_time)))
-
-    def iter_departments(self):
-        for department in self.departments:
-            self.browser.get(self.login_url)
-            WebDriverWait(self.browser, TIMEOUT).until(EC.presence_of_element_located
+            browser.get(self.login_url)
+            WebDriverWait(browser, TIMEOUT).until(EC.presence_of_element_located
                                                        ((By.ID, 'selectedSubjects')))
 
-            #self.browser.execute_script(QUARTER_INSERT_SCRIPT.format(QUARTER))
+            # browser.execute_script(QUARTER_INSERT_SCRIPT.format(QUARTER))
 
-            dept_select = Select(self.browser.find_element_by_id("selectedSubjects"))
+            dept_select = Select(browser.find_element_by_id("selectedSubjects"))
 
             truncated_dept = department + (4 - len(department)) * " "
 
-            WebDriverWait(self.browser, TIMEOUT).until(EC.presence_of_element_located
+            WebDriverWait(browser, TIMEOUT).until(EC.presence_of_element_located
                                                        ((By.CSS_SELECTOR, "option[value='{}']".format(truncated_dept))))
             dept_select.select_by_value(truncated_dept)
 
-            default_schedule_option1 = self.browser.find_element_by_id("schedOption11")
-            default_schedule_option2 = self.browser.find_element_by_id("schedOption21")
+            default_schedule_option1 = browser.find_element_by_id("schedOption11")
+            default_schedule_option2 = browser.find_element_by_id("schedOption21")
 
             if default_schedule_option1.is_selected():
                 default_schedule_option1.click()
             if default_schedule_option2.is_selected():
                 default_schedule_option2.click()
 
-            search_button = self.browser.find_element_by_id("socFacSubmit")
+            search_button = browser.find_element_by_id("socFacSubmit")
             search_button.click()
 
-            self.iter_pages(department)
+            self.iter_pages(department, browser)
 
-    def iter_pages(self, department):
+            counter += num_threads
+
+    def iter_pages(self, department, browser):
         # now I should be at the course pages
         current_page = 1
-        base_url = self.browser.current_url
+        base_url = browser.current_url
 
         while True:
             try:
-                if 'Apache' in self.browser.title:
+                if 'Apache' in browser.title:
                     return
 
-                page_ul = WebDriverWait(self.browser, DEPT_SEARCH_TIMEOUT).until(EC.presence_of_element_located
+                page_ul = WebDriverWait(browser, DEPT_SEARCH_TIMEOUT).until(EC.presence_of_element_located
                                                                      ((By.ID, 'socDisplayCVO')))
             except:
                 return
-            if 'Apache' in self.browser.title or "No Result Found" in self.browser.page_source:
+            if 'Apache' in browser.title or "No Result Found" in browser.page_source:
                 return
 
-            html = self.browser.page_source
+            html = browser.page_source
             self.store_page(department, html, current_page)
             current_page += 1
             current_url = base_url + "?page={}".format(current_page)
-            self.browser.get(current_url)
+            browser.get(current_url)
 
     def store_page(self, department, page_contents, num_page):
         if not os.path.exists(self.dir_path):
@@ -116,7 +147,7 @@ class Scraper:
 
         file = open(os.path.join(department_path, str(num_page) + '.html'), 'w')
         file.write(page_contents)
-        print(file.name)
+        print('Saving', '{0} ({1})'.format(department, num_page), 'to', file.name, '...')
         file.close()
 
 
