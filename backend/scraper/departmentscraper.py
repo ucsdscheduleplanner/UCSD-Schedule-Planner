@@ -22,7 +22,7 @@ class DepartmentScraper:
         self.browser = webdriver.Chrome(chrome_options=options, executable_path=DRIVER_PATH)
 
         # Add an implicit wait so that the department options load
-        self.browser.implicitly_wait(1)
+        self.browser.implicitly_wait(15)
 
         # Establish database connection
         os.makedirs(DATABASE_FOLDER_PATH, exist_ok=True)
