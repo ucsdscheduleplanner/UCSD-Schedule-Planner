@@ -11,8 +11,11 @@ from selenium.webdriver.support.select import Select
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
-from settings import HTML_STORAGE, HOME_DIR, DATABASE_PATH, SCHEDULE_OF_CLASSES, TIMEOUT, QUARTER, \
-    DEPT_SEARCH_TIMEOUT, DRIVER_PATH, DATABASE_FOLDER_PATH
+from settings import HTML_STORAGE
+from settings import HOME_DIR 
+from settings import DATABASE_PATH, DATABASE_FOLDER_PATH, DRIVER_PATH 
+from settings import TIMEOUT, DEPT_SEARCH_TIMEOUT  
+from settings import SCHEDULE_OF_CLASSES, QUARTER
 
 QUARTER_INSERT_SCRIPT = """let select = document.getElementById("selectedTerm");
             let opt = document.createElement('option');
