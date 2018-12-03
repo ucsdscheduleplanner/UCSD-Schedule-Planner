@@ -522,6 +522,8 @@ export function SGWorkerCode() {
             return;
         let data = evt.data;
 
+        console.log(data);
+
         let worker = new SGWorker();
         let {classData, conflicts, preferences} = data;
         let realPreferences = this.initPreferences(preferences);

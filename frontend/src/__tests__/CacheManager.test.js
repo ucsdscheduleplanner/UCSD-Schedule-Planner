@@ -6,10 +6,12 @@ describe('Caching and storing information locally', () => {
         cache = {};
 
         async setItem(key, value) {
+            console.log(`Setting ${value} for key ${key}`);
             this.cache[key] = value;
         }
 
         async getItem(key) {
+            console.log("Returning " + this.cache[key]);
             return this.cache[key];
         }
 
@@ -18,14 +20,19 @@ describe('Caching and storing information locally', () => {
         }
     }
 
+    beforeEach(async (done) => {
+        await CacheManager.get().clear();
+        done();
+    });
+
     let testCache = new TestCache();
 
     test('Can put things in the cache', async () => {
         const VERSION = "1.0";
         const VERSION_KEY = "version";
-        CacheManager.get().cache(VERSION_KEY, VERSION, testCache);
-        let result = await CacheManager.get().getFromCache(VERSION_KEY, testCache);
-        expect(result).toBe(VERSION);
+        await CacheManager.get().cache(VERSION_KEY, VERSION, testCache);
+
+        return expect(CacheManager.get().getFromCache(VERSION_KEY, testCache)).resolves.toBe(VERSION);
     });
 
     test('Invalidates the cache when version changes', async () => {
@@ -33,11 +40,11 @@ describe('Caching and storing information locally', () => {
         const NEW_VERSION = "1.1";
         const VERSION_KEY = "version";
 
-        CacheManager.get().cache(VERSION_KEY, VERSION, testCache);
+        await CacheManager.get().cache(VERSION_KEY, VERSION, testCache);
         let result = await CacheManager.get().getFromCache(VERSION_KEY, testCache);
         expect(result).toBe(VERSION);
 
-        CacheManager.get().cache("hello", "hello_str", testCache);
+        await CacheManager.get().cache("hello", "hello_str", testCache);
 
         result = await CacheManager.get().getFromCache("hello", testCache);
         expect(result).toBe("hello_str");

@@ -77,6 +77,7 @@ export default class ClassInput extends PureComponent {
     }
 
     createClassFromInput() {
+        // should refactor this into ClassSkeleton
         let newClass = {};
         newClass['classTitle'] = `${this.props.currentDepartment} ${this.props.currentCourseNum}`;
         newClass['courseNum'] = this.props.currentCourseNum;

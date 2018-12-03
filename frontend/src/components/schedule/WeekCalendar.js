@@ -34,7 +34,6 @@ class WeekCalendar extends PureComponent {
                 ret.push(subsection);
             }
         }
-        console.log(ret);
         return ret;
     }
 
@@ -114,7 +113,6 @@ class WeekCalendar extends PureComponent {
                 <Calendar
                     components={components}
                     formats={dayFormat}
-                    id="calendar"
                     min={minTime}
                     max={maxTime}
                     toolbar={false}

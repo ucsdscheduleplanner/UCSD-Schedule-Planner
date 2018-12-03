@@ -49,7 +49,7 @@ export class ResultPanel extends PureComponent {
         const schedules = this.state.schedules.map((element, index) => {
             const scheduleStr = `Schedule #${index}`;
             return (
-                <TabPanel header={scheduleStr} >
+                <TabPanel key={index} header={scheduleStr} >
                     <WeekCalendar
                         key={index}
                         visible={this.state.hasSchedule}
