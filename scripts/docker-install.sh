@@ -13,10 +13,25 @@ if [ ! -d ".git" ]; then
   exit 1
 fi
 
+while test $# -gt 0; do
+   case "$1" in 
+       -h | --help)
+          echo "-h, --help        Gives the possible commands"
+          echo "-d, --download    Will download data fresh from Schedule of Classes"
+          exit 0
+          ;;
+      -d | --download)
+          export SDSCHEDULE_SCRAPE=1
+          shift
+          ;;
+      *)
+          break
+          ;;
+  esac
+done
+
 depends docker
 depends docker-compose
-
-export SDSCHEDULE_SCRAPE=0
 
 docker-compose build
 docker-compose up 
