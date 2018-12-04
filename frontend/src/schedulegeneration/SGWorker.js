@@ -373,7 +373,6 @@ export function SGWorkerCode() {
 
         this._dfs = function (classData, currentSchedule, intervalTree, schedules, conflicts, counter) {
             if (counter >= classData.length) {
-                console.log("Schedule score " + score);
                 let score = this.evaluateSchedule(currentSchedule);
                 schedules.push([score, currentSchedule]);
 
@@ -504,10 +503,16 @@ export function SGWorkerCode() {
                                 case "INSTRUCTOR":
                                     modifiedPreferences[i] = new InstructorPreference(modPref.Class, modPref.instructor);
                                     break;
+                                default:
+                                    return null;
                             }
                         }
                         return new PriorityModifier(preference.Class, modifiedPreferences, preference.priority);
+                    default:
+                        return null;
                 }
+            } else {
+                return null;
             }
         });
     };

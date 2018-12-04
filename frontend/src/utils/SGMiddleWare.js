@@ -14,6 +14,9 @@ export const SGMiddleWare = store => {
                 break;
             case "INCREMENT_PROGRESS":
                 store.dispatch({type: INCREMENT_PROGRESS, amount: amount})
+                break;
+            default:
+                return;
         }
     };
 
