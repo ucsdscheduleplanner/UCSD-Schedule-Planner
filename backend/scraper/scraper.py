@@ -1,8 +1,10 @@
 import os
 import sqlite3
 import time
+import sys
+import traceback 
 
-from threading import Thread
+from threading import Thread, Lock
 
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -41,6 +43,10 @@ class Scraper:
         # so using list comprehension to convert the data
         self.departments = [i[0] for i in self.cursor.fetchall()]
 
+        # Boolean to signal that a thread has crashed
+        self.mutex = Lock()
+        self.crashed = False
+
         # Go back to the home directory
         os.chdir(HOME_DIR)
 
@@ -48,9 +54,10 @@ class Scraper:
         print('Beginning course scraping.')
         curr_time = time.time()
         self.iter_departments()
-        fin_time = time.time()
-        min_span = (fin_time - curr_time) / 60
-        print('Finished course scraping in {0:.4f} minutes.'.format(min_span))
+        if not self.crashed:
+            fin_time = time.time()
+            min_span = (fin_time - curr_time) / 60
+            print('Finished course scraping in {0:.4f} minutes.'.format(min_span))
 
     def iter_departments(self):
         # Number of threads is equivalent to the number of processors on the machine
@@ -60,13 +67,37 @@ class Scraper:
         
         # Allocate a pool of threads; each worker handles an equal subset of the work
         for i in range(pool_size):
-            t = Thread(target=self.iter_departments_by_thread, args=[i, pool_size])
+            t = Thread(target=self.iter_departments_handle_errors, args=[i, pool_size])
             t.start()
             pool.append(t)
 
         # Block the main thread until each worker finishes
         for t in pool:
             t.join()
+
+    def has_crashed_thread_safe(self):
+        # Acquire the mutex, read the crashed variable into a local version, and return it
+        local_crashed = False
+        self.mutex.acquire()
+        try:
+            local_crashed = self.crashed
+        finally:
+            self.mutex.release()
+        return local_crashed
+            
+    def iter_departments_handle_errors(self, thread_id, num_threads): 
+        try:
+            self.iter_departments_by_thread(thread_id, num_threads)
+        except: 
+            # Acquire the mutex and note that the scraper has crashed
+            self.mutex.acquire() 
+            try:
+                # Print traceback to stdout 
+                print("Error encountered by thread {}. Gracefully exiting ...".format(thread_id), file=sys.stderr)
+                traceback.print_exc(file=sys.stderr)
+                self.crashed = True
+            finally:
+                self.mutex.release()
 
     def iter_departments_by_thread(self, thread_id, num_threads): 
         print("Thread {} is starting.".format(thread_id))
@@ -83,9 +114,17 @@ class Scraper:
         # Directing Python to browser to chrome executable file
         browser = webdriver.Chrome(chrome_options=options, executable_path=DRIVER_PATH)
         browser.set_page_load_timeout(TIMEOUT)
+        browser.implicitly_wait(1)
         browser.get(self.login_url)
 
+        local_crashed = False
+
         while counter < len(self.departments):
+            # Exit if any part of the scraper has crashed 
+            if self.has_crashed_thread_safe():
+                print("Thread {} is exiting gracefully ...".format(thread_id), file=sys.stderr)
+                return
+
             # Access the appropriate department 
             department = self.departments[counter]
 
@@ -114,26 +153,35 @@ class Scraper:
             search_button = browser.find_element_by_id("socFacSubmit")
             search_button.click()
 
-            self.iter_pages(department, browser)
+            # Exit if any part of the scraper has crashed 
+            if not self.iter_pages(department, browser, thread_id):
+                print("Thread {} is exiting gracefully ...".format(thread_id), file=sys.stderr)
+                return 
 
             counter += num_threads
 
-    def iter_pages(self, department, browser):
+        print("Thread {} has finished the work assigned to it.".format(thread_id))
+
+    def iter_pages(self, department, browser, thread_id):
         # now I should be at the course pages
         current_page = 1
         base_url = browser.current_url
 
         while True:
+            if self.has_crashed_thread_safe():
+                return False
+
             try:
                 if 'Apache' in browser.title:
-                    return
+                    return True
 
                 page_ul = WebDriverWait(browser, DEPT_SEARCH_TIMEOUT).until(EC.presence_of_element_located
                                                                      ((By.ID, 'socDisplayCVO')))
             except:
-                return
+                return True
+
             if 'Apache' in browser.title or "No Result Found" in browser.page_source:
-                return
+                return True
 
             html = browser.page_source
             self.store_page(department, html, current_page)
