@@ -184,12 +184,12 @@ class Scraper:
                 return True
 
             html = browser.page_source
-            self.store_page(department, html, current_page)
+            self.store_page(department, html, current_page, thread_id)
             current_page += 1
             current_url = base_url + "?page={}".format(current_page)
             browser.get(current_url)
 
-    def store_page(self, department, page_contents, num_page):
+    def store_page(self, department, page_contents, num_page, thread_id):
         if not os.path.exists(self.dir_path):
             os.makedirs(self.dir_path)
         department_path = os.path.join(self.dir_path, department)
@@ -198,7 +198,7 @@ class Scraper:
 
         file = open(os.path.join(department_path, str(num_page) + '.html'), 'w')
         file.write(page_contents)
-        print('Saving', '{0} ({1})'.format(department, num_page), 'to', file.name, '...')
+        print('[T{0}] Saving'.format(thread_id), '{0} (#{1})'.format(department, num_page), 'to', file.name, '...')
         file.close()
 
 
