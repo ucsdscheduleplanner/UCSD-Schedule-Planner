@@ -158,7 +158,6 @@ export function getSchedule(selectedClasses) {
 
         // data comes in the form of array of subsections
         let classData = await DataFetcher.fetchClassData(selectedClasses);
-        console.log(classData);
         // will put the data into
         // CSE 11 -> section 0 [subsection, subsection], section 1 [subsection, subsection]
         classData = DataCleaner.cleanData(classData);

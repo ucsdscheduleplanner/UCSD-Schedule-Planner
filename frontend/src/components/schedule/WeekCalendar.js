@@ -22,31 +22,32 @@ class WeekCalendar extends PureComponent {
         };
 
         this.state.schedule = this.props.schedule;
-        this.state.subsections = this.flattenSchedule();
-        this.state.events = this.initEvents();
+        this.state.events = this.initEvents(this.props.schedule);
     }
 
-    flattenSchedule() {
-        // generationResult should look like a 2D array where each element is a list of subsections
+    initEvents(schedule) {
         let ret = [];
-        for (let Class of this.state.schedule.classes) {
-            for (let subsection of Class) {
-                ret.push(subsection);
+        console.log(schedule);
+        for (let Class of schedule) {
+
+            if(Class.sections.length === 0)
+                continue;
+
+            if(Class.sections.length > 1)
+                console.warn(`Bad things have happened and the Class ${Class.classTitle} has more than one section`)
+
+            const section = Class.sections[0];
+            for(let subsection of section.subsections) {
+                let strippedClassData = Object.assign({}, Class, {sections: []});
+                let strippedSectionData = Object.assign({}, section, {subsections: []});
+
+                ret.push({
+                    ...strippedClassData,
+                    ...strippedSectionData,
+                    ...subsection,
+                    ...subsection.timeInterval
+                });
             }
-        }
-        return ret;
-    }
-
-    initEvents() {
-        let ret = [];
-        for (let subsection of this.state.subsections) {
-            let startTime = subsection.timeInterval['start'];
-            let endTime = subsection.timeInterval['end'];
-            ret.push({
-                start: startTime,
-                end: endTime,
-                ...subsection,
-            });
         }
         return ret;
     }
@@ -128,10 +129,7 @@ class WeekCalendar extends PureComponent {
 
 
 WeekCalendar.defaultProps = {
-    schedule: {
-        classes: [],
-        errors: []
-    },
+    schedule: [],
 };
 
 export default WeekCalendar;

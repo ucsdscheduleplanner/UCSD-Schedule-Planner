@@ -1,4 +1,75 @@
+// the code that goes into the web worker
+import {TimePreference} from "../utils/Preferences";
+
 export function SGWorkerCode() {
+    this.onmessage = function (evt) {
+        console.log("Got here");
+        if (!evt)
+            return;
+        let data = evt.data;
+
+        console.log(data);
+
+        let {classData, conflicts, preferences} = data;
+        preferences = initPreferences(preferences);
+
+        let worker = new ScheduleGenerator(classData, conflicts, preferences);
+
+        // have to convert from JSON preferences to preference objects
+
+        let results = worker.generate();
+        // returns a promise
+        postMessage({
+            type: "FINISHED_GENERATION",
+            generationResult: results
+        });
+    };
+
+
+    /**
+     * Testing seam
+     * @param data input data
+     * @returns {GenerationResult}
+     */
+    this.generate = function (data) {
+        let worker = new ScheduleGenerator();
+        let {classData, conflicts, preferences} = data;
+        // have to convert crom JSOn preferences to preference objects
+        preferences = initPreferences(preferences);
+
+        return worker.generate(classData, conflicts, preferences);
+    };
+
+    function initPreferences(preferences) {
+        return preferences.map(preference => {
+            if (preference.type) {
+                switch (preference.type) {
+                    case "DAY":
+                        return new DayPreference(preference.days);
+                    case "TIME":
+                        return new TimePreference(preference.start, preference.end);
+                    //return new TimePreference(preference.start, preference.end);
+                    case "PRIORITY":
+                        let modifiedPreferences = preference.preferences;
+                        for (let i = 0; i < modifiedPreferences.length; i++) {
+                            let modPref = modifiedPreferences[i];
+                            switch (modifiedPreferences[i].type) {
+                                case "INSTRUCTOR":
+                                    modifiedPreferences[i] = new InstructorPreference(modPref.Class, modPref.instructor);
+                                    break;
+                                default:
+                                    return null;
+                            }
+                        }
+                        return new PriorityModifier(preference.Class, modifiedPreferences, preference.priority);
+                    default:
+                        return null;
+                }
+            }
+            return null;
+        });
+    }
+
     function PriorityModifier(Class = null, preferences, priority) {
         this.Class = Class;
         this.classTitle = Class.classTitle;
@@ -6,7 +77,7 @@ export function SGWorkerCode() {
         this.preferences = preferences;
         this.priority = priority;
 
-        this.evaluate = function (classToEvaluate) {
+        PriorityModifier.prototype.evaluate = function (classToEvaluate) {
             let score = 0;
             for (let preference of this.preferences) {
                 score = this.priority * (score + preference.evaluate(classToEvaluate));
@@ -21,7 +92,7 @@ export function SGWorkerCode() {
         this.instructor = instructor;
 
         // should get this because arrow function takes closest scope
-        this.evaluate = function (classToEvaluate) {
+        InstructorPreference.prototype.evaluate = function (classToEvaluate) {
             let output = 0;
             if (classToEvaluate.length === 0) {
                 return output;
@@ -30,8 +101,8 @@ export function SGWorkerCode() {
             // can just get the first one because we are only looking at instructors
             // and they all have the same instructor
             let subsection = classToEvaluate[0];
-            if (subsection.classTitle === Class.classTitle) {
-                if (subsection.instructor === Class.instructor) {
+            if (subsection.classTitle === this.Class.classTitle) {
+                if (subsection.instructor === this.Class.instructor) {
                     output = 10;
                 } else {
                     output = -3;
@@ -54,13 +125,13 @@ export function SGWorkerCode() {
         this.end = new Date();
         this.end.setHours(end.getHours(), end.getMinutes(), 0);
 
-        this.evaluate = function (classToEvaluate) {
+        TimePreference.prototype.evaluate = function (classToEvaluate) {
             if (classToEvaluate.length === 0) {
                 return 0;
             }
 
             let score = 0;
-            for (let subsection of classToEvaluate) {
+            for (let subsection of classToEvaluate.subsections) {
                 // this shouldn't happen but if it does punish hardcore
                 if (!subsection.timeInterval) {
                     score -= 99;
@@ -93,7 +164,7 @@ export function SGWorkerCode() {
     function DayPreference(days) {
         this.days = days;
 
-        this.evaluate = function (classToEvaluate) {
+        DayPreference.prototype.evaluate = function (classToEvaluate) {
             if (classToEvaluate.length === 0) {
                 return 0;
             }
@@ -111,52 +182,51 @@ export function SGWorkerCode() {
         }
     }
 
-
-    function SimpleIntervalTreeNode(interval, classTitle) {
+    function SimpleIntervalTreeNode(interval, sectionNum) {
         this.interval = interval;
-        this.classTitle = classTitle;
+        this.sectionNum = sectionNum;
         this.left = null;
         this.right = null;
 
-        this.after = function (otherInterval) {
+        SimpleIntervalTreeNode.prototype.after = function (otherInterval) {
             return (this.interval['start'] > otherInterval['end']);
         };
 
-        this.before = function (otherInterval) {
+        SimpleIntervalTreeNode.prototype.before = function (otherInterval) {
             return (this.interval['end'] < otherInterval['start']);
-        }
+        };
     }
 
     function SimpleIntervalTree() {
         this.size = 0;
         this.root = null;
 
-        this.add = function (interval, classTitle) {
+        SimpleIntervalTree.prototype.add = function (interval, sectionNum) {
             // converting into a node
             let prevSize = this.size;
-            this.root = this.insert(this.root, interval, classTitle);
+            this.root = this.insert(this.root, interval, sectionNum);
             let afterSize = this.size;
             return afterSize === prevSize + 1;
         };
 
-        this.insert = function (node, interval, classTitle) {
+        SimpleIntervalTree.prototype.insert = function (node, interval, sectionNum) {
             if (node === null) {
                 this.size++;
-                return new SimpleIntervalTreeNode(interval, classTitle);
+                return new SimpleIntervalTreeNode(interval, sectionNum);
             }
             if (node.before(interval)) {
-                node.right = this.insert(node.right, interval, classTitle);
+                node.right = this.insert(node.right, interval, sectionNum);
             } else if (node.after(interval)) {
-                node.left = this.insert(node.left, interval, classTitle);
+                node.left = this.insert(node.left, interval, sectionNum);
             }
             return node;
         };
 
-        this.contains = function (interval) {
+        SimpleIntervalTree.prototype.contains = function (interval) {
             return this.nodeContains(this.root, interval);
         };
 
-        this.nodeContains = function (node, interval) {
+        SimpleIntervalTree.prototype.nodeContains = function (node, interval) {
             if (node === null) {
                 return null;
             }
@@ -165,16 +235,16 @@ export function SGWorkerCode() {
             } else if (node.after(interval)) {
                 return this.nodeContains(node.left, interval);
             }
-            return node.classTitle;
+            return node.sectionNum;
         };
 
-        this.remove = function (interval, classTitle) {
-            this.root = this.removeNode(this.root, interval, classTitle);
+        SimpleIntervalTree.prototype.remove = function (interval, sectionNum) {
+            this.root = this.removeNode(this.root, interval, sectionNum);
         };
 
-        this.removeNode = function (node, interval, classTitle) {
+        SimpleIntervalTree.prototype.removeNode = function (node, interval, sectionNum) {
             if (node === null) return null;
-            if (node.interval === interval && node.classTitle === classTitle) {
+            if (node.interval === interval && node.sectionNum === sectionNum) {
                 // decrement size
                 this.size--;
                 // case 1 no children YAY
@@ -208,10 +278,10 @@ export function SGWorkerCode() {
 
                     // if lag pointer is the node then fast pointer must be immediately to its right
                     if (lagPointer === node) {
-                        lagPointer.right = this.removeNode(fastPointer, fastPointer.interval, classTitle);
+                        lagPointer.right = this.removeNode(fastPointer, fastPointer.interval, sectionNum);
                     } else {
                         // otherwise it is to the left and we can remove from the left
-                        lagPointer.left = this.removeNode(fastPointer, fastPointer.interval, classTitle);
+                        lagPointer.left = this.removeNode(fastPointer, fastPointer.interval, sectionNum);
                     }
                     // gotta add back the thing we removed cause we didn't actually end up removing in this stack frame
                     this.size++;
@@ -222,31 +292,13 @@ export function SGWorkerCode() {
                 }
             } else {
                 if (node.before(interval)) {
-                    node.right = this.removeNode(node.right, interval, classTitle);
+                    node.right = this.removeNode(node.right, interval, sectionNum);
                 } else if (node.after(interval)) {
-                    node.left = this.removeNode(node.left, interval, classTitle);
+                    node.left = this.removeNode(node.left, interval, sectionNum);
                 }
                 return node;
             }
         }
-    }
-
-    /**
-     *
-     * @param section
-     * @param conflicts is a dictionary with that maps class titles to the sections to ignore
-     */
-    function ignoreSubsections(section, conflicts) {
-        if (!section || section.length === 0) {
-            return section;
-        }
-        let firstSubsection = section[0];
-        if (!(firstSubsection.classTitle in conflicts)) {
-            return section;
-        }
-
-        let conflictsForClassTitle = conflicts[firstSubsection.classTitle];
-        return section.filter(s => !conflictsForClassTitle.includes(s.type));
     }
 
     /**
@@ -259,12 +311,15 @@ export function SGWorkerCode() {
         this.classes = schedule;
     }
 
+    /**
+     * Stores the generated schedules and any errors that occurred
+     */
     function GenerationResult(schedules, errors) {
         this.schedules = schedules;
         this.errors = errors;
     }
 
-    function SGWorker() {
+    function ScheduleGenerator(classData = [], conflicts = [], preferences = []) {
         // error map represents an undirected graph where (u,v) exists in edge set E iff u is incompatible with v
         // key is u, value is list of v in which above relationship holds
         this.errorMap = {};
@@ -273,15 +328,42 @@ export function SGWorkerCode() {
         // includes the ones that failed to generate
         this.batchedUpdates = 0;
 
+        this.classData = classData;
+        this.conflicts = conflicts;
+        this.preferences = preferences;
+
+        // an interval tree for generating schedules
+        this.intervalTree = new SimpleIntervalTree();
+
+        /**
+         *
+         * @param section
+         * @param conflicts is a dictionary with that maps class titles to the sections to ignore
+         */
+        ScheduleGenerator.prototype.ignoreSubsections = function (section) {
+            if (!section || section.subsections.length === 0) {
+                return section;
+            }
+
+            let firstSubsection = section.subsections[0];
+            if (!(firstSubsection.classTitle in this.conflicts)) {
+                return section;
+            }
+
+            let conflictsForClassTitle = this.conflicts[firstSubsection.classTitle];
+            return section.filter(s => !conflictsForClassTitle.includes(s.type));
+        };
+
+
         /**
          * Adds all the subsections of the given section to the interval tree
          * @param section - section we want to add
          * @param intervalTree - interval tree we are adding to
          */
-        this.addSection = function (section, intervalTree) {
-            for (let subsection of section) {
+        ScheduleGenerator.prototype.addSection = function (section) {
+            for (let subsection of section.subsections) {
                 // include the class title for error management purposes
-                intervalTree.add(subsection.timeInterval, subsection.classTitle);
+                this.intervalTree.add(subsection.timeInterval, section.sectionNum);
             }
         };
 
@@ -291,16 +373,15 @@ export function SGWorkerCode() {
          * @param intervalTree - interval tree to look over
          * @returns {Array} a list of section classTitles that conflict
          */
-        this.getConflictingSections = function (section, intervalTree) {
+        ScheduleGenerator.prototype.getConflictingSections = function (section) {
             let ret = new Set();
-            for (let subsection of section) {
-                if(subsection.timeInterval == null) {
-                    console.log(subsection);
-                }
-
-                let conflictingSection = intervalTree.contains(subsection.timeInterval);
-                if (conflictingSection !== null)
+            for (let subsection of section.subsections) {
+                let conflictingSection = this.intervalTree.contains(subsection.timeInterval);
+                if (conflictingSection !== null) {
                     ret.add(conflictingSection);
+                    console.log(section);
+                    console.log("Found conflict on trying to add " + section.sectionNum);
+                }
             }
             return Array.from(ret);
         };
@@ -310,10 +391,10 @@ export function SGWorkerCode() {
          * @param section - section we want to remove
          * @param intervalTree - tree we are operating on
          */
-        this.removeSection = function (section, intervalTree) {
-            for (let subsection of section) {
+        ScheduleGenerator.prototype.removeSection = function (section) {
+            for (let subsection of section.subsections) {
                 // only remove the subsections that have the same class title
-                intervalTree.remove(subsection.timeInterval, subsection.classTitle);
+                this.intervalTree.remove(subsection.timeInterval, section.sectionNum);
             }
         };
 
@@ -322,7 +403,7 @@ export function SGWorkerCode() {
          * threshold
          * @param val the amount we want to increment by =
          */
-        this.incrementProgress = function (val) {
+        ScheduleGenerator.prototype.incrementProgress = function (val) {
             // doing stuff for progress bar for schedules
             this.batchedUpdates += val;
             if (this.batchedUpdates > 10) {
@@ -332,207 +413,185 @@ export function SGWorkerCode() {
         };
 
         /**
+         * Gets the section object for the class given the sectionNum identification field
+         * @param sectionNum the field that identifies which section, CSE11$0,
+         */
+        ScheduleGenerator.prototype.getSectionFor = function (sectionNum) {
+            // splitting the string based on info
+            const title = sectionNum.split("$")[0];
+
+            for (let Class of this.classData) {
+                if (title.startsWith(Class.department)) {
+                    for (let section of Class.sections) {
+                        if (section.sectionNum === sectionNum)
+                            return section;
+                    }
+                }
+            }
+        };
+
+        // I wrote this cause I had to don't judge me future person (probably Cameron)
+        ScheduleGenerator.prototype.buildClass = function (section) {
+            console.log(section);
+            for (let Class of this.classData) {
+                if (section.sectionNum.startsWith(Class.department)) {
+                    for (let compare of Class.sections) {
+                        if (section.sectionNum === compare.sectionNum) {
+                            return Object.assign({}, Class, {sections: [section]});
+                        }
+                    }
+                }
+            }
+        };
+
+        /**
+         * Will evaluate the given schedule with the preference objects given
+         */
+        ScheduleGenerator.prototype.evaluateSchedule = function (schedule) {
+            let score = 0;
+            for (let classSection of schedule) {
+                for (let preference of this.preferences) {
+                    score += preference.evaluate(this.getSectionFor(classSection));
+                }
+            }
+            return score;
+        };
+
+        /**
          * On the case in which we failed to add a class, get all the sections that conflicted upon addition
          * and update the undirected graph (represented as a dictionary) with the class titles
          * @param sectionFailedToAdd - self explanatory
          * @param sectionConflicts - list of class titles that conflicted
          */
-        this.handleFailedToAdd = function (sectionFailedToAdd, sectionConflicts) {
+        ScheduleGenerator.prototype.handleFailedToAdd = function (sectionFailedToAdd, sectionConflicts) {
             if (sectionFailedToAdd.length < 1)
                 return;
             // make sure there are conflicts just in case
             if (sectionConflicts.length < 1)
                 return;
 
-            let failedClassTitle = sectionFailedToAdd[0].classTitle;
+            let failedClassTitle = sectionFailedToAdd.courseNum;
             // no source vertex as
             if (!(failedClassTitle in this.errorMap))
                 this.errorMap[failedClassTitle] = new Set();
 
             sectionConflicts.forEach(conflict => {
                 // mapping one part of source
-                this.errorMap[failedClassTitle].add(conflict)
+                this.errorMap[failedClassTitle].add(conflict);
 
                 // have to add failedClassTitle to other sources too
-                if(!(conflict in this.errorMap))
+                if (!(conflict in this.errorMap))
                     this.errorMap[conflict] = new Set();
 
                 this.errorMap[conflict].add(failedClassTitle);
             });
         };
 
-        this.updateProgressForFailedAdd = function (classData, curIndex) {
+        ScheduleGenerator.prototype.updateProgressForFailedAdd = function (curClassIndex) {
             let failedSchedules = 1;
             // getting all classes that could have been part of this generationResult
-            for (let i = curIndex + 1; i < classData.length; i++) {
-                failedSchedules *= classData[i].length;
+            for (let i = curClassIndex + 1; i < this.classData.length; i++) {
+                failedSchedules *= this.classData[i].length;
             }
             // incrementing for them because we know they failed
             this.incrementProgress(failedSchedules);
         };
 
-        this._dfs = function (classData, currentSchedule, intervalTree, schedules, conflicts, counter) {
-            if (counter >= classData.length) {
+        ScheduleGenerator.prototype.dfs = function (result, currentSchedule = [], numClassesAdded = 0) {
+            console.log("Current schedule is " + currentSchedule);
+            console.log(numClassesAdded);
+            if (numClassesAdded >= this.classData.length) {
+                console.log("Adding schedule " + currentSchedule);
                 let score = this.evaluateSchedule(currentSchedule);
-                schedules.push([score, currentSchedule]);
+                const copySchedule = currentSchedule.slice();
+                result.push([score, copySchedule]);
+
 
                 this.incrementProgress(1);
-                //console.info(this.numSchedules);
-                //this.dispatchProgressFunction(schedulePercentComplete);
                 return;
             }
 
-            let currentClassGroup = classData[counter];
+            let currentClass = this.classData[numClassesAdded];
 
-            // in the case that a class has all TBA for day or time
-            if(currentClassGroup.length === 0) {
-                this._dfs(classData, currentSchedule, intervalTree, schedules, conflicts, counter + 1);
+            // this occurs when all the sections are TBA or cancelled
+            // no sections for this class
+            if (currentClass.sections.length === 0) {
+                // just increment the counter one
+                this.dfs(result, currentSchedule, numClassesAdded + 1);
             }
 
-            for (let i = 0; i < currentClassGroup.length; i++) {
+            for (let i = 0; i < currentClass.sections.length; i++) {
                 // current class group has all the sections for CSE 11
                 // this will be an array of sections
                 // so [[class, class] , [class, class]]
 
                 // current section
-                let currentSection = currentClassGroup[i];
-                let filteredSection = ignoreSubsections(currentSection, conflicts);
+                let currentSection = currentClass.sections[i];
 
+                // no need to look at this section if it has no subsections
+                if (currentSection.subsections.length === 0)
+                    continue;
+
+                // will remove subsections that have been ignored from consideration
+                let filteredSection = this.ignoreSubsections(currentSection);
                 // check if we have any time conflicts on adding all the subsections
                 // (NOTE) goes off the assumption that there are no conflicts within the class - that
                 // was proven to be incorrect
-                let conflictsForSection = this.getConflictingSections(filteredSection, intervalTree);
+                let conflictsForSection = this.getConflictingSections(filteredSection);
+                console.log("Conflicting sections ");
+                console.log(conflictsForSection);
                 // if we have any conflicts at all that mean the section cannot be added
                 if (conflictsForSection.length > 0) {
                     this.handleFailedToAdd(filteredSection, conflictsForSection);
-                    this.updateProgressForFailedAdd(classData, counter);
+                    this.updateProgressForFailedAdd(numClassesAdded);
                     continue;
                 }
 
                 // adding subsections to interval tree if they are all valid
-                this.addSection(filteredSection, intervalTree);
+                this.addSection(filteredSection);
 
+                currentSchedule.push(currentSection.sectionNum);
                 // choosing to use this for our current generationResult - use the actual section not what was filtered
                 // this is so that the result has all the correct subsections, but we operate with the filtered sections
-                let copySchedule = currentSchedule.slice();
-                copySchedule.push(currentSection);
-                this._dfs(classData, copySchedule, intervalTree, schedules, conflicts, counter + 1);
+                this.dfs(result, currentSchedule, numClassesAdded + 1);
 
+                // remove after done
+                currentSchedule.pop();
                 // removing all intervals we added so can continue to DFS
-                this.removeSection(filteredSection, intervalTree);
+                this.removeSection(filteredSection);
             }
         };
 
-        this.dfs = function (classData, conflicts) {
+        ScheduleGenerator.prototype.generate = function () {
             let schedules = [];
-            this._dfs(classData, [], new SimpleIntervalTree(), schedules, conflicts, 0);
+            this.dfs(schedules);
 
             // schedules is now populated with data
             schedules = schedules.sort((scheduleArr1, scheduleArr2) => {
                 if (scheduleArr1[0] > scheduleArr2[0]) return -1; else return 1;
             });
 
+            // get the top 5
+            schedules = schedules.slice(0, 6);
+            // schedules is an array of tuples where arr[0] is the score and arr[1] is the list of sections
+            schedules = schedules.map(arr => {
+                return arr[1].map(sectionNum => this.buildClass(this.getSectionFor(sectionNum)));
+            });
+
             // convert all of the sets in the error map to lists
-            Object.keys(this.errorMap).forEach(errorKey => this.errorMap[errorKey] = Array.from(this.errorMap[errorKey]));
+            Object.keys(this.errorMap)
+                .forEach(errorKey => this.errorMap[errorKey] = Array.from(this.errorMap[errorKey]));
 
             let errors = this.errorMap;
-
-            schedules = schedules.slice(0, 6);
-            schedules = schedules.map(el => new Schedule(el[1]));
 
             if (schedules.length > 0) {
                 errors = {};
             }
+
             // only really care about errors if we failed to generate a generationResult
-            return new GenerationResult(schedules, errors);
-        };
-
-        this.generateSchedule = function (classData, conflicts = [], preferences = []) {
-            //this.dispatchProgressFunction = dispatchProgressFunction;
-            this.numSchedules = 0;
-            this.totalPossibleSchedules = 1;
-
-            // input is a 2D array where each element is a list of all the sections of a specific class
-            // converting dict where key is courseNum to 2D array
-            let inputToDFS = [];
-
-            Object.keys(classData).forEach(courseNum => {
-                // class sections for course num is an array of all the different sections that are the same class
-                // CSE 11: [[class, class], [class, class]]
-                let classSectionsForCourseNum = classData[courseNum];
-                // multiplying to see total number of schedules because length of classSectionsForCourseNum gives num sections
-                this.totalPossibleSchedules *= classSectionsForCourseNum.length;
-
-                inputToDFS.push(classSectionsForCourseNum);
-            });
-
-
-            this.evaluateSchedule = (schedule) => {
-                let score = 0;
-                for (let Class of schedule) {
-                    if (Class.length === 0) {
-                        return 0;
-                    }
-
-                    for (let preference of preferences) {
-                        score += preference.evaluate(Class);
-                    }
-                }
-                return score;
-            };
-
-            // now we have an array where each index is a Class Group
-            // we can start brute force dfs now
-            return this.dfs(inputToDFS, conflicts);
-        };
-    }
-
-    this.initPreferences = preferences => {
-        return preferences.map(preference => {
-            if (preference.type) {
-                switch (preference.type) {
-                    case "DAY":
-                        return new DayPreference(preference.days);
-                    case "TIME":
-                        return new TimePreference(preference.start, preference.end);
-                    case "PRIORITY":
-                        let modifiedPreferences = preference.preferences;
-                        for (let i = 0; i < modifiedPreferences.length; i++) {
-                            let modPref = modifiedPreferences[i];
-                            switch (modifiedPreferences[i].type) {
-                                case "INSTRUCTOR":
-                                    modifiedPreferences[i] = new InstructorPreference(modPref.Class, modPref.instructor);
-                                    break;
-                                default:
-                                    return null;
-                            }
-                        }
-                        return new PriorityModifier(preference.Class, modifiedPreferences, preference.priority);
-                    default:
-                        return null;
-                }
-            } else {
-                return null;
-            }
-        });
-    };
-
-    this.onmessage = evt => {
-        if (!evt)
-            return;
-        let data = evt.data;
-
-        console.log(data);
-
-        let worker = new SGWorker();
-        let {classData, conflicts, preferences} = data;
-        let realPreferences = this.initPreferences(preferences);
-
-        let results = worker.generateSchedule(classData, conflicts, realPreferences);
-        // returns a promise
-        postMessage({
-            type: "FINISHED_GENERATION",
-            generationResult: results
-        });
+            let ret = new GenerationResult(schedules, errors);
+            console.log(ret);
+            return ret;
+        }
     }
 }

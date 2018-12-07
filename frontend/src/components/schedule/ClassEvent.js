@@ -12,9 +12,9 @@ export default class CustomEvent extends Component {
     }
 
     render() {
-        const classTitle = `${this.props.event.classTitle} ${this.props.event.type}`;
+        const classTitle = `${this.props.event.title} ${this.props.event.type}`;
 
-        const courseID = `Course ID: ${this.props.event.courseID}`;
+        const courseID = `Course ID: ${this.props.event.id}`;
         const startTime = this.props.event.start.toLocaleTimeString('en-US', {
             hour: '2-digit',
             minute: '2-digit',
@@ -28,7 +28,7 @@ export default class CustomEvent extends Component {
         });
 
         const time = `Time: ${startTime} - ${endTime}`;
-        const location = `Location: ${this.props.event.roomLocation} ${this.props.event.room}`;
+        const location = `Location: ${this.props.event.location} ${this.props.event.room}`;
         const instructor = `Instructor: ${this.props.event.instructor}`;
 
         return (
