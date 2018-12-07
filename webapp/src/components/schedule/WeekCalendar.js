@@ -89,7 +89,7 @@ class WeekCalendar extends PureComponent {
         };
 
         let icsDownload = (
-            <Button label="Download Calendar" className="ui-button-info"
+            <Button label="Download Calendar"
                     onClick={this.downloadICS.bind(this, this.state.subsections)}
                     disabled={this.props.empty}/>
         );
@@ -101,7 +101,7 @@ class WeekCalendar extends PureComponent {
         return (
             <div className="calendar-content">
                 {!this.props.empty &&
-                    <div className="calendar-button">
+                    <div className="ui-button-info calendar-button">
                         {icsDownload}
                         {toGCalendar}
                     </div>

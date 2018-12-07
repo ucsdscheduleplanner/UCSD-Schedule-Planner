@@ -96,8 +96,10 @@ export class GCalendar extends Component {
         const DIALOG_WIDTH = "350px";
         const footer = (
             <div>
-                <Button label="Yes" icon="pi pi-check" onClick={this.addEvents.bind(this, this.state.subsections)} />
-                <Button label="No" icon="pi pi-times" onClick={this.onHide.bind(this)} />
+                <Button label="Yes" className="ui-button-info calendar-button" icon="pi pi-check"
+                        onClick={this.addEvents.bind(this, this.state.subsections)} />
+                <Button label="No" className="ui-button-info calendar-button" icon="pi pi-times"
+                        onClick={this.onHide.bind(this)} />
             </div>
         );
 
@@ -110,7 +112,6 @@ export class GCalendar extends Component {
                 <Button
                     id="gcalendar-button"
                     label="Add to Google Calendar"
-                    className="ui-button-info"
                     onClick={(e) => this.setState({visible: true})}
                     disabled={this.props.empty}/>
             </React.Fragment>
