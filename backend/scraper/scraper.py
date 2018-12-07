@@ -12,6 +12,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.select import Select
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
+from selenium.common.exceptions import TimeoutException
 
 from settings import HTML_STORAGE
 from settings import HOME_DIR 
@@ -26,6 +27,8 @@ QUARTER_INSERT_SCRIPT = """let select = document.getElementById("selectedTerm");
             select.appendChild(opt);
             document.getElementById("selectedTerm").value = "{}";
             """
+
+MAX_RETRIES = 10
 
 class Scraper:
     def __init__(self):
@@ -50,6 +53,40 @@ class Scraper:
         # Go back to the home directory
         os.chdir(HOME_DIR)
 
+    # Thread-safe way of marking that at least one thread has crashed 
+    def set_crashed(self):
+        self.mutex.acquire() 
+        try:
+            self.crashed = True
+        finally:
+            self.mutex.release()
+
+    # Thread-safe way of checking if the program has crashed 
+    def has_crashed(self):
+        local_crashed = False
+        self.mutex.acquire()
+        try:
+            local_crashed = self.crashed
+        finally:
+            self.mutex.release()
+        return local_crashed
+
+    # Tries getting the given page {max_retries} number of times before quitting
+    def get_page_with_retries(self, browser, page_url, max_retries, thread_id):
+        retries = 0
+        while True:
+            try:
+                browser.get(page_url)
+                return 
+            except TimeoutException as e:
+                retries += 1 
+                print ("[T{0}] Failed to download page {1}.".format(thread_id, page_url))
+                if retries < max_retries:
+                    print ("[T{0}] {1}/{2} attempts. Retrying ...".format(thread_id, retries, max_retries))
+                else:
+                    print ("[T{0}] {1}/{2} attempts. All retries have been exhausted.".format(thread_id, retries, max_retries))
+                    raise e
+
     def scrape(self):
         print('Beginning course scraping.')
         curr_time = time.time()
@@ -67,7 +104,7 @@ class Scraper:
         
         # Allocate a pool of threads; each worker handles an equal subset of the work
         for i in range(pool_size):
-            t = Thread(target=self.iter_departments_handle_errors, args=[i, pool_size])
+            t = Thread(target=self.iter_departments_by_thread_handle_errors, args=[i, pool_size])
             t.start()
             pool.append(t)
 
@@ -75,29 +112,14 @@ class Scraper:
         for t in pool:
             t.join()
 
-    def has_crashed_thread_safe(self):
-        # Acquire the mutex, read the crashed variable into a local version, and return it
-        local_crashed = False
-        self.mutex.acquire()
-        try:
-            local_crashed = self.crashed
-        finally:
-            self.mutex.release()
-        return local_crashed
-            
-    def iter_departments_handle_errors(self, thread_id, num_threads): 
+    def iter_departments_by_thread_handle_errors(self, thread_id, num_threads): 
+        # If a thread receives an error during execution, kill all threads & mark program as crashed
         try:
             self.iter_departments_by_thread(thread_id, num_threads)
         except: 
-            # Acquire the mutex and note that the scraper has crashed
-            self.mutex.acquire() 
-            try:
-                # Print traceback to stdout 
-                print("Error encountered by thread {}. Gracefully exiting ...".format(thread_id), file=sys.stderr)
-                traceback.print_exc(file=sys.stderr)
-                self.crashed = True
-            finally:
-                self.mutex.release()
+            print("Error encountered by thread {}. Gracefully exiting ...".format(thread_id), file=sys.stderr)
+            traceback.print_exc(file=sys.stderr)
+            self.set_crashed()
 
     def iter_departments_by_thread(self, thread_id, num_threads): 
         print("Thread {} is starting.".format(thread_id))
@@ -115,20 +137,20 @@ class Scraper:
         browser = webdriver.Chrome(chrome_options=options, executable_path=DRIVER_PATH)
         browser.set_page_load_timeout(TIMEOUT)
         browser.implicitly_wait(1)
-        browser.get(self.login_url)
-
-        local_crashed = False
+            
+        self.get_page_with_retries(browser, self.login_url, MAX_RETRIES, thread_id)
 
         while counter < len(self.departments):
             # Exit if any part of the scraper has crashed 
-            if self.has_crashed_thread_safe():
+            if self.has_crashed():
                 print("Thread {} is exiting gracefully ...".format(thread_id), file=sys.stderr)
                 return
 
             # Access the appropriate department 
             department = self.departments[counter]
 
-            browser.get(self.login_url)
+            self.get_page_with_retries(browser, self.login_url, MAX_RETRIES, thread_id)
+            
             WebDriverWait(browser, TIMEOUT).until(EC.presence_of_element_located
                                                        ((By.ID, 'selectedSubjects')))
 
@@ -168,7 +190,7 @@ class Scraper:
         base_url = browser.current_url
 
         while True:
-            if self.has_crashed_thread_safe():
+            if self.has_crashed():
                 return False
 
             try:
@@ -187,7 +209,7 @@ class Scraper:
             self.store_page(department, html, current_page, thread_id)
             current_page += 1
             current_url = base_url + "?page={}".format(current_page)
-            browser.get(current_url)
+            self.get_page_with_retries(browser, current_url, MAX_RETRIES, thread_id)
 
     def store_page(self, department, page_contents, num_page, thread_id):
         if not os.path.exists(self.dir_path):
@@ -200,5 +222,3 @@ class Scraper:
         file.write(page_contents)
         print('[T{0}] Saving'.format(thread_id), '{0} (#{1})'.format(department, num_page), 'to', file.name, '...')
         file.close()
-
-

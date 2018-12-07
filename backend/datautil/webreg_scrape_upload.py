@@ -13,8 +13,7 @@ sc = Scraper()
 sc.scrape()
 
 if sc.crashed:
-    print("The scraper has crashed.", file=sys.stderr)
-    print("Make sure you have a good Internet connection before scraping.", file=sys.stderr)
+    print("The scraper has crashed. Please retry.", file=sys.stderr)
     sys.exit(1)
 else:
     parser = Parser()
