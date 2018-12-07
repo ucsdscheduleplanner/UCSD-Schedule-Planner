@@ -47,53 +47,55 @@ function makeTimeInterval(time) {
 describe('Calendar component', () => {
   const time = '17:00-18:20';
 
-  let testSchedule = {
-    classes: [
-      [
+  let testSchedule = [
+    {
+      title: 'CSE 12',
+      number: '12',
+      description: 'Basic Data Struct & OO Design  ( 4Units)',
+      department: 'CSE',
+      sections: [
         {
-          classTitle: 'CSE 11',
-          courseID: '961427',
-          courseNum: '11',
-          day: 'Tu',
-          department: 'CSE',
-          description: 'Intr/Computer Sci&Obj-Ori:Java( 4Units)',
-          instructor: 'Zaitsev, Anna L',
-          location: 'CENTR 115',
-          room: '115',
-          roomLocation: 'CENTR',
-          sectionID: 'CSE11$0',
-          time: time,
-          timeInterval: makeTimeInterval(time),
-          type: 'LE',
+          id: '961434',
+          sectionNum: 'CSE12$0',
+          subsections: [
+            {
+              day: 'Tu',
+              instructor: 'Politz, Joseph Gibbs',
+              location: 'YORK',
+              room: '115',
+              timeInterval: makeTimeInterval('17:00-17:50', 'F'),
+              type: 'DI',
+            },
+          ],
         },
       ],
-    ],
-    errors: {},
-  };
+    },
+  ];
 
-  let testSchedule2 = {
-    classes: [
-      [
+  let testSchedule2 = [
+    {
+      title: 'CSE 11',
+      number: '11',
+      description: 'Hello ( 4Units)',
+      department: 'CSE',
+      sections: [
         {
-          classTitle: 'CSE 12',
-          courseID: '961423',
-          courseNum: '12',
-          day: 'Tu',
-          department: 'CSE',
-          description: 'Intr/Computer Sci&Obj-Ori:Java( 4Units)',
-          instructor: 'Zaitsev, Anna L',
-          location: 'CENTR 115',
-          room: '115',
-          roomLocation: 'CENTR',
-          sectionID: 'CSE12$0',
-          time: '12:00-15:20',
-          timeInterval: makeTimeInterval(time),
-          type: 'LE',
+          id: '961434',
+          sectionNum: 'CSE12$0',
+          subsections: [
+            {
+              day: 'Tu',
+              instructor: 'Politz, Joseph Gibbs',
+              location: 'YORK',
+              room: '115',
+              timeInterval: makeTimeInterval('12:00-12:50', 'F'),
+              type: 'DI',
+            },
+          ],
         },
       ],
-    ],
-    errors: {},
-  };
+    },
+  ];
 
   const generationResult = {
     schedules: [testSchedule, testSchedule2],

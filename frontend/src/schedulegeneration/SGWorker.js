@@ -1,7 +1,5 @@
 // the code that goes into the web worker
-import {TimePreference} from "../utils/Preferences";
-
-export function SGWorkerCode() {
+export function SGWorker() {
     this.onmessage = function (evt) {
         console.log("Got here");
         if (!evt)
@@ -25,6 +23,10 @@ export function SGWorkerCode() {
         });
     };
 
+    this.getScheduleGenerator = function(data) {
+        let {classData, conflicts, preferences} = data;
+        return new ScheduleGenerator(classData, conflicts, preferences);
+    };
 
     /**
      * Testing seam
@@ -32,12 +34,13 @@ export function SGWorkerCode() {
      * @returns {GenerationResult}
      */
     this.generate = function (data) {
-        let worker = new ScheduleGenerator();
         let {classData, conflicts, preferences} = data;
-        // have to convert crom JSOn preferences to preference objects
-        preferences = initPreferences(preferences);
 
-        return worker.generate(classData, conflicts, preferences);
+        // have to convert from JSOn preferences to preference objects
+        preferences = initPreferences(preferences);
+        let worker = new ScheduleGenerator(classData, conflicts, preferences);
+
+        return worker.generate();
     };
 
     function initPreferences(preferences) {
@@ -164,15 +167,13 @@ export function SGWorkerCode() {
     function DayPreference(days) {
         this.days = days;
 
-        DayPreference.prototype.evaluate = function (classToEvaluate) {
-            if (classToEvaluate.length === 0) {
-                return 0;
-            }
+        DayPreference.prototype.evaluate = function (section) {
             let score = 0;
-            for (let subsection of classToEvaluate) {
+            for (let subsection of section.subsections) {
                 if (!subsection.day) {
                     score += -10;
                 }
+
                 if (this.days.includes(subsection.day)) {
                     score += 20;
                 }
@@ -302,16 +303,6 @@ export function SGWorkerCode() {
     }
 
     /**
-     * Will hold the actual generationResult and any errors that come up
-     * @param schedule
-     * @param errors
-     * @constructor
-     */
-    function Schedule(schedule) {
-        this.classes = schedule;
-    }
-
-    /**
      * Stores the generated schedules and any errors that occurred
      */
     function GenerationResult(schedules, errors) {
@@ -319,6 +310,13 @@ export function SGWorkerCode() {
         this.errors = errors;
     }
 
+    /**
+     *
+     * @param classData
+     * @param conflicts is a mapping between Class to types, e.g {"CSE 12": ["LE", "DI"]}
+     * @param preferences
+     * @constructor
+     */
     function ScheduleGenerator(classData = [], conflicts = [], preferences = []) {
         // error map represents an undirected graph where (u,v) exists in edge set E iff u is incompatible with v
         // key is u, value is list of v in which above relationship holds
@@ -336,22 +334,15 @@ export function SGWorkerCode() {
         this.intervalTree = new SimpleIntervalTree();
 
         /**
-         *
-         * @param section
-         * @param conflicts is a dictionary with that maps class titles to the sections to ignore
+         * Will ignore the subsections in a given section
+         * @param Class the current Class which holds the sections
+         * @param section the current section we are iterating on
          */
-        ScheduleGenerator.prototype.ignoreSubsections = function (section) {
-            if (!section || section.subsections.length === 0) {
-                return section;
-            }
+        ScheduleGenerator.prototype.ignoreSubsections = function (Class, section) {
+            let conflictsForClassTitle = this.conflicts[Class.title];
+            let filteredSubsections = section.subsections.filter(s => !conflictsForClassTitle.includes(s.type));
 
-            let firstSubsection = section.subsections[0];
-            if (!(firstSubsection.classTitle in this.conflicts)) {
-                return section;
-            }
-
-            let conflictsForClassTitle = this.conflicts[firstSubsection.classTitle];
-            return section.filter(s => !conflictsForClassTitle.includes(s.type));
+            return Object.assign({}, section, {subsections: filteredSubsections});
         };
 
 
@@ -418,10 +409,8 @@ export function SGWorkerCode() {
          */
         ScheduleGenerator.prototype.getSectionFor = function (sectionNum) {
             // splitting the string based on info
-            const title = sectionNum.split("$")[0];
-
             for (let Class of this.classData) {
-                if (title.startsWith(Class.department)) {
+                if (sectionNum.startsWith(Class.department)) {
                     for (let section of Class.sections) {
                         if (section.sectionNum === sectionNum)
                             return section;
@@ -434,9 +423,12 @@ export function SGWorkerCode() {
         ScheduleGenerator.prototype.buildClass = function (section) {
             console.log(section);
             for (let Class of this.classData) {
+                // CSE 11$0 is the sectionNum
+                // CSE is the department
                 if (section.sectionNum.startsWith(Class.department)) {
                     for (let compare of Class.sections) {
                         if (section.sectionNum === compare.sectionNum) {
+                            // don't want to copy the previous sections field, only want the new one
                             return Object.assign({}, Class, {sections: [section]});
                         }
                     }
@@ -464,27 +456,34 @@ export function SGWorkerCode() {
          * @param sectionConflicts - list of class titles that conflicted
          */
         ScheduleGenerator.prototype.handleFailedToAdd = function (sectionFailedToAdd, sectionConflicts) {
-            if (sectionFailedToAdd.length < 1)
+            if (sectionFailedToAdd.subsections.length === 0)
                 return;
+
             // make sure there are conflicts just in case
             if (sectionConflicts.length < 1)
                 return;
 
-            let failedClassTitle = sectionFailedToAdd.courseNum;
+            let sectionNum = sectionFailedToAdd.sectionNum;
             // no source vertex as
-            if (!(failedClassTitle in this.errorMap))
-                this.errorMap[failedClassTitle] = new Set();
+            if (!(sectionNum in this.errorMap))
+                this.errorMap[sectionNum] = new Set();
 
             sectionConflicts.forEach(conflict => {
                 // mapping one part of source
-                this.errorMap[failedClassTitle].add(conflict);
+                this.errorMap[sectionNum].add(conflict);
 
                 // have to add failedClassTitle to other sources too
                 if (!(conflict in this.errorMap))
                     this.errorMap[conflict] = new Set();
 
-                this.errorMap[conflict].add(failedClassTitle);
+                this.errorMap[conflict].add(sectionNum);
             });
+
+            console.log(this.errorMap);
+        };
+
+        ScheduleGenerator.prototype.isClassIgnored = function (Class) {
+            return Class.title in this.conflicts;
         };
 
         ScheduleGenerator.prototype.updateProgressForFailedAdd = function (curClassIndex) {
@@ -501,6 +500,11 @@ export function SGWorkerCode() {
             console.log("Current schedule is " + currentSchedule);
             console.log(numClassesAdded);
             if (numClassesAdded >= this.classData.length) {
+                if (currentSchedule.length === 0) {
+                    console.log("Schedule is empty, skipping");
+                    return;
+                }
+
                 console.log("Adding schedule " + currentSchedule);
                 let score = this.evaluateSchedule(currentSchedule);
                 const copySchedule = currentSchedule.slice();
@@ -532,14 +536,18 @@ export function SGWorkerCode() {
                 if (currentSection.subsections.length === 0)
                     continue;
 
-                // will remove subsections that have been ignored from consideration
-                let filteredSection = this.ignoreSubsections(currentSection);
+                let filteredSection = currentSection;
+                // check first if we should even care to remove subsections
+                if (this.isClassIgnored(currentClass)) {
+                    // will remove subsections that have been ignored from consideration
+                    filteredSection = this.ignoreSubsections(currentClass, currentSection);
+                }
+
                 // check if we have any time conflicts on adding all the subsections
                 // (NOTE) goes off the assumption that there are no conflicts within the class - that
                 // was proven to be incorrect
                 let conflictsForSection = this.getConflictingSections(filteredSection);
-                console.log("Conflicting sections ");
-                console.log(conflictsForSection);
+                console.log("Conflicting sections " + conflictsForSection);
                 // if we have any conflicts at all that mean the section cannot be added
                 if (conflictsForSection.length > 0) {
                     this.handleFailedToAdd(filteredSection, conflictsForSection);
@@ -564,6 +572,7 @@ export function SGWorkerCode() {
 
         ScheduleGenerator.prototype.generate = function () {
             let schedules = [];
+            console.log(this.classData);
             this.dfs(schedules);
 
             // schedules is now populated with data
@@ -590,8 +599,12 @@ export function SGWorkerCode() {
 
             // only really care about errors if we failed to generate a generationResult
             let ret = new GenerationResult(schedules, errors);
+            console.log(schedules);
             console.log(ret);
             return ret;
         }
     }
 }
+
+
+

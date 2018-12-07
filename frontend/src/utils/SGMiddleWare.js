@@ -1,11 +1,11 @@
 import {GENERATE_SCHEDULE, INCREMENT_PROGRESS, RECEIVE_SCHEDULE} from "../actions/ScheduleGenerationActions";
 import WebWorker from "./WebWorker";
-import {SGWorkerCode} from "../schedulegeneration/SGWorker";
+import {SGWorker} from "../schedulegeneration/SGWorker";
 
 
 
 export const SGMiddleWare = store => {
-    const worker = new WebWorker(SGWorkerCode);
+    const worker = new WebWorker(SGWorker);
     worker.onmessage = msg => {
         let {type, generationResult, amount} = msg.data;
         switch(type) {
