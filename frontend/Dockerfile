@@ -12,7 +12,8 @@ RUN yarn install
 
 COPY . /app
 
+RUN chmod u+x run.sh
 
 EXPOSE 3000
 
-CMD ["npm", "start"]
+CMD ["./run.sh"]

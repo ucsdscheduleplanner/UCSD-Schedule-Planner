@@ -1,0 +1,59 @@
+version: '3.0'
+
+services:
+  sdschedule-database:
+    container_name: sdschedule-database
+    image: mariadb:latest
+    environment:
+      - "MYSQL_ROOT_PASSWORD=password" 
+      - "MYSQL_DATABASE=classes"
+    volumes:
+      - "sdschedule-data:/var/lib/mysql"
+  sdschedule-backend:
+    container_name: sdschedule-backend
+    build: backend 
+    ports:
+      - "5000:5000"
+    depends_on: 
+      - "sdschedule-database"
+    environment:
+      - "PYTHONUNBUFFERED=0"
+      - "SDSCHEDULE_SCRAPE=${SDSCHEDULE_SCRAPE}"
+    volumes:
+      - "./backend:/app"
+  sdschedule-frontend:
+    container_name: sdschedule-frontend
+    build: frontend
+    ports: 
+      - "3001:3000" # TODO unnecessary anymore 
+    depends_on: 
+      - "sdschedule-backend"
+    volumes:
+      - "./frontend/src:/app/src"
+      - "./frontend/public:/app/public"
+      - "sdschedule-frontend-build:/app/build"
+    environment:
+      - "ENV=PROD"
+  web:
+    container_name: sdschedule-web
+    image: nginx
+    ports:
+      # - "80:80"
+      # - "443:443"
+      - "3000:3000"
+    depends_on:
+      - "sdschedule-frontend"
+    volumes:
+      - "sdschedule-frontend-build:/var/www/sdschedule"
+      #- "./web/key:/etc/nginx/ssl-key:ro" # for cloudflare origin ssl
+      #- /var/run/docker.sock:/tmp/docker.sock:ro
+      - "./web/letsencrypt:/etc/letsencrypt:ro"
+      - "./web/nginx/nginx.conf:/etc/nginx/nginx.conf:ro"
+      - "./web/nginx/sites:/etc/nginx/sites-enabled:ro"
+      - "./web/nginx/snippets:/etc/nginx/snippets:ro"
+      - "./web/html:/usr/share/nginx/html:ro"
+      - "./web/log:/var/log/nginx"
+    restart: always
+volumes:
+  sdschedule-data:
+  sdschedule-frontend-build:
