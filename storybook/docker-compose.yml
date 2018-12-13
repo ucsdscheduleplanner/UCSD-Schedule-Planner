@@ -5,4 +5,8 @@ services:
       build: .
       ports: 
         - "9001:9001"
+      volumes:
+        - "./src:/app/src"
+        - "./node_modules:/app/node_modules"
+
       
