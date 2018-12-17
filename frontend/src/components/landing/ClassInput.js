@@ -47,20 +47,7 @@ export default class ClassInput extends PureComponent {
         this.setState({instructorOptions: instructorOptions});
     }
 
-    getClassTypeOptions(courseNum) {
-        if (this.props.classTypesPerClass && this.props.classTypesPerClass[courseNum]) {
-            // filtering midterms and finals for now
-            // TODO find way to mess with labels and values to make this cleaner and less shaky
-            return this.props.classTypesPerClass[courseNum].filter((classType) => {
-                return classType["label"] !== "Final Exam" && classType["label"] !== "Midterm";
-            });
-        }
-        // need to return undefined for UI instead of null
-        return [{label: 'None'}];
-    }
-
     getDescriptionForCourseNum(courseNum) {
-        console.log(this.props.descriptionsPerClass);
         return courseNum + " - " + this.props.descriptionsPerClass[courseNum];
     }
 
@@ -82,8 +69,8 @@ export default class ClassInput extends PureComponent {
         );
 
         let addButton = (
-            <div className="form-button" onClick={this.props.addClass}>
-                <Button label="Add Class" disabled={this.props.currentCourseNum === null}/>
+            <div className="form-button" onClick={(e) => this.inputHandler.handleAdd()}>
+                <Button label="Add Class" disabled={this.props.courseNum === null}/>
             </div>
         );
 
@@ -148,9 +135,9 @@ export default class ClassInput extends PureComponent {
                 <Rating value={
                     // same as above with undefined
                     this.props.priority}
-                        onChange={this.props.onPriorityChange}
+                        onChange={(e) => this.inputHandler.onPriorityChange(e.value)}
                         stars={3}
-                        disabled={this.props.currentCourseNum === null}
+                        disabled={this.props.courseNum === null}
                 />
             </div>
         );

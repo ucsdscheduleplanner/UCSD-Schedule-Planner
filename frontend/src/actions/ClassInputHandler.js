@@ -11,6 +11,7 @@ class InputHandler {
     constructor(dispatch, getState) {
         this.dispatch = dispatch;
         this.state = getState().ClassInput;
+        this.getState = getState;
     }
 
     /**
@@ -20,6 +21,9 @@ class InputHandler {
         let department = rawDepartment.trim();
         // sets the department in the store
         this.dispatch(setDepartment(department));
+
+        if(!this.state.departments.includes(department))
+            return;
 
         // set all other fields to blank
         this.dispatch(setCourseNum(null));
@@ -94,9 +98,9 @@ class InputHandler {
     buildClassFromInput() {
         // should refactor this into ClassSkeleton
         let newClass = {};
-        newClass['classTitle'] = `${this.state.currentDepartment} ${this.state.currentCourseNum}`;
-        newClass['courseNum'] = this.state.currentCourseNum;
-        newClass['department'] = this.state.currentDepartment;
+        newClass['classTitle'] = `${this.state.department} ${this.state.courseNum}`;
+        newClass['courseNum'] = this.state.courseNum;
+        newClass['department'] = this.state.department;
         return newClass;
     }
 
@@ -127,7 +131,7 @@ class InputHandler {
 
     isDuplicate(newClass) {
         // testing whether this is a duplicate class
-        return Object.values(this.state.selectedClasses).reduce(function (accumulator, previousClass) {
+        return Object.values(this.getState().ClassSelection).reduce(function (accumulator, previousClass) {
             return accumulator || newClass.classTitle === previousClass['classTitle']
         }, false);
     }
@@ -135,7 +139,7 @@ class InputHandler {
     handleAdd() {
         // gotta have course num and department to do anything
         // checking for both null and undefined
-        if (!this.state.currentCourseNum || !this.state.currentDepartment)
+        if (!this.state.courseNum || !this.state.department)
             return;
 
         let error = false;
@@ -147,10 +151,10 @@ class InputHandler {
         }
 
         // error checking on department and course num
-        if (!this.state.departments.includes(this.state.currentDepartment))
+        if (!this.state.departments.includes(this.state.department))
             error = true;
 
-        if (!this.state.courseNums.includes(this.state.currentCourseNum))
+        if (!this.state.courseNums.includes(this.state.courseNum))
             error = true;
 
         if (error) {
@@ -165,8 +169,8 @@ class InputHandler {
 
         this.dispatch(setInstructor(null));
         this.dispatch(setCourseNum(null));
-        this.dispatch(this.onPriorityChange(null));
-        this.dispatch(this.onConflictChange(null));
+        this.dispatch(setPriority(null));
+        this.dispatch(setConflicts(null));
 
         this.dispatch(setUID(this.state.uid + 1));
     }

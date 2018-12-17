@@ -52,8 +52,12 @@ export default function ClassInputReducer(state = {
                 instructors: action.instructors
             });
         case SET_TYPES:
+            let types = action.types.filter((classType) => {
+                return classType["label"] !== "Final Exam" && classType["label"] !== "Midterm";
+            });
+
             return Object.assign({}, state, {
-                types: action.types
+                types: types
             });
         case SET_COURSE_NUM:
             let courseNum;
@@ -78,7 +82,6 @@ export default function ClassInputReducer(state = {
                 department: department
             });
         case SET_INSTRUCTOR:
-            console.log("settting value to " + action.instructor);
             return Object.assign({}, state, {
                 instructor: action.instructor
             });

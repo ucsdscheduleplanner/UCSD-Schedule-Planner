@@ -9,7 +9,6 @@
  */
 import {BACKEND_URL} from '../settings';
 import {CacheManager} from './CacheManager';
-
 const codeToClassType = {
   AC: 'Activity',
   CL: 'Clinical Clerkship',
@@ -91,6 +90,8 @@ export class DataFetcher {
   static async fetchClassData(selectedClasses) {
     let classesToFetch = [];
     let cachedClasses = [];
+
+    console.log(selectedClasses);
 
     for (let Class of selectedClasses) {
       let isCached = await CacheManager.get().isCached(Class.classTitle);

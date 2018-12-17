@@ -3,7 +3,12 @@ import React, {Component} from 'react';
 import SchedulePreferences from "../components/landing/SchedulePreferences";
 import {bindActionCreators} from "redux";
 import {getSchedule} from "../actions/ScheduleGenerationActions";
-import {addDayPreference, addEndPreference, addStartPreference} from "../actions/SchedulePreferencesActions";
+import {
+    addDayPreference,
+    addEndPreference,
+    addStartPreference,
+    toggleDisplayed
+} from "../actions/SchedulePreferencesActions";
 import {enterInputMode} from "../actions/ClassInputActions";
 
 class SchedulePreferencesContainer extends Component {
@@ -15,6 +20,7 @@ class SchedulePreferencesContainer extends Component {
     render() {
         return <SchedulePreferences
             getSchedule={this.getSchedule}
+
             enterInputMode={this.props.enterInputMode}
             setDayPreference={this.props.setDayPreference}
             setStartTimePreference={this.props.setStartTimePreference}
@@ -24,22 +30,20 @@ class SchedulePreferencesContainer extends Component {
             endTimePreference={this.props.endTimePreference}
             dayPreference={this.props.dayPreference}
 
+            displayed={this.props.displayed}
             selectedClasses={this.props.selectedClasses}
-            activated={this.props.sideBarActivated}
-
-            activate={this.props.activate}
-            deactivate={this.props.deactivate}
+            toggleDisplayed={this.props.toggleDisplayed}
         />
     }
 }
 
 function mapStateToProps(state) {
     return {
-        sideBarActivated: state.SchedulePreferences.sideBarActivated,
         selectedClasses: state.ClassSelection,
         startTimePreference: state.SchedulePreferences.startTimePreference,
         endTimePreference: state.SchedulePreferences.endTimePreference,
-        dayPreference: state.SchedulePreferences.dayPreference
+        dayPreference: state.SchedulePreferences.dayPreference,
+        displayed: state.SchedulePreferences.displayed
     }
 }
 
@@ -50,6 +54,7 @@ function mapDispatchToProps(dispatch) {
         setDayPreference: addDayPreference,
         setStartTimePreference: addStartPreference,
         setEndTimePreference: addEndPreference,
+        toggleDisplayed: toggleDisplayed
     }, dispatch);
 }
 

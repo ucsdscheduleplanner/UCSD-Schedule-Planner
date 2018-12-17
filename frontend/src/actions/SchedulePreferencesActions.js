@@ -1,5 +1,8 @@
-
+export const SET_DISPLAYED = "SET_DISPLAYED";
+export const ADD_START_TIME = "ADD_START_TIME";
 export const ADD_DAY = "ADD_DAY";
+export const ADD_END_TIME = "ADD_END_TIME";
+
 export function addDayPreference(dayPreference) {
     return {
         type: ADD_DAY,
@@ -7,7 +10,6 @@ export function addDayPreference(dayPreference) {
     }
 }
 
-export const ADD_START_TIME = "ADD_START_TIME";
 
 export function addStartPreference(timePreference) {
     return {
@@ -16,8 +18,6 @@ export function addStartPreference(timePreference) {
     }
 }
 
-export const ADD_END_TIME = "ADD_END_TIME";
-
 export function addEndPreference(timePreference) {
     return {
         type: ADD_END_TIME,
@@ -25,10 +25,20 @@ export function addEndPreference(timePreference) {
     }
 }
 
-export const SET_DISPLAYED = "SET_DISPLAYED";
+export function toggleDisplayed() {
+    return function (dispatch, getState) {
+        const state = getState().SchedulePreferences;
+
+        if (state.displayed)
+            dispatch(setDisplayed(false));
+        else dispatch(setDisplayed(true));
+    }
+}
+
 export function setDisplayed(displayed) {
     return {
         type: SET_DISPLAYED,
         displayed: displayed
     }
 }
+

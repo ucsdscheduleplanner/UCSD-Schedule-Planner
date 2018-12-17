@@ -76,10 +76,10 @@ export default class SchedulePreferences extends PureComponent {
                     }
                     return (
                         <Sidebar id="sidebar"
-                                 visible={this.props.sideBarActivated}
+                                 visible={this.props.displayed}
                                  showCloseIcon={false}
                                  position={position}
-                                 onHide={this.props.deactivate}>
+                                 onHide={this.props.toggleDisplayed}>
                             {schedulePreferencesContent}
                         </Sidebar>
                     );
