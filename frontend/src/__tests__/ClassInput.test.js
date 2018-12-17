@@ -3,6 +3,8 @@ import renderer from 'react-test-renderer';
 import ClassInput from "../components/landing/ClassInput";
 import {shallow} from 'enzyme';
 
+const should = require('chai').should();
+
 const classInputProperties = {
     departments: [],
     currentDepartment: null,
@@ -46,7 +48,7 @@ test('Can enter department', () => {
 
     classInput.find("#department").simulate('change', {value: "CSE"});
     classInput.instance().forceUpdate();
-    expect(classInput.instance().props['currentDepartment']).toBe('CSE');
+    chaiExpect(classInput.instance().props['currentDepartment']).to.equal('CSE');
 });
 
 
@@ -59,7 +61,7 @@ test('Having department opens up course number', () => {
         <ClassInput {...properties} />
     );
     let test = classInput.find("#course-number");
-    expect(test.prop("disabled")).toBe(false);
+    chaiExpect(test.prop("disabled")).to.equal(false);
 });
 
 
@@ -72,7 +74,7 @@ test('Putting in invalid department does not enable course number input', () => 
         <ClassInput {...properties} />
     );
     let test = classInput.find("#course-number");
-    expect(test.prop("disabled")).toBe(true);
+    chaiExpect(test.prop("disabled")).to.equal(true);
 });
 
 
@@ -85,5 +87,24 @@ test('Having department opens up instructor', () => {
         <ClassInput {...properties} />
     );
     let test = classInput.find("#instructor");
-    expect(test.prop("disabled")).toBe(false);
+    chaiExpect(test.prop("disabled")).to.equal(false);
+});
+
+test('Creates a class from input', () => {
+    const testConfig = {
+        currentDepartment: "CSE",
+        currentCourseNum: "12",
+        departments: ["CSE"],
+        courseNums: ["12"]
+    };
+
+    const wrapper = shallow(<ClassInput {...testConfig} />);
+    const instance = wrapper.instance();
+
+    let Class = instance.buildClassFromInput();
+    should.not.equal(Class, undefined);
+
+    chaiExpect(Class.department).to.equal("CSE");
+    chaiExpect(Class.courseNum).to.equal("12");
+    chaiExpect(Class.classTitle).to.equal("CSE 12");
 });

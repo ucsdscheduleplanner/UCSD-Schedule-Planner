@@ -1,21 +1,21 @@
 // the code that goes into the web worker
 export function SGWorker() {
     this.onmessage = function (evt) {
-        console.log("Got here");
+        console.log("Beginning to generate schedule inside worker");
         if (!evt)
             return;
+
         let data = evt.data;
 
         console.log(data);
 
         let {classData, conflicts, preferences} = data;
+        // have to convert from JSON preferences to preference objects
         preferences = initPreferences(preferences);
 
         let worker = new ScheduleGenerator(classData, conflicts, preferences);
-
-        // have to convert from JSON preferences to preference objects
-
         let results = worker.generate();
+
         // returns a promise
         postMessage({
             type: "FINISHED_GENERATION",
@@ -23,7 +23,7 @@ export function SGWorker() {
         });
     };
 
-    this.getScheduleGenerator = function(data) {
+    this.getScheduleGenerator = function (data) {
         let {classData, conflicts, preferences} = data;
         return new ScheduleGenerator(classData, conflicts, preferences);
     };
@@ -44,11 +44,13 @@ export function SGWorker() {
     };
 
     function initPreferences(preferences) {
-        return preferences.map(preference => {
+        let ret = [];
+
+        for (let preference of preferences) {
             if (preference.type) {
                 switch (preference.type) {
                     case "DAY":
-                        return new DayPreference(preference.days);
+                        ret.push(new DayPreference(preference.days));
                     case "TIME":
                         return new TimePreference(preference.start, preference.end);
                     //return new TimePreference(preference.start, preference.end);
@@ -64,13 +66,13 @@ export function SGWorker() {
                                     return null;
                             }
                         }
-                        return new PriorityModifier(preference.Class, modifiedPreferences, preference.priority);
+                        ret.push(new PriorityModifier(preference.Class, modifiedPreferences, preference.priority));
                     default:
                         return null;
                 }
             }
-            return null;
-        });
+        }
+        return ret;
     }
 
     function PriorityModifier(Class = null, preferences, priority) {
@@ -349,7 +351,6 @@ export function SGWorker() {
         /**
          * Adds all the subsections of the given section to the interval tree
          * @param section - section we want to add
-         * @param intervalTree - interval tree we are adding to
          */
         ScheduleGenerator.prototype.addSection = function (section) {
             for (let subsection of section.subsections) {
@@ -361,7 +362,6 @@ export function SGWorker() {
         /**
          * Checks the interval tree for intervals that are the same and stores them in a list
          * @param section - section to check
-         * @param intervalTree - interval tree to look over
          * @returns {Array} a list of section classTitles that conflict
          */
         ScheduleGenerator.prototype.getConflictingSections = function (section) {
@@ -380,7 +380,6 @@ export function SGWorker() {
         /**
          * Remove section from the interval tree
          * @param section - section we want to remove
-         * @param intervalTree - tree we are operating on
          */
         ScheduleGenerator.prototype.removeSection = function (section) {
             for (let subsection of section.subsections) {
@@ -408,6 +407,7 @@ export function SGWorker() {
          * @param sectionNum the field that identifies which section, CSE11$0,
          */
         ScheduleGenerator.prototype.getSectionFor = function (sectionNum) {
+            // this is really inefficient but cannot come up with a bette way to do it right now
             // splitting the string based on info
             for (let Class of this.classData) {
                 if (sectionNum.startsWith(Class.department)) {
@@ -420,16 +420,21 @@ export function SGWorker() {
         };
 
         // I wrote this cause I had to don't judge me future person (probably Cameron)
-        ScheduleGenerator.prototype.buildClass = function (section) {
-            console.log(section);
+        /**
+         * Builds a class object after done with generation, copying over all the data from the previous class
+         * object but overwriting the sections field to replace it with only one section
+         * @param sectionNum the section number of the class I want to replace
+         * @returns {any}
+         */
+        ScheduleGenerator.prototype.buildClass = function (sectionNum) {
             for (let Class of this.classData) {
                 // CSE 11$0 is the sectionNum
                 // CSE is the department
-                if (section.sectionNum.startsWith(Class.department)) {
-                    for (let compare of Class.sections) {
-                        if (section.sectionNum === compare.sectionNum) {
+                if (sectionNum.startsWith(Class.department)) {
+                    for (let curSection of Class.sections) {
+                        if (sectionNum === curSection.sectionNum) {
                             // don't want to copy the previous sections field, only want the new one
-                            return Object.assign({}, Class, {sections: [section]});
+                            return Object.assign({}, Class, {sections: [curSection]});
                         }
                     }
                 }
@@ -438,12 +443,15 @@ export function SGWorker() {
 
         /**
          * Will evaluate the given schedule with the preference objects given
+         * @param schedule the schedule to evaluate
+         * @returns {number} the score of the given schedule
          */
         ScheduleGenerator.prototype.evaluateSchedule = function (schedule) {
             let score = 0;
-            for (let classSection of schedule) {
+            // sectionNum is like CSE11$0 and CSE12$1
+            for (let sectionNum of schedule) {
                 for (let preference of this.preferences) {
-                    score += preference.evaluate(this.getSectionFor(classSection));
+                    score += preference.evaluate(this.getSectionFor(sectionNum));
                 }
             }
             return score;
@@ -478,8 +486,6 @@ export function SGWorker() {
 
                 this.errorMap[conflict].add(sectionNum);
             });
-
-            console.log(this.errorMap);
         };
 
         ScheduleGenerator.prototype.isClassIgnored = function (Class) {
@@ -584,7 +590,7 @@ export function SGWorker() {
             schedules = schedules.slice(0, 6);
             // schedules is an array of tuples where arr[0] is the score and arr[1] is the list of sections
             schedules = schedules.map(arr => {
-                return arr[1].map(sectionNum => this.buildClass(this.getSectionFor(sectionNum)));
+                return arr[1].map(sectionNum => this.buildClass(sectionNum));
             });
 
             // convert all of the sets in the error map to lists

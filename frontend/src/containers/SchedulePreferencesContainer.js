@@ -3,12 +3,8 @@ import React, {Component} from 'react';
 import SchedulePreferences from "../components/landing/SchedulePreferences";
 import {bindActionCreators} from "redux";
 import {getSchedule} from "../actions/ScheduleGenerationActions";
+import {addDayPreference, addEndPreference, addStartPreference} from "../actions/SchedulePreferencesActions";
 import {enterInputMode} from "../actions/ClassInputActions";
-import {
-    activate, deactivate,
-    setDayPreference, setEndTimePreference,
-    setStartTimePreference
-} from "../actions/SchedulePreferencesActions";
 
 class SchedulePreferencesContainer extends Component {
     // using class field syntax to get correct context binding
@@ -29,7 +25,7 @@ class SchedulePreferencesContainer extends Component {
             dayPreference={this.props.dayPreference}
 
             selectedClasses={this.props.selectedClasses}
-            activated={this.props.activated}
+            activated={this.props.sideBarActivated}
 
             activate={this.props.activate}
             deactivate={this.props.deactivate}
@@ -39,7 +35,7 @@ class SchedulePreferencesContainer extends Component {
 
 function mapStateToProps(state) {
     return {
-        activated: state.SchedulePreferences.activated,
+        sideBarActivated: state.SchedulePreferences.sideBarActivated,
         selectedClasses: state.ClassSelection,
         startTimePreference: state.SchedulePreferences.startTimePreference,
         endTimePreference: state.SchedulePreferences.endTimePreference,
@@ -49,14 +45,11 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
     return bindActionCreators({
-        activate: activate,
-        deactivate: deactivate,
-
         getSchedule: getSchedule,
         enterInputMode: enterInputMode,
-        setDayPreference: setDayPreference,
-        setStartTimePreference: setStartTimePreference,
-        setEndTimePreference: setEndTimePreference,
+        setDayPreference: addDayPreference,
+        setStartTimePreference: addStartPreference,
+        setEndTimePreference: addEndPreference,
     }, dispatch);
 }
 

@@ -63,10 +63,10 @@ export default class ClassList extends PureComponent {
     }
 
     toggleSchedulePreferences() {
-        if (this.props.schedulePreferencesActivated) {
-            this.props.deactivateSchedulePreferences();
+        if (this.state.sidePanelActivated) {
+            this.props.setDisplayed(false);
         } else {
-            this.props.activateSchedulePreferences();
+            this.props.setDisplayed(true);
         }
     }
 

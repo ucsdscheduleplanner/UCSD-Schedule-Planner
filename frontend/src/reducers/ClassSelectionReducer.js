@@ -5,6 +5,7 @@ So can access this reducer's state by doing state.ClassSelection
  */
 
 // not including uuid in here in order to keep state shallow
+
 import {ADD_CLASS, EDIT_CLASS, REMOVE_CLASS} from "../actions/ClassInputActions";
 
 export default function ClassSelection(state={}, action) {

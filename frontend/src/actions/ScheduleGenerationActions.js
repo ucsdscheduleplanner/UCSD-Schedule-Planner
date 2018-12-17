@@ -104,7 +104,6 @@ function handleConflicts(Class, conflicts) {
 }
 
 function handleSchedulePreferences(schedulePreferences, preferences) {
-
     if (schedulePreferences.startTimePreference && schedulePreferences.endTimePreference) {
         let startTime = schedulePreferences.startTimePreference.toDate();
         let endTime = schedulePreferences.endTimePreference.toDate();

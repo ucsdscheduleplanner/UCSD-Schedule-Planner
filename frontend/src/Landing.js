@@ -8,8 +8,8 @@ import {LeftSidePanel} from './components/landing/LeftSidePanel';
 import RightSidePanel from './components/landing/RightSidePanel';
 import MainPanel from './components/landing/MainPanel';
 import MessageHandler from './utils/MessageHandler';
-import {initMessageHandler} from './actions/ClassInputActions';
 import {CacheManager} from './utils/CacheManager';
+import {setMessageHandler} from "./actions/ClassInputMutator";
 
 const CURRENT_VERSION = '1.4';
 class Landing extends Component {
@@ -25,7 +25,7 @@ class Landing extends Component {
         <MainPanel />
         <RightSidePanel />
 
-        <MessageHandler ref={el => this.props.initMessageHandler(el)} />
+        <MessageHandler ref={el => this.props.setMessageHandler(el)} />
         <div />
       </div>
     );
@@ -35,7 +35,7 @@ class Landing extends Component {
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      initMessageHandler: initMessageHandler,
+      setMessageHandler: setMessageHandler,
     },
     dispatch,
   );

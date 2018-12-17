@@ -28,8 +28,6 @@ export default class SchedulePreferences extends PureComponent {
             {label: 'F', value: 'F'}
         ];
 
-        console.log(this.props.startTimePreference);
-
         const schedulePreferencesContent = (
             <div className="schedule-options-sidebar">
                 <div className="schedule-options-title"> Schedule Preferences</div>
@@ -78,7 +76,7 @@ export default class SchedulePreferences extends PureComponent {
                     }
                     return (
                         <Sidebar id="sidebar"
-                                 visible={this.props.activated}
+                                 visible={this.props.sideBarActivated}
                                  showCloseIcon={false}
                                  position={position}
                                  onHide={this.props.deactivate}>

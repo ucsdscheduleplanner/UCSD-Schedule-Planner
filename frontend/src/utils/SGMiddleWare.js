@@ -13,7 +13,7 @@ export const SGMiddleWare = store => {
                 store.dispatch({type: RECEIVE_SCHEDULE, generating: false, generationResult: generationResult});
                 break;
             case "INCREMENT_PROGRESS":
-                store.dispatch({type: INCREMENT_PROGRESS, amount: amount})
+                store.dispatch({type: INCREMENT_PROGRESS, amount: amount});
                 break;
             default:
                 return;

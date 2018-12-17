@@ -1,45 +1,34 @@
 
-export const SET_DAY_PREFERENCE = "SET_DAY_PREFERENCE";
-
-export function setDayPreference(dayPreference) {
+export const ADD_DAY = "ADD_DAY";
+export function addDayPreference(dayPreference) {
     return {
-        type: SET_DAY_PREFERENCE,
+        type: ADD_DAY,
         dayPreference: dayPreference
     }
 }
 
-export const SET_START_TIME_PREFERENCE = "SET_START_TIME_PREFERENCE";
+export const ADD_START_TIME = "ADD_START_TIME";
 
-export function setStartTimePreference(timePreference) {
+export function addStartPreference(timePreference) {
     return {
-        type: SET_START_TIME_PREFERENCE,
+        type: ADD_START_TIME,
         startTimePreference: timePreference
     }
 }
 
-export const SET_END_TIME_PREFERENCE = "SET_END_TIME_PREFERENCE";
+export const ADD_END_TIME = "ADD_END_TIME";
 
-export function setEndTimePreference(timePreference) {
+export function addEndPreference(timePreference) {
     return {
-        type: SET_END_TIME_PREFERENCE,
+        type: ADD_END_TIME,
         endTimePreference: timePreference
     }
 }
 
-export const ACTIVATE_SCHEDULE_PREFERENCES = "ACTIVATE_SCHEDULE_PREFERENCES";
-
-export function activate() {
+export const SET_DISPLAYED = "SET_DISPLAYED";
+export function setDisplayed(displayed) {
     return {
-        type: ACTIVATE_SCHEDULE_PREFERENCES,
-        activated: true
-    }
-}
-
-export const DEACTIVATE_SCHEDULE_PREFERENCES = "DEACTIVATE_SCHEDULE_PREFERENCES";
-
-export function deactivate() {
-    return {
-        type: DEACTIVATE_SCHEDULE_PREFERENCES,
-        activated: false
+        type: SET_DISPLAYED,
+        displayed: displayed
     }
 }

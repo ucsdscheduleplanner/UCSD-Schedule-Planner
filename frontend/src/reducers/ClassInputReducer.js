@@ -1,81 +1,86 @@
-import {
-    INIT_MESSAGE_HANDLER,
-    REQUEST_CLASS_PER_DEPARTMENT,
-    SET_CLASS_TYPES_PER_CLASS,
-    SET_CONFLICTS,
-    SET_COURSE_NUMS,
-    SET_CURRENT_COURSE_NUM,
-    SET_CURRENT_DEPARTMENT,
-    SET_CURRENT_INSTRUCTOR, SET_DESCRIPTIONS_PER_CLASS,
-    SET_EDIT_MODE,
-    SET_INSTRUCTORS_PER_CLASS,
-    SET_PRIORITY
-} from "../actions/ClassInputActions";
+import {} from "../actions/ClassInputMutator";
+import {POPULATE_DATA_PER_CLASS} from "../actions/ClassInputActions";
+import {SET_COURSE_NUMS} from "../actions/ClassInputMutator";
+import {SET_COURSE_NUM} from "../actions/ClassInputMutator";
+import {SET_DEPARTMENT} from "../actions/ClassInputMutator";
+import {SET_DEPARTMENTS} from "../actions/ClassInputMutator";
+import {SET_INSTRUCTOR} from "../actions/ClassInputMutator";
+import {SET_PRIORITY} from "../actions/ClassInputMutator";
+import {SET_CONFLICTS} from "../actions/ClassInputMutator";
+import {SET_EDIT_MODE} from "../actions/ClassInputMutator";
+import {SET_MESSAGE_HANDLER} from "../actions/ClassInputMutator";
+import {SET_INSTRUCTORS} from "../actions/ClassInputMutator";
+import {SET_TYPES} from "../actions/ClassInputMutator";
 
-export default function ClassInput(state = {
-    requesting: false,
-    // courseNums will be a dict where each value is an array of
-    // courseNums and each key is a department
+export default function ClassInputReducer(state = {
+    departments: [],
     courseNums: [],
+    instructors: [],
+    conflicts: [],
+    types: [],
+
     instructorsPerClass: {},
     classTypesPerClass: {},
     descriptionsPerClass: {},
 
-    selectedConflicts: [],
-    currentInstructor: null,
-    currentDepartment: null,
-    currentCourseNum: null,
+    instructor: null,
+    department: null,
+    courseNum: null,
     priority: null,
     editMode: false,
     editUID: null,
+    editOccurred: false,
     messageHandler: null,
 }, action) {
     switch (action.type) {
-        case REQUEST_CLASS_PER_DEPARTMENT:
+        case POPULATE_DATA_PER_CLASS:
             return Object.assign({}, state, {
-                requesting: action.requesting
-            });
-        case SET_INSTRUCTORS_PER_CLASS:
-            return Object.assign({}, state, {
-                instructorsPerClass: action.instructorsPerClass
-            });
-        case SET_DESCRIPTIONS_PER_CLASS:
-            return Object.assign({}, state, {
-                descriptionsPerClass: action.descriptionsPerClass
-            });
-        case SET_CLASS_TYPES_PER_CLASS:
-            return Object.assign({}, state, {
+                instructorsPerClass: action.instructorsPerClass,
+                descriptionsPerClass: action.descriptionsPerClass,
                 classTypesPerClass: action.classTypesPerClass
             });
         case SET_COURSE_NUMS:
             return Object.assign({}, state, {
                 courseNums: action.courseNums
             });
-        case SET_CURRENT_COURSE_NUM:
-            let currentCourseNum;
-            if(typeof action.currentCourseNum === "string") {
-                currentCourseNum = action.currentCourseNum.trim();
+        case SET_DEPARTMENTS:
+            return Object.assign({}, state, {
+                departments: action.departments
+            });
+        case SET_INSTRUCTORS:
+            return Object.assign({}, state, {
+                instructors: action.instructors
+            });
+        case SET_TYPES:
+            return Object.assign({}, state, {
+                types: action.types
+            });
+        case SET_COURSE_NUM:
+            let courseNum;
+
+            if (typeof action.courseNum === "string") {
+                courseNum = action.courseNum.trim();
             } else {
-                currentCourseNum = null;
+                courseNum = null;
             }
             return Object.assign({}, state, {
-                currentCourseNum: currentCourseNum
+                courseNum: courseNum
             });
-        case SET_CURRENT_DEPARTMENT:
-            let currentDepartment;
-            if (typeof action.currentDepartment === "string") {
-                currentDepartment = action.currentDepartment.trim().toUpperCase();
+        case SET_DEPARTMENT:
+            let department;
+            if (typeof action.department === "string") {
+                department = action.department.trim().toUpperCase();
             } else {
-                currentDepartment = null;
+                department = null;
             }
 
             return Object.assign({}, state, {
-                currentDepartment: currentDepartment
+                department: department
             });
-
-        case SET_CURRENT_INSTRUCTOR:
+        case SET_INSTRUCTOR:
+            console.log("settting value to " + action.instructor);
             return Object.assign({}, state, {
-                currentInstructor: action.currentInstructor
+                instructor: action.instructor
             });
         case SET_PRIORITY:
             return Object.assign({}, state, {
@@ -90,7 +95,7 @@ export default function ClassInput(state = {
                 editMode: action.editMode,
                 editUID: action.editUID
             });
-        case INIT_MESSAGE_HANDLER:
+        case SET_MESSAGE_HANDLER:
             return Object.assign({}, state, {
                 messageHandler: action.messageHandler,
             });

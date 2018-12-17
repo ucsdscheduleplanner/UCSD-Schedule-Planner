@@ -2,13 +2,13 @@ import {combineReducers} from 'redux';
 import ClassSelection from './ClassSelectionReducer';
 import ScheduleGeneration from './ScheduleGenerationReducer';
 import SchedulePreferences from './SchedulePreferencesReducer';
-import ClassInput from './ClassInputReducer';
+import ClassInputReducer from './ClassInputReducer';
 
 const reducers = combineReducers({
     SchedulePreferences,
     ClassSelection,
     ScheduleGeneration,
-    ClassInput,
+    ClassInput: ClassInputReducer,
 });
 
 export default reducers;

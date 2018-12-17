@@ -31,7 +31,7 @@ describe('Schedule generation', () => {
         preferences: []
     };
 
-     const testInputShouldGiveError = {
+    const testInputShouldGiveError = {
         classData: [
             {
                 title: "CSE 12",
@@ -97,11 +97,19 @@ describe('Schedule generation', () => {
 
     it('Returns nothing on given empty data', () => {
         let worker = new SGWorker();
-        let result = worker.generate({classData: [], errors: [], preferences: []});
+        let result = worker.generate({classData: [], conflicts: [], preferences: []});
 
         expect(Object.keys(result.errors).length).to.equal(0);
         console.log(result.schedules);
         expect(result.schedules.length).to.equal(0);
+    });
+
+    it('Can handle bad inputs correctly', () => {
+        let worker = new SGWorker();
+        let result = worker.generate({classData: [{hello: "world"}], conflicts: ["bad", "input"], preferences: ["really bad"]});
+
+        expect(Object.keys(result.errors).length).should.equal(0);
+        expect(result.schedules).should.equal(0);
     });
 
     it('Fails when two of the required classes overlap', () => {

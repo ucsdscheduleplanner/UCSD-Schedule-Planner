@@ -1,76 +1,49 @@
 import React, {Component} from 'react';
 import {connect} from "react-redux";
 import ClassInput from "../components/landing/ClassInput";
-import {
-    setConflicts, setCurrentCourseNum, setCurrentDepartment, setCurrentInstructor,
-    setPriority, addClass, editClass, removeClass, enterInputMode, setClassSummaryFromDepartment
-} from "../actions/ClassInputActions";
-import {setUID} from "../actions/ScheduleGenerationActions";
 import {bindActionCreators} from "redux";
-import {DataFetcher} from "../utils/DataFetcher";
 import "../css/ClassInput.css";
+import {getInputHandler} from "../actions/ClassInputHandler";
+import {initDepartments} from "../actions/ClassInputActions";
 
 class ClassInputContainer extends Component {
 
     constructor(props) {
         super(props);
-        this.state = {
-            departments: []
-        };
     }
 
     async componentDidMount() {
-        let departments = await DataFetcher.fetchDepartments();
-        // error message from React here but will be fixed in future versions
-        this.setState({departments: departments});
-    }
-
-    getClassSummary(department) {
-        return DataFetcher.fetchClassSummaryFor(department);
+        this.props.initDepartments();
     }
 
     render() {
         return (
+            // API
+            // onDepartmentChange - department options currentDepartment
+            // onCourseNumChange - courseNum options currentCourseNum
+            // onInstructorChange - instructor options
+            //
             <div className="ci-container">
                 <div className="ci--title"> Add Classes</div>
                 <ClassInput
-                    messageHandler={this.props.messageHandler}
+                    getInputHandler={this.props.getInputHandler}
 
-                    generateSuccess={this.props.generateSuccess}
+                    departments={this.props.departments}
+                    courseNums={this.props.courseNums}
+                    instructors={this.props.instructors}
+                    types={this.props.types}
 
-                    editMode={this.props.editMode}
-                    editClass={this.props.editClass}
-                    enterInputMode={this.props.enterInputMode}
-                    editUID={this.props.editUID}
-
-                    removeClass={this.props.removeClass}
-
-                    addClass={this.props.addClass}
-                    setUID={this.props.setUID}
-                    getClassSummary={this.getClassSummary}
-
-                    setCurrentDepartment={this.props.setCurrentDepartment}
-                    setCurrentInstructor={this.props.setCurrentInstructor}
-                    setCurrentCourseNum={this.props.setCurrentCourseNum}
-                    setConflicts={this.props.setConflicts}
-                    setPriority={this.props.setPriority}
-                    setClassSummaryFromDepartment={this.props.setClassSummaryFromDepartment}
-
-                    currentDepartment={this.props.currentDepartment}
-                    currentInstructor={this.props.currentInstructor}
-                    currentCourseNum={this.props.currentCourseNum}
+                    department={this.props.department}
+                    instructor={this.props.instructor}
+                    courseNum={this.props.courseNum}
                     conflicts={this.props.conflicts}
                     priority={this.props.priority}
 
-                    courseNums={this.props.courseNums}
                     classTypesPerClass={this.props.classTypesPerClass}
                     instructorsPerClass={this.props.instructorsPerClass}
                     descriptionsPerClass={this.props.descriptionsPerClass}
 
-                    selectedClasses={this.props.selectedClasses}
-                    departments={this.state.departments}
-                    requesting={this.props.requesting}
-                    uid={this.props.uid}
+                    editMode={this.props.editMode}
                 />
             </div>
         )
@@ -79,46 +52,29 @@ class ClassInputContainer extends Component {
 
 function mapDispatchToProps(dispatch) {
     return bindActionCreators({
-        setConflicts: setConflicts,
-        setPriority: setPriority,
-        setCurrentInstructor: setCurrentInstructor,
-        setCurrentDepartment: setCurrentDepartment,
-        setClassSummaryFromDepartment: setClassSummaryFromDepartment,
-        setCurrentCourseNum: setCurrentCourseNum,
-
-        enterInputMode: enterInputMode,
-        editClass: editClass,
-        removeClass: removeClass,
-
-        addClass: addClass,
-        setUID: setUID
+        getInputHandler: getInputHandler,
+        initDepartments: initDepartments,
     }, dispatch);
 }
 
 function mapStateToProps(state) {
     return {
-        messageHandler: state.ClassInput.messageHandler,
+        departments: state.ClassInput.departments,
+        courseNums: state.ClassInput.courseNums,
+        instructors: state.ClassInput.instructors,
+        types: state.ClassInput.types,
 
-        currentDepartment: state.ClassInput.currentDepartment,
-        currentInstructor: state.ClassInput.currentInstructor,
-        currentCourseNum: state.ClassInput.currentCourseNum,
+        department: state.ClassInput.department,
+        instructor: state.ClassInput.instructor,
+        courseNum: state.ClassInput.courseNum,
         conflicts: state.ClassInput.conflicts,
         priority: state.ClassInput.priority,
 
-        generateSuccess: state.ScheduleGeneration.generateSuccess,
-        editMode: state.ClassInput.editMode,
-        editUID: state.ClassInput.editUID,
-
-        selectedClasses: state.ClassSelection,
-        departments: state.ClassInput.departments,
-
-        courseNums: state.ClassInput.courseNums,
         classTypesPerClass: state.ClassInput.classTypesPerClass,
         instructorsPerClass: state.ClassInput.instructorsPerClass,
         descriptionsPerClass: state.ClassInput.descriptionsPerClass,
 
-        requesting: state.ClassInput.requesting,
-        uid: state.ScheduleGeneration.uid,
+        editMode: state.ClassInput.editMode,
     }
 }
 
