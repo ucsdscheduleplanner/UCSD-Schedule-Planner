@@ -449,11 +449,12 @@ export function SGWorker() {
         ScheduleGenerator.prototype.evaluateSchedule = function (schedule) {
             let score = 0;
             // sectionNum is like CSE11$0 and CSE12$1
-            for (let sectionNum of schedule) {
+            /*for (let sectionNum of schedule) {
                 for (let preference of this.preferences) {
-                    score += preference.evaluate(this.getSectionFor(sectionNum));
+                    //score += preference.evaluate(this.getSectionFor(sectionNum));
                 }
             }
+            */
             return score;
         };
 

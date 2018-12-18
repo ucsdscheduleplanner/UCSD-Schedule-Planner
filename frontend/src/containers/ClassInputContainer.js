@@ -72,7 +72,7 @@ function mapStateToProps(state) {
 
         classTypesPerClass: state.ClassInput.classTypesPerClass,
         instructorsPerClass: state.ClassInput.instructorsPerClass,
-        descriptionsPerClass: state.ClassInput.descriptionsPerClass,
+
 
         editMode: state.ClassInput.editMode,
     }

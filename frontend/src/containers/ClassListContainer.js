@@ -3,12 +3,13 @@ import {connect} from 'react-redux';
 import ClassList from "../components/landing/ClassList";
 import {bindActionCreators} from "redux";
 import {getSchedule} from "../actions/ScheduleGenerationActions";
-import {setDisplayed} from "../actions/SchedulePreferencesActions";
 import {enterEditMode, enterInputMode} from "../actions/ClassInputActions";
+import {setDisplayed} from "../actions/SchedulePreferenceUIHandler";
 
 class ClassListContainer extends Component {
 
     render() {
+        console.log(this.props);
         return <ClassList
             enterEditMode={this.props.enterEditMode}
             enterInputMode={this.props.enterInputMode}
@@ -16,15 +17,14 @@ class ClassListContainer extends Component {
             getSchedule={this.props.getSchedule}
 
             setDisplayed={this.props.setDisplayed}
-            sideBarActivated={this.props.sideBarActivated}
         />
     }
 }
 
 function mapStateToProps(state) {
+    console.log(state);
     return {
-        selectedClasses: state.ClassSelection,
-        sideBarActivated: state.SchedulePreferences.sideBarActivated
+        selectedClasses: state.ClassList.selectedClasses,
     }
 }
 

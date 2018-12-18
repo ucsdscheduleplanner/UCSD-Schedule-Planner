@@ -1,6 +1,5 @@
-export function PriorityModifier(Class = null, preferences, priority) {
-    this.Class = Class;
-    this.classTitle = Class.classTitle;
+export function PriorityModifier(classTitle, preferences, priority) {
+    this.classTitle = classTitle;
     // list of different preference objects
     this.preferences = preferences;
     this.priority = priority;
@@ -8,9 +7,7 @@ export function PriorityModifier(Class = null, preferences, priority) {
     this.type = "PRIORITY";
 }
 
-export function InstructorPreference(Class, instructor) {
-    this.Class = Class;
-    this.classTitle = Class.classTitle;
+export function InstructorPreference(instructor) {
     this.instructor = instructor;
 
     this.type = "INSTRUCTOR";

@@ -91,8 +91,6 @@ export class DataFetcher {
     let classesToFetch = [];
     let cachedClasses = [];
 
-    console.log(selectedClasses);
-
     for (let Class of selectedClasses) {
       let isCached = await CacheManager.get().isCached(Class.classTitle);
       if (isCached) {

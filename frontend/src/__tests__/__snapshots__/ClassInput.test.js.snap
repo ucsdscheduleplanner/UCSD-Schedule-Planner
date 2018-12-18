@@ -1,337 +1,338 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Renders correctly with no props 1`] = `
+exports[`ClassInput component Renders correctly with no props 1`] = `
 <div
-  className="content"
+  className="ci-container"
 >
   <div
-    className="form-field"
+    className="ci--title"
+  >
+     Add Classes
+  </div>
+  <div
+    className="content"
   >
     <div
-      className="input-header"
+      className="form-field"
     >
-       Department:
-    </div>
-    <span
-      className="ui-autocomplete ui-widget ui-autocomplete-dd"
-      id="department"
-      style={null}
-    >
-      <input
-        autoComplete="off"
-        className="ui-inputtext ui-state-default ui-corner-all ui-widget ui-autocomplete-input ui-autocomplete-dd-input"
-        defaultValue=""
-        disabled={false}
-        id={null}
-        maxLength={null}
-        name={null}
-        onBlur={[Function]}
-        onChange={[Function]}
-        onClick={[Function]}
-        onContextMenu={null}
-        onDoubleClick={null}
-        onFocus={[Function]}
-        onInput={[Function]}
-        onKeyDown={[Function]}
-        onKeyPress={[Function]}
-        onKeyUp={null}
-        onMouseDown={null}
-        placeholder={null}
-        readOnly={false}
-        size={null}
-        style={null}
-        tabIndex={null}
-        type="text"
-      />
-      <i
-        className="ui-autocomplete-loader pi pi-spinner pi-spin"
-        style={
-          Object {
-            "visibility": "hidden",
-          }
-        }
-      />
-      <button
-        className="ui-button ui-widget ui-state-default ui-corner-all ui-autocomplete-dropdown ui-button-icon-only"
-        disabled={false}
-        onClick={[Function]}
-        type="button"
-      >
-        <span
-          className="pi pi-fw pi-caret-down ui-c ui-button-icon-left"
-        />
-        <span
-          className="ui-button-text ui-c"
-        >
-          ui-btn
-        </span>
-      </button>
       <div
-        className="ui-autocomplete-panel ui-widget-content ui-corner-all ui-input-overlay ui-shadow"
-        style={
-          Object {
-            "maxHeight": "200px",
-          }
-        }
+        className="input-header"
       >
-        <ul
-          className="ui-autocomplete-items ui-autocomplete-list ui-widget-content ui-widget ui-corner-all ui-helper-reset"
-        />
+         Department:
       </div>
-    </span>
-  </div>
-  <div
-    className="form-field"
-  >
-    <div
-      className="input-header"
-    >
-       Course Number:
-    </div>
-    <span
-      className="ui-autocomplete ui-widget ui-autocomplete-dd"
-      id="course-number"
-      style={null}
-    >
-      <input
-        autoComplete="off"
-        className="ui-inputtext ui-state-default ui-corner-all ui-widget ui-autocomplete-input ui-autocomplete-dd-input ui-state-disabled"
-        defaultValue=""
-        disabled={true}
-        id={null}
-        maxLength={null}
-        name={null}
-        onBlur={[Function]}
-        onChange={[Function]}
-        onClick={[Function]}
-        onContextMenu={null}
-        onDoubleClick={null}
-        onFocus={[Function]}
-        onInput={[Function]}
-        onKeyDown={[Function]}
-        onKeyPress={[Function]}
-        onKeyUp={null}
-        onMouseDown={null}
-        placeholder={null}
-        readOnly={false}
-        size={null}
+      <span
+        className="ui-autocomplete ui-widget ui-autocomplete-dd"
+        id="department"
         style={null}
-        tabIndex={null}
-        type="text"
-      />
-      <i
-        className="ui-autocomplete-loader pi pi-spinner pi-spin"
-        style={
-          Object {
-            "visibility": "hidden",
-          }
-        }
-      />
-      <button
-        className="ui-button ui-widget ui-state-default ui-corner-all ui-autocomplete-dropdown ui-button-icon-only ui-state-disabled"
-        disabled={true}
-        onClick={[Function]}
-        type="button"
       >
-        <span
-          className="pi pi-fw pi-caret-down ui-c ui-button-icon-left"
-        />
-        <span
-          className="ui-button-text ui-c"
-        >
-          ui-btn
-        </span>
-      </button>
-      <div
-        className="ui-autocomplete-panel ui-widget-content ui-corner-all ui-input-overlay ui-shadow"
-        style={
-          Object {
-            "maxHeight": "200px",
-          }
-        }
-      >
-        <ul
-          className="ui-autocomplete-items ui-autocomplete-list ui-widget-content ui-widget ui-corner-all ui-helper-reset"
-        />
-      </div>
-    </span>
-  </div>
-  <div
-    className="ci--title-preference"
-  >
-     Preferences
-  </div>
-  <div
-    className="form-field"
-  >
-    <div
-      className="input-header"
-    >
-       Instructor Preference:
-    </div>
-    <span
-      className="ui-autocomplete ui-widget ui-autocomplete-dd"
-      id="instructor"
-      style={null}
-    >
-      <input
-        autoComplete="off"
-        className="ui-inputtext ui-state-default ui-corner-all ui-widget ui-autocomplete-input ui-autocomplete-dd-input"
-        defaultValue=""
-        disabled={false}
-        id={null}
-        maxLength={null}
-        name={null}
-        onBlur={[Function]}
-        onChange={[Function]}
-        onClick={[Function]}
-        onContextMenu={null}
-        onDoubleClick={null}
-        onFocus={[Function]}
-        onInput={[Function]}
-        onKeyDown={[Function]}
-        onKeyPress={[Function]}
-        onKeyUp={null}
-        onMouseDown={null}
-        placeholder={null}
-        readOnly={false}
-        size={null}
-        style={null}
-        tabIndex={null}
-        type="text"
-      />
-      <i
-        className="ui-autocomplete-loader pi pi-spinner pi-spin"
-        style={
-          Object {
-            "visibility": "hidden",
-          }
-        }
-      />
-      <button
-        className="ui-button ui-widget ui-state-default ui-corner-all ui-autocomplete-dropdown ui-button-icon-only"
-        disabled={false}
-        onClick={[Function]}
-        type="button"
-      >
-        <span
-          className="pi pi-fw pi-caret-down ui-c ui-button-icon-left"
-        />
-        <span
-          className="ui-button-text ui-c"
-        >
-          ui-btn
-        </span>
-      </button>
-      <div
-        className="ui-autocomplete-panel ui-widget-content ui-corner-all ui-input-overlay ui-shadow"
-        style={
-          Object {
-            "maxHeight": "200px",
-          }
-        }
-      >
-        <ul
-          className="ui-autocomplete-items ui-autocomplete-list ui-widget-content ui-widget ui-corner-all ui-helper-reset"
-        />
-      </div>
-    </span>
-  </div>
-  <div
-    className="form-field"
-  >
-    <div
-      className="input-header"
-    >
-       Ignore Class Types:
-    </div>
-    <div
-      className="ui-listbox ui-inputtext ui-widget ui-widget-content ui-corner-all"
-      id={null}
-      style={null}
-    >
-      <div
-        className="ui-listbox-list-wrapper"
-      >
-        <ul
-          className="ui-listbox-list"
+        <input
+          autoComplete="off"
+          className="ui-inputtext ui-state-default ui-corner-all ui-widget ui-autocomplete-input ui-autocomplete-dd-input"
+          defaultValue=""
+          disabled={false}
+          id={null}
+          maxLength={null}
+          name={null}
+          onBlur={[Function]}
+          onChange={[Function]}
+          onClick={[Function]}
+          onContextMenu={null}
+          onDoubleClick={null}
+          onFocus={[Function]}
+          onInput={[Function]}
+          onKeyDown={[Function]}
+          onKeyPress={[Function]}
+          onKeyUp={null}
+          onMouseDown={null}
+          placeholder={null}
+          readOnly={false}
+          size={null}
           style={null}
+          tabIndex={null}
+          type="text"
+        />
+        <i
+          className="ui-autocomplete-loader pi pi-spinner pi-spin"
+          style={
+            Object {
+              "visibility": "hidden",
+            }
+          }
+        />
+        <button
+          className="ui-button ui-widget ui-state-default ui-corner-all ui-autocomplete-dropdown ui-button-icon-only"
+          disabled={false}
+          onClick={[Function]}
+          type="button"
         >
-          <li
-            className="ui-listbox-item ui-corner-all"
-            onClick={[Function]}
-            onTouchEnd={[Function]}
+          <span
+            className="pi pi-fw pi-caret-down ui-c ui-button-icon-left"
+          />
+          <span
+            className="ui-button-text ui-c"
           >
-            None
-          </li>
-        </ul>
+            ui-btn
+          </span>
+        </button>
+        <div
+          className="ui-autocomplete-panel ui-widget-content ui-corner-all ui-input-overlay ui-shadow"
+          style={
+            Object {
+              "maxHeight": "200px",
+            }
+          }
+        >
+          <ul
+            className="ui-autocomplete-items ui-autocomplete-list ui-widget-content ui-widget ui-corner-all ui-helper-reset"
+          />
+        </div>
+      </span>
+    </div>
+    <div
+      className="form-field"
+    >
+      <div
+        className="input-header"
+      >
+         Course Number:
+      </div>
+      <span
+        className="ui-autocomplete ui-widget ui-autocomplete-dd"
+        id="course-number"
+        style={null}
+      >
+        <input
+          autoComplete="off"
+          className="ui-inputtext ui-state-default ui-corner-all ui-widget ui-autocomplete-input ui-autocomplete-dd-input ui-state-disabled"
+          defaultValue=""
+          disabled={true}
+          id={null}
+          maxLength={null}
+          name={null}
+          onBlur={[Function]}
+          onChange={[Function]}
+          onClick={[Function]}
+          onContextMenu={null}
+          onDoubleClick={null}
+          onFocus={[Function]}
+          onInput={[Function]}
+          onKeyDown={[Function]}
+          onKeyPress={[Function]}
+          onKeyUp={null}
+          onMouseDown={null}
+          placeholder={null}
+          readOnly={false}
+          size={null}
+          style={null}
+          tabIndex={null}
+          type="text"
+        />
+        <i
+          className="ui-autocomplete-loader pi pi-spinner pi-spin"
+          style={
+            Object {
+              "visibility": "hidden",
+            }
+          }
+        />
+        <button
+          className="ui-button ui-widget ui-state-default ui-corner-all ui-autocomplete-dropdown ui-button-icon-only ui-state-disabled"
+          disabled={true}
+          onClick={[Function]}
+          type="button"
+        >
+          <span
+            className="pi pi-fw pi-caret-down ui-c ui-button-icon-left"
+          />
+          <span
+            className="ui-button-text ui-c"
+          >
+            ui-btn
+          </span>
+        </button>
+        <div
+          className="ui-autocomplete-panel ui-widget-content ui-corner-all ui-input-overlay ui-shadow"
+          style={
+            Object {
+              "maxHeight": "200px",
+            }
+          }
+        >
+          <ul
+            className="ui-autocomplete-items ui-autocomplete-list ui-widget-content ui-widget ui-corner-all ui-helper-reset"
+          />
+        </div>
+      </span>
+    </div>
+    <div
+      className="ci--title-preference"
+    >
+       Preferences
+    </div>
+    <div
+      className="form-field"
+    >
+      <div
+        className="input-header"
+      >
+         Instructor Preference:
+      </div>
+      <span
+        className="ui-autocomplete ui-widget ui-autocomplete-dd"
+        id="instructor"
+        style={null}
+      >
+        <input
+          autoComplete="off"
+          className="ui-inputtext ui-state-default ui-corner-all ui-widget ui-autocomplete-input ui-autocomplete-dd-input ui-state-disabled"
+          defaultValue=""
+          disabled={true}
+          id={null}
+          maxLength={null}
+          name={null}
+          onBlur={[Function]}
+          onChange={[Function]}
+          onClick={[Function]}
+          onContextMenu={null}
+          onDoubleClick={null}
+          onFocus={[Function]}
+          onInput={[Function]}
+          onKeyDown={[Function]}
+          onKeyPress={[Function]}
+          onKeyUp={null}
+          onMouseDown={null}
+          placeholder={null}
+          readOnly={false}
+          size={null}
+          style={null}
+          tabIndex={null}
+          type="text"
+        />
+        <i
+          className="ui-autocomplete-loader pi pi-spinner pi-spin"
+          style={
+            Object {
+              "visibility": "hidden",
+            }
+          }
+        />
+        <button
+          className="ui-button ui-widget ui-state-default ui-corner-all ui-autocomplete-dropdown ui-button-icon-only ui-state-disabled"
+          disabled={true}
+          onClick={[Function]}
+          type="button"
+        >
+          <span
+            className="pi pi-fw pi-caret-down ui-c ui-button-icon-left"
+          />
+          <span
+            className="ui-button-text ui-c"
+          >
+            ui-btn
+          </span>
+        </button>
+        <div
+          className="ui-autocomplete-panel ui-widget-content ui-corner-all ui-input-overlay ui-shadow"
+          style={
+            Object {
+              "maxHeight": "200px",
+            }
+          }
+        >
+          <ul
+            className="ui-autocomplete-items ui-autocomplete-list ui-widget-content ui-widget ui-corner-all ui-helper-reset"
+          />
+        </div>
+      </span>
+    </div>
+    <div
+      className="form-field"
+    >
+      <div
+        className="input-header"
+      >
+         Ignore Class Types:
+      </div>
+      <div
+        className="ui-listbox ui-inputtext ui-widget ui-widget-content ui-corner-all ui-state-disabled"
+        id={null}
+        style={null}
+      >
+        <div
+          className="ui-listbox-list-wrapper"
+        >
+          <ul
+            className="ui-listbox-list"
+            style={null}
+          />
+        </div>
       </div>
     </div>
-  </div>
-  <div
-    className="form-field"
-  >
     <div
-      className="input-header"
+      className="form-field"
     >
-       Importance:
-    </div>
-    <div
-      className="ui-rating"
-      id={null}
-      style={null}
-    >
-      <a
-        onClick={[Function]}
+      <div
+        className="input-header"
       >
-        <span
-          className="ui-rating-icon pi pi-ban"
-        />
-      </a>
-      <a
-        onClick={[Function]}
+         Importance:
+      </div>
+      <div
+        className="ui-rating ui-state-disabled"
+        id={null}
+        style={null}
       >
-        <span
-          className="ui-rating-icon pi pi-star-o"
-        />
-      </a>
-      <a
-        onClick={[Function]}
-      >
-        <span
-          className="ui-rating-icon pi pi-star-o"
-        />
-      </a>
-      <a
-        onClick={[Function]}
-      >
-        <span
-          className="ui-rating-icon pi pi-star-o"
-        />
-      </a>
-    </div>
-  </div>
-  <div
-    style={
-      Object {
-        "display": "inline-block",
-      }
-    }
-  >
-    <div
-      className="form-button"
-      onClick={[Function]}
-    >
-      <button
-        className="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"
-        disabled={false}
-      >
-        <span
-          className="ui-button-text ui-c"
+        <a
+          onClick={[Function]}
         >
-          Add Class
-        </span>
-      </button>
+          <span
+            className="ui-rating-icon pi pi-ban"
+          />
+        </a>
+        <a
+          onClick={[Function]}
+        >
+          <span
+            className="ui-rating-icon pi pi-star-o"
+          />
+        </a>
+        <a
+          onClick={[Function]}
+        >
+          <span
+            className="ui-rating-icon pi pi-star-o"
+          />
+        </a>
+        <a
+          onClick={[Function]}
+        >
+          <span
+            className="ui-rating-icon pi pi-star-o"
+          />
+        </a>
+      </div>
+    </div>
+    <div
+      style={
+        Object {
+          "display": "inline-block",
+        }
+      }
+    >
+      <div
+        className="form-button"
+        onClick={[Function]}
+      >
+        <button
+          className="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only ui-state-disabled"
+          disabled={true}
+        >
+          <span
+            className="ui-button-text ui-c"
+          >
+            Add Class
+          </span>
+        </button>
+      </div>
     </div>
   </div>
 </div>

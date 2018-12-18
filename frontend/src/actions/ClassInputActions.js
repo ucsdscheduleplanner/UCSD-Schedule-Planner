@@ -3,7 +3,7 @@ import {
     setConflicts,
     setCourseNum,
     setCourseNums, setDepartment,
-    setDepartments, setEditMode,
+    setDepartments, setEditMode, setID,
     setInstructor,
     setPriority
 } from "./ClassInputMutator";
@@ -15,28 +15,25 @@ export const REMOVE_CLASS = "REMOVE_CLASS";
 
 export const POPULATE_DATA_PER_CLASS = "POPULATE_DATA_PER_CLASS";
 
-export function removeClass(uid) {
+export function removeClass(id) {
     return {
         type: REMOVE_CLASS,
-        uid: uid
+        id: id
     }
 }
 
-export function addClass(uuid, newClass) {
+export function addClass(newClass) {
     return {
         type: ADD_CLASS,
-        payload: {
-            uuid: uuid,
-            add: newClass
-        }
+        newClass: newClass
     }
 }
 
-export function editClass(uid, editClass) {
+export function editClass(id, editClass) {
     return {
         type: EDIT_CLASS,
+        id: id,
         editClass: editClass,
-        editUID: uid
     }
 }
 
@@ -48,9 +45,9 @@ export function initDepartments() {
     }
 }
 
-export function enterEditMode(uid) {
+export function enterEditMode(id) {
     return function (dispatch, getState) {
-        const otherClass = getState().ClassSelection[uid];
+        const otherClass = getState().ClassList.selectedClasses[id];
 
         dispatch(populateSectionData(otherClass.department));
 
@@ -59,12 +56,15 @@ export function enterEditMode(uid) {
         dispatch(setDepartment(otherClass.department));
         dispatch(setInstructor(otherClass.instructor));
         dispatch(setCourseNum(otherClass.courseNum));
-        dispatch(setEditMode(uid, true));
+
+        dispatch(setEditMode(true));
+        // setting current class id
+        dispatch(setID(id));
     }
 }
 
 export function enterInputMode() {
-    return function (dispatch) {
+    return function (dispatch, getState) {
         dispatch(setProgress(0));
 
         dispatch(setPriority(null));
@@ -72,7 +72,10 @@ export function enterInputMode() {
         dispatch(setInstructor(null));
         dispatch(setCourseNum(null));
         dispatch(setDepartment(null));
-        dispatch(setEditMode(null, false));
+
+        dispatch(setEditMode(false));
+        // just put it to one more than what it was before
+        dispatch(setID(getState().ClassList.selectedClasses.length + 1));
     }
 }
 

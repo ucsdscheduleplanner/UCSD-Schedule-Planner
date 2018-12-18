@@ -40,7 +40,7 @@ export default class SchedulePreferences extends PureComponent {
                                     value={this.props.startTimePreference}
                                     onChange={(e) => {
                                         console.log(e);
-                                        this.props.setStartTimePreference(e)
+                                        this.props.setStartPref(e)
                                     }}
                                     use12Hours={true}
                                     showSecond={false}/>
@@ -50,7 +50,7 @@ export default class SchedulePreferences extends PureComponent {
                         End:
                         <TimePicker use12Hours={true}
                                     value={this.props.endTimePreference}
-                                    onChange={(e) => this.props.setEndTimePreference(e)}
+                                    onChange={(e) => this.props.setEndPref(e)}
                                     style={{width: "100%"}}
                                     showSecond={false}/>
                     </div>
@@ -59,7 +59,7 @@ export default class SchedulePreferences extends PureComponent {
                     <span className="day-preference-title">Day Preference:</span>
 
                     <SelectButton id="day-preference" value={this.props.dayPreference} multiple={true} options={days}
-                                  onChange={(e) => this.props.setDayPreference(e.value)}/>
+                                  onChange={(e) => this.props.setDayPref(e.value)}/>
                 </div>
             </div>
         );
@@ -67,23 +67,18 @@ export default class SchedulePreferences extends PureComponent {
         return (
             <MediaQuery query="(max-width: 700px)">
                 {(matches) => {
-                    let position;
-                    if (matches) {
-                        position = "bottom";
-
-                    } else {
-                        position = "left";
-                    }
+                    let position = matches ? "bottom" : "left";
                     return (
                         <Sidebar id="sidebar"
                                  visible={this.props.displayed}
                                  showCloseIcon={false}
                                  position={position}
-                                 onHide={this.props.toggleDisplayed}>
+                                 onHide={(e) => this.props.setDisplayed(false)}>
                             {schedulePreferencesContent}
                         </Sidebar>
                     );
-                }}
+                }
+                }
             </MediaQuery>
         );
     }

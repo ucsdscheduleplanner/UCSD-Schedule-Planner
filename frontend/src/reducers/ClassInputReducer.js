@@ -1,4 +1,3 @@
-import {} from "../actions/ClassInputMutator";
 import {POPULATE_DATA_PER_CLASS} from "../actions/ClassInputActions";
 import {SET_COURSE_NUMS} from "../actions/ClassInputMutator";
 import {SET_COURSE_NUM} from "../actions/ClassInputMutator";
@@ -11,6 +10,8 @@ import {SET_EDIT_MODE} from "../actions/ClassInputMutator";
 import {SET_MESSAGE_HANDLER} from "../actions/ClassInputMutator";
 import {SET_INSTRUCTORS} from "../actions/ClassInputMutator";
 import {SET_TYPES} from "../actions/ClassInputMutator";
+import {SET_EDIT_OCCURRED} from "../actions/ClassInputMutator";
+import {SET_ID} from "../actions/ClassInputMutator";
 
 export default function ClassInputReducer(state = {
     departments: [],
@@ -28,9 +29,12 @@ export default function ClassInputReducer(state = {
     courseNum: null,
     priority: null,
     editMode: false,
-    editUID: null,
     editOccurred: false,
     messageHandler: null,
+
+    // id of the current class - really only for Class editing purposes
+    // if id is null that just means it hasn't been set yet, only set when edit mode is activated
+    id: null
 }, action) {
     switch (action.type) {
         case POPULATE_DATA_PER_CLASS:
@@ -90,17 +94,29 @@ export default function ClassInputReducer(state = {
                 priority: action.priority
             });
         case SET_CONFLICTS:
+            // set it back to an empty list if given null
+            if(action.conflicts === null)
+                action.conflicts = [];
+
             return Object.assign({}, state, {
                 conflicts: action.conflicts
             });
         case SET_EDIT_MODE:
             return Object.assign({}, state, {
                 editMode: action.editMode,
-                editUID: action.editUID
+                id: action.id
+            });
+        case SET_EDIT_OCCURRED:
+            return Object.assign({}, state, {
+                editOccurred: action.editOccurred,
             });
         case SET_MESSAGE_HANDLER:
             return Object.assign({}, state, {
                 messageHandler: action.messageHandler,
+            });
+        case SET_ID:
+            return Object.assign({}, state, {
+                id: action.id,
             });
         default:
             return state;

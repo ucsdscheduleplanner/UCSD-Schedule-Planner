@@ -4,10 +4,15 @@ import {
     setInstructor, setInstructors,
     setPriority, setTypes
 } from "./ClassInputMutator";
-import {addClass, editClass, populateSectionData, removeClass} from "./ClassInputActions";
+import {addClass, editClass, enterInputMode, populateSectionData, removeClass} from "./ClassInputActions";
 import {setUID} from "./ScheduleGenerationActions";
+import {setInstructorPref, setPriorityPref} from "./SchedulePreferenceHandler";
 
-class InputHandler {
+/**
+ * Is responsible for handling all ClassInput actions, which includes running business logic when changing fields to adding
+ * and removing classes
+ */
+export class ClassInputHandler {
     constructor(dispatch, getState) {
         this.dispatch = dispatch;
         this.state = getState().ClassInput;
@@ -22,12 +27,19 @@ class InputHandler {
         // sets the department in the store
         this.dispatch(setDepartment(department));
 
+        // don't alter anything if the department isn't even valid
         if(!this.state.departments.includes(department))
+            return;
+
+        // no reason to change if the two are the same
+        if(this.state.department === department)
             return;
 
         // set all other fields to blank
         this.dispatch(setCourseNum(null));
         this.dispatch(setInstructor(null));
+        // will autoconvert to empty list
+        this.dispatch(setConflicts(null));
         this.dispatch(setPriority(null));
 
         // populate the course nums and the data
@@ -66,12 +78,9 @@ class InputHandler {
     }
 
     onInstructorChange(rawInstructor) {
-        console.log(rawInstructor);
         let instructor = rawInstructor.trim();
 
-        this.dispatch(setPriority(null));
-        this.dispatch(setConflicts(null));
-
+        console.log(this.state.editMode);
         // record the edit
         if (this.state.editMode)
             this.dispatch(setEditOccurred(true));
@@ -101,17 +110,27 @@ class InputHandler {
         newClass['classTitle'] = `${this.state.department} ${this.state.courseNum}`;
         newClass['courseNum'] = this.state.courseNum;
         newClass['department'] = this.state.department;
+        newClass['instructor'] = this.state.instructor;
+        newClass['conflicts'] = this.state.conflicts;
+
         return newClass;
     }
 
-    handleEdit() {
+    autosave() {
         if (this.state.editMode && this.state.editOccurred) {
-            this.dispatch(setEditOccurred(true));
-
             // just save everything
             let newClass = this.buildClassFromInput();
-            this.dispatch(editClass(this.state.editUID, newClass));
+
+            console.log(this.state);
+            console.log(newClass);
+            this.dispatch(setEditOccurred(false));
+            this.dispatch(editClass(this.state.id, newClass));
         }
+    }
+
+    handleEdit() {
+        this.autosave();
+        this.dispatch(enterInputMode());
     }
 
     handleRemove() {
@@ -122,16 +141,17 @@ class InputHandler {
             this.state.messageHandler.showSuccess(`Removed class ${this.state.currentDepartment} 
                                     ${this.state.currentCourseNum}`, 1000);
         } else {
-            this.dispatch(removeClass(this.state.editUID));
+            console.log("removing here");
+            this.dispatch(removeClass(this.state.id));
             this.state.messageHandler.showSuccess("Successfully removed class", 1000);
         }
 
-        this.state.enterInputMode();
+        this.dispatch(enterInputMode());
     }
 
     isDuplicate(newClass) {
         // testing whether this is a duplicate class
-        return Object.values(this.getState().ClassSelection).reduce(function (accumulator, previousClass) {
+        return Object.values(this.getState().ClassList.selectedClasses).reduce(function (accumulator, previousClass) {
             return accumulator || newClass.classTitle === previousClass['classTitle']
         }, false);
     }
@@ -153,7 +173,6 @@ class InputHandler {
         // error checking on department and course num
         if (!this.state.departments.includes(this.state.department))
             error = true;
-
         if (!this.state.courseNums.includes(this.state.courseNum))
             error = true;
 
@@ -162,22 +181,28 @@ class InputHandler {
             return;
         }
 
+        const classTitle = `${this.state.department} ${this.state.courseNum}`;
+        const instructor = this.state.instructor;
+        const priority = this.state.priority;
+
         // using the addClass method from the reducer
-        this.dispatch(addClass(this.state.uid, newClass));
-        // TODO do this
-        //this.dispatch(savePreferences());
+        this.dispatch(addClass(newClass));
+
+        // adding preferences
+        this.dispatch(setInstructorPref(classTitle, instructor));
+        this.dispatch(setPriorityPref(classTitle, priority));
 
         this.dispatch(setInstructor(null));
         this.dispatch(setCourseNum(null));
         this.dispatch(setPriority(null));
         this.dispatch(setConflicts(null));
 
-        this.dispatch(setUID(this.state.uid + 1));
+        this.dispatch(setUID(null));
     }
 }
 
 export function getInputHandler() {
     return function (dispatch, getState) {
-        return new InputHandler(dispatch, getState);
+        return new ClassInputHandler(dispatch, getState);
     }
 }

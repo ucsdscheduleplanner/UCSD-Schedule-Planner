@@ -3,20 +3,20 @@ import {classTypeToCode, DataFetcher} from "../utils/DataFetcher";
 import {DataCleaner} from "../utils/DataCleaner";
 
 
-export const REQUEST_SCHEDULE = 'REQUEST_SCHEDULE';
+export const STARTING_GENERATING_SCHEDULE = 'STARTING_GENERATING_SCHEDULE';
 
 export function requestSchedule() {
     return {
-        type: REQUEST_SCHEDULE,
+        type: STARTING_GENERATING_SCHEDULE,
         generating: true,
     }
 }
 
-export const RECEIVE_SCHEDULE = 'RECEIVE_SCHEDULE';
+export const FINISHED_GENERATING_SCHEDULE = 'FINISHED_GENERATING_SCHEDULE';
 
 export function getGenerationResults(schedule) {
     return {
-        type: RECEIVE_SCHEDULE,
+        type: FINISHED_GENERATING_SCHEDULE,
         generationResult: schedule,
         generating: false
     }
@@ -104,19 +104,36 @@ function handleConflicts(Class, conflicts) {
 }
 
 function handleSchedulePreferences(schedulePreferences, preferences) {
-    if (schedulePreferences.startTimePreference && schedulePreferences.endTimePreference) {
-        let startTime = schedulePreferences.startTimePreference.toDate();
-        let endTime = schedulePreferences.endTimePreference.toDate();
+    // TODO fix this for defaults on not existing start and end time
+    if (schedulePreferences.startPref && schedulePreferences.endPref) {
+        let startTime = schedulePreferences.startPref.toDate();
+        let endTime = schedulePreferences.endPref.toDate();
         preferences.push(new TimePreference(startTime, endTime));
     }
 
-    let days = schedulePreferences.dayPreference;
+    let days = schedulePreferences.dayPref;
     if (days) {
         preferences.push(new DayPreference(days));
     }
+
+    // for (let classTitle of Object.keys(schedulePreferences.instructorPref)) {
+    //     let instructor = schedulePreferences.instructorPref[classTitle];
+    //     if(!instructor)
+    //         continue;
+    //
+    //     let priority = schedulePreferences.priorityPref[classTitle] ? schedulePreferences.priorityPref[classTitle] : 1;
+    //     let applied = [];
+    //     applied.push(new InstructorPreference(classTitle, k))
+    //         preferencesToBeModified.push(new InstructorPreference(instructor));
+    //     }
+    //
+    //     let priorityModifier = new PriorityModifier(Class, preferencesToBeModified, priority);
+    //     // add preferences to the priority modifier
+    //     preferences.push(priorityModifier);
+    // }
+
+
 }
-
-
 
 
 function calculateMaxSize(classData) {
@@ -145,15 +162,18 @@ export function getSchedule(selectedClasses) {
         // setting progress to 0 initially
         dispatch(setProgress(0));
 
-        let schedulePreferences = getState().SchedulePreferences;
+        let schedulePreferences = getState().Preferences;
         handleSchedulePreferences(schedulePreferences, preferences);
+        // TODO handle preferences correctly and split up responsibility around SchduleGeneration
 
         // Class has very little data but the names
         // passes in data from UI
+        /*
         for (let Class of selectedClasses) {
             handlePriority(Class, preferences);
-            handleConflicts(Class, conflicts);
+            //handleConflicts(Class, conflicts);
         }
+        */
 
         // data comes in the form of array of subsections
         let classData = await DataFetcher.fetchClassData(selectedClasses);

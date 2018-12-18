@@ -11,7 +11,7 @@ export const SET_CONFLICTS = "SET_CONFLICTS";
 export const SET_PRIORITY = "SET_PRIORITY";
 export const SET_EDIT_MODE = "SET_EDIT_MODE";
 export const SET_MESSAGE_HANDLER = "SET_MESSAGE_HANDLER";
-
+export const SET_ID = "SET_ID";
 
 export function setCourseNums(courseNums) {
     return {
@@ -76,11 +76,17 @@ export function setConflicts(conflicts) {
     }
 }
 
-export function setEditMode(uid, mode) {
+export function setEditMode(mode) {
     return {
         type: SET_EDIT_MODE,
         editMode: mode,
-        editUID: uid
+    }
+}
+
+export function setID(id) {
+    return {
+        type: SET_ID,
+        id: id
     }
 }
 
@@ -91,10 +97,10 @@ export function setMessageHandler(messageHandler) {
     }
 }
 
-export function setEditOccurred(occurred) {
+export function setEditOccurred(editOccurred) {
     return {
         type: SET_EDIT_OCCURRED,
-        occurred: occurred
+        editOccurred: editOccurred
     }
 }
 

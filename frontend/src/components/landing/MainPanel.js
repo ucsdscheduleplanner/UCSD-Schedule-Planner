@@ -21,7 +21,7 @@ class MainPanel extends Component {
     render() {
         const calendar = (
             <ResultPanel
-                key={this.props.scheduleKey}
+                key={this.props.scheduleID}
                 messageHandler={this.props.messageHandler}
                 generationResult={this.props.generationResult}/>
         );
@@ -46,13 +46,13 @@ class MainPanel extends Component {
 
 function mapStateToProps(state) {
     return {
-        scheduleKey: state.ScheduleGeneration.scheduleKey,
+        scheduleID: state.Generate.scheduleID,
         messageHandler: state.ClassInput.messageHandler,
-        generateSuccess: state.ScheduleGeneration.generateSuccess,
-        generatingProgress: state.ScheduleGeneration.generatingProgress,
-        totalNumPossibleSchedule: state.ScheduleGeneration.totalNumPossibleSchedule,
-        generating: state.ScheduleGeneration.generating,
-        generationResult: state.ScheduleGeneration.generationResult
+        generateSuccess: state.Generate.generateSuccess,
+        generatingProgress: state.Generate.generatingProgress,
+        totalNumPossibleSchedule: state.Generate.totalNumPossibleSchedule,
+        generating: state.Generate.generating,
+        generationResult: state.Generate.generationResult
     };
 }
 
