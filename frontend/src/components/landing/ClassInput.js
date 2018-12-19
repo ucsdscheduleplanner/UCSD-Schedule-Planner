@@ -14,13 +14,10 @@ export default class ClassInput extends PureComponent {
             departmentOptions: [],
             classOptions: [],
         };
-        this.inputHandler = props.getInputHandler();
-        console.log(this.inputHandler);
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
-        this.inputHandler = this.props.getInputHandler();
-        this.inputHandler.autosave();
+        this.props.inputHandler.autosave();
     }
 
     completeDepartmentSuggestions(event) {
@@ -46,9 +43,9 @@ export default class ClassInput extends PureComponent {
     completeInstructorSuggestions(event) {
         console.log(this.props.instructors);
         let instructorOptions = this.props.instructors.filter((instructor) => {
-                if (instructor) return instructor.toLowerCase().startsWith(event.query.toLowerCase());
-                    return false;
-            });
+            if (instructor) return instructor.toLowerCase().startsWith(event.query.toLowerCase());
+            return false;
+        });
         this.setState({instructorOptions: instructorOptions});
     }
 
@@ -60,18 +57,18 @@ export default class ClassInput extends PureComponent {
         let deleteButton = (
             <div className="form-button">
                 <Button label="Delete Class" className="ui-button-danger"
-                        disabled={this.props.currentCourseNum === null}
-                        onClick={() => this.inputHandler.handleRemove()}
+                        disabled={this.props.courseNum === null}
+                        onClick={() => this.props.inputHandler.handleRemove()}
                 />
                 <Button label="Done editing" className="ui-button-info"
-                        disabled={this.props.currentCourseNum === null}
-                        onClick={() => this.inputHandler.handleEdit()}
+                        disabled={this.props.courseNum === null}
+                        onClick={() => this.props.inputHandler.handleEdit()}
                 />
             </div>
         );
 
         let addButton = (
-            <div className="form-button" onClick={() => this.inputHandler.handleAdd()}>
+            <div className="form-button" onClick={() => this.props.inputHandler.handleAdd()}>
                 <Button label="Add Class" disabled={this.props.courseNum === null}/>
             </div>
         );
@@ -83,7 +80,7 @@ export default class ClassInput extends PureComponent {
                               suggestions={this.state.departmentOptions}
                               dropdown={true}
                               value={this.props.department}
-                              onChange={(e) => this.inputHandler.onDepartmentChange(e.value)}
+                              onChange={(e) => this.props.inputHandler.onDepartmentChange(e.value)}
                               completeMethod={this.completeDepartmentSuggestions.bind(this)}/>
             </div>
         );
@@ -95,7 +92,7 @@ export default class ClassInput extends PureComponent {
                               suggestions={this.state.classOptions}
                               itemTemplate={this.getDescriptionForCourseNum.bind(this)}
                               value={this.props.courseNum}
-                              onChange={(e) => this.inputHandler.onCourseNumChange(e.value)}
+                              onChange={(e) => this.props.inputHandler.onCourseNumChange(e.value)}
                               completeMethod={this.completeClassSuggestions.bind(this)}
                               disabled={!this.props.departments.includes(this.props.department)}
                               dropdown={true}/>
@@ -111,7 +108,7 @@ export default class ClassInput extends PureComponent {
                                   // it is actually in the dict or not because if not it will be undefined and show nothing
                                   this.state.instructorOptions}
                               value={this.props.instructor}
-                              onChange={(e) => this.inputHandler.onInstructorChange(e.value)}
+                              onChange={(e) => this.props.inputHandler.onInstructorChange(e.value)}
                               completeMethod={this.completeInstructorSuggestions.bind(this)}
                               disabled={!this.props.courseNums.includes(this.props.courseNum)}
                               dropdown={true}/>
@@ -125,9 +122,9 @@ export default class ClassInput extends PureComponent {
                     // same as above with the undefined
                     this.props.conflicts}
                          options={this.props.types}
-                         onChange={(e) => this.inputHandler.onConflictChange(e.value)}
+                         onChange={(e) => this.props.inputHandler.onConflictChange(e.value)}
                          multiple={true}
-                         disabled={!this.props.courseNums.includes(this.props.courseNum)} />
+                         disabled={!this.props.courseNums.includes(this.props.courseNum)}/>
             </div>
         );
 
@@ -137,7 +134,7 @@ export default class ClassInput extends PureComponent {
                 <Rating value={
                     // same as above with undefined
                     this.props.priority}
-                        onChange={(e) => this.inputHandler.onPriorityChange(e.value)}
+                        onChange={(e) => this.props.inputHandler.onPriorityChange(e.value)}
                         stars={3}
                         disabled={this.props.courseNum === null}
                 />

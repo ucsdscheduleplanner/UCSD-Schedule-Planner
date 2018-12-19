@@ -6,8 +6,8 @@ import {
     SET_INSTRUCTOR_PREF,
     SET_PRIORITY_PREF,
     SET_START_PREF
-} from "../actions/SchedulePreferenceHandler";
-import {SET_DISPLAYED} from "../actions/SchedulePreferenceUIHandler";
+} from "../actions/SchedulePreference/SchedulePreferenceHandler";
+import {SET_DISPLAYED} from "../actions/SchedulePreference/SchedulePreferenceUIHandler";
 
 export default function SchedulePreferences(state = {
     startPref: moment("1970-01-01 17:00Z"),

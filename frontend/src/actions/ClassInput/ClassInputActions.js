@@ -1,4 +1,4 @@
-import {DataFetcher} from "../utils/DataFetcher";
+import {DataFetcher} from "../../utils/DataFetcher";
 import {
     setConflicts,
     setCourseNum,
@@ -7,7 +7,8 @@ import {
     setInstructor,
     setPriority
 } from "./ClassInputMutator";
-import {setProgress} from "./ScheduleGenerationActions";
+import {setProgress} from "../ScheduleGenerationActions";
+import {getInputHandler} from "./ClassInputHandler";
 
 export const ADD_CLASS = "ADD_CLASS";
 export const EDIT_CLASS = "EDIT_CLASS";
@@ -49,13 +50,14 @@ export function enterEditMode(id) {
     return function (dispatch, getState) {
         const otherClass = getState().ClassList.selectedClasses[id];
 
+        let inputHandler = getInputHandler(dispatch, getState);
         dispatch(populateSectionData(otherClass.department));
 
-        dispatch(setPriority(otherClass.priority));
-        dispatch(setConflicts(otherClass.conflicts));
-        dispatch(setDepartment(otherClass.department));
-        dispatch(setInstructor(otherClass.instructor));
-        dispatch(setCourseNum(otherClass.courseNum));
+        inputHandler.onDepartmentChange(otherClass.department);
+        inputHandler.onCourseNumChange(otherClass.courseNum);
+        inputHandler.onInstructorChange(otherClass.instructor);
+        inputHandler.onConflictChange(otherClass.conflicts);
+        inputHandler.onPriorityChange(otherClass.priority);
 
         dispatch(setEditMode(true));
         // setting current class id
@@ -75,7 +77,7 @@ export function enterInputMode() {
 
         dispatch(setEditMode(false));
         // just put it to one more than what it was before
-        dispatch(setID(getState().ClassList.selectedClasses.length + 1));
+        dispatch(setID(null));
     }
 }
 

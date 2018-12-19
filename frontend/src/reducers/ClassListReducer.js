@@ -1,4 +1,4 @@
-import {ADD_CLASS, EDIT_CLASS, REMOVE_CLASS} from "../actions/ClassInputActions";
+import {ADD_CLASS, EDIT_CLASS, REMOVE_CLASS} from "../actions/ClassInput/ClassInputActions";
 
 export default function ClassList(state = {
     // selectedClasses is a dictionary from uid to class

@@ -3,9 +3,9 @@ import React, {Component} from 'react';
 import SchedulePreferences from "../components/landing/SchedulePreferences";
 import {bindActionCreators} from "redux";
 import {getSchedule} from "../actions/ScheduleGenerationActions";
-import {enterInputMode} from "../actions/ClassInputActions";
-import {setDayPref, setEndPref, setStartPref} from "../actions/SchedulePreferenceHandler";
-import {setDisplayed, toggleDisplayed} from "../actions/SchedulePreferenceUIHandler";
+import {enterInputMode} from "../actions/ClassInput/ClassInputActions";
+import {setDayPref, setEndPref, setStartPref} from "../actions/SchedulePreference/SchedulePreferenceHandler";
+import {setDisplayed, toggleDisplayed} from "../actions/SchedulePreference/SchedulePreferenceUIHandler";
 
 class SchedulePreferencesContainer extends Component {
     // using class field syntax to get correct context binding

@@ -1,7 +1,14 @@
 import React from 'react';
 import ClassInputContainer from "../containers/ClassInputContainer";
-import {setConflicts, setCourseNum, setDepartment, setDepartments, setInstructor} from "../actions/ClassInputMutator";
-import {getInputHandler as getReduxInputHandler} from "../actions/ClassInputHandler";
+import {
+    setConflicts,
+    setCourseNum,
+    setCourseNums,
+    setDepartment,
+    setDepartments,
+    setInstructor
+} from "../actions/ClassInput/ClassInputMutator";
+import {getInputHandler as getReduxInputHandler} from "../actions/ClassInput/ClassInputHandler";
 import {applyMiddleware, createStore} from "redux";
 import reducers from "../reducers";
 import thunk from "redux-thunk";
@@ -36,6 +43,7 @@ describe("Ensuring ClassInputHandler can handle changes in the autocomplete fiel
             department: "CSE",
             courseNum: "12",
             conflicts: [],
+            priority: null,
             instructor: null
         };
 
@@ -60,6 +68,7 @@ describe("Ensuring ClassInputHandler can handle changes in the autocomplete fiel
             department: "CSE",
             courseNum: "12",
             conflicts: ["LE", "blah"],
+            priority: null,
             instructor: "Mr. Cameron Trando"
         };
 
@@ -104,6 +113,54 @@ describe("Ensuring ClassInputHandler can handle changes in the autocomplete fiel
 
         let state = store.getState().ClassInput;
 
+        chaiExpect(state.department).to.equal("CSE");
+        chaiExpect(state.courseNum).to.equal("12");
+        chaiExpect(state.instructor).to.equal("Mr. Cameron Trando");
+        chaiExpect(state.conflicts).to.eql(["LE", "blah"]);
+    });
+
+    test('Making sure priority, conflicts, and instructors are nulled out when changing courseNum field', () => {
+        const classInput = mount(
+            <ClassInputContainer store={store}/>
+        );
+
+        store.dispatch(setDepartments(["CSE", "DSC"]));
+        store.dispatch(setCourseNums(["11", "12"]));
+        store.dispatch(setDepartment("CSE"));
+        store.dispatch(setCourseNum("12"));
+        store.dispatch(setConflicts(["LE", "blah"]));
+        store.dispatch(setInstructor("Mr. Cameron Trando"));
+
+        let inputHandler = getInputHandler(store);
+        inputHandler.onCourseNumChange("11");
+
+        let state = store.getState().ClassInput;
+
+        // department should still stay the same
+        chaiExpect(state.department).to.equal("CSE");
+        chaiExpect(state.courseNum).to.equal("11");
+        chaiExpect(state.instructor).to.equal(null);
+        chaiExpect(state.conflicts).to.eql([]);
+    });
+
+    test('Making sure priority, conflicts, and instructors are unchanged when not making any changes to courseNum field', () => {
+        const classInput = mount(
+            <ClassInputContainer store={store}/>
+        );
+
+        store.dispatch(setDepartments(["CSE", "DSC"]));
+        store.dispatch(setCourseNums(["11", "12"]));
+        store.dispatch(setDepartment("CSE"));
+        store.dispatch(setCourseNum("12"));
+        store.dispatch(setConflicts(["LE", "blah"]));
+        store.dispatch(setInstructor("Mr. Cameron Trando"));
+
+        let inputHandler = getInputHandler(store);
+        inputHandler.onCourseNumChange("12");
+
+        let state = store.getState().ClassInput;
+
+        // department should still stay the same
         chaiExpect(state.department).to.equal("CSE");
         chaiExpect(state.courseNum).to.equal("12");
         chaiExpect(state.instructor).to.equal("Mr. Cameron Trando");

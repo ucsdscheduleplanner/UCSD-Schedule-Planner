@@ -3,13 +3,14 @@ import {connect} from "react-redux";
 import ClassInput from "../components/landing/ClassInput";
 import {bindActionCreators} from "redux";
 import "../css/ClassInput.css";
-import {getInputHandler} from "../actions/ClassInputHandler";
-import {initDepartments} from "../actions/ClassInputActions";
+import {getInputHandler} from "../actions/ClassInput/ClassInputHandler";
+import {initDepartments} from "../actions/ClassInput/ClassInputActions";
 
 class ClassInputContainer extends Component {
 
     constructor(props) {
         super(props);
+        this.inputHandler = this.props.getInputHandler();
     }
 
     async componentDidMount() {
@@ -18,21 +19,18 @@ class ClassInputContainer extends Component {
 
     render() {
         return (
-            // API
-            // onDepartmentChange - department options currentDepartment
-            // onCourseNumChange - courseNum options currentCourseNum
-            // onInstructorChange - instructor options
-            //
             <div className="ci-container">
                 <div className="ci--title"> Add Classes</div>
                 <ClassInput
-                    getInputHandler={this.props.getInputHandler}
+                    inputHandler={this.inputHandler}
 
                     departments={this.props.departments}
                     courseNums={this.props.courseNums}
                     instructors={this.props.instructors}
                     types={this.props.types}
 
+                    // need to control these globally for class editing purposes
+                    // if they were state local to ClassInput, would not be able to hydrate them
                     department={this.props.department}
                     instructor={this.props.instructor}
                     courseNum={this.props.courseNum}
@@ -72,7 +70,7 @@ function mapStateToProps(state) {
 
         classTypesPerClass: state.ClassInput.classTypesPerClass,
         instructorsPerClass: state.ClassInput.instructorsPerClass,
-
+        descriptionsPerClass: state.ClassInput.descriptionsPerClass,
 
         editMode: state.ClassInput.editMode,
     }

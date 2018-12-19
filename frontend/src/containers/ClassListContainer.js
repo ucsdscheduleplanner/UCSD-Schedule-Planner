@@ -3,8 +3,8 @@ import {connect} from 'react-redux';
 import ClassList from "../components/landing/ClassList";
 import {bindActionCreators} from "redux";
 import {getSchedule} from "../actions/ScheduleGenerationActions";
-import {enterEditMode, enterInputMode} from "../actions/ClassInputActions";
-import {setDisplayed} from "../actions/SchedulePreferenceUIHandler";
+import {enterEditMode, enterInputMode} from "../actions/ClassInput/ClassInputActions";
+import {setDisplayed} from "../actions/SchedulePreference/SchedulePreferenceUIHandler";
 
 class ClassListContainer extends Component {
 

@@ -3,7 +3,7 @@ import renderer from 'react-test-renderer';
 import thunk from 'redux-thunk';
 import {applyMiddleware, createStore} from "redux";
 import reducers from "../reducers";
-import {setCourseNum, setCourseNums, setDepartment, setDepartments} from "../actions/ClassInputMutator";
+import {setCourseNum, setCourseNums, setDepartment, setDepartments} from "../actions/ClassInput/ClassInputMutator";
 import ClassInputContainer from "../containers/ClassInputContainer";
 import {AutoComplete} from "primereact/components/autocomplete/AutoComplete";
 import {mount} from 'enzyme';

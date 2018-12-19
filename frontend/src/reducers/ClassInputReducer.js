@@ -1,17 +1,18 @@
-import {POPULATE_DATA_PER_CLASS} from "../actions/ClassInputActions";
-import {SET_COURSE_NUMS} from "../actions/ClassInputMutator";
-import {SET_COURSE_NUM} from "../actions/ClassInputMutator";
-import {SET_DEPARTMENT} from "../actions/ClassInputMutator";
-import {SET_DEPARTMENTS} from "../actions/ClassInputMutator";
-import {SET_INSTRUCTOR} from "../actions/ClassInputMutator";
-import {SET_PRIORITY} from "../actions/ClassInputMutator";
-import {SET_CONFLICTS} from "../actions/ClassInputMutator";
-import {SET_EDIT_MODE} from "../actions/ClassInputMutator";
-import {SET_MESSAGE_HANDLER} from "../actions/ClassInputMutator";
-import {SET_INSTRUCTORS} from "../actions/ClassInputMutator";
-import {SET_TYPES} from "../actions/ClassInputMutator";
-import {SET_EDIT_OCCURRED} from "../actions/ClassInputMutator";
-import {SET_ID} from "../actions/ClassInputMutator";
+import {POPULATE_DATA_PER_CLASS} from "../actions/ClassInput/ClassInputActions";
+import {SET_COURSE_NUMS} from "../actions/ClassInput/ClassInputMutator";
+import {SET_COURSE_NUM} from "../actions/ClassInput/ClassInputMutator";
+import {SET_DEPARTMENT} from "../actions/ClassInput/ClassInputMutator";
+import {SET_DEPARTMENTS} from "../actions/ClassInput/ClassInputMutator";
+import {SET_INSTRUCTOR} from "../actions/ClassInput/ClassInputMutator";
+import {SET_PRIORITY} from "../actions/ClassInput/ClassInputMutator";
+import {SET_CONFLICTS} from "../actions/ClassInput/ClassInputMutator";
+import {SET_EDIT_MODE} from "../actions/ClassInput/ClassInputMutator";
+import {SET_MESSAGE_HANDLER} from "../actions/ClassInput/ClassInputMutator";
+import {SET_INSTRUCTORS} from "../actions/ClassInput/ClassInputMutator";
+import {SET_TYPES} from "../actions/ClassInput/ClassInputMutator";
+import {SET_EDIT_OCCURRED} from "../actions/ClassInput/ClassInputMutator";
+import {SET_ID} from "../actions/ClassInput/ClassInputMutator";
+import {ConsoleMessageHandler} from "../utils/ConsoleMessageHandler";
 
 export default function ClassInputReducer(state = {
     departments: [],
@@ -30,7 +31,8 @@ export default function ClassInputReducer(state = {
     priority: null,
     editMode: false,
     editOccurred: false,
-    messageHandler: null,
+    // default is console message handler, but can be set to something else if needed
+    messageHandler: new ConsoleMessageHandler(),
 
     // id of the current class - really only for Class editing purposes
     // if id is null that just means it hasn't been set yet, only set when edit mode is activated
@@ -52,10 +54,15 @@ export default function ClassInputReducer(state = {
                 departments: action.departments
             });
         case SET_INSTRUCTORS:
+            if(!action.instructors)
+                action.instructors = [];
             return Object.assign({}, state, {
                 instructors: action.instructors
             });
         case SET_TYPES:
+            if(!action.types)
+                action.types = [];
+
             let types = action.types.filter((classType) => {
                 return classType["label"] !== "Final Exam" && classType["label"] !== "Midterm";
             });
@@ -95,16 +102,16 @@ export default function ClassInputReducer(state = {
             });
         case SET_CONFLICTS:
             // set it back to an empty list if given null
-            if(action.conflicts === null)
-                action.conflicts = [];
+            let conflicts = action.conflicts;
+            if(!conflicts)
+                conflicts = [];
 
             return Object.assign({}, state, {
-                conflicts: action.conflicts
+                conflicts: conflicts,
             });
         case SET_EDIT_MODE:
             return Object.assign({}, state, {
-                editMode: action.editMode,
-                id: action.id
+                editMode: action.editMode
             });
         case SET_EDIT_OCCURRED:
             return Object.assign({}, state, {
