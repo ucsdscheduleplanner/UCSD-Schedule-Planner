@@ -5,7 +5,7 @@ import GenerateReducer from "./GenerateReducer";
 import ClassListReducer from "./ClassListReducer";
 
 const reducers = combineReducers({
-    Preferences: SchedulePreferences,
+    SchedulePreferences: SchedulePreferences,
     ClassInput: ClassInputReducer,
     Generate: GenerateReducer,
     ClassList: ClassListReducer

@@ -27,6 +27,7 @@ export const SGMiddleWare = store => {
         if (action.type !== GENERATE_SCHEDULE)
             return next(action);
 
+        console.log(action);
         worker.postMessage(action);
         return next(action);
     }

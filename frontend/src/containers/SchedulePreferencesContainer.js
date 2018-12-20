@@ -4,30 +4,31 @@ import SchedulePreferences from "../components/landing/SchedulePreferences";
 import {bindActionCreators} from "redux";
 import {getSchedule} from "../actions/ScheduleGenerationActions";
 import {enterInputMode} from "../actions/ClassInput/ClassInputActions";
-import {setDayPref, setEndPref, setStartPref} from "../actions/SchedulePreference/SchedulePreferenceHandler";
+import {setDayPref, setEndPref, setStartPref} from "../actions/SchedulePreference/SchedulePreferenceMutator";
 import {setDisplayed, toggleDisplayed} from "../actions/SchedulePreference/SchedulePreferenceUIHandler";
+import {getSchedulePreferenceInputHandler} from "../actions/SchedulePreference/SchedulePreferenceInputHandler";
 
 class SchedulePreferencesContainer extends Component {
-    // using class field syntax to get correct context binding
-    getSchedule = () => {
-        this.props.getSchedule(this.props.selectedClasses);
-    };
+
+    constructor(props) {
+        super(props);
+        this.inputHandler = this.props.getInputHandler();
+    }
 
     render() {
         return <SchedulePreferences
-            getSchedule={this.getSchedule}
             enterInputMode={this.props.enterInputMode}
+            inputHandler={this.inputHandler}
 
             setDayPref={this.props.setDayPref}
             setStartPref={this.props.setStartPref}
             setEndPref={this.props.setEndPref}
 
-            startTimePreference={this.props.startTimePreference}
-            endTimePreference={this.props.endTimePreference}
-            dayPreference={this.props.dayPreference}
+            startPref={this.props.startPref}
+            endPref={this.props.endPref}
+            dayPref={this.props.dayPref}
 
             displayed={this.props.displayed}
-            selectedClasses={this.props.selectedClasses}
             setDisplayed={this.props.setDisplayed}
         />
     }
@@ -35,22 +36,21 @@ class SchedulePreferencesContainer extends Component {
 
 function mapStateToProps(state) {
     return {
-        selectedClasses: state.ClassList.selectedClasses,
-        startTimePreference: state.Preferences.startTimePreference,
-        endTimePreference: state.Preferences.endTimePreference,
-        dayPreference: state.Preferences.dayPreference,
-        displayed: state.Preferences.displayed
+        startPref: state.SchedulePreferences.startPref,
+        endPref: state.SchedulePreferences.endPref,
+        dayPref: state.SchedulePreferences.dayPref,
+        displayed: state.SchedulePreferences.displayed
     }
 }
 
 function mapDispatchToProps(dispatch) {
     return bindActionCreators({
-        getSchedule: getSchedule,
         enterInputMode: enterInputMode,
         setDayPref: setDayPref,
         setStartPref: setStartPref,
         setEndPref: setEndPref,
         setDisplayed: setDisplayed,
+        getInputHandler: getSchedulePreferenceInputHandler
     }, dispatch);
 }
 

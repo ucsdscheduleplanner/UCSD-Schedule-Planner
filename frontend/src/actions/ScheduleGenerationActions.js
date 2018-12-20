@@ -142,6 +142,17 @@ function calculateMaxSize(classData) {
     }, 1);
 }
 
+function handleClassSpecificPreferences(selectedClasses, classSpecificPref) {
+    let classTitles = selectedClasses.map(e => e.classTitle);
+
+    return classTitles.reduce((accum, cur) => {
+        return {
+            ...accum,
+            [cur]: classSpecificPref[cur]
+        }
+    }, {})
+}
+
 /**
  * This is in redux so we have hooks that determine the progress of generating the generationResult *
  * @param selectedClasses comes in as a dictionary so must convert to a list
@@ -157,13 +168,20 @@ export function getSchedule(selectedClasses) {
         selectedClasses = Object.values(selectedClasses);
 
 
-        let preferences = [];
         let conflicts = {};
         // setting progress to 0 initially
         dispatch(setProgress(0));
 
-        let schedulePreferences = getState().Preferences;
-        handleSchedulePreferences(schedulePreferences, preferences);
+        let schedulePreferences = getState().SchedulePreferences;
+        let {globalPref, classSpecificPref} = schedulePreferences;
+        classSpecificPref = handleClassSpecificPreferences(selectedClasses, classSpecificPref);
+
+        let preferences = {
+            globalPref: globalPref,
+            classSpecificPref: classSpecificPref
+        };
+
+
         // TODO handle preferences correctly and split up responsibility around SchduleGeneration
 
         // Class has very little data but the names

@@ -6,7 +6,7 @@ import {
 } from "./ClassInputMutator";
 import {addClass, editClass, enterInputMode, populateSectionData, removeClass} from "./ClassInputActions";
 import {setUID} from "../ScheduleGenerationActions";
-import {setInstructorPref, setPriorityPref} from "../SchedulePreference/SchedulePreferenceHandler";
+import {SchedulePreferenceInputHandler} from "../SchedulePreference/SchedulePreferenceInputHandler";
 
 /**
  * Is responsible for handling all ClassInput actions, which includes running business logic when changing fields to adding
@@ -22,7 +22,7 @@ export class ClassInputHandler {
      * Edits the department and runs business rule validation on it
      */
     onDepartmentChange(rawDepartment) {
-        if(!rawDepartment)
+        if (!rawDepartment)
             return;
 
         const state = this.getState().ClassInput;
@@ -32,11 +32,11 @@ export class ClassInputHandler {
         this.dispatch(setDepartment(department));
 
         // don't alter anything if the department isn't even valid
-        if(!state.departments.includes(department))
+        if (!state.departments.includes(department))
             return;
 
         // no reason to change if the two are the same
-        if(state.department === department)
+        if (state.department === department)
             return;
 
         // set all other fields to blank
@@ -54,14 +54,14 @@ export class ClassInputHandler {
     }
 
     onCourseNumChange(rawCourseNum) {
-        if(!rawCourseNum)
+        if (!rawCourseNum)
             return;
 
         const state = this.getState().ClassInput;
         let courseNum = rawCourseNum.trim();
         this.dispatch(setCourseNum(courseNum));
 
-        if(courseNum === state.courseNum)
+        if (courseNum === state.courseNum)
             return;
 
         // must clear out the fields
@@ -88,7 +88,7 @@ export class ClassInputHandler {
     }
 
     onInstructorChange(rawInstructor) {
-        if(!rawInstructor)
+        if (!rawInstructor)
             return;
 
         const state = this.getState().ClassInput;
@@ -105,7 +105,7 @@ export class ClassInputHandler {
     }
 
     onConflictChange(conflicts) {
-        if(!conflicts)
+        if (!conflicts)
             return;
 
         const state = this.getState().ClassInput;
@@ -117,7 +117,7 @@ export class ClassInputHandler {
     }
 
     onPriorityChange(priority) {
-        if(!priority)
+        if (!priority)
             return;
 
         const state = this.getState().ClassInput;
@@ -142,16 +142,18 @@ export class ClassInputHandler {
         return newClass;
     }
 
+    /**
+     * Called in editMode such that whenever the user makes an edit, any changes are saved to the store
+     */
     autosave() {
         const state = this.getState().ClassInput;
         if (state.editMode && state.editOccurred) {
             // just save everything
             let newClass = this.buildClassFromInput();
 
-            console.log(state);
-            console.log(newClass);
             this.dispatch(setEditOccurred(false));
             this.dispatch(editClass(state.id, newClass));
+            this.savePreferences();
         }
     }
 
@@ -160,24 +162,34 @@ export class ClassInputHandler {
         this.dispatch(enterInputMode());
     }
 
+    /**
+     * Handle what occurs when the remove button is hit during edit mode
+     *
+     * If the user has edited some of the fields such that the department and courseNum are no longer valid, then just
+     * say remove, otherwise if the class was valid then output a message with the department and courseNum
+     */
     handleRemove() {
         const state = this.getState().ClassInput;
-        // show an error message saying what class was dropped if that class
-        // is a valid one
-        if (state.departments.includes(state.department) &&
-            state.courseNums.includes(state.courseNum)) {
-            state.messageHandler.showSuccess(`Removed class ${state.department} 
-                                    ${state.courseNum}`, 1000);
-        } else {
-            state.messageHandler.showSuccess("Successfully removed class", 1000);
+
+        if(!state.editMode) {
+            console.warn("Somehow, the user was able to trigger class removal without being in edit mode, breaking now.")
+            return;
         }
+
+        if (state.departments.includes(state.department) && state.courseNums.includes(state.courseNum))
+            state.messageHandler.showSuccess(`Removed class ${state.department} ${state.courseNum}`, 1000);
+        else state.messageHandler.showSuccess("Successfully removed class", 1000);
 
         this.dispatch(removeClass(state.id));
         this.dispatch(enterInputMode());
     }
 
+    /**
+     * Checks if a class is already in the store
+     * @param newClass the class to check for duplicates
+     * @returns true if the store contains then given class already, false otherwise
+     */
     isDuplicate(newClass) {
-        // testing whether this is a duplicate class
         return Object.values(this.getState().ClassList.selectedClasses).reduce(function (accumulator, previousClass) {
             return accumulator || newClass.classTitle === previousClass['classTitle']
         }, false);
@@ -190,7 +202,6 @@ export class ClassInputHandler {
         if (!state.courseNum || !state.department)
             return;
 
-        let error = false;
         let newClass = this.buildClassFromInput();
 
         if (this.isDuplicate(newClass)) {
@@ -198,6 +209,7 @@ export class ClassInputHandler {
             return;
         }
 
+        let error = false;
         // error checking on department and course num
         if (!state.departments.includes(state.department))
             error = true;
@@ -215,11 +227,9 @@ export class ClassInputHandler {
 
         // using the addClass method from the reducer
         this.dispatch(addClass(newClass));
+        this.savePreferences();
 
-        // adding preferences
-        this.dispatch(setInstructorPref(classTitle, instructor));
-        this.dispatch(setPriorityPref(classTitle, priority));
-
+        // nulling out the other fields
         this.dispatch(setInstructor(null));
         this.dispatch(setCourseNum(null));
         this.dispatch(setPriority(null));
@@ -227,11 +237,16 @@ export class ClassInputHandler {
 
         this.dispatch(setUID(null));
     }
+
+    savePreferences() {
+        let inputHandler = new SchedulePreferenceInputHandler(this.dispatch, this.getState);
+        inputHandler.saveClassSpecificPref();
+    }
 }
 
 export function getInputHandler(dispatch = null, getState = null) {
     // overloading so can be used by redux and outside of redux as well
-    if(dispatch && getState)
+    if (dispatch && getState)
         return new ClassInputHandler(dispatch, getState);
 
     return function (dispatch, getState) {

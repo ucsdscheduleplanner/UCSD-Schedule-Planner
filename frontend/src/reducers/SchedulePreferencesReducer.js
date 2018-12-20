@@ -1,24 +1,22 @@
 import moment from "moment";
 import {
+    SET_CLASS_SPECIFIC_PREF,
     SET_CONFLICTS_PREF,
     SET_DAY_PREF,
     SET_END_PREF,
-    SET_INSTRUCTOR_PREF,
-    SET_PRIORITY_PREF,
+    SET_GLOBAL_PREF,
     SET_START_PREF
-} from "../actions/SchedulePreference/SchedulePreferenceHandler";
+} from "../actions/SchedulePreference/SchedulePreferenceMutator";
 import {SET_DISPLAYED} from "../actions/SchedulePreference/SchedulePreferenceUIHandler";
 
 export default function SchedulePreferences(state = {
     startPref: moment("1970-01-01 17:00Z"),
     endPref: moment("1970-01-01 01:00Z"),
     dayPref: null,
-    instructorPref: {},
-    priorityPref: {},
+    globalPref: null,
+    classSpecificPref: {},
     displayed: false,
 }, action) {
-    let classTitle;
-    let copy;
     switch (action.type) {
         case SET_START_PREF:
             return Object.assign({}, state, {
@@ -32,28 +30,19 @@ export default function SchedulePreferences(state = {
             return Object.assign({}, state, {
                 dayPref: action.dayPref,
             });
-        case SET_INSTRUCTOR_PREF:
-            classTitle = action.classTitle;
-            let instructor = action.instructor;
-
-            copy = Object.assign({}, state.priorityPref);
-            copy[classTitle] = instructor;
-
-            return Object.assign({}, state, {
-                instructorPref: copy
-            });
-        case SET_PRIORITY_PREF:
-            classTitle = action.classTitle;
-            let priority = action.priority;
-
-            copy = Object.assign({}, state.priorityPref);
-            copy[classTitle] = priority;
-
-            return Object.assign({}, state, {
-                priorityPref: copy
-            });
         case SET_CONFLICTS_PREF:
             break;
+        case SET_GLOBAL_PREF:
+            return Object.assign({}, state, {
+                globalPref: action.globalPref,
+            });
+        case SET_CLASS_SPECIFIC_PREF:
+            let copy = Object.assign({}, state.classSpecificPref);
+            copy[action.classTitle] = action.classSpecificPref;
+
+            return Object.assign({}, state, {
+                classSpecificPref: copy,
+            });
         case SET_DISPLAYED:
             return Object.assign({}, state, {
                 displayed: action.displayed

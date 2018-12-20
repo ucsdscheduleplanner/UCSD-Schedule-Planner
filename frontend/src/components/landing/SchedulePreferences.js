@@ -28,6 +28,9 @@ export default class SchedulePreferences extends PureComponent {
             {label: 'F', value: 'F'}
         ];
 
+
+        console.log(this.props.dayPref);
+
         const schedulePreferencesContent = (
             <div className="schedule-options-sidebar">
                 <div className="schedule-options-title"> Schedule Preferences</div>
@@ -37,11 +40,8 @@ export default class SchedulePreferences extends PureComponent {
                     <div className="time-preference-start">
                         Start:
                         <TimePicker style={{width: "100%"}}
-                                    value={this.props.startTimePreference}
-                                    onChange={(e) => {
-                                        console.log(e);
-                                        this.props.setStartPref(e)
-                                    }}
+                                    value={this.props.startPref}
+                                    onChange={(e) => this.props.inputHandler.onStartTimeChange(e)}
                                     use12Hours={true}
                                     showSecond={false}/>
                     </div>
@@ -49,8 +49,8 @@ export default class SchedulePreferences extends PureComponent {
                     <div className="time-preference-end">
                         End:
                         <TimePicker use12Hours={true}
-                                    value={this.props.endTimePreference}
-                                    onChange={(e) => this.props.setEndPref(e)}
+                                    value={this.props.endPref}
+                                    onChange={(e) => this.props.inputHandler.onEndTimeChange(e)}
                                     style={{width: "100%"}}
                                     showSecond={false}/>
                     </div>
@@ -58,8 +58,11 @@ export default class SchedulePreferences extends PureComponent {
                 <div className="day-preference">
                     <span className="day-preference-title">Day Preference:</span>
 
-                    <SelectButton id="day-preference" value={this.props.dayPreference} multiple={true} options={days}
-                                  onChange={(e) => this.props.setDayPref(e.value)}/>
+                    <SelectButton id="day-preference"
+                                  value={this.props.dayPref}
+                                  multiple={true}
+                                  options={days}
+                                  onChange={(e) => this.props.inputHandler.onDayChange(e.value)}/>
                 </div>
             </div>
         );
