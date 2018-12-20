@@ -1,23 +1,23 @@
 import React from 'react';
 import {storiesOf} from '@storybook/react';
 import {action} from '@storybook/addon-actions';
-import {Button} from '@storybook/react/demo';
+import {Button} from './components/Button';
 import {Autocomplete} from "./components/Autocomplete";
 
 storiesOf('Button', module)
     .add('with text', () => (
-        <Button onClick={action('clicked')}>Hello Button</Button>
+        <Button className="test-button" label="Hello React" onClick={action('clicked')}/>
     ))
-    .add('just testing out hot reloading', () => (
-        <Button onClick={action('clicked')}><span role="img"
-                                                  aria-label="so cool">what you doing there bud</span></Button>
+    .add('round', () => (
+        <Button className="test-button" label="Round button" round={true} onClick={action('clicked')}/>
     ));
+
 
 
 storiesOf('Autocomplete', module)
     .add('rendering', () => (
         <div style={{width: "200px"}}>
-            <Autocomplete suggestions={["hello", "how", "are"]} onClick={action('clicked')}/>
+            <Autocomplete suggestions={["hello", "how", "are", "you"]} onClick={action('clicked')}/>
         </div>
     ));
 
