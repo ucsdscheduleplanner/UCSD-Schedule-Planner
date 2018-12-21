@@ -3,7 +3,6 @@ import {SGWorker} from "../schedulegeneration/SGWorker";
 
 import {expect} from 'chai';
 
-
 describe('Schedule generation', () => {
 
     const testInput = {
@@ -108,8 +107,8 @@ describe('Schedule generation', () => {
         let worker = new SGWorker();
         let result = worker.generate({classData: [{hello: "world"}], conflicts: ["bad", "input"], preferences: ["really bad"]});
 
-        expect(Object.keys(result.errors).length).should.equal(0);
-        expect(result.schedules).should.equal(0);
+        expect(Object.keys(Object.keys(result.errors))).to.have.lengthOf(0);
+        expect(result.schedules).to.have.lengthOf(0);
     });
 
     it('Fails when two of the required classes overlap', () => {

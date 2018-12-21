@@ -9,7 +9,6 @@ import {AutoComplete} from "primereact/components/autocomplete/AutoComplete";
 import {mount} from 'enzyme';
 
 let store = createStore(reducers, applyMiddleware(thunk));
-const should = require('chai').should();
 
 describe("ClassInput component", () => {
     beforeEach((done) => {

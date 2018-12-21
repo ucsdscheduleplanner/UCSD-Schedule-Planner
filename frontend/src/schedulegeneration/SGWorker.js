@@ -537,32 +537,38 @@ export function SGWorker() {
         }
     };
 
-    ScheduleGenerator.prototype.generate = function () {
-        let schedules = [];
-        console.log(this.classData);
-        this.dfs(schedules);
-
+    ScheduleGenerator.prototype.getTopK = function(schedules, k) {
         // schedules is now populated with data
         schedules = schedules.sort((scheduleArr1, scheduleArr2) => {
             if (scheduleArr1[0] > scheduleArr2[0]) return -1; else return 1;
         });
 
         // get the top 5
-        schedules = schedules.slice(0, 6);
+        schedules = schedules.slice(0, k + 1);
         // schedules is an array of tuples where arr[0] is the score and arr[1] is the list of sections
-        schedules = schedules.map(arr => {
+        return schedules.map(arr => {
             return arr[1].map(sectionNum => this.buildClass(sectionNum));
         });
+    };
 
+    ScheduleGenerator.prototype.generate = function () {
+        let schedules = [];
+        console.log(this.classData);
+
+        try {
+            this.dfs(schedules);
+            schedules = this.getTopK(schedules, 5);
+        } catch(error) {
+            console.error(error);
+        }
+
+        // only care about a specific amount
         // convert all of the sets in the error map to lists
-        Object.keys(this.errorMap)
-            .forEach(errorKey => this.errorMap[errorKey] = Array.from(this.errorMap[errorKey]));
+        Object.keys(this.errorMap).forEach(errorKey => this.errorMap[errorKey] = Array.from(this.errorMap[errorKey]));
 
         let errors = this.errorMap;
-
-        if (schedules.length > 0) {
+        if (schedules.length > 0)
             errors = {};
-        }
 
         // only really care about errors if we failed to generate a generationResult
         let ret = new GenerationResult(schedules, errors);
