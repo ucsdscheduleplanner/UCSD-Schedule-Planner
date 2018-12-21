@@ -4,13 +4,20 @@ import thunk from 'redux-thunk';
 import {applyMiddleware, createStore} from "redux";
 import reducers from "../reducers";
 import {setCourseNum, setCourseNums, setDepartment, setDepartments} from "../actions/ClassInput/ClassInputMutator";
+import {getInputHandler as getReduxInputHandler} from "../actions/ClassInput/ClassInputHandler";
 import ClassInputContainer from "../containers/ClassInputContainer";
 import {AutoComplete} from "primereact/components/autocomplete/AutoComplete";
 import {mount} from 'enzyme';
+import ClassInput from "../components/landing/ClassInput";
 
-let store = createStore(reducers, applyMiddleware(thunk));
+function getInputHandler(store) {
+    let fn = getReduxInputHandler();
+    return fn(store.dispatch, store.getState);
+}
 
 describe("ClassInput component", () => {
+    let store;
+
     beforeEach((done) => {
         store = createStore(reducers, applyMiddleware(thunk));
         done();
@@ -93,5 +100,27 @@ describe("ClassInput component", () => {
         chaiExpect(instructor.props.disabled).to.equal(true);
     });
 
+    /**
+     * Would write the case for irregular inputs when getting blank but cannot reproduce in a test, this is an issue with
+     * autocomplete on primereact
+     */
+    test('Getting suggestions for putting in course nums works correctly on regular inputs', () => {
+        const classInput = mount(
+            <ClassInputContainer store={store}/>
+        );
+
+        let inputHandler = getInputHandler(store);
+
+        store.dispatch(setDepartments(["CSE"]));
+        store.dispatch(setCourseNums(["11", "111", "1111", "21"]));
+
+        store.dispatch(setDepartment("CSE"));
+        inputHandler.onCourseNumChange("11");
+
+        let state = store.getState().ClassInput;
+        let departmentComponent = classInput.find(ClassInput).instance();
+        departmentComponent.completeClassSuggestions({query: state.courseNum});
+        chaiExpect(departmentComponent.state.classOptions).to.have.lengthOf(3);
+    });
 });
 

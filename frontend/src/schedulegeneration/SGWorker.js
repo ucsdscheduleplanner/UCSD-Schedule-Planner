@@ -24,9 +24,30 @@ export function SGWorker() {
         });
     };
 
+    /**
+     * Testing seam
+     * @param data
+     * @returns {ScheduleGenerator}
+     */
     this.getScheduleGenerator = function (data) {
         let {classData, conflicts, preferences} = data;
         return new ScheduleGenerator(classData, conflicts, preferences);
+    };
+
+    /**
+     * Testing seam
+     * @returns {GlobalPref}
+     */
+    this.getGlobalPref = function (globalPref) {
+        return new GlobalPref(globalPref);
+    };
+
+    /**
+     * Testing seam
+     * @returns {SpecificPref}
+     */
+    this.getSpecificPref = function (specificPref) {
+        return new SpecificPref(specificPref);
     };
 
     /**
@@ -59,43 +80,50 @@ export function SGWorker() {
     function SpecificPref(specificPref = {}) {
         this.specificPref = specificPref;
 
-        SpecificPref.prototype.evaluate = function (section) {
-            if(!section || this.specificPref)
+        SpecificPref.prototype.evaluateInstructor = function (subsection) {
+            if (!this.specificPref) {
                 return 0;
-            if (section.length === 0)
-                return 0;
-
-            let output = 0;
-
-            for (let subsection of section.subsections) {
-                if (Object.keys(this.specificPref).includes(subsection.classTitle)) {
-                    let instructorPref = this.specificPref[subsection.classTitle];
-                    if (!instructorPref)
-                        return 0;
-
-                    if (instructorPref === subsection.instructor)
-                        output += 5;
-                }
             }
-            return output;
+
+            if(!subsection.instructor) {
+                console.warn("Instructor for subsection is null or undefined");
+                return -99;
+            }
+
+            let instructorPref = this.specificPref[subsection.classTitle];
+            if (!instructorPref)
+                return 0;
+
+            if (instructorPref === subsection.instructor)
+                return 5;
+        };
+
+        SpecificPref.prototype.evaluate = function (section) {
+            if (!section || !this.specificPref)
+                return 0;
+
+            if (section.subsections.length === 0) {
+                console.warn(`Section  + ${section.sectionNum} somehow has no subsections, not evaluating.`);
+                return 0;
+            }
+
+            let score = 0;
+            for (let subsection of section.subsections) {
+                score += this.evaluateInstructor(subsection);
+            }
+            return score;
         }
     }
 
     function GlobalPref(globalPref = {}) {
         this.globalPref = globalPref;
 
-        GlobalPref.prototype.evaluate = function (section) {
-            if(!this.globalPref)
-                return 0;
-
-            if (section.length === 0)
-                return 0;
-
+        GlobalPref.prototype.evaluateTime = function (subsection) {
             let startPref = this.globalPref.startPref;
             let endPref = this.globalPref.endPref;
 
             // TODO handle null cases
-            if (!startPref || !endPref || !this.globalPref.dayPref)
+            if (!startPref || !endPref)
                 return 0;
 
             let start = new Date();
@@ -105,39 +133,62 @@ export function SGWorker() {
             end.setHours(endPref.getHours(), endPref.getMinutes(), 0);
 
             let score = 0;
-            for (let subsection of section.subsections) {
-                // this shouldn't happen but if it does punish hardcore
-                if (!subsection.timeInterval) {
-                    score -= 99;
-                    break;
-                }
+            // this shouldn't happen but if it does punish hardcore
+            if (!subsection.timeInterval) {
+                return -99;
+            }
 
-                let tempStart = subsection.timeInterval["start"];
-                let tempEnd = subsection.timeInterval["end"];
+            let tempStart = subsection.timeInterval["start"];
+            let tempEnd = subsection.timeInterval["end"];
 
-                let rangeStart = new Date();
-                rangeStart.setHours(tempStart.getHours(), tempStart.getMinutes(), 0);
+            let rangeStart = new Date();
+            rangeStart.setHours(tempStart.getHours(), tempStart.getMinutes(), 0);
 
-                let rangeEnd = new Date();
-                rangeEnd.setHours(tempEnd.getHours(), tempEnd.getMinutes(), 0);
+            let rangeEnd = new Date();
+            rangeEnd.setHours(tempEnd.getHours(), tempEnd.getMinutes(), 0);
 
-                // they overlap!
-                if (rangeStart < end && rangeEnd > start) {
-                    score += 1;
-                    // the range is inside our desired range!
-                    if (rangeStart >= start && rangeEnd <= end) {
-                        score += 3;
-                    }
-                }
-
-                if (!subsection.day) {
-                    score += -10;
-                }
-
-                if (this.globalPref.days.includes(subsection.day)) {
-                    score += 5;
+            // they overlap!
+            if (rangeStart < end && rangeEnd > start) {
+                score += 1;
+                // the range is inside our desired range!
+                if (rangeStart >= start && rangeEnd <= end) {
+                    score += 3;
                 }
             }
+
+            if (!subsection.day) {
+                return -10;
+            }
+
+            return score;
+        };
+
+        GlobalPref.prototype.evaluateDay = function (subsection) {
+            let dayPref = this.globalPref.dayPref;
+            if (!dayPref)
+                return 0;
+
+            if (dayPref.includes(subsection.day)) {
+                return 5;
+            }
+        };
+
+        GlobalPref.prototype.evaluate = function (section) {
+            console.log(this.globalPref);
+            console.log(section);
+            if (!this.globalPref || !section)
+                return 0;
+
+            if (section.subsections.length === 0)
+                return 0;
+
+            let score = 0;
+
+            for (let subsection of section.subsections) {
+                score += this.evaluateDay(subsection);
+                score += this.evaluateTime(subsection);
+            }
+
             console.log("Score after global evaluation " + score);
             return score;
         }
@@ -537,7 +588,7 @@ export function SGWorker() {
         }
     };
 
-    ScheduleGenerator.prototype.getTopK = function(schedules, k) {
+    ScheduleGenerator.prototype.getTopK = function (schedules, k) {
         // schedules is now populated with data
         schedules = schedules.sort((scheduleArr1, scheduleArr2) => {
             if (scheduleArr1[0] > scheduleArr2[0]) return -1; else return 1;
@@ -558,7 +609,7 @@ export function SGWorker() {
         try {
             this.dfs(schedules);
             schedules = this.getTopK(schedules, 5);
-        } catch(error) {
+        } catch (error) {
             console.error(error);
         }
 

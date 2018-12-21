@@ -22,12 +22,15 @@ export class ClassInputHandler {
      * Edits the department and runs business rule validation on it
      */
     onDepartmentChange(rawDepartment) {
-        if (!rawDepartment)
+        if (!rawDepartment) {
+            this.dispatch(setDepartment(null));
             return;
+        }
 
         const state = this.getState().ClassInput;
 
         let department = rawDepartment.trim();
+
         // sets the department in the store
         this.dispatch(setDepartment(department));
 
@@ -54,8 +57,10 @@ export class ClassInputHandler {
     }
 
     onCourseNumChange(rawCourseNum) {
-        if (!rawCourseNum)
+        if (!rawCourseNum) {
+            this.dispatch(setCourseNum(null));
             return;
+        }
 
         const state = this.getState().ClassInput;
         let courseNum = rawCourseNum.trim();
@@ -88,8 +93,10 @@ export class ClassInputHandler {
     }
 
     onInstructorChange(rawInstructor) {
-        if (!rawInstructor)
+        if (!rawInstructor) {
+            this.dispatch(setInstructor(null));
             return;
+        }
 
         const state = this.getState().ClassInput;
         let instructor = rawInstructor.trim();
@@ -105,8 +112,10 @@ export class ClassInputHandler {
     }
 
     onConflictChange(conflicts) {
-        if (!conflicts)
+        if (!conflicts) {
+            this.dispatch(setConflicts(null));
             return;
+        }
 
         const state = this.getState().ClassInput;
         // record the edit
@@ -117,8 +126,10 @@ export class ClassInputHandler {
     }
 
     onPriorityChange(priority) {
-        if (!priority)
+        if (!priority) {
+            this.dispatch(setPriority(null));
             return;
+        }
 
         const state = this.getState().ClassInput;
         // record the edit
@@ -171,7 +182,7 @@ export class ClassInputHandler {
     handleRemove() {
         const state = this.getState().ClassInput;
 
-        if(!state.editMode) {
+        if (!state.editMode) {
             console.warn("Somehow, the user was able to trigger class removal without being in edit mode, breaking now.")
             return;
         }

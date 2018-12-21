@@ -27,6 +27,11 @@ export default function SchedulePreferences(state = {
                 endPref: action.endPref,
             });
         case SET_DAY_PREF:
+            if(!action.dayPref)
+                action.dayPref = null;
+            if(action.dayPref && action.dayPref.length === 0)
+                action.dayPref = null;
+
             return Object.assign({}, state, {
                 dayPref: action.dayPref,
             });

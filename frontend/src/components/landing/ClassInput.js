@@ -24,6 +24,7 @@ export default class ClassInput extends PureComponent {
         let departmentOptions = this.props.departments.filter((department) => {
             return department.toLowerCase().startsWith(event.query.toLowerCase());
         });
+
         this.setState({departmentOptions: departmentOptions});
     }
 
