@@ -58,7 +58,7 @@ describe("Schedule preferences, specific and global", () => {
             chaiExpect(score).to.be.at.least(1);
         });
 
-        test("Returns 0 if a subsection does not fall within the bounds", () => {
+        test("Returns 0 if a subsection does not fall within the time bounds", () => {
             let startTime = new Date();
             startTime.setHours(10);
             let endTime = new Date();
@@ -71,6 +71,28 @@ describe("Schedule preferences, specific and global", () => {
 
             let globalPref = getGlobalPref(pref);
             let score = globalPref.evaluateTime(testSubsection);
+
+            chaiExpect(score).to.equal(0);
+        });
+
+        test("Returns a positive number if a subsection falls within the day bounds", () => {
+            const pref = {
+                dayPref: ["Tu"]
+            };
+
+            let globalPref = getGlobalPref(pref);
+            let score = globalPref.evaluateDay(testSubsection);
+
+            chaiExpect(score).to.be.at.least(1);
+        });
+
+        test("Returns 0 if a subsection does not fall within the day bounds", () => {
+            const pref = {
+                dayPref: ["Th"]
+            };
+
+            let globalPref = getGlobalPref(pref);
+            let score = globalPref.evaluateDay(testSubsection);
 
             chaiExpect(score).to.equal(0);
         });

@@ -1,8 +1,12 @@
 import {
     setConflicts,
-    setCourseNum, setDepartment, setEditOccurred,
-    setInstructor, setInstructors,
-    setPriority, setTypes
+    setCourseNum,
+    setDepartment,
+    setEditOccurred,
+    setInstructor,
+    setInstructors,
+    setPriority,
+    setTypes
 } from "./ClassInputMutator";
 import {addClass, editClass, enterInputMode, populateSectionData, removeClass} from "./ClassInputActions";
 import {setUID} from "../ScheduleGenerationActions";
@@ -52,6 +56,7 @@ export class ClassInputHandler {
         // populate the course nums and the data
         this.dispatch(populateSectionData(department));
 
+        // already know the edit was valid if we made it this far
         if (state.editMode)
             this.dispatch(setEditOccurred(true));
     }
@@ -69,16 +74,17 @@ export class ClassInputHandler {
         if (courseNum === state.courseNum)
             return;
 
+        if (!state.courseNums.includes(courseNum))
+            return;
+
         // must clear out the fields
         this.dispatch(setInstructor(null));
         this.dispatch(setPriority(null));
         this.dispatch(setConflicts(null));
 
-        // record the edit
+        // only record valid edits
         if (state.editMode)
             this.dispatch(setEditOccurred(true));
-
-        console.log(state);
 
         const instructors = state.instructorsPerClass[courseNum];
         if (!instructors)
@@ -100,15 +106,17 @@ export class ClassInputHandler {
 
         const state = this.getState().ClassInput;
         let instructor = rawInstructor.trim();
+        this.dispatch(setInstructor(instructor));
 
-        console.log(state.editMode);
-        // record the edit
+        if (!state.instructors.includes(instructor))
+            return;
+
+        // only record valid edits
         if (state.editMode)
             this.dispatch(setEditOccurred(true));
 
         this.dispatch(setPriority(null));
         this.dispatch(setConflicts(null));
-        this.dispatch(setInstructor(instructor));
     }
 
     onConflictChange(conflicts) {
@@ -121,7 +129,6 @@ export class ClassInputHandler {
         // record the edit
         if (state.editMode)
             this.dispatch(setEditOccurred(true));
-
         this.dispatch(setConflicts(conflicts));
     }
 
@@ -153,14 +160,70 @@ export class ClassInputHandler {
         return newClass;
     }
 
+    isValidAdd(newClass) {
+        const state = this.getState().ClassInput;
+        if (this.isDuplicate(newClass))
+            return {
+                valid: false,
+                reason: `Class ${state.department} ${state.courseNum} has already been added!`
+            };
+        return this.isValid(newClass);
+    }
+
+    isValidEdit(newClass) {
+        const state = this.getState().ClassInput;
+        if (this.isDuplicate(newClass, state.id))
+            return {
+                valid: false,
+                reason: `Class ${state.department} ${state.courseNum} has already been added!`
+            };
+        return this.isValid(newClass);
+    }
+
+    /**
+     * Returns whether a class is valid or not as long as the reason it is not if so
+     * @param newClass the class to check
+     * @returns {valid, reason}
+     */
+    isValid(newClass) {
+        const state = this.getState().ClassInput;
+        if (!state.departments.includes(newClass.department))
+            return {
+                valid: false,
+                reason: "Department is not valid"
+            };
+        if (!state.courseNums.includes(newClass.courseNum))
+            return {
+                valid: false,
+                reason: "Course Num is not valid"
+            };
+        if (newClass.instructor && !state.instructors.includes(newClass.instructor))
+            return {
+                valid: false,
+                reason: "Instructor is not valid"
+            };
+        if (this.isDuplicate(newClass)) {
+
+        }
+
+        return {
+            valid: true
+        };
+    }
+
     /**
      * Called in editMode such that whenever the user makes an edit, any changes are saved to the store
      */
-    autosave() {
+    autosave(force = false) {
         const state = this.getState().ClassInput;
-        if (state.editMode && state.editOccurred) {
+        if (force || (state.editMode && state.editOccurred)) {
             // just save everything
             let newClass = this.buildClassFromInput();
+
+            let {valid, reason} = this.isValidEdit(newClass);
+            if (!valid) {
+                return `Failed to edit class. Reason: ${reason}`;
+            }
 
             this.dispatch(setEditOccurred(false));
             this.dispatch(editClass(state.id, newClass));
@@ -169,7 +232,11 @@ export class ClassInputHandler {
     }
 
     handleEdit() {
-        this.autosave();
+        const state = this.getState().ClassInput;
+        let errMsg = this.autosave(true);
+        if (errMsg)
+            state.messageHandler.showError(errMsg, 1000);
+
         this.dispatch(enterInputMode());
     }
 
@@ -198,11 +265,16 @@ export class ClassInputHandler {
     /**
      * Checks if a class is already in the store
      * @param newClass the class to check for duplicates
-     * @returns true if the store contains then given class already, false otherwise
+     * @param exclude class id to exclude
+     * @returns boolean the store contains the given class already
      */
-    isDuplicate(newClass) {
-        return Object.values(this.getState().ClassList.selectedClasses).reduce(function (accumulator, previousClass) {
-            return accumulator || newClass.classTitle === previousClass['classTitle']
+    isDuplicate(newClass, exclude = "") {
+        let state = this.getState().ClassList;
+
+        return Object.keys(state.selectedClasses).reduce(function (accumulator, key) {
+            if (exclude === key)
+                return accumulator;
+            return accumulator || newClass.classTitle === state.selectedClasses[key]['classTitle']
         }, false);
     }
 
@@ -215,26 +287,11 @@ export class ClassInputHandler {
 
         let newClass = this.buildClassFromInput();
 
-        if (this.isDuplicate(newClass)) {
-            state.messageHandler.showError(`Class ${state.department} ${state.courseNum} has already been added!`);
+        let {valid, reason} = this.isValidAdd(newClass);
+        if (!valid) {
+            state.messageHandler.showError(`Failed to add class. Reason: ${reason}`, 1000);
             return;
         }
-
-        let error = false;
-        // error checking on department and course num
-        if (!state.departments.includes(state.department))
-            error = true;
-        if (!state.courseNums.includes(state.courseNum))
-            error = true;
-
-        if (error) {
-            state.messageHandler.showError(`Failed to add class ${state.department} ${state.courseNum}`, 1000);
-            return;
-        }
-
-        const classTitle = `${state.department} ${state.courseNum}`;
-        const instructor = state.instructor;
-        const priority = state.priority;
 
         // using the addClass method from the reducer
         this.dispatch(addClass(newClass));

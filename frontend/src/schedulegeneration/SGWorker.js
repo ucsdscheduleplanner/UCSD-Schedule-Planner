@@ -171,11 +171,11 @@ export function SGWorker() {
             if (dayPref.includes(subsection.day)) {
                 return 5;
             }
+
+            return 0;
         };
 
         GlobalPref.prototype.evaluate = function (section) {
-            console.log(this.globalPref);
-            console.log(section);
             if (!this.globalPref || !section)
                 return 0;
 
