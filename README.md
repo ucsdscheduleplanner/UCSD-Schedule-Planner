@@ -28,6 +28,20 @@ schedule to the device of their choice.
 <sub><sup>Note that the user must manually enroll in classes on WebReg itself; 
 we only provide schedule generation utilities, not enrollment features.</sup></sub>
 
+# Primary Technologies
+
+This project uses the following frameworks:
+
+* ReactJS <sub>frontend logic</sub>
+* Semantic UI <sub>CSS styling</sub>
+* Flask <sub>backend server</sub>
+* Selenium <sub>web scraping</sub>
+* MySQL <sub>database for scraped results</sub>
+* Docker <sub>container management</sub>
+
+The frontend is mostly written in JS, by virtue of React, and the backend is
+mostly written in Python. 
+
 # System Requirements
 
 The following utilities must be present for installation purposes: 
@@ -37,7 +51,7 @@ The following utilities must be present for installation purposes:
 
 # Installation 
 
-Our project is designed to be portable. We use docker to ensure that there is
+This project is designed to be portable. We use docker to ensure that there is
 clear separation between our tool's runtime environment and the
 rest of your system.
 
