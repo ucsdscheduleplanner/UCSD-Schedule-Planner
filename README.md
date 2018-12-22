@@ -20,7 +20,7 @@ allows UCSD students to automatically generate schedules given a list of classes
 that they are interested in. Students can indicate at what times they would 
 prefer certain classes and can specify class priorities. All of the 
 schedule generation legwork is handled by our system. Additionally, we boast
-extremely fast load times, a clean, modern UI and near 100% uptime. Our
+extremely fast load times, a clean, modern UI and near 100% uptime. This 
 schedule generation tool also integrates with calendar frameworks like
 Google Calendar and Apple Calendar, enabling students to export their new
 schedule to the device of their choice.
@@ -37,7 +37,7 @@ The following utilities must be present for installation purposes:
 
 # Installation 
 
-Our tool is designed to be portable. We use docker to ensure that there is
+Our project is designed to be portable. We use docker to ensure that there is
 clear separation between our tool's runtime environment and the
 rest of your system.
 
