@@ -26,6 +26,7 @@ class MainPanel extends Component {
                 generationResult={this.props.generationResult}/>
         );
 
+        console.log(this.props);
         const progressBar = (
             <ScheduleProgressBar
                 generatingProgress={this.props.generatingProgress}
@@ -46,13 +47,13 @@ class MainPanel extends Component {
 
 function mapStateToProps(state) {
     return {
-        scheduleID: state.Generate.scheduleID,
+        scheduleID: state.ScheduleGenerate.scheduleID,
         messageHandler: state.ClassInput.messageHandler,
-        generateSuccess: state.Generate.generateSuccess,
-        generatingProgress: state.Generate.generatingProgress,
-        totalNumPossibleSchedule: state.Generate.totalNumPossibleSchedule,
-        generating: state.Generate.generating,
-        generationResult: state.Generate.generationResult
+        generateSuccess: state.ScheduleGenerate.generateSuccess,
+        generatingProgress: state.ScheduleGenerate.generatingProgress,
+        totalNumPossibleSchedule: state.ScheduleGenerate.totalNumPossibleSchedule,
+        generating: state.ScheduleGenerate.generating,
+        generationResult: state.ScheduleGenerate.generationResult
     };
 }
 

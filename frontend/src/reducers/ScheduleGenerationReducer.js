@@ -1,10 +1,10 @@
 import {
     INCREMENT_PROGRESS,
-    FINISHED_GENERATING_SCHEDULE,
-    STARTING_GENERATING_SCHEDULE,
+    FINISH_GENERATING,
+    START_GENERATING,
     SET_PROGRESS,
     SET_TOTAL_POSSIBLE_NUM_SCHEDULE,
-    SET_UID
+    UPDATE_WITH_GENERATION_RESULT
 } from '../actions/ScheduleGenerationActions';
 
 /**
@@ -21,19 +21,22 @@ export default function ScheduleGeneration(state = {
     scheduleID: 0,
 }, action) {
     switch (action.type) {
-        case STARTING_GENERATING_SCHEDULE:
+        case START_GENERATING:
             return Object.assign({}, state, {
                 generating: action.generating
             });
-        case FINISHED_GENERATING_SCHEDULE:
-            let generateSuccess = action.generationResult.length > 0;
+        case FINISH_GENERATING:
             return Object.assign({}, state, {
-                generating: action.generating,
+                generating: action.generating
+            });
+        case UPDATE_WITH_GENERATION_RESULT:
+            let generateSuccess = action.generationResult.length > 0;
+            console.log(action.generationResult);
+            return Object.assign({}, state, {
                 generationResult: action.generationResult,
                 generateSuccess: generateSuccess,
                 scheduleID: state.scheduleID + 1
             });
-
         case SET_PROGRESS:
             return Object.assign({}, state, {
                 generatingProgress: action.generatingProgress

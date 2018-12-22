@@ -20,14 +20,27 @@ export class SchedulePreferenceInputHandler {
         const state = this.getState().SchedulePreferences;
 
         // TODO do validation on start time and end time
-        if (state.startPref)
-            globalPref.startPref = state.startPref.toDate();
-        if (state.endPref)
-            globalPref.endPref = state.endPref.toDate();
+        if (state.startPref) {
+            let tmpStartPref = state.startPref.toDate();
+            let newStartPref = new Date();
+            newStartPref.setHours(tmpStartPref.getHours(), tmpStartPref.getMinutes(), 0);
+            globalPref.startPref = newStartPref;
+        }
+
+        // TODO fix so that all that matters is the hour on the date, not the actual date
+        // TODO probably should be done in SimpleInterval
+        if (state.endPref) {
+            let tmpEndPref = state.endPref.toDate();
+            let newEndPref = new Date();
+            newEndPref.setHours(tmpEndPref.getHours(), tmpEndPref.getMinutes(), 0);
+            globalPref.endPref = newEndPref;
+        }
 
         if (state.dayPref)
             globalPref.dayPref = state.dayPref;
 
+        console.log("RETURNING GLOBAL PREF");
+        console.log(globalPref);
         return globalPref;
     }
 
@@ -35,10 +48,10 @@ export class SchedulePreferenceInputHandler {
         let classSpecificPref = new ClassSpecificPreference();
 
         let priority = this.getState().ClassInput.priority;
-        if(priority)
+        if (priority)
             classSpecificPref.priority = priority;
         let instructor = this.getState().ClassInput.instructor;
-        if(instructor)
+        if (instructor)
             classSpecificPref.instructor = instructor;
 
         return classSpecificPref;

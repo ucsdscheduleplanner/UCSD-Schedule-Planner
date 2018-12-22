@@ -3,13 +3,13 @@ import {
     setCourseNum,
     setDepartment,
     setEditOccurred,
+    setID,
     setInstructor,
     setInstructors,
     setPriority,
     setTypes
 } from "./ClassInputMutator";
 import {addClass, editClass, enterInputMode, populateSectionData, removeClass} from "./ClassInputActions";
-import {setUID} from "../ScheduleGenerationActions";
 import {SchedulePreferenceInputHandler} from "../SchedulePreference/SchedulePreferenceInputHandler";
 
 /**
@@ -303,7 +303,7 @@ export class ClassInputHandler {
         this.dispatch(setPriority(null));
         this.dispatch(setConflicts(null));
 
-        this.dispatch(setUID(null));
+        this.dispatch(setID(null));
     }
 
     savePreferences() {

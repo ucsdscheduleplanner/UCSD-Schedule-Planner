@@ -1,12 +1,15 @@
 // the code that goes into the web worker
 export function SGWorker() {
+    const INCREMENT_PROGRESS = "INCREMENT_PROGRESS";
+    const FINISH_GENERATING = "FINISH_GENERATING";
+
     this.onmessage = function (evt) {
         console.log("Beginning to generate schedule inside worker");
         if (!evt)
             return;
 
         let data = evt.data;
-
+        console.log("Data is: ");
         console.log(data);
 
         let {classData, conflicts, preferences} = data;
@@ -19,7 +22,7 @@ export function SGWorker() {
 
         // returns a promise
         postMessage({
-            type: "FINISHED_GENERATION",
+            type: FINISH_GENERATING,
             generationResult: results
         });
     };
@@ -30,8 +33,8 @@ export function SGWorker() {
      * @returns {ScheduleGenerator}
      */
     this.getScheduleGenerator = function (data) {
-        let {classData, conflicts, preferences} = data;
-        return new ScheduleGenerator(classData, conflicts, preferences);
+        let {classData, conflicts, specificPref, globalPref} = data;
+        return new ScheduleGenerator(classData, conflicts, specificPref, globalPref);
     };
 
     /**
@@ -119,6 +122,7 @@ export function SGWorker() {
         this.globalPref = globalPref;
 
         GlobalPref.prototype.evaluateTime = function (subsection) {
+            console.log("EVALUATING TIME");
             let startPref = this.globalPref.startPref;
             let endPref = this.globalPref.endPref;
 
@@ -126,11 +130,8 @@ export function SGWorker() {
             if (!startPref || !endPref)
                 return 0;
 
-            let start = new Date();
-            start.setHours(startPref.getHours(), startPref.getMinutes(), 0);
-
-            let end = new Date();
-            end.setHours(endPref.getHours(), endPref.getMinutes(), 0);
+            startPref.setHours(startPref.getHours(), startPref.getMinutes(), 0);
+            endPref.setHours(endPref.getHours(), endPref.getMinutes(), 0);
 
             let score = 0;
             // this shouldn't happen but if it does punish hardcore
@@ -147,11 +148,12 @@ export function SGWorker() {
             let rangeEnd = new Date();
             rangeEnd.setHours(tempEnd.getHours(), tempEnd.getMinutes(), 0);
 
+            console.log("CHECKING RANGES");
             // they overlap!
-            if (rangeStart < end && rangeEnd > start) {
+            if (rangeStart < endPref && rangeEnd > startPref) {
                 score += 1;
                 // the range is inside our desired range!
-                if (rangeStart >= start && rangeEnd <= end) {
+                if (rangeStart >= startPref && rangeEnd <= endPref) {
                     score += 3;
                 }
             }
@@ -189,7 +191,6 @@ export function SGWorker() {
                 score += this.evaluateTime(subsection);
             }
 
-            console.log("Score after global evaluation " + score);
             return score;
         }
     }
@@ -405,10 +406,11 @@ export function SGWorker() {
          * @param val the amount we want to increment by =
          */
         ScheduleGenerator.prototype.incrementProgress = function (val) {
+            console.log("Batching updates for progress bar, currently batched: " + this.batchedUpdates);
             // doing stuff for progress bar for schedules
             this.batchedUpdates += val;
             if (this.batchedUpdates > 10) {
-                postMessage({type: "INCREMENT_PROGRESS", amount: this.batchedUpdates});
+                postMessage({type: INCREMENT_PROGRESS, amount: this.batchedUpdates});
                 this.batchedUpdates = 0;
             }
         };
@@ -465,6 +467,7 @@ export function SGWorker() {
                 score += this.specificPref.evaluate(section);
                 score += this.globalPref.evaluate(section);
             }
+            console.log("Score after evaluation for schedule " + schedule + " is: " + score);
             return score;
         }
     }
@@ -508,7 +511,7 @@ export function SGWorker() {
         let failedSchedules = 1;
         // getting all classes that could have been part of this generationResult
         for (let i = curClassIndex + 1; i < this.classData.length; i++) {
-            failedSchedules *= this.classData[i].length;
+            failedSchedules *= this.classData[i].sections.length;
         }
         // incrementing for them because we know they failed
         this.incrementProgress(failedSchedules);
@@ -516,7 +519,6 @@ export function SGWorker() {
 
     ScheduleGenerator.prototype.dfs = function (result, currentSchedule = [], numClassesAdded = 0) {
         console.log("Current schedule is " + currentSchedule);
-        console.log(numClassesAdded);
         if (numClassesAdded >= this.classData.length) {
             if (currentSchedule.length === 0) {
                 console.log("Schedule is empty, skipping");

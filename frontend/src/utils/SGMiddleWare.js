@@ -1,19 +1,25 @@
-import {GENERATE_SCHEDULE, INCREMENT_PROGRESS, FINISHED_GENERATING_SCHEDULE} from "../actions/ScheduleGenerationActions";
+import {
+    FINISH_GENERATING,
+    finishedGenerating,
+    GENERATE_SCHEDULE,
+    INCREMENT_PROGRESS, incrementProgress, updateWithResult
+} from "../actions/ScheduleGenerationActions";
 import WebWorker from "./WebWorker";
 import {SGWorker} from "../schedulegeneration/SGWorker";
-
 
 
 export const SGMiddleWare = store => {
     const worker = new WebWorker(SGWorker);
     worker.onmessage = msg => {
         let {type, generationResult, amount} = msg.data;
+
         switch(type) {
-            case "FINISHED_GENERATION":
-                store.dispatch({type: FINISHED_GENERATING_SCHEDULE, generating: false, generationResult: generationResult});
+            case FINISH_GENERATING:
+                store.dispatch(finishedGenerating());
+                store.dispatch(updateWithResult(generationResult));
                 break;
-            case "INCREMENT_PROGRESS":
-                store.dispatch({type: INCREMENT_PROGRESS, amount: amount});
+            case INCREMENT_PROGRESS:
+                store.dispatch(incrementProgress(amount));
                 break;
             default:
                 return;

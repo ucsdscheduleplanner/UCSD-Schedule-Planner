@@ -20,6 +20,42 @@ const testSubsection = {
     type: "DI",
 };
 
+const testSubsectionLE1 = {
+    day: "Tu",
+    instructor: "Politz, Joseph Gibbs",
+    location: "YORK",
+    room: "115",
+    timeInterval: makeTimeInterval("8:00-8:50", "M"),
+    type: "LE",
+};
+
+const testSubsectionLE2 = {
+    day: "Tu",
+    instructor: "Politz, Joseph Gibbs",
+    location: "YORK",
+    room: "115",
+    timeInterval: makeTimeInterval("8:00-8:50", "W"),
+    type: "LE",
+};
+
+const testSubsectionLE3 = {
+    day: "Tu",
+    instructor: "Politz, Joseph Gibbs",
+    location: "YORK",
+    room: "115",
+    timeInterval: makeTimeInterval("8:00-8:50", "F"),
+    type: "LE",
+};
+
+const testSection = {
+    sectionNum: "TEST$0",
+    subsections: [testSubsection, testSubsectionLE1, testSubsectionLE2, testSubsectionLE3]
+};
+
+const testClass = [
+    {department: "TEST", sections: [testSection]}
+];
+
 const testBareSection = {
     subsections: [testSubsection]
 };
@@ -41,6 +77,23 @@ describe("Schedule preferences, specific and global", () => {
     });
 
     describe("Global preferences", () => {
+        test("Times work when section falls within bounds", () => {
+            let startTime = new Date();
+            startTime.setHours(8);
+            let endTime = new Date();
+            endTime.setHours(12);
+
+            const pref = {
+                startPref: startTime,
+                endPref: endTime
+            };
+
+            let globalPref = getGlobalPref(pref);
+            let score = globalPref.evaluateTime(testSubsection);
+
+            chaiExpect(score).to.be.at.least(1);
+        });
+
         test("Times work when section falls within bounds", () => {
             let startTime = new Date();
             startTime.setHours(8);
@@ -96,5 +149,28 @@ describe("Schedule preferences, specific and global", () => {
 
             chaiExpect(score).to.equal(0);
         });
+
+        test("Returns positive number if some of the subsections fall in the area", () => {
+            let startTime = new Date();
+            startTime.setHours(9);
+            startTime.setMinutes(0);
+            let endTime = new Date();
+            endTime.setHours(17);
+            endTime.setMinutes(0);
+
+            let globalPref = {
+                startPref: startTime,
+                endPref: endTime
+            };
+
+            let pref = new SGWorker().getSpecificPref(null);
+            let gPref = new SGWorker().getGlobalPref(globalPref);
+
+            let scheduleGenerator = new SGWorker().getScheduleGenerator({classData: testClass,
+                specificPref: pref, globalPref: gPref, conflicts: []});
+            let score = scheduleGenerator.evaluateSchedule(["TEST$0"]);
+
+            chaiExpect(score).to.be.at.least(1);
+        })
     });
 });

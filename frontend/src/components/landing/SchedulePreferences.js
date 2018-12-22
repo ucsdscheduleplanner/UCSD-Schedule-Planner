@@ -28,9 +28,6 @@ export default class SchedulePreferences extends PureComponent {
             {label: 'F', value: 'F'}
         ];
 
-
-        console.log(this.props.dayPref);
-
         const schedulePreferencesContent = (
             <div className="schedule-options-sidebar">
                 <div className="schedule-options-title"> Schedule Preferences</div>
@@ -79,8 +76,7 @@ export default class SchedulePreferences extends PureComponent {
                                  onHide={(e) => this.props.setDisplayed(false)}>
                             {schedulePreferencesContent}
                         </Sidebar>
-                    );
-                }
+                    )}
                 }
             </MediaQuery>
         );
