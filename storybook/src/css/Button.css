@@ -1,12 +1,12 @@
 .custom-button {
     border: none;
-    padding: 12px 20px;
+    padding: 0.8em 1.3em;
     color: white;
     text-align: center;
     text-decoration: none !important;
     cursor: pointer;
     display: inline-block;
-    position: relative;
+    position: static;
     font-size: 16px;
     zoom: 1;
     opacity: 1;
