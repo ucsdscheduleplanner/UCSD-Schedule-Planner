@@ -1,5 +1,5 @@
-# UCSD Schedule Planner 
-
+# UCSD Planner Helper
+ 
 **Live at [sdschedule.com](https://sdschedule.com)!**
 
 Designed for and by UCSD students. Use this tool to automatically generate
@@ -15,7 +15,7 @@ to the bare minimum of features that it supports. Most importantly, WebReg
 lacks the ability to generate schedules automatically, requiring users to
 manually add each of their prospective classes themselves.
 
-In this project, we attempted to address these concerns. UCSD Schedule Planner 
+In this project, we attempted to address these concerns. Our planning tool 
 allows UCSD students to automatically generate schedules given a list of classes
 that they are interested in. Students can indicate at what times they would 
 prefer certain classes and can specify class priorities. All of the 
