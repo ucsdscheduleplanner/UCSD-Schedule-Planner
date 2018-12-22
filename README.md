@@ -50,7 +50,7 @@ git clone https://github.com/ctrando/UCSD-Planner-Helper && cd UCSD-Planner-Help
 Next, from the repository root directory, run the command:
 
 ```
-sh scripts/docker-install.sh --download
+sh scripts/docker_install.sh --download
 ```
 
 Wait until the command finishes.
