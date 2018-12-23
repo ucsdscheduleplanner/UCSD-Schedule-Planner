@@ -1,6 +1,9 @@
 import React from 'react';
 import {SGWorker} from "../schedulegeneration/SGWorker";
-import {makeTimeInterval} from "../utils/ClassUtils";
+import {makeTimeInterval} from "../utils/time/TimeUtils";
+import {applyMiddleware, createStore} from "redux";
+import reducers from "../reducers";
+import thunk from "redux-thunk";
 
 
 function getGlobalPref(globalPref) {
@@ -25,7 +28,7 @@ const testSubsectionLE1 = {
     instructor: "Politz, Joseph Gibbs",
     location: "YORK",
     room: "115",
-    timeInterval: makeTimeInterval("8:00-8:50", "M"),
+    timeInterval: makeTimeInterval("15:00-15:50", "M"),
     type: "LE",
 };
 
@@ -34,7 +37,7 @@ const testSubsectionLE2 = {
     instructor: "Politz, Joseph Gibbs",
     location: "YORK",
     room: "115",
-    timeInterval: makeTimeInterval("8:00-8:50", "W"),
+    timeInterval: makeTimeInterval("15:00-15:50", "W"),
     type: "LE",
 };
 
@@ -43,7 +46,7 @@ const testSubsectionLE3 = {
     instructor: "Politz, Joseph Gibbs",
     location: "YORK",
     room: "115",
-    timeInterval: makeTimeInterval("8:00-8:50", "F"),
+    timeInterval: makeTimeInterval("15:00-15:50", "F"),
     type: "LE",
 };
 
@@ -57,10 +60,16 @@ const testClass = [
 ];
 
 const testBareSection = {
+    classTitle: "CSE 12",
     subsections: [testSubsection]
 };
 
 describe("Schedule preferences, specific and global", () => {
+    let store;
+    beforeEach((done) => {
+        store = createStore(reducers, applyMiddleware(thunk));
+        done();
+    });
 
     test("Global preferences work on empty input", () => {
         let globalPref = getGlobalPref(null);
@@ -163,14 +172,63 @@ describe("Schedule preferences, specific and global", () => {
                 endPref: endTime
             };
 
-            let pref = new SGWorker().getSpecificPref(null);
+            let sPref = new SGWorker().getSpecificPref(null);
             let gPref = new SGWorker().getGlobalPref(globalPref);
 
-            let scheduleGenerator = new SGWorker().getScheduleGenerator({classData: testClass,
-                specificPref: pref, globalPref: gPref, conflicts: []});
+            let scheduleGenerator = new SGWorker().getScheduleGenerator({
+                classData: testClass,
+                specificPref: sPref,
+                globalPref: gPref,
+                conflicts: []
+            });
             let score = scheduleGenerator.evaluateSchedule(["TEST$0"]);
 
             chaiExpect(score).to.be.at.least(1);
-        })
+        });
+
+        test('Defaults to 9 to 5 when nothing is set', () => {
+            let state = store.getState().SchedulePreferences;
+            let sPref = new SGWorker().getSpecificPref(null);
+            let gPref = new SGWorker().getGlobalPref(state.globalPref);
+
+            let scheduleGenerator = new SGWorker().getScheduleGenerator({
+                classData: testClass,
+                specificPref: sPref,
+                globalPref: gPref,
+                conflicts: []
+            });
+
+            let score = scheduleGenerator.evaluateSchedule(["TEST$0"]);
+            chaiExpect(score).to.be.at.least(1);
+        });
+    });
+
+
+    describe("Class specific preferences", () => {
+        test('Instructor preferences return positive number when instructor matches', () => {
+            let sPref = {
+                "CSE 12": {
+                    instructorPref: "Politz, Joseph Gibbs",
+                }
+            };
+
+            let specificPref = getSpecificPref(sPref);
+            let score = specificPref.evaluate(testBareSection, "CSE 12");
+
+            chaiExpect(score).to.be.at.least(1);
+        });
+
+        test('Instructor preferences return 0 when instructor does not match', () => {
+            let sPref = {
+                "CSE 12": {
+                    instructorPref: "Bary Billespie",
+                }
+            };
+
+            let specificPref = getSpecificPref(sPref);
+            let score = specificPref.evaluate(testBareSection, "CSE 12");
+
+            chaiExpect(score).to.equal(0);
+        });
     });
 });

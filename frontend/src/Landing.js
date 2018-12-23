@@ -7,7 +7,7 @@ import './css/Landing.css';
 import {LeftSidePanel} from './components/landing/LeftSidePanel';
 import RightSidePanel from './components/landing/RightSidePanel';
 import MainPanel from './components/landing/MainPanel';
-import MessageHandler from './utils/MessageHandler';
+import MessageHandler from './utils/message/MessageHandler';
 import {CacheManager} from './utils/CacheManager';
 import {setMessageHandler} from "./actions/ClassInput/ClassInputMutator";
 

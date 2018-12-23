@@ -8,13 +8,26 @@ import {
     SET_START_PREF
 } from "../actions/SchedulePreference/SchedulePreferenceMutator";
 import {SET_DISPLAYED} from "../actions/SchedulePreference/SchedulePreferenceUIHandler";
+import {TimeBuilder} from "../utils/time/TimeUtils";
 
+const momentDefaultStart = moment("1970-01-01 09:00Z").utcOffset(0);
+const momentDefaultEnd = moment("1970-01-01 17:00Z").utcOffset(0);
+
+// todo make a time builder
+let defaultStart = new TimeBuilder().withHour(9).build();
+let defaultEnd = new TimeBuilder().withHour(17).build();
+
+const defaultGlobalPref = {
+    startPref: defaultStart,
+    endPref: defaultEnd,
+    dayPref: null
+};
 export default function SchedulePreferences(state = {
-    startPref: moment("1970-01-01 17:00Z"),
-    endPref: moment("1970-01-01 01:00Z"),
+    startPref: momentDefaultStart,
+    endPref: momentDefaultEnd,
+    globalPref: defaultGlobalPref,
     dayPref: null,
-    globalPref: null,
-    classSpecificPref: {},
+    classSpecificPref: null,
     displayed: false,
 }, action) {
     switch (action.type) {
@@ -27,9 +40,9 @@ export default function SchedulePreferences(state = {
                 endPref: action.endPref,
             });
         case SET_DAY_PREF:
-            if(!action.dayPref)
+            if (!action.dayPref)
                 action.dayPref = null;
-            if(action.dayPref && action.dayPref.length === 0)
+            if (action.dayPref && action.dayPref.length === 0)
                 action.dayPref = null;
 
             return Object.assign({}, state, {

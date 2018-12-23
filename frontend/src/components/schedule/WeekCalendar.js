@@ -3,10 +3,11 @@ import Calendar from "react-big-calendar";
 import moment from 'moment';
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import {Button} from "primereact/components/button/Button";
-import {ics} from "../../utils/ics";
+import {ics} from "../../utils/download/ics";
 import "../../css/WeekCalendar.css";
 import ClassEvent from "./ClassEvent";
-import {addEvents} from "../../utils/GCalendar";
+import {addEvents} from "../../utils/download/GCalendar";
+import {TimeBuilder} from "../../utils/time/TimeUtils";
 
 
 Calendar.setLocalizer(Calendar.momentLocalizer(moment));
@@ -79,10 +80,8 @@ class WeekCalendar extends PureComponent {
 
     render() {
         // setting max and min times
-        const minTime = new Date();
-        const maxTime = new Date();
-        minTime.setHours(8, 0, 0);
-        maxTime.setHours(23, 0, 0);
+        const minTime = new TimeBuilder().withHour(8).build();
+        const maxTime = new TimeBuilder().withHour(23).build();
 
         const dayFormat = {
             dayFormat: 'ddd'

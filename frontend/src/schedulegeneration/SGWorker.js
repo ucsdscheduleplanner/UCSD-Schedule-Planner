@@ -80,25 +80,33 @@ export function SGWorker() {
         return {globalPref: gPref, specificPref: sPref};
     }
 
-    function SpecificPref(specificPref = {}) {
+    function SpecificPref(specificPref) {
         this.specificPref = specificPref;
 
-        SpecificPref.prototype.evaluateInstructor = function (subsection) {
+        SpecificPref.prototype.evaluateInstructor = function (subsection, classTitle) {
             if (!this.specificPref) {
                 return 0;
             }
+
+            // TODO consider altering the data in the database such that sectionNum is an underscore delimited quantity e.g CSE_11$0 so can easily
+            // TODO replace the underscore with a space and use it here
 
             if(!subsection.instructor) {
                 console.warn("Instructor for subsection is null or undefined");
                 return -99;
             }
 
-            let instructorPref = this.specificPref[subsection.classTitle];
+            console.log("SPECIFIC PREF");
+            console.log(this.specificPref);
+
+            let instructorPref = this.specificPref[classTitle].instructorPref;
             if (!instructorPref)
                 return 0;
 
             if (instructorPref === subsection.instructor)
                 return 5;
+
+            return 0;
         };
 
         SpecificPref.prototype.evaluate = function (section) {
@@ -112,19 +120,22 @@ export function SGWorker() {
 
             let score = 0;
             for (let subsection of section.subsections) {
-                score += this.evaluateInstructor(subsection);
+                score += this.evaluateInstructor(subsection, section.classTitle);
             }
+            console.log("SPECIFIC SCORE IS " + score);
             return score;
         }
     }
 
-    function GlobalPref(globalPref = {}) {
+    function GlobalPref(globalPref) {
         this.globalPref = globalPref;
 
         GlobalPref.prototype.evaluateTime = function (subsection) {
             console.log("EVALUATING TIME");
             let startPref = this.globalPref.startPref;
             let endPref = this.globalPref.endPref;
+
+            console.log(this.globalPref);
 
             // TODO handle null cases
             if (!startPref || !endPref)
@@ -142,11 +153,15 @@ export function SGWorker() {
             let tempStart = subsection.timeInterval["start"];
             let tempEnd = subsection.timeInterval["end"];
 
-            let rangeStart = new Date();
+            // copying the startPref and just setting the hours on it
+            let rangeStart = new Date(startPref.getTime());
             rangeStart.setHours(tempStart.getHours(), tempStart.getMinutes(), 0);
 
-            let rangeEnd = new Date();
+            let rangeEnd = new Date(endPref.getTime());
             rangeEnd.setHours(tempEnd.getHours(), tempEnd.getMinutes(), 0);
+
+            console.log(rangeStart);
+            console.log(rangeEnd);
 
             console.log("CHECKING RANGES");
             // they overlap!
@@ -464,8 +479,10 @@ export function SGWorker() {
             // sectionNum is like CSE11$0 and CSE12$1
             for (let sectionNum of schedule) {
                 let section = this.getSectionFor(sectionNum);
-                score += this.specificPref.evaluate(section);
-                score += this.globalPref.evaluate(section);
+                if(this.specificPref)
+                    score += this.specificPref.evaluate(section);
+                if(this.globalPref)
+                    score += this.globalPref.evaluate(section);
             }
             console.log("Score after evaluation for schedule " + schedule + " is: " + score);
             return score;

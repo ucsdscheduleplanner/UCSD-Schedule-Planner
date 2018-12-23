@@ -7,6 +7,7 @@ import {
 } from "./SchedulePreferenceMutator";
 import {GlobalPreference} from "../../utils/preferences/GlobalPreference";
 import {ClassSpecificPreference} from "../../utils/preferences/ClassSpecificPreference";
+import {DayTime} from "../../utils/time/TimeUtils";
 
 export class SchedulePreferenceInputHandler {
 
@@ -21,19 +22,16 @@ export class SchedulePreferenceInputHandler {
 
         // TODO do validation on start time and end time
         if (state.startPref) {
-            let tmpStartPref = state.startPref.toDate();
-            let newStartPref = new Date();
-            newStartPref.setHours(tmpStartPref.getHours(), tmpStartPref.getMinutes(), 0);
-            globalPref.startPref = newStartPref;
+            // state.startPref is a moment object
+            let momentStartPref = state.startPref.toDate();
+            globalPref.startPref = new DayTime(momentStartPref).getDate();
         }
 
         // TODO fix so that all that matters is the hour on the date, not the actual date
         // TODO probably should be done in SimpleInterval
         if (state.endPref) {
-            let tmpEndPref = state.endPref.toDate();
-            let newEndPref = new Date();
-            newEndPref.setHours(tmpEndPref.getHours(), tmpEndPref.getMinutes(), 0);
-            globalPref.endPref = newEndPref;
+            let momentEndPref = state.endPref.toDate();
+            globalPref.endPref = new DayTime(momentEndPref).getDate();
         }
 
         if (state.dayPref)
@@ -52,7 +50,7 @@ export class SchedulePreferenceInputHandler {
             classSpecificPref.priority = priority;
         let instructor = this.getState().ClassInput.instructor;
         if (instructor)
-            classSpecificPref.instructor = instructor;
+            classSpecificPref.instructorPref = instructor;
 
         return classSpecificPref;
     }
@@ -63,11 +61,11 @@ export class SchedulePreferenceInputHandler {
     }
 
     // no need for specific on change for class specific, just let ClassInput call this method
-    saveClassSpecificPref() {
-        let classSpecficPref = this.buildClassSpecificPref();
+    setClassSpecificPref() {
+        let classSpecificPref = this.buildClassSpecificPref();
         let state = this.getState().ClassInput;
         let classTitle = `${state.department} ${state.courseNum}`;
-        this.dispatch(setClassSpecificPref(classTitle, classSpecficPref));
+        this.dispatch(setClassSpecificPref(classTitle, classSpecificPref));
     }
 
     onStartTimeChange(newStart) {

@@ -3,7 +3,7 @@ import {
     finishedGenerating,
     GENERATE_SCHEDULE,
     INCREMENT_PROGRESS, incrementProgress, updateWithResult
-} from "../actions/ScheduleGenerationActions";
+} from "../actions/ScheduleGeneratorActions";
 import WebWorker from "./WebWorker";
 import {SGWorker} from "../schedulegeneration/SGWorker";
 

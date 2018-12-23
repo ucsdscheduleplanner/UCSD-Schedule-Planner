@@ -12,7 +12,7 @@ import {SET_INSTRUCTORS} from "../actions/ClassInput/ClassInputMutator";
 import {SET_TYPES} from "../actions/ClassInput/ClassInputMutator";
 import {SET_EDIT_OCCURRED} from "../actions/ClassInput/ClassInputMutator";
 import {SET_ID} from "../actions/ClassInput/ClassInputMutator";
-import {ConsoleMessageHandler} from "../utils/ConsoleMessageHandler";
+import {ConsoleMessageHandler} from "../utils/message/ConsoleMessageHandler";
 
 export default function ClassInputReducer(state = {
     departments: [],

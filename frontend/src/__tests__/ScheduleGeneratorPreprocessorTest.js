@@ -1,5 +1,5 @@
-import {makeTimeInterval} from "../utils/ClassUtils";
-import {ScheduleGeneratorPreprocessor} from "../actions/ScheduleGenerationActions";
+import {makeTimeInterval} from "../utils/time/TimeUtils";
+import {ScheduleGeneratorPreprocessor} from "../actions/ScheduleGeneratorActions";
 import {applyMiddleware, createStore} from "redux";
 import reducers from "../reducers";
 import thunk from "redux-thunk";

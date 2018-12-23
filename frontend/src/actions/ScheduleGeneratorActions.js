@@ -82,6 +82,7 @@ export class ScheduleGeneratorPreprocessor {
         // putting number of possible schedules
         let size = this.calculateMaxSize();
 
+        console.log(`Total number of possible schedules is ${size}`);
         // this is for progress bar purposes
         this.dispatch(setTotalPossibleNumSchedule(size));
     }
@@ -102,6 +103,8 @@ export class ScheduleGeneratorPreprocessor {
 
     async processClassData() {
         let classData = await DataFetcher.fetchClassData(this.selectedClasses);
+        console.log("DATA IS");
+        console.log(classData);
         // will put the data into
         // CSE 11 -> section 0 [subsection, subsection], section 1 [subsection, subsection]
         classData = DataCleaner.cleanData(classData);

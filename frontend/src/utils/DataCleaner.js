@@ -1,6 +1,6 @@
-import {Class} from "./Class";
-import {Section} from "./Section";
-import {Subsection} from "./Subsection";
+import {Class} from "./class/Class";
+import {Section} from "./class/Section";
+import {Subsection} from "./class/Subsection";
 
 export class DataCleaner {
     /**
@@ -32,6 +32,8 @@ export class DataCleaner {
                 if (slowSectionID !== fastSectionID) {
                     // this means we have found a new section of a class
                     let currentSection = new Section();
+                    // augmenting section with title
+                    currentSection.classTitle = courseName;
                     // inclusive exclusive for bounds
                     let subsections = copyCourseData.slice(slowPtr, fastPtr);
 

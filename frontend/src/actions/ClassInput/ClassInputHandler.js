@@ -308,7 +308,7 @@ export class ClassInputHandler {
 
     savePreferences() {
         let inputHandler = new SchedulePreferenceInputHandler(this.dispatch, this.getState);
-        inputHandler.saveClassSpecificPref();
+        inputHandler.setClassSpecificPref();
     }
 }
 

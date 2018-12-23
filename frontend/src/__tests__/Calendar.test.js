@@ -24,20 +24,12 @@ function makeTimeInterval(time) {
     return null;
   }
 
-  let currentDate = new Date();
-  let currentDay = currentDate.getDay();
-  let dist, dayToSet;
-
   // convert to javascript date first
   let startTime = moment(splitTime[0], TIME_STRING).toDate();
-  dayToSet = 2;
-  dist = 0;
-  startTime.setDate(startTime.getDate() + dist);
+  startTime.setDate(startTime.getDate());
 
   let endTime = moment(splitTime[1], TIME_STRING).toDate();
-  dayToSet = 2;
-  dist = 0;
-  endTime.setDate(endTime.getDate() + dist);
+  endTime.setDate(endTime.getDate());
 
   timeInterval['start'] = startTime;
   timeInterval['end'] = endTime;

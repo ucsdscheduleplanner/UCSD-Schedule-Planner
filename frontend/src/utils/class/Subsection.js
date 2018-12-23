@@ -1,4 +1,4 @@
-import {makeTimeInterval} from "./ClassUtils";
+import {makeTimeInterval} from "../time/TimeUtils";
 
 // wrapper over the information returned from the backend
 // a copy constructor for the data fetched

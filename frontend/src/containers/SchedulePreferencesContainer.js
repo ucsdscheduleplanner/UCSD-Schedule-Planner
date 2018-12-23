@@ -2,7 +2,7 @@ import {connect} from 'react-redux';
 import React, {Component} from 'react';
 import SchedulePreferences from "../components/landing/SchedulePreferences";
 import {bindActionCreators} from "redux";
-import {getSchedule} from "../actions/ScheduleGenerationActions";
+import {getSchedule} from "../actions/ScheduleGeneratorActions";
 import {enterInputMode} from "../actions/ClassInput/ClassInputActions";
 import {setDayPref, setEndPref, setStartPref} from "../actions/SchedulePreference/SchedulePreferenceMutator";
 import {setDisplayed, toggleDisplayed} from "../actions/SchedulePreference/SchedulePreferenceUIHandler";
