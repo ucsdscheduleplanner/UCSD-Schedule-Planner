@@ -34,4 +34,3 @@ depends docker
 depends docker-compose
 
 docker-compose build
-docker-compose up 
