@@ -5,7 +5,7 @@ import {
     SET_PROGRESS,
     SET_TOTAL_POSSIBLE_NUM_SCHEDULE,
     UPDATE_WITH_GENERATION_RESULT
-} from '../actions/ScheduleGeneratorActions';
+} from '../actions/ScheduleGenerationActions';
 
 /**
  Should be able to access this through state.ScheduleGeneration

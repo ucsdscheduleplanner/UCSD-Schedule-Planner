@@ -1,13 +1,13 @@
 import {DataFetcher} from "../../utils/DataFetcher";
 import {
-    setConflicts,
+    setClassTypesToIgnore,
     setCourseNum,
     setCourseNums, setDepartment,
     setDepartments, setEditMode, setID,
     setInstructor,
     setPriority
 } from "./ClassInputMutator";
-import {setProgress} from "../ScheduleGeneratorActions";
+import {setProgress} from "../ScheduleGenerationActions";
 import {getInputHandler} from "./ClassInputHandler";
 
 export const ADD_CLASS = "ADD_CLASS";
@@ -56,7 +56,7 @@ export function enterEditMode(id) {
         inputHandler.onDepartmentChange(otherClass.department);
         inputHandler.onCourseNumChange(otherClass.courseNum);
         inputHandler.onInstructorChange(otherClass.instructor);
-        inputHandler.onConflictChange(otherClass.conflicts);
+        inputHandler.onClassTypesToIgnoreChange(otherClass.classTypesToIgnore);
         inputHandler.onPriorityChange(otherClass.priority);
 
         dispatch(setEditMode(true));
@@ -70,7 +70,7 @@ export function enterInputMode() {
         dispatch(setProgress(0));
 
         dispatch(setPriority(null));
-        dispatch(setConflicts(null));
+        dispatch(setClassTypesToIgnore(null));
         dispatch(setInstructor(null));
         dispatch(setCourseNum(null));
         dispatch(setDepartment(null));

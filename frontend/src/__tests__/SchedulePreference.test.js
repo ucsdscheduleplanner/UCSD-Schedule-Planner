@@ -77,7 +77,6 @@ describe("Schedule preferences, specific and global", () => {
 
         chaiExpect(score).to.equal(0);
     });
-
     test("Specific class preferences work on empty input", () => {
         let specificPref = getSpecificPref(null);
         let score = specificPref.evaluate(testBareSection);
@@ -222,6 +221,19 @@ describe("Schedule preferences, specific and global", () => {
             let sPref = {
                 "CSE 12": {
                     instructorPref: "Bary Billespie",
+                }
+            };
+
+            let specificPref = getSpecificPref(sPref);
+            let score = specificPref.evaluate(testBareSection, "CSE 12");
+
+            chaiExpect(score).to.equal(0);
+        });
+
+        test('Conflicts can be set on a class successfully', () => {
+            let sPref = {
+                "CSE 12": {
+                    conflicts: ["LE", "DI"],
                 }
             };
 

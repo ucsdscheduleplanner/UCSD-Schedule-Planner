@@ -1,4 +1,4 @@
-import {classTypeToCode, DataFetcher} from "../utils/DataFetcher";
+import {DataFetcher} from "../utils/DataFetcher";
 import {DataCleaner} from "../utils/DataCleaner";
 
 export const START_GENERATING = 'START_GENERATING';
@@ -45,11 +45,11 @@ export function setProgress(generatingProgress) {
 }
 
 
-export function generateSchedule(classData, conflicts, preferences) {
+export function generateSchedule(classData, classTypesToIgnore, preferences) {
     return {
         type: GENERATE_SCHEDULE,
         classData: classData,
-        conflicts: conflicts,
+        classTypesToIgnore: classTypesToIgnore,
         preferences: preferences
     }
 }
@@ -72,6 +72,7 @@ export class ScheduleGeneratorPreprocessor {
         if(!getState)
             console.error("getState is null, failing");
 
+        // setting selected class to only the values of the one from the state
         this.selectedClasses = Object.values(this.getState().ClassList.selectedClasses);
     }
 
@@ -112,32 +113,26 @@ export class ScheduleGeneratorPreprocessor {
         this.classData = classData;
     }
 
-    processConflicts() {
-        this.conflicts = [];
-    }
-
-
-    /**
-     * Will populate the conflicts object with the correct info about Class -> type conflicts
-     *
-     * Creates a mapping like so:
-     * e.g Class1 -> [LE, DI]
-     *     Class2 -> [LA]
-     * @param Class the class to consider - has a list of type conflicts
-     * @param conflicts the conflicts array to populate
-     */
-    handleConflicts(Class, conflicts) {
-        // class not guaranteed to have conflicts array populated
-        if (Class.conflicts) {
-            if (!(Class.classTitle in conflicts)) {
-                conflicts[Class.classTitle] = [];
-            }
-            conflicts[Class.classTitle] = Class.conflicts.map((conflict) => classTypeToCode[conflict])
-        }
+    processClassTypesToIgnore() {
+        this.classTypesToIgnore = this.getState().IgnoreClassTypes.classMapping;
     }
 
     calculateMaxSize() {
         return this.classData.reduce((accum, cur) => {
+            if(!cur) {
+                console.warn("Class is null in calculating max size");
+                return accum;
+            }
+
+            if(!cur.sections) {
+                console.warn(`Class ${cur.title} has no sections array!`);
+                return accum;
+            }
+
+            if(cur.sections.length === 0) {
+                console.warn(`Class ${cur.title} has no sections!`);
+                return accum;
+            }
             return accum * cur.sections.length;
         }, 1);
     }
@@ -156,13 +151,13 @@ export class ScheduleGeneratorPreprocessor {
     async preprocess() {
         await this.processClassData();
         this.processPreferences();
-        this.processConflicts();
+        this.processClassTypesToIgnore();
         this.processProgressBar();
 
         return {
             classData: this.classData,
             preferences: this.preferences,
-            conflicts: this.conflicts
+            classTypesToIgnore: this.classTypesToIgnore
         }
     }
 }
@@ -178,12 +173,14 @@ export function getSchedule(selectedClasses) {
         // let redux know that we are creating a generationResult
         dispatch(startGenerating());
 
-        let {classData, conflicts, preferences} = await new ScheduleGeneratorPreprocessor(dispatch, getState).preprocess();
+        let {classData, classTypesToIgnore, preferences} = await new ScheduleGeneratorPreprocessor(dispatch, getState).preprocess();
+
+        console.log(classTypesToIgnore);
 
         console.log(preferences);
         // tell middleware we want to create a generationResult with an action
         // this will allow the web worker to take over
-        dispatch(generateSchedule(classData, conflicts, preferences));
+        dispatch(generateSchedule(classData, classTypesToIgnore, preferences));
     }
 }
 

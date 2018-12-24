@@ -73,7 +73,7 @@ export default class SchedulePreferences extends PureComponent {
                                  visible={this.props.displayed}
                                  showCloseIcon={false}
                                  position={position}
-                                 onHide={(e) => this.props.setDisplayed(false)}>
+                                 onHide={() => this.props.setDisplayed(false)}>
                             {schedulePreferencesContent}
                         </Sidebar>
                     )}

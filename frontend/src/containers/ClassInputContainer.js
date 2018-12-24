@@ -3,8 +3,8 @@ import {connect} from "react-redux";
 import ClassInput from "../components/landing/ClassInput";
 import {bindActionCreators} from "redux";
 import "../css/ClassInput.css";
-import {getInputHandler} from "../actions/ClassInput/ClassInputHandler";
-import {initDepartments} from "../actions/ClassInput/ClassInputActions";
+import {getInputHandler} from "../actions/classinput/ClassInputHandler";
+import {initDepartments} from "../actions/classinput/ClassInputActions";
 
 class ClassInputContainer extends Component {
 
@@ -34,7 +34,7 @@ class ClassInputContainer extends Component {
                     department={this.props.department}
                     instructor={this.props.instructor}
                     courseNum={this.props.courseNum}
-                    conflicts={this.props.conflicts}
+                    classTypesToIgnore={this.props.classTypesToIgnore}
                     priority={this.props.priority}
 
                     classTypesPerClass={this.props.classTypesPerClass}
@@ -65,7 +65,7 @@ function mapStateToProps(state) {
         department: state.ClassInput.department,
         instructor: state.ClassInput.instructor,
         courseNum: state.ClassInput.courseNum,
-        conflicts: state.ClassInput.conflicts,
+        classTypesToIgnore: state.ClassInput.classTypesToIgnore,
         priority: state.ClassInput.priority,
 
         classTypesPerClass: state.ClassInput.classTypesPerClass,

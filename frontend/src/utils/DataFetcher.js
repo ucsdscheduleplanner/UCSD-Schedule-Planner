@@ -32,28 +32,7 @@ const codeToClassType = {
   TU: 'Tutorial',
 };
 
-export const classTypeToCode = {
-  Activity: 'AC',
-  'Clinical Clerkship': 'CL',
-  Conference: 'CO',
-  Discussion: 'DI',
-  'Final Exam': 'DI',
-  Film: 'FM',
-  Fieldwork: 'FW',
-  'Independent Study': 'IN',
-  Internship: 'IT',
-  Lab: 'LA',
-  Lecture: 'LE',
-  Midterm: 'MI',
-  'Make-up Session': 'MU',
-  'Other Additional Meeting': 'OT',
-  'Problem Session': 'PB',
-  Practicum: 'PR',
-  'Review Session': 'RE',
-  Seminar: 'SE',
-  Studio: 'ST',
-  Tutorial: 'TU',
-};
+
 
 const codeKeyToVal = {
   AC_KEY: 6,

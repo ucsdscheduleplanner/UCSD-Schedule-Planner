@@ -6,8 +6,8 @@ import {
     SET_END_PREF,
     SET_GLOBAL_PREF,
     SET_START_PREF
-} from "../actions/SchedulePreference/SchedulePreferenceMutator";
-import {SET_DISPLAYED} from "../actions/SchedulePreference/SchedulePreferenceUIHandler";
+} from "../actions/schedulepreference/SchedulePreferenceMutator";
+import {SET_DISPLAYED} from "../actions/schedulepreference/SchedulePreferenceUIHandler";
 import {TimeBuilder} from "../utils/time/TimeUtils";
 
 const momentDefaultStart = moment("1970-01-01 09:00Z").utcOffset(0);
@@ -27,7 +27,7 @@ export default function SchedulePreferences(state = {
     endPref: momentDefaultEnd,
     globalPref: defaultGlobalPref,
     dayPref: null,
-    classSpecificPref: null,
+    classSpecificPref: {},
     displayed: false,
 }, action) {
     switch (action.type) {

@@ -251,7 +251,7 @@ exports[`ClassInput component Renders correctly with no props 1`] = `
       <div
         className="input-header"
       >
-         Ignore Class Types:
+         Class Types to Ignore:
       </div>
       <div
         className="ui-listbox ui-inputtext ui-widget ui-widget-content ui-corner-all ui-state-disabled"

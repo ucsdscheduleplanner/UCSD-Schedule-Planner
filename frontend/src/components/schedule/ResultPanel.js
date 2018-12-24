@@ -23,12 +23,16 @@ export class ResultPanel extends PureComponent {
         };
 
         this.state.errors = props.generationResult.errors;
-        this.state.hasError = Object.keys(this.state.errors).length > 0;
+        this.state.hasError = Object.keys(props.generationResult.errors).length > 0;
         this.state.hasSchedule = props.generationResult.schedules.length > 0 && !this.state.hasError;
 
+        console.log(this.state.errors);
         if (this.state.hasError) {
+            console.log("SHOWING ERROR");
             props.messageHandler.showError("Failed to generate generationResult", 1000);
             props.messageHandler.showError(this.getErrorMsg(), 3500);
+
+            this.state.hasError = false;
         }
 
         if (!this.state.hasSchedule)

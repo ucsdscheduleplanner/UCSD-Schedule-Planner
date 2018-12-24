@@ -1,5 +1,5 @@
 import {
-    setConflicts,
+    setClassTypesToIgnore,
     setCourseNum,
     setDepartment,
     setEditOccurred,
@@ -10,7 +10,8 @@ import {
     setTypes
 } from "./ClassInputMutator";
 import {addClass, editClass, enterInputMode, populateSectionData, removeClass} from "./ClassInputActions";
-import {SchedulePreferenceInputHandler} from "../SchedulePreference/SchedulePreferenceInputHandler";
+import {SchedulePreferenceInputHandler} from "../schedulepreference/SchedulePreferenceInputHandler";
+import {ignoreClassTypes} from "../ignoreclasstypes/IgnoreClassTypesActions";
 
 /**
  * Is responsible for handling all ClassInput actions, which includes running business logic when changing fields to adding
@@ -50,7 +51,7 @@ export class ClassInputHandler {
         this.dispatch(setCourseNum(null));
         this.dispatch(setInstructor(null));
         // will autoconvert to empty list
-        this.dispatch(setConflicts(null));
+        this.dispatch(setClassTypesToIgnore(null));
         this.dispatch(setPriority(null));
 
         // populate the course nums and the data
@@ -80,7 +81,7 @@ export class ClassInputHandler {
         // must clear out the fields
         this.dispatch(setInstructor(null));
         this.dispatch(setPriority(null));
-        this.dispatch(setConflicts(null));
+        this.dispatch(setClassTypesToIgnore(null));
 
         // only record valid edits
         if (state.editMode)
@@ -116,12 +117,12 @@ export class ClassInputHandler {
             this.dispatch(setEditOccurred(true));
 
         this.dispatch(setPriority(null));
-        this.dispatch(setConflicts(null));
+        this.dispatch(setClassTypesToIgnore(null));
     }
 
-    onConflictChange(conflicts) {
-        if (!conflicts) {
-            this.dispatch(setConflicts(null));
+    onClassTypesToIgnoreChange(classTypesToIgnore) {
+        if (!classTypesToIgnore) {
+            this.dispatch(setClassTypesToIgnore(null));
             return;
         }
 
@@ -129,7 +130,7 @@ export class ClassInputHandler {
         // record the edit
         if (state.editMode)
             this.dispatch(setEditOccurred(true));
-        this.dispatch(setConflicts(conflicts));
+        this.dispatch(setClassTypesToIgnore(classTypesToIgnore));
     }
 
     onPriorityChange(priority) {
@@ -155,7 +156,7 @@ export class ClassInputHandler {
         newClass['department'] = state.department;
         newClass['instructor'] = state.instructor;
         newClass['priority'] = state.priority;
-        newClass['conflicts'] = state.conflicts;
+        newClass['classTypesToIgnore'] = state.classTypesToIgnore;
 
         return newClass;
     }
@@ -301,14 +302,21 @@ export class ClassInputHandler {
         this.dispatch(setInstructor(null));
         this.dispatch(setCourseNum(null));
         this.dispatch(setPriority(null));
-        this.dispatch(setConflicts(null));
+        this.dispatch(setClassTypesToIgnore(null));
 
         this.dispatch(setID(null));
     }
 
     savePreferences() {
+        const state = this.getState().ClassInput;
+
+        // TODO this is terrible gotta fix this, why create an object like this?
         let inputHandler = new SchedulePreferenceInputHandler(this.dispatch, this.getState);
         inputHandler.setClassSpecificPref();
+
+        // sending the updates to the reducer for ignoring class types
+        const classTitle = `${state.department} ${state.courseNum}`;
+        this.dispatch(ignoreClassTypes(classTitle, state.classTypesToIgnore));
     }
 }
 

@@ -2,19 +2,19 @@ import React from 'react';
 import ClassInputContainer from "../containers/ClassInputContainer";
 import {mount, shallow} from "enzyme";
 import {
-    setConflicts,
+    setClassTypesToIgnore,
     setCourseNum,
     setCourseNums,
     setDepartment,
     setDepartments,
     setInstructor,
     setInstructors
-} from "../actions/ClassInput/ClassInputMutator";
+} from "../actions/classinput/ClassInputMutator";
 import {applyMiddleware, createStore} from "redux";
 import reducers from "../reducers";
 import thunk from "redux-thunk";
-import {getInputHandler as getReduxInputHandler} from "../actions/ClassInput/ClassInputHandler";
-import {enterEditMode, enterInputMode, populateDataPerClass} from "../actions/ClassInput/ClassInputActions";
+import {getInputHandler as getReduxInputHandler} from "../actions/classinput/ClassInputHandler";
+import {enterEditMode, enterInputMode, populateDataPerClass} from "../actions/classinput/ClassInputActions";
 import {DataFetcher} from "../utils/DataFetcher";
 
 function getInputHandler(store) {
@@ -40,7 +40,7 @@ describe("ClassInput actions such as adding, editing and removing classes", () =
         store.dispatch(setInstructors(["Mr. Cameron Trando"]));
         store.dispatch(setDepartment("CSE"));
         store.dispatch(setCourseNum("12"));
-        store.dispatch(setConflicts(["LE", "blah"]));
+        store.dispatch(setClassTypesToIgnore(["LE", "blah"]));
         store.dispatch(setInstructor("Mr. Cameron Trando"));
 
         let inputHandler = getInputHandler(store);
@@ -56,7 +56,7 @@ describe("ClassInput actions such as adding, editing and removing classes", () =
             classTitle: "CSE 12",
             department: "CSE",
             courseNum: "12",
-            conflicts: ["LE", "blah"],
+            classTypesToIgnore: ["LE", "blah"],
             priority: null,
             instructor: "Mr. Cameron Trando"
         };
@@ -76,7 +76,7 @@ describe("ClassInput actions such as adding, editing and removing classes", () =
 
         store.dispatch(setDepartment("CSE"));
         store.dispatch(setCourseNum("12"));
-        store.dispatch(setConflicts(["LE", "blah"]));
+        store.dispatch(setClassTypesToIgnore(["LE", "blah"]));
         store.dispatch(setInstructor("Mr. Cameron Trando"));
 
 
@@ -86,7 +86,7 @@ describe("ClassInput actions such as adding, editing and removing classes", () =
         // making second class
         store.dispatch(setDepartment("CSE"));
         store.dispatch(setCourseNum("12"));
-        store.dispatch(setConflicts(["LE", "blah"]));
+        store.dispatch(setClassTypesToIgnore(["LE", "blah"]));
         store.dispatch(setInstructor("Mr. Cameron Trando"));
 
         // adding again
@@ -108,7 +108,7 @@ describe("ClassInput actions such as adding, editing and removing classes", () =
 
         store.dispatch(setDepartment("CSE"));
         store.dispatch(setCourseNum("12"));
-        store.dispatch(setConflicts(["LE", "blah"]));
+        store.dispatch(setClassTypesToIgnore(["LE", "blah"]));
         store.dispatch(setInstructor("Mr. Cameron Trando"));
 
         let inputHandler = getInputHandler(store);
@@ -183,7 +183,7 @@ describe("ClassInput actions such as adding, editing and removing classes", () =
                 classTitle: "DSC 11",
                 department: "DSC",
                 courseNum: "11",
-                conflicts: [],
+                classTypesToIgnore: [],
                 priority: null,
                 instructor: null,
             };
@@ -208,7 +208,7 @@ describe("ClassInput actions such as adding, editing and removing classes", () =
 
             store.dispatch(setDepartment("CSE"));
             store.dispatch(setCourseNum("11"));
-            store.dispatch(setConflicts(["LE", "LA", "DI"]));
+            store.dispatch(setClassTypesToIgnore(["LE", "LA", "DI"]));
             store.dispatch(setInstructor("Rick Ord"));
 
             let inputHandler = getInputHandler(store);
@@ -236,7 +236,7 @@ describe("ClassInput actions such as adding, editing and removing classes", () =
                 classTitle: "CSE 12",
                 department: "CSE",
                 courseNum: "12",
-                conflicts: [],
+                classTypesToIgnore: [],
                 priority: null,
                 instructor: "Joseph Politz",
             };
@@ -274,7 +274,7 @@ describe("ClassInput actions such as adding, editing and removing classes", () =
             let inputHandler = getInputHandler(store);
             inputHandler.onDepartmentChange("CSE");
             inputHandler.onCourseNumChange("11");
-            inputHandler.onConflictChange(["LE", "LA", "DI"]);
+            inputHandler.onClassTypesToIgnoreChange(["LE", "LA", "DI"]);
             inputHandler.onInstructorChange("Rick Ord");
 
             inputHandler.handleAdd();

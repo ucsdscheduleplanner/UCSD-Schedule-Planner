@@ -118,12 +118,12 @@ export default class ClassInput extends PureComponent {
 
         let ignoreClassPreference = (
             <div className="form-field">
-                <div className="input-header"> Ignore Class Types:</div>
+                <div className="input-header"> Class Types to Ignore:</div>
                 <ListBox value={
                     // same as above with the undefined
-                    this.props.conflicts}
+                    this.props.classTypesToIgnore}
                          options={this.props.types}
-                         onChange={(e) => this.props.inputHandler.onConflictChange(e.value)}
+                         onChange={(e) => this.props.inputHandler.onClassTypesToIgnoreChange(e.value)}
                          multiple={true}
                          disabled={!this.props.courseNums.includes(this.props.courseNum)}/>
             </div>

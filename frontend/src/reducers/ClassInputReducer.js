@@ -1,24 +1,24 @@
-import {POPULATE_DATA_PER_CLASS} from "../actions/ClassInput/ClassInputActions";
-import {SET_COURSE_NUMS} from "../actions/ClassInput/ClassInputMutator";
-import {SET_COURSE_NUM} from "../actions/ClassInput/ClassInputMutator";
-import {SET_DEPARTMENT} from "../actions/ClassInput/ClassInputMutator";
-import {SET_DEPARTMENTS} from "../actions/ClassInput/ClassInputMutator";
-import {SET_INSTRUCTOR} from "../actions/ClassInput/ClassInputMutator";
-import {SET_PRIORITY} from "../actions/ClassInput/ClassInputMutator";
-import {SET_CONFLICTS} from "../actions/ClassInput/ClassInputMutator";
-import {SET_EDIT_MODE} from "../actions/ClassInput/ClassInputMutator";
-import {SET_MESSAGE_HANDLER} from "../actions/ClassInput/ClassInputMutator";
-import {SET_INSTRUCTORS} from "../actions/ClassInput/ClassInputMutator";
-import {SET_TYPES} from "../actions/ClassInput/ClassInputMutator";
-import {SET_EDIT_OCCURRED} from "../actions/ClassInput/ClassInputMutator";
-import {SET_ID} from "../actions/ClassInput/ClassInputMutator";
+import {POPULATE_DATA_PER_CLASS} from "../actions/classinput/ClassInputActions";
+import {SET_COURSE_NUMS} from "../actions/classinput/ClassInputMutator";
+import {SET_COURSE_NUM} from "../actions/classinput/ClassInputMutator";
+import {SET_DEPARTMENT} from "../actions/classinput/ClassInputMutator";
+import {SET_DEPARTMENTS} from "../actions/classinput/ClassInputMutator";
+import {SET_INSTRUCTOR} from "../actions/classinput/ClassInputMutator";
+import {SET_PRIORITY} from "../actions/classinput/ClassInputMutator";
+import {SET_CLASS_TYPES_TO_IGNORE} from "../actions/classinput/ClassInputMutator";
+import {SET_EDIT_MODE} from "../actions/classinput/ClassInputMutator";
+import {SET_MESSAGE_HANDLER} from "../actions/classinput/ClassInputMutator";
+import {SET_INSTRUCTORS} from "../actions/classinput/ClassInputMutator";
+import {SET_TYPES} from "../actions/classinput/ClassInputMutator";
+import {SET_EDIT_OCCURRED} from "../actions/classinput/ClassInputMutator";
+import {SET_ID} from "../actions/classinput/ClassInputMutator";
 import {ConsoleMessageHandler} from "../utils/message/ConsoleMessageHandler";
 
 export default function ClassInputReducer(state = {
     departments: [],
     courseNums: [],
     instructors: [],
-    conflicts: [],
+    classTypesToIgnore: [],
     types: [],
 
     instructorsPerClass: {},
@@ -100,14 +100,14 @@ export default function ClassInputReducer(state = {
             return Object.assign({}, state, {
                 priority: action.priority
             });
-        case SET_CONFLICTS:
+        case SET_CLASS_TYPES_TO_IGNORE:
             // set it back to an empty list if given null
-            let conflicts = action.conflicts;
-            if(!conflicts)
-                conflicts = [];
+            let classTypesToIgnore = action.classTypesToIgnore;
+            if(!classTypesToIgnore)
+                classTypesToIgnore = [];
 
             return Object.assign({}, state, {
-                conflicts: conflicts,
+                classTypesToIgnore: classTypesToIgnore,
             });
         case SET_EDIT_MODE:
             return Object.assign({}, state, {

@@ -2,13 +2,13 @@
     This class will hold the form for inputting classes.
  */
 
-import React, {Component} from 'react';
+import React, {PureComponent} from 'react';
 import "../../css/MainPanel.css";
 import {connect} from "react-redux";
 import {ScheduleProgressBar} from "../schedule/ScheduleProgressBar";
 import {ResultPanel} from "../schedule/ResultPanel";
 
-class MainPanel extends Component {
+class MainPanel extends PureComponent {
     constructor(props) {
         super(props);
         this.state = {
@@ -19,6 +19,8 @@ class MainPanel extends Component {
     }
 
     render() {
+        console.log("MAIN PANEL");
+        console.log(this.props);
         const calendar = (
             <ResultPanel
                 key={this.props.scheduleID}
@@ -26,7 +28,6 @@ class MainPanel extends Component {
                 generationResult={this.props.generationResult}/>
         );
 
-        console.log(this.props);
         const progressBar = (
             <ScheduleProgressBar
                 generatingProgress={this.props.generatingProgress}

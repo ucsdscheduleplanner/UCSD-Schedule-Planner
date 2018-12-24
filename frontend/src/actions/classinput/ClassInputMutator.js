@@ -7,7 +7,7 @@ export const SET_DEPARTMENT = "SET_DEPARTMENT";
 export const SET_COURSE_NUM = "SET_COURSE_NUM";
 export const SET_INSTRUCTOR = "SET_INSTRUCTOR";
 export const SET_EDIT_OCCURRED = "SET_EDIT_OCCURRED";
-export const SET_CONFLICTS = "SET_CONFLICTS";
+export const SET_CLASS_TYPES_TO_IGNORE = "SET_CLASS_TYPES_TO_IGNORE";
 export const SET_PRIORITY = "SET_PRIORITY";
 export const SET_EDIT_MODE = "SET_EDIT_MODE";
 export const SET_MESSAGE_HANDLER = "SET_MESSAGE_HANDLER";
@@ -69,10 +69,16 @@ export function setPriority(priority) {
     }
 }
 
-export function setConflicts(conflicts) {
+/**
+ * This function updates the ClassInput UI with the class types to ignore for
+ * the specific class given, not globally, that responsibility is delegated to the reducer
+ * @param classTypesToIgnore
+ * @returns {{type: string, conflicts: *}}
+ */
+export function setClassTypesToIgnore(classTypesToIgnore) {
     return {
-        type: SET_CONFLICTS,
-        conflicts: conflicts
+        type: SET_CLASS_TYPES_TO_IGNORE,
+        classTypesToIgnore: classTypesToIgnore
     }
 }
 

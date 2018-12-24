@@ -1,14 +1,14 @@
 import React from 'react';
 import ClassInputContainer from "../containers/ClassInputContainer";
 import {
-    setConflicts,
+    setClassTypesToIgnore,
     setCourseNum,
     setCourseNums,
     setDepartment,
     setDepartments,
     setInstructor
-} from "../actions/ClassInput/ClassInputMutator";
-import {getInputHandler as getReduxInputHandler} from "../actions/ClassInput/ClassInputHandler";
+} from "../actions/classinput/ClassInputMutator";
+import {getInputHandler as getReduxInputHandler} from "../actions/classinput/ClassInputHandler";
 import {applyMiddleware, createStore} from "redux";
 import reducers from "../reducers";
 import thunk from "redux-thunk";
@@ -42,7 +42,7 @@ describe("Ensuring ClassInputHandler can handle changes in the autocomplete fiel
             classTitle: "CSE 12",
             department: "CSE",
             courseNum: "12",
-            conflicts: [],
+            classTypesToIgnore: [],
             priority: null,
             instructor: null
         };
@@ -57,7 +57,7 @@ describe("Ensuring ClassInputHandler can handle changes in the autocomplete fiel
 
         store.dispatch(setDepartment("CSE"));
         store.dispatch(setCourseNum("12"));
-        store.dispatch(setConflicts(["LE", "blah"]));
+        store.dispatch(setClassTypesToIgnore(["LE", "blah"]));
         store.dispatch(setInstructor("Mr. Cameron Trando"));
 
         let inputHandler = getInputHandler(store);
@@ -67,7 +67,7 @@ describe("Ensuring ClassInputHandler can handle changes in the autocomplete fiel
             classTitle: "CSE 12",
             department: "CSE",
             courseNum: "12",
-            conflicts: ["LE", "blah"],
+            classTypesToIgnore: ["LE", "blah"],
             priority: null,
             instructor: "Mr. Cameron Trando"
         };
@@ -83,7 +83,7 @@ describe("Ensuring ClassInputHandler can handle changes in the autocomplete fiel
         store.dispatch(setDepartments(["CSE", "DSC"]));
         store.dispatch(setDepartment("CSE"));
         store.dispatch(setCourseNum("12"));
-        store.dispatch(setConflicts(["LE", "blah"]));
+        store.dispatch(setClassTypesToIgnore(["LE", "blah"]));
         store.dispatch(setInstructor("Mr. Cameron Trando"));
 
         let inputHandler = getInputHandler(store);
@@ -94,7 +94,7 @@ describe("Ensuring ClassInputHandler can handle changes in the autocomplete fiel
         chaiExpect(state.department).to.equal("DSC");
         chaiExpect(state.courseNum).to.equal(null);
         chaiExpect(state.instructor).to.equal(null);
-        chaiExpect(state.conflicts).to.eql([]);
+        chaiExpect(state.classTypesToIgnore).to.eql([]);
     });
 
     test('Making sure other fields are not nulled out if department field is edited but its value is not altered', () => {
@@ -105,7 +105,7 @@ describe("Ensuring ClassInputHandler can handle changes in the autocomplete fiel
         store.dispatch(setDepartments(["CSE", "DSC"]));
         store.dispatch(setDepartment("CSE"));
         store.dispatch(setCourseNum("12"));
-        store.dispatch(setConflicts(["LE", "blah"]));
+        store.dispatch(setClassTypesToIgnore(["LE", "blah"]));
         store.dispatch(setInstructor("Mr. Cameron Trando"));
 
         let inputHandler = getInputHandler(store);
@@ -116,10 +116,10 @@ describe("Ensuring ClassInputHandler can handle changes in the autocomplete fiel
         chaiExpect(state.department).to.equal("CSE");
         chaiExpect(state.courseNum).to.equal("12");
         chaiExpect(state.instructor).to.equal("Mr. Cameron Trando");
-        chaiExpect(state.conflicts).to.eql(["LE", "blah"]);
+        chaiExpect(state.classTypesToIgnore).to.eql(["LE", "blah"]);
     });
 
-    test('Making sure priority, conflicts, and instructors are nulled out when changing courseNum field', () => {
+    test('Making sure priority, ignored class types, and instructors are nulled out when changing courseNum field', () => {
         const classInput = mount(
             <ClassInputContainer store={store}/>
         );
@@ -128,7 +128,7 @@ describe("Ensuring ClassInputHandler can handle changes in the autocomplete fiel
         store.dispatch(setCourseNums(["11", "12"]));
         store.dispatch(setDepartment("CSE"));
         store.dispatch(setCourseNum("12"));
-        store.dispatch(setConflicts(["LE", "blah"]));
+        store.dispatch(setClassTypesToIgnore(["LE", "blah"]));
         store.dispatch(setInstructor("Mr. Cameron Trando"));
 
         let inputHandler = getInputHandler(store);
@@ -140,10 +140,10 @@ describe("Ensuring ClassInputHandler can handle changes in the autocomplete fiel
         chaiExpect(state.department).to.equal("CSE");
         chaiExpect(state.courseNum).to.equal("11");
         chaiExpect(state.instructor).to.equal(null);
-        chaiExpect(state.conflicts).to.eql([]);
+        chaiExpect(state.classTypesToIgnore).to.eql([]);
     });
 
-    test('Making sure priority, conflicts, and instructors are unchanged when not making any changes to courseNum field', () => {
+    test('Making sure priority, ignored class types, and instructors are unchanged when not making any changes to courseNum field', () => {
         const classInput = mount(
             <ClassInputContainer store={store}/>
         );
@@ -152,7 +152,7 @@ describe("Ensuring ClassInputHandler can handle changes in the autocomplete fiel
         store.dispatch(setCourseNums(["11", "12"]));
         store.dispatch(setDepartment("CSE"));
         store.dispatch(setCourseNum("12"));
-        store.dispatch(setConflicts(["LE", "blah"]));
+        store.dispatch(setClassTypesToIgnore(["LE", "blah"]));
         store.dispatch(setInstructor("Mr. Cameron Trando"));
 
         let inputHandler = getInputHandler(store);
@@ -164,6 +164,6 @@ describe("Ensuring ClassInputHandler can handle changes in the autocomplete fiel
         chaiExpect(state.department).to.equal("CSE");
         chaiExpect(state.courseNum).to.equal("12");
         chaiExpect(state.instructor).to.equal("Mr. Cameron Trando");
-        chaiExpect(state.conflicts).to.eql(["LE", "blah"]);
+        chaiExpect(state.classTypesToIgnore).to.eql(["LE", "blah"]);
     });
 });

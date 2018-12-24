@@ -12,12 +12,12 @@ export function SGWorker() {
         console.log("Data is: ");
         console.log(data);
 
-        let {classData, conflicts, preferences} = data;
+        let {classData, classTypesToIgnore, preferences} = data;
         // have to convert from JSON preferences to preference objects
         let {specificPref, globalPref} = initPreferences(preferences);
         console.log(specificPref, globalPref);
 
-        let worker = new ScheduleGenerator(classData, conflicts, specificPref, globalPref);
+        let worker = new ScheduleGenerator(classData, classTypesToIgnore, specificPref, globalPref);
         let results = worker.generate();
 
         // returns a promise
@@ -59,12 +59,12 @@ export function SGWorker() {
      * @returns {GenerationResult}
      */
     this.generate = function (data) {
-        let {classData, conflicts, preferences} = data;
+        let {classData, classTypesToIgnore, preferences} = data;
 
         // have to convert from JSOn preferences to preference objects
 
         let {specificPref, globalPref} = initPreferences(preferences);
-        let worker = new ScheduleGenerator(classData, conflicts, specificPref, globalPref);
+        let worker = new ScheduleGenerator(classData, classTypesToIgnore, specificPref, globalPref);
 
         return worker.generate();
     };
@@ -110,7 +110,8 @@ export function SGWorker() {
         };
 
         SpecificPref.prototype.evaluate = function (section) {
-            if (!section || !this.specificPref)
+            // testing for null or undefined section, specificPref or empty specificPref object
+            if (!section || !this.specificPref || Object.keys(this.specificPref).length === 0)
                 return 0;
 
             if (section.subsections.length === 0) {
@@ -340,12 +341,12 @@ export function SGWorker() {
     /**
      *
      * @param classData
-     * @param conflicts is a mapping between Class to types, e.g {"CSE 12": ["LE", "DI"]}
+     * @param classTypesToIgnore a mapping from class title to types to ignore
      * @param specificPref
      * @param globalPref
      * @constructor
      */
-    function ScheduleGenerator(classData = [], conflicts = [], specificPref = {}, globalPref = {}) {
+    function ScheduleGenerator(classData = [], classTypesToIgnore = {}, specificPref = {}, globalPref = {}) {
         // error map represents an undirected graph where (u,v) exists in edge set E iff u is incompatible with v
         // key is u, value is list of v in which above relationship holds
         this.errorMap = {};
@@ -355,7 +356,7 @@ export function SGWorker() {
         this.batchedUpdates = 0;
 
         this.classData = classData;
-        this.conflicts = conflicts;
+        this.classTypesToIgnore = classTypesToIgnore;
         this.specificPref = specificPref;
         this.globalPref = globalPref;
 
@@ -367,13 +368,10 @@ export function SGWorker() {
          * @param Class the current Class which holds the sections
          * @param section the current section we are iterating on
          */
-        ScheduleGenerator.prototype.ignoreSubsections = function (Class, section) {
-            let conflictsForClassTitle = this.conflicts[Class.title];
-            let filteredSubsections = section.subsections.filter(s => !conflictsForClassTitle.includes(s.type));
-
-            return Object.assign({}, section, {subsections: filteredSubsections});
+        ScheduleGenerator.prototype.getNonIgnoredSubsections = function (Class, section) {
+            let conflictsForClassTitle = this.classTypesToIgnore[Class.title];
+            return section.subsections.filter(s => !conflictsForClassTitle.includes(s.type));
         };
-
 
         /**
          * Adds all the subsections of the given section to the interval tree
@@ -521,7 +519,7 @@ export function SGWorker() {
     };
 
     ScheduleGenerator.prototype.isClassIgnored = function (Class) {
-        return Class.title in this.conflicts;
+        return Class.title in this.classTypesToIgnore;
     };
 
     ScheduleGenerator.prototype.updateProgressForFailedAdd = function (curClassIndex) {
@@ -573,27 +571,28 @@ export function SGWorker() {
             if (currentSection.subsections.length === 0)
                 continue;
 
-            let filteredSection = currentSection;
             // check first if we should even care to remove subsections
             if (this.isClassIgnored(currentClass)) {
-                // will remove subsections that have been ignored from consideration
-                filteredSection = this.ignoreSubsections(currentClass, currentSection);
+                // reassigning for immutability - can be removed if needed
+                currentSection = Object.assign({}, currentSection);
+                // TODO change method name this is disgusting
+                currentSection.subsections = this.getNonIgnoredSubsections(currentClass, currentSection);
             }
 
             // check if we have any time conflicts on adding all the subsections
             // (NOTE) goes off the assumption that there are no conflicts within the class - that
             // was proven to be incorrect
-            let conflictsForSection = this.getConflictingSections(filteredSection);
+            let conflictsForSection = this.getConflictingSections(currentSection);
             console.log("Conflicting sections " + conflictsForSection);
             // if we have any conflicts at all that mean the section cannot be added
             if (conflictsForSection.length > 0) {
-                this.handleFailedToAdd(filteredSection, conflictsForSection);
+                this.handleFailedToAdd(currentSection, conflictsForSection);
                 this.updateProgressForFailedAdd(numClassesAdded);
                 continue;
             }
 
             // adding subsections to interval tree if they are all valid
-            this.addSection(filteredSection);
+            this.addSection(currentSection);
 
             currentSchedule.push(currentSection.sectionNum);
             // choosing to use this for our current generationResult - use the actual section not what was filtered
@@ -603,7 +602,7 @@ export function SGWorker() {
             // remove after done
             currentSchedule.pop();
             // removing all intervals we added so can continue to DFS
-            this.removeSection(filteredSection);
+            this.removeSection(currentSection);
         }
     };
 
