@@ -10,8 +10,8 @@ import {
 import {SET_DISPLAYED} from "../actions/schedulepreference/SchedulePreferenceUIHandler";
 import {TimeBuilder} from "../utils/time/TimeUtils";
 
-const momentDefaultStart = moment("1970-01-01 09:00Z").utcOffset(0);
-const momentDefaultEnd = moment("1970-01-01 17:00Z").utcOffset(0);
+const momentDefaultStart = moment("1970-01-01 17:00Z");
+const momentDefaultEnd = moment("1970-01-01 01:00Z");
 
 // todo make a time builder
 let defaultStart = new TimeBuilder().withHour(9).build();

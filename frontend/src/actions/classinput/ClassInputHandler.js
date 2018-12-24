@@ -173,11 +173,13 @@ export class ClassInputHandler {
 
     isValidEdit(newClass) {
         const state = this.getState().ClassInput;
-        if (this.isDuplicate(newClass, state.id))
+        if (this.isDuplicate(newClass, state.id)) {
             return {
                 valid: false,
                 reason: `Class ${state.department} ${state.courseNum} has already been added!`
             };
+        }
+
         return this.isValid(newClass);
     }
 
@@ -271,6 +273,9 @@ export class ClassInputHandler {
      */
     isDuplicate(newClass, exclude = "") {
         let state = this.getState().ClassList;
+
+        if(typeof exclude !== "string")
+            console.warn(`The given key ${exclude} is of type ${typeof exclude} instead of string, continuing`);
 
         return Object.keys(state.selectedClasses).reduce(function (accumulator, key) {
             if (exclude === key)

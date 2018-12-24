@@ -200,6 +200,25 @@ describe("Schedule preferences, specific and global", () => {
             let score = scheduleGenerator.evaluateSchedule(["TEST$0"]);
             chaiExpect(score).to.be.at.least(1);
         });
+
+         test('Day pref returns positive value when set', () => {
+            let state = store.getState().SchedulePreferences;
+            let sPref = new SGWorker().getSpecificPref(null);
+
+            let copy = state.globalPref;
+            copy.dayPref = ["M", "W", "F"];
+            let gPref = new SGWorker().getGlobalPref(copy);
+
+            let scheduleGenerator = new SGWorker().getScheduleGenerator({
+                classData: testClass,
+                specificPref: sPref,
+                globalPref: gPref,
+                conflicts: []
+            });
+
+            let score = scheduleGenerator.evaluateSchedule(["TEST$0"]);
+            chaiExpect(score).to.be.at.least(1);
+        });
     });
 
 

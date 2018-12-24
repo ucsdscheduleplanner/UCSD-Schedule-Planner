@@ -89,6 +89,11 @@ export function setEditMode(mode) {
     }
 }
 
+/**
+ * Sets the id for the current Class Input
+ * @param id should be a string
+ * @returns {{type: string, id: *}}
+ */
 export function setID(id) {
     return {
         type: SET_ID,

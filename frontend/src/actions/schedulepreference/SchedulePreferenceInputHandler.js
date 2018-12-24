@@ -11,9 +11,9 @@ import {DayTime} from "../../utils/time/TimeUtils";
 
 export class SchedulePreferenceInputHandler {
 
-    constructor(dispatch, getSTate) {
+    constructor(dispatch, getState) {
         this.dispatch = dispatch;
-        this.getState = getSTate;
+        this.getState = getState;
     }
 
     buildGlobalPref() {

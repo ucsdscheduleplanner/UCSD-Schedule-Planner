@@ -17,8 +17,8 @@ export const SGMiddleWare = store => {
             case FINISH_GENERATING:
                 // must update with result first because each dispatch causes a rerender so could mess stuff up
                 // TODO look into redux-batched-updates
-                store.dispatch(updateWithResult(generationResult));
                 store.dispatch(finishedGenerating());
+                store.dispatch(updateWithResult(generationResult));
                 break;
             case INCREMENT_PROGRESS:
                 store.dispatch(incrementProgress(amount));

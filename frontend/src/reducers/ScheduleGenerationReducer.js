@@ -18,7 +18,6 @@ export default function ScheduleGeneration(state = {
     uid: 0,
     generateSuccess: true,
     generationResult: {schedules: [], errors: {}},
-    scheduleID: 0,
 }, action) {
     switch (action.type) {
         case START_GENERATING:
@@ -34,7 +33,6 @@ export default function ScheduleGeneration(state = {
             return Object.assign({}, state, {
                 generationResult: action.generationResult,
                 generateSuccess: generateSuccess,
-                scheduleID: state.scheduleID + 1
             });
         case SET_PROGRESS:
             return Object.assign({}, state, {

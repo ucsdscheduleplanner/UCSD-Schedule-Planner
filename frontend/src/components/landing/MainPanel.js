@@ -2,8 +2,7 @@
     This class will hold the form for inputting classes.
  */
 
-import React, {PureComponent} from 'react';
-import "../../css/MainPanel.css";
+import React, {PureComponent} from 'react'; import "../../css/MainPanel.css";
 import {connect} from "react-redux";
 import {ScheduleProgressBar} from "../schedule/ScheduleProgressBar";
 import {ResultPanel} from "../schedule/ResultPanel";
@@ -21,7 +20,6 @@ class MainPanel extends PureComponent {
     render() {
         const calendar = (
             <ResultPanel
-                key={this.props.scheduleID}
                 messageHandler={this.props.messageHandler}
                 generationResult={this.props.generationResult}/>
         );
@@ -46,7 +44,6 @@ class MainPanel extends PureComponent {
 
 function mapStateToProps(state) {
     return {
-        scheduleID: state.ScheduleGenerate.scheduleID,
         messageHandler: state.ClassInput.messageHandler,
         generateSuccess: state.ScheduleGenerate.generateSuccess,
         generatingProgress: state.ScheduleGenerate.generatingProgress,
