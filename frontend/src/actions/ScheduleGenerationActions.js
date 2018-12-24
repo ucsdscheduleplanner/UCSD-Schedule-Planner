@@ -79,7 +79,6 @@ export class ScheduleGeneratorPreprocessor {
     processProgressBar() {
         this.dispatch(setProgress(0));
 
-        console.log(this.classData);
         // putting number of possible schedules
         let size = this.calculateMaxSize();
 
@@ -104,8 +103,6 @@ export class ScheduleGeneratorPreprocessor {
 
     async processClassData() {
         let classData = await DataFetcher.fetchClassData(this.selectedClasses);
-        console.log("DATA IS");
-        console.log(classData);
         // will put the data into
         // CSE 11 -> section 0 [subsection, subsection], section 1 [subsection, subsection]
         classData = DataCleaner.cleanData(classData);
@@ -174,10 +171,6 @@ export function getSchedule(selectedClasses) {
         dispatch(startGenerating());
 
         let {classData, classTypesToIgnore, preferences} = await new ScheduleGeneratorPreprocessor(dispatch, getState).preprocess();
-
-        console.log(classTypesToIgnore);
-
-        console.log(preferences);
         // tell middleware we want to create a generationResult with an action
         // this will allow the web worker to take over
         dispatch(generateSchedule(classData, classTypesToIgnore, preferences));

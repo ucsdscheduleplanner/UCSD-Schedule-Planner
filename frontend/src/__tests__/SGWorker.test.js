@@ -77,7 +77,6 @@ describe('Schedule generation', () => {
         let worker = new SGWorker();
         let result = worker.generate(testInput);
 
-        console.log(result);
         expect(Object.keys(result.errors).length).to.equal(0);
         expect(result.schedules.length).to.equal(1);
 
@@ -99,7 +98,6 @@ describe('Schedule generation', () => {
         let result = worker.generate({classData: [], conflicts: [], preferences: []});
 
         expect(Object.keys(result.errors).length).to.equal(0);
-        console.log(result.schedules);
         expect(result.schedules.length).to.equal(0);
     });
 

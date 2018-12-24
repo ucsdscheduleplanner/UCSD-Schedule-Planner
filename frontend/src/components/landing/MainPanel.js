@@ -19,8 +19,6 @@ class MainPanel extends PureComponent {
     }
 
     render() {
-        console.log("MAIN PANEL");
-        console.log(this.props);
         const calendar = (
             <ResultPanel
                 key={this.props.scheduleID}

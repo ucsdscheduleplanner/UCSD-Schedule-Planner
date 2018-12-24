@@ -42,7 +42,6 @@ export default class ClassInput extends PureComponent {
     }
 
     completeInstructorSuggestions(event) {
-        console.log(this.props.instructors);
         let instructorOptions = this.props.instructors.filter((instructor) => {
             if (instructor) return instructor.toLowerCase().startsWith(event.query.toLowerCase());
             return false;

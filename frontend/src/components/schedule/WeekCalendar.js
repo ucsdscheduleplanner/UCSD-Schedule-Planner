@@ -28,7 +28,6 @@ class WeekCalendar extends PureComponent {
 
     initEvents(schedule) {
         let ret = [];
-        console.log(schedule);
         for (let Class of schedule) {
 
             if(Class.sections.length === 0)

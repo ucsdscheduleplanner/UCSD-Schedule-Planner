@@ -41,7 +41,6 @@ export function editClass(id, editClass) {
 export function initDepartments() {
     return async function (dispatch) {
         let departments = await DataFetcher.fetchDepartments();
-        console.log(departments);
         dispatch(setDepartments(departments));
     }
 }

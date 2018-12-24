@@ -9,13 +9,9 @@ export function SGWorker() {
             return;
 
         let data = evt.data;
-        console.log("Data is: ");
-        console.log(data);
-
         let {classData, classTypesToIgnore, preferences} = data;
         // have to convert from JSON preferences to preference objects
         let {specificPref, globalPref} = initPreferences(preferences);
-        console.log(specificPref, globalPref);
 
         let worker = new ScheduleGenerator(classData, classTypesToIgnore, specificPref, globalPref);
         let results = worker.generate();
@@ -71,11 +67,9 @@ export function SGWorker() {
 
     function initPreferences(preferences) {
         let {globalPref, classSpecificPref} = preferences;
-        console.log(preferences);
         let gPref = new GlobalPref(globalPref);
         let sPref = new SpecificPref(classSpecificPref);
 
-        console.log(sPref);
 
         return {globalPref: gPref, specificPref: sPref};
     }
@@ -95,9 +89,6 @@ export function SGWorker() {
                 console.warn("Instructor for subsection is null or undefined");
                 return -99;
             }
-
-            console.log("SPECIFIC PREF");
-            console.log(this.specificPref);
 
             let instructorPref = this.specificPref[classTitle].instructorPref;
             if (!instructorPref)
@@ -123,7 +114,6 @@ export function SGWorker() {
             for (let subsection of section.subsections) {
                 score += this.evaluateInstructor(subsection, section.classTitle);
             }
-            console.log("SPECIFIC SCORE IS " + score);
             return score;
         }
     }
@@ -132,11 +122,8 @@ export function SGWorker() {
         this.globalPref = globalPref;
 
         GlobalPref.prototype.evaluateTime = function (subsection) {
-            console.log("EVALUATING TIME");
             let startPref = this.globalPref.startPref;
             let endPref = this.globalPref.endPref;
-
-            console.log(this.globalPref);
 
             // TODO handle null cases
             if (!startPref || !endPref)
@@ -161,10 +148,6 @@ export function SGWorker() {
             let rangeEnd = new Date(endPref.getTime());
             rangeEnd.setHours(tempEnd.getHours(), tempEnd.getMinutes(), 0);
 
-            console.log(rangeStart);
-            console.log(rangeEnd);
-
-            console.log("CHECKING RANGES");
             // they overlap!
             if (rangeStart < endPref && rangeEnd > startPref) {
                 score += 1;
@@ -395,7 +378,6 @@ export function SGWorker() {
                 let conflictingSection = this.intervalTree.contains(subsection.timeInterval);
                 if (conflictingSection !== null) {
                     ret.add(conflictingSection);
-                    console.log(section);
                     console.log("Found conflict on trying to add " + section.sectionNum);
                 }
             }
@@ -622,7 +604,6 @@ export function SGWorker() {
 
     ScheduleGenerator.prototype.generate = function () {
         let schedules = [];
-        console.log(this.classData);
 
         try {
             this.dfs(schedules);
@@ -641,8 +622,6 @@ export function SGWorker() {
 
         // only really care about errors if we failed to generate a generationResult
         let ret = new GenerationResult(schedules, errors);
-        console.log(schedules);
-        console.log(ret);
         return ret;
     }
 }

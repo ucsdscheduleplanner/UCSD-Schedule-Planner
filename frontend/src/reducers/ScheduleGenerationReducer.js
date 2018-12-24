@@ -31,7 +31,6 @@ export default function ScheduleGeneration(state = {
             });
         case UPDATE_WITH_GENERATION_RESULT:
             let generateSuccess = action.generationResult.length > 0;
-            console.log(action.generationResult);
             return Object.assign({}, state, {
                 generationResult: action.generationResult,
                 generateSuccess: generateSuccess,

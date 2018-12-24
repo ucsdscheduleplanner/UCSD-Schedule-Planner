@@ -52,7 +52,6 @@ export default class ClassList extends PureComponent {
             activateSidePanelUI(e => this.setState({sidePanelActivated: true}));
         } else if (Object.keys(this.props.selectedClasses).length === 0
             && Object.keys(prevProps.selectedClasses).length !== 0) {
-            console.log("WHY YOU NO UPDATE");
             deactivateSidePanelUI();
             // set state right after because want to delete immediately
             this.setState({sidePanelActivated: false});
@@ -120,7 +119,6 @@ export default class ClassList extends PureComponent {
     }
 
     render() {
-        console.log(this.props);
         // puts the selected classes into a jsx array
         let classes = Object.keys(this.props.selectedClasses).map((selectedClassID, index) => {
             let selectedClass = this.props.selectedClasses[selectedClassID];

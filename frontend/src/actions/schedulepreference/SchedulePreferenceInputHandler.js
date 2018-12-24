@@ -37,8 +37,6 @@ export class SchedulePreferenceInputHandler {
         if (state.dayPref)
             globalPref.dayPref = state.dayPref;
 
-        console.log("RETURNING GLOBAL PREF");
-        console.log(globalPref);
         return globalPref;
     }
 

@@ -9,7 +9,6 @@ import {setDisplayed} from "../actions/schedulepreference/SchedulePreferenceUIHa
 class ClassListContainer extends Component {
 
     render() {
-        console.log(this.props);
         return <ClassList
             enterEditMode={this.props.enterEditMode}
             enterInputMode={this.props.enterInputMode}
@@ -22,7 +21,6 @@ class ClassListContainer extends Component {
 }
 
 function mapStateToProps(state) {
-    console.log(state);
     return {
         selectedClasses: state.ClassList.selectedClasses,
     }
