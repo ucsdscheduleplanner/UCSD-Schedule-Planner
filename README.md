@@ -32,10 +32,12 @@ we only provide schedule generation utilities, not enrollment features.</sup></s
 
 This project uses the following frameworks:
 
-* ReactJS <sub>frontend logic</sub>
-* Semantic UI <sub>CSS styling</sub>
+* ReactJS and Redux, <sub>frontend logic </sub>
+* React Storybook, <sub> Component testing </sub>
+* Primereact, <sub> UI components </sub>
 * Flask <sub>backend server</sub>
 * Selenium <sub>web scraping</sub>
+* Cheerio <sub>html parsing</sub>
 * MySQL <sub>database for scraped results</sub>
 * Docker <sub>container management</sub>
 
@@ -64,10 +66,10 @@ git clone https://github.com/ctrando/UCSD-Planner-Helper && cd UCSD-Planner-Help
 Next, from the repository root directory, run the command:
 
 ```
-sh scripts/docker_install.sh --download
+./scripts/docker_install.sh --download
 ```
 
-Wait until the command finishes.
+Wait until the command finishes. This may take up to 10 minutes to finish scraping everything.
 
 After the installation process has completed, you can run the following command to
 start up the schedule generation tool:
