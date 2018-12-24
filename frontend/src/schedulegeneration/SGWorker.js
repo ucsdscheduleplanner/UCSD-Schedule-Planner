@@ -565,7 +565,7 @@ export function SGWorker() {
             // (NOTE) goes off the assumption that there are no conflicts within the class - that
             // was proven to be incorrect
             let conflictsForSection = this.getConflictingSections(currentSection);
-            console.log("Conflicting sections " + conflictsForSection);
+            conflictsForSection.length > 0 && console.log("Conflicting sections " + conflictsForSection);
             // if we have any conflicts at all that mean the section cannot be added
             if (conflictsForSection.length > 0) {
                 this.handleFailedToAdd(currentSection, conflictsForSection);
