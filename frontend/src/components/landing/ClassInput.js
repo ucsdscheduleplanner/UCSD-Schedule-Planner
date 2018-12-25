@@ -1,4 +1,5 @@
 import React, {PureComponent} from 'react';
+import memoize from 'memoize-one';
 import {Rating} from "primereact/components/rating/Rating";
 import {ListBox} from "primereact/components/listbox/ListBox";
 import {Button} from "primereact/components/button/Button";
@@ -7,47 +8,34 @@ import "../../css/ClassInput.css";
 
 
 export default class ClassInput extends PureComponent {
-    constructor(props) {
-        super(props);
-        this.state = {
-            instructorOptions: [],
-            departmentOptions: [],
-            classOptions: [],
-        };
-    }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
         this.props.inputHandler.autosave();
     }
 
-    completeDepartmentSuggestions(event) {
-        let departmentOptions = this.props.departments.filter((department) => {
-            return department.toLowerCase().startsWith(event.query.toLowerCase());
+    getDepartmentSuggestions = memoize((query, departments) => {
+        if(!query || !departments)
+            return departments;
+        return departments.filter((department) => {
+            return department.toLowerCase().startsWith(query.toLowerCase());
         });
+    });
 
-        this.setState({departmentOptions: departmentOptions});
-    }
-
-    completeClassSuggestions(event) {
-        // hopefully this will never trigger
-        if (this.props.courseNums.length === 0) return;
-
-        // hits the caching layer here
-        let classOptions = this.props.courseNums.filter((Class) => {
-            if (Class) return Class.toLowerCase().startsWith(event.query.toLowerCase());
-            return false;
+    getCourseNumSuggestions = memoize((query, courseNums) => {
+        if(!query || !courseNums)
+            return courseNums;
+        return courseNums.filter((courseNum) => {
+            return courseNum.toLowerCase().startsWith(query.toLowerCase());
         });
+    });
 
-        this.setState({classOptions: classOptions});
-    }
-
-    completeInstructorSuggestions(event) {
-        let instructorOptions = this.props.instructors.filter((instructor) => {
-            if (instructor) return instructor.toLowerCase().startsWith(event.query.toLowerCase());
-            return false;
+    getInstructorSuggestions = memoize((query, instructors) => {
+        if(!query || instructors)
+            return instructors;
+        return instructors.filter((instructor) => {
+            return instructor.toLowerCase().startsWith(query.toLowerCase());
         });
-        this.setState({instructorOptions: instructorOptions});
-    }
+    });
 
     getDescriptionForCourseNum(courseNum) {
         return courseNum + " - " + this.props.descriptionsPerClass[courseNum];
@@ -77,11 +65,13 @@ export default class ClassInput extends PureComponent {
             <div className="form-field">
                 <div className="input-header"> Department:</div>
                 <AutoComplete id="department"
-                              suggestions={this.state.departmentOptions}
+                              suggestions={this.getDepartmentSuggestions(this.props.department, this.props.departments)}
                               dropdown={true}
                               value={this.props.department}
                               onChange={(e) => this.props.inputHandler.onDepartmentChange(e.value)}
-                              completeMethod={this.completeDepartmentSuggestions.bind(this)}/>
+                              // need this dummy method to cause a rerender cause primereact
+                              completeMethod={(e) => this.setState({state: this.state})}
+                />
             </div>
         );
 
@@ -89,11 +79,11 @@ export default class ClassInput extends PureComponent {
             <div className="form-field">
                 <div className="input-header"> Course Number:</div>
                 <AutoComplete id="course-number"
-                              suggestions={this.state.classOptions}
+                              suggestions={this.getCourseNumSuggestions(this.props.courseNum, this.props.courseNums)}
                               itemTemplate={this.getDescriptionForCourseNum.bind(this)}
                               value={this.props.courseNum}
                               onChange={(e) => this.props.inputHandler.onCourseNumChange(e.value)}
-                              completeMethod={this.completeClassSuggestions.bind(this)}
+                              completeMethod={(e) => this.setState({state: this.state})}
                               disabled={!this.props.departments.includes(this.props.department)}
                               dropdown={true}/>
             </div>
@@ -103,13 +93,10 @@ export default class ClassInput extends PureComponent {
             <div className="form-field">
                 <div className="input-header"> Instructor Preference:</div>
                 <AutoComplete id="instructor"
-                              suggestions={
-                                  // because to clear the thing we put undefined, we can just put the course num in whether
-                                  // it is actually in the dict or not because if not it will be undefined and show nothing
-                                  this.state.instructorOptions}
+                              suggestions={this.getInstructorSuggestions(this.props.instructor, this.props.instructors)}
                               value={this.props.instructor}
                               onChange={(e) => this.props.inputHandler.onInstructorChange(e.value)}
-                              completeMethod={this.completeInstructorSuggestions.bind(this)}
+                              completeMethod={(e) => this.setState({state: this.state})}
                               disabled={!this.props.courseNums.includes(this.props.courseNum)}
                               dropdown={true}/>
             </div>

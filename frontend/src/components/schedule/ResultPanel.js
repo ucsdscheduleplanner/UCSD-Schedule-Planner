@@ -1,4 +1,4 @@
-import React, {Component, PureComponent} from 'react';
+import React, {PureComponent} from 'react';
 import WeekCalendar from "./WeekCalendar";
 import memoize from 'memoize-one';
 import {TabView, TabPanel} from 'primereact/components/tabview/TabView';
@@ -9,7 +9,7 @@ import "../../css/ResultPanel.css";
  * This class will hold the results of each generation result and pass them
  * to the corresponding calendar
  */
-export class ResultPanel extends Component {
+export class ResultPanel extends PureComponent {
 
     constructor(props) {
         super(props);

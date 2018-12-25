@@ -119,8 +119,9 @@ describe("ClassInput component", () => {
 
         let state = store.getState().ClassInput;
         let departmentComponent = classInput.find(ClassInput).instance();
-        departmentComponent.completeClassSuggestions({query: state.courseNum});
-        chaiExpect(departmentComponent.state.classOptions).to.have.lengthOf(3);
+        const result = departmentComponent.getCourseNumSuggestions(state.courseNum, state.courseNums);
+        chaiExpect(result).to.have.lengthOf(3);
+        chaiExpect(result).to.eql(["11", "111", "1111"]);
     });
 });
 

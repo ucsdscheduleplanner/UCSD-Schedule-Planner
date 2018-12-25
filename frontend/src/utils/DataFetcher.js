@@ -33,7 +33,7 @@ const codeToClassType = {
 };
 
 
-
+// used for ordering class types by priority
 const codeKeyToVal = {
   AC_KEY: 6,
   CL_KEY: 6,
