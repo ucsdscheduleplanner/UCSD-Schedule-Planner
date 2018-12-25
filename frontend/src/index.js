@@ -11,6 +11,7 @@ import './settings';
 import './css/utils.css';
 import thunkMiddleware from 'redux-thunk';
 import {SGMiddleWare} from "./utils/SGMiddleWare";
+import {NewLanding} from "./components/landing/NewLanding";
 
 const DEBUG = true;
 
@@ -56,9 +57,15 @@ const store = createStore(reducers,
     applyMiddleware(thunkMiddleware, SGMiddleWare));
 
 document.title = "Plan Your Schedule!";
+// ReactDOM.render(
+//     <Provider store={store}>
+//         <Landing/>
+//     </Provider>
+//     , document.getElementById('root'));
+
 ReactDOM.render(
     <Provider store={store}>
-        <Landing/>
+        <NewLanding/>
     </Provider>
     , document.getElementById('root'));
 registerServiceWorker();
