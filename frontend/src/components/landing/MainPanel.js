@@ -2,13 +2,12 @@
     This class will hold the form for inputting classes.
  */
 
-import React, {Component} from 'react';
-import "../../css/MainPanel.css";
+import React, {PureComponent} from 'react'; import "../../css/MainPanel.css";
 import {connect} from "react-redux";
 import {ScheduleProgressBar} from "../schedule/ScheduleProgressBar";
 import {ResultPanel} from "../schedule/ResultPanel";
 
-class MainPanel extends Component {
+class MainPanel extends PureComponent {
     constructor(props) {
         super(props);
         this.state = {
@@ -21,7 +20,6 @@ class MainPanel extends Component {
     render() {
         const calendar = (
             <ResultPanel
-                key={this.props.scheduleKey}
                 messageHandler={this.props.messageHandler}
                 generationResult={this.props.generationResult}/>
         );
@@ -46,13 +44,12 @@ class MainPanel extends Component {
 
 function mapStateToProps(state) {
     return {
-        scheduleKey: state.ScheduleGeneration.scheduleKey,
         messageHandler: state.ClassInput.messageHandler,
-        generateSuccess: state.ScheduleGeneration.generateSuccess,
-        generatingProgress: state.ScheduleGeneration.generatingProgress,
-        totalNumPossibleSchedule: state.ScheduleGeneration.totalNumPossibleSchedule,
-        generating: state.ScheduleGeneration.generating,
-        generationResult: state.ScheduleGeneration.generationResult
+        generateSuccess: state.ScheduleGenerate.generateSuccess,
+        generatingProgress: state.ScheduleGenerate.generatingProgress,
+        totalNumPossibleSchedule: state.ScheduleGenerate.totalNumPossibleSchedule,
+        generating: state.ScheduleGenerate.generating,
+        generationResult: state.ScheduleGenerate.generationResult
     };
 }
 

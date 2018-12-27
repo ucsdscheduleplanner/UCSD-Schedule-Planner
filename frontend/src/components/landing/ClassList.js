@@ -62,14 +62,6 @@ export default class ClassList extends PureComponent {
         this.props.getSchedule(this.props.selectedClasses);
     }
 
-    toggleSchedulePreferences() {
-        if (this.props.schedulePreferencesActivated) {
-            this.props.deactivateSchedulePreferences();
-        } else {
-            this.props.activateSchedulePreferences();
-        }
-    }
-
     addAddButton(classes) {
         classes.push(
             <React.Fragment key="add-button">
@@ -92,7 +84,7 @@ export default class ClassList extends PureComponent {
         classes.push(
             <React.Fragment key="settings-button">
                 <button className="class-button"
-                        onClick={this.toggleSchedulePreferences.bind(this)}>
+                        onClick={(e) => this.props.setDisplayed(true)}>
                     <CSSTransition
                         in={this.state.sidePanelActivated}
                         classNames="addButton"
@@ -128,15 +120,15 @@ export default class ClassList extends PureComponent {
 
     render() {
         // puts the selected classes into a jsx array
-        let classes = Object.keys(this.props.selectedClasses).map((selectedClassKey, index) => {
-            let selectedClass = this.props.selectedClasses[selectedClassKey];
+        let classes = Object.keys(this.props.selectedClasses).map((selectedClassID, index) => {
+            let selectedClass = this.props.selectedClasses[selectedClassID];
             return (
                 <React.Fragment key={index}>
                     <SchedulePreferencesContainer/>
                     <div className="class-item-border"/>
                     <button className="class-button"
-                            onClick={this.props.enterEditMode.bind(this, selectedClassKey)}
-                            key={selectedClassKey}>
+                            onClick={this.props.enterEditMode.bind(this, selectedClassID)}
+                            key={selectedClassID}>
                         <div className="class-item">
                             {/* TODO decouple this from classTitle maybe use a getter on the class */}
                             {selectedClass['classTitle']}

@@ -3,10 +3,11 @@ import Calendar from "react-big-calendar";
 import moment from 'moment';
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import {Button} from "primereact/components/button/Button";
-import {ics} from "../../utils/ics";
+import {ics} from "../../utils/download/ics";
 import "../../css/WeekCalendar.css";
 import ClassEvent from "./ClassEvent";
-import {addEvents} from "../../utils/GCalendar";
+import {addEvents} from "../../utils/download/GCalendar";
+import {TimeBuilder} from "../../utils/time/TimeUtils";
 
 
 Calendar.setLocalizer(Calendar.momentLocalizer(moment));
@@ -22,32 +23,31 @@ class WeekCalendar extends PureComponent {
         };
 
         this.state.schedule = this.props.schedule;
-        this.state.subsections = this.flattenSchedule();
-        this.state.events = this.initEvents();
+        this.state.events = this.initEvents(this.props.schedule);
     }
 
-    flattenSchedule() {
-        // generationResult should look like a 2D array where each element is a list of subsections
+    initEvents(schedule) {
         let ret = [];
-        for (let Class of this.state.schedule.classes) {
-            for (let subsection of Class) {
-                ret.push(subsection);
+        for (let Class of schedule) {
+
+            if(Class.sections.length === 0)
+                continue;
+
+            if(Class.sections.length > 1)
+                console.warn(`Bad things have happened and the Class ${Class.classTitle} has more than one section`)
+
+            const section = Class.sections[0];
+            for(let subsection of section.subsections) {
+                let strippedClassData = Object.assign({}, Class, {sections: []});
+                let strippedSectionData = Object.assign({}, section, {subsections: []});
+
+                ret.push({
+                    ...strippedClassData,
+                    ...strippedSectionData,
+                    ...subsection,
+                    ...subsection.timeInterval
+                });
             }
-        }
-        console.log(ret);
-        return ret;
-    }
-
-    initEvents() {
-        let ret = [];
-        for (let subsection of this.state.subsections) {
-            let startTime = subsection.timeInterval['start'];
-            let endTime = subsection.timeInterval['end'];
-            ret.push({
-                start: startTime,
-                end: endTime,
-                ...subsection,
-            });
         }
         return ret;
     }
@@ -79,10 +79,8 @@ class WeekCalendar extends PureComponent {
 
     render() {
         // setting max and min times
-        const minTime = new Date();
-        const maxTime = new Date();
-        minTime.setHours(8, 0, 0);
-        maxTime.setHours(23, 0, 0);
+        const minTime = new TimeBuilder().withHour(8).build();
+        const maxTime = new TimeBuilder().withHour(23).build();
 
         const dayFormat = {
             dayFormat: 'ddd'
@@ -114,7 +112,6 @@ class WeekCalendar extends PureComponent {
                 <Calendar
                     components={components}
                     formats={dayFormat}
-                    id="calendar"
                     min={minTime}
                     max={maxTime}
                     toolbar={false}
@@ -130,10 +127,7 @@ class WeekCalendar extends PureComponent {
 
 
 WeekCalendar.defaultProps = {
-    schedule: {
-        classes: [],
-        errors: []
-    },
+    schedule: [],
 };
 
 export default WeekCalendar;
