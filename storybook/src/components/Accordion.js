@@ -8,16 +8,12 @@ export class Accordion extends PureComponent {
 
         this.state = {
             // using label to remember which section is open
-            openSection: ""
+            openSection: null
         }
     }
 
     openSection(label) {
-        this.setState({openSection: label});
-    }
-
-    toggleSection() {
-
+        this.setState({openSection: label === this.state.openSection ? null: label});
     }
 
     render() {

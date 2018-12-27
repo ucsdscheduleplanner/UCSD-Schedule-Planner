@@ -2,25 +2,35 @@ import React, {Component} from 'react';
 import "../css/AccordionPanel.css";
 import classNames from 'classnames';
 
+export const AccordionPanel = (props) => {
+    const open = () => {
+        props.open(props.label);
+    };
 
-export class AccordionPanel extends Component {
+    return React.Children.map(props.children, (e) => {
+            return React.cloneElement(e, {
+                isOpen: props.isOpen,
+                open: open.bind(this),
+            });
+        }
+    );
+};
 
-    open() {
-        this.props.open(this.props.label);
-    }
+export const AccordionLabel = (props) => {
+    return (
+        <div onClick={props.open} className="accordion__panel__label">
+            {props.children}
+        </div>
+    );
+};
 
-    render() {
-        console.log(this.props.isOpen);
-        const names = classNames(['accordion__panel', {active: this.props.isOpen}]);
+export const AccordionBody = (props) => {
+    const names = classNames(['accordion__panel', {active: props.isOpen}]);
 
-        return (
-            <React.Fragment>
-                <div className="accordion__panel__label"
-                     onClick={this.open.bind(this)}>{this.props.label}</div>
-                <div className={names} >
-                    {this.props.children}
-                </div>
-            </React.Fragment>
-        );
-    }
-}
+    return (
+        <div className={names}>
+            {props.children}
+        </div>
+    );
+};
+
