@@ -82,15 +82,8 @@ export default function ClassInputReducer(state = {
                 courseNum: courseNum
             });
         case SET_DEPARTMENT:
-            let department;
-            if (typeof action.department === "string") {
-                department = action.department.trim().toUpperCase();
-            } else {
-                department = null;
-            }
-
             return Object.assign({}, state, {
-                department: department
+                department: action.department
             });
         case SET_INSTRUCTOR:
             return Object.assign({}, state, {

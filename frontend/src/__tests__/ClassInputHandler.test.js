@@ -30,6 +30,41 @@ describe("ClassInput actions such as adding, editing and removing classes", () =
         done();
     });
 
+    test("When inputting department, allows department change when user types in lowercase", () => {
+        const classInput = mount(
+            <ClassInputContainer store={store}/>
+        );
+
+        store.dispatch(setDepartments(["CSE", "DSC"]));
+        store.dispatch(setCourseNums(["11", "12"]));
+
+        let inputHandler = getInputHandler(store);
+        inputHandler.onDepartmentChange("cse");
+
+        const state = store.getState().ClassInput;
+        chaiExpect(state.department).to.equal("CSE");
+    });
+
+    test("When inputting department, prevents department change on faulty input", () => {
+        const classInput = mount(
+            <ClassInputContainer store={store}/>
+        );
+
+        store.dispatch(setDepartments(["CSE", "DSC"]));
+        store.dispatch(setCourseNums(["11", "12"]));
+
+        let inputHandler = getInputHandler(store);
+        inputHandler.onDepartmentChange({});
+
+        let state = store.getState().ClassInput;
+        chaiExpect(state.department).to.equal(null);
+
+        inputHandler.onDepartmentChange(10);
+
+        state = store.getState().ClassInput;
+        chaiExpect(state.department).to.equal(null);
+    });
+
     test('Can add a class successfully', () => {
         const classInput = mount(
             <ClassInputContainer store={store}/>

@@ -136,6 +136,7 @@ export class DataFetcher {
    * Gets the course numbers, the instructors and the
    */
   static async fetchClassSummaryFor(department) {
+    console.log(`Making request for department ${department}`);
     // no fetch if in cache
     let isCached = await CacheManager.get().isCached(
       CLASS_SUMMARY_CACHE_STR.formatUnicorn(department),

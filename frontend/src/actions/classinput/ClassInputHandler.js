@@ -27,13 +27,13 @@ export class ClassInputHandler {
      * Edits the department and runs business rule validation on it
      */
     onDepartmentChange(rawDepartment) {
-        if (!rawDepartment) {
+        if (!rawDepartment || !(typeof rawDepartment === "string")) {
             this.dispatch(setDepartment(null));
             return;
         }
 
+        rawDepartment = rawDepartment.toUpperCase();
         const state = this.getState().ClassInput;
-
         let department = rawDepartment.trim();
 
         // sets the department in the store
