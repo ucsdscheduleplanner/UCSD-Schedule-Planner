@@ -1,0 +1,39 @@
+
+.class-input__form__header {
+    text-align: center;
+    height: auto;
+}
+
+.class-input__form__body {
+    margin: 1em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.class-input__form__department {
+    width: 40%;
+    padding-right: 5%;
+}
+
+.class-input__form__courseNum {
+    width: 40%;
+    padding-left: 5%;
+}
+
+.class-input__form__add-button {
+    padding-left: 5%;
+}
+
+.class-input__form__cancel-button {
+    padding-left: 5%;
+}
+
+/* Clear the input elements */
+.class-input__form__department input, .class-input__form__courseNum input {
+    padding: 0;
+    width: 100%;
+}
+
+
+
