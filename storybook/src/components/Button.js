@@ -1,9 +1,9 @@
-import React, {Component} from 'react';
+import React, {PureComponent} from 'react';
 import {CSSTransition} from 'react-transition-group';
 import "../css/Button.css";
 import classNames from "classnames";
 
-export class Button extends Component {
+export class Button extends PureComponent {
     constructor(props) {
         super(props);
         this.state = {
