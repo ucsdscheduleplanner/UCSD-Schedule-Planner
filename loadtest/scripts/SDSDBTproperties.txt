@@ -1,0 +1,6 @@
+${__P(threads,50)}
+${__P(rampup,50)}
+${__P(loops,20)}
+
+${__P(host,localhost)}
+${__P(port,22125)}
