@@ -9,6 +9,15 @@ services:
       - "MYSQL_DATABASE=classes"
     volumes:
       - sdschedule-data:/var/lib/mysql
+  #sdschedule-database-mongodb:
+  #  container_name: sdschedule-database-mongodb
+  #  image: mongo:latest
+  #  environment:
+  #    - "MONGO_INITDB_ROOT_USERNAME=root"
+  #    - "MONGO_INITDB_ROOT_PASSWORD=password" 
+  #    - "MONGO_INITDB_DATABASE=classes"
+  #  volumes:
+  #    - sdschedule-data-mongodb:/data/db
   sdschedule-backend:
     container_name: sdschedule-backend
     build: backend 
@@ -18,6 +27,7 @@ services:
       - "./backend:/app/"
     depends_on: 
       - sdschedule-database
+      # - sdschedule-database-mongodb                                                                                                                                                      
     environment:
       - "PYTHONUNBUFFERED=0"
       - "SDSCHEDULE_SCRAPE=${SDSCHEDULE_SCRAPE}"
@@ -33,3 +43,4 @@ services:
       - sdschedule-backend 
 volumes:
   sdschedule-data:
+  #sdschedule-data-mongodb:

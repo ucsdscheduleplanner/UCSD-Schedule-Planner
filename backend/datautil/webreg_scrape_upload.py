@@ -3,6 +3,7 @@ from scraper.scraper import Scraper
 from datautil.data_cleaner import Cleaner
 from datautil.data_parser import Parser
 from datautil.sqlite_to_mysql import export_to_mysql
+from datautil.sqlite_to_mongodb import export_to_mongodb
 
 import sys
 
@@ -22,4 +23,6 @@ else:
     cleaner = Cleaner()
     cleaner.clean()
 
+    # only change to switch database in this file
     export_to_mysql()
+    # export_to_mongodb()
