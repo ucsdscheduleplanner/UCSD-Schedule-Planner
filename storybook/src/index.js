@@ -2,9 +2,10 @@ import React from 'react';
 import {storiesOf} from '@storybook/react';
 import {action} from '@storybook/addon-actions';
 import {Button} from '@storybook/react/demo';
-import {Autocomplete} from "./components/Autocomplete";
+import {MyAutocomplete} from "./components/MyAutocomplete";
 import {Accordion} from "./components/Accordion";
 import {AccordionBody, AccordionLabel, AccordionPanel} from "./components/AccordionPanel";
+import {MyAutocompleteTesting} from "./components/MyAutocompleteTesting";
 
 storiesOf('Button', module)
     .add('with text', () => (
@@ -15,12 +16,16 @@ storiesOf('Button', module)
                                                   aria-label="so cool">what you doing there bud</span></Button>
     ));
 
+let temp = "hello";
 
-storiesOf('Autocomplete', module)
+let onChange = (value) => {
+    console.log("changed to " + value);
+    temp = value;
+};
+
+storiesOf('MyAutocomplete', module)
     .add('rendering', () => (
-        <div style={{width: "200px"}}>
-            <Autocomplete suggestions={["hello", "how", "are"]} onClick={action('clicked')}/>
-        </div>
+        <MyAutocompleteTesting/>
     ));
 
 
@@ -52,7 +57,7 @@ storiesOf('Accordion', module)
                         </div>
                     </AccordionBody>
                 </AccordionPanel>
-                 <AccordionPanel label="superjbad">
+                <AccordionPanel label="superjbad">
                     <AccordionLabel>
                         <div>
                             hello
