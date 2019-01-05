@@ -17,7 +17,6 @@ export class Accordion extends PureComponent {
     }
 
     render() {
-        console.log(this.props.children);
         // wrapping all children in component
         return React.Children.map(this.props.children, (e) => {
                 const isOpen = this.state.openSection === e.props.label;

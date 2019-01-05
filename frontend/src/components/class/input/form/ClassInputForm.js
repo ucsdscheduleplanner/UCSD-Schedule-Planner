@@ -35,11 +35,13 @@ export class ClassInputForm extends PureComponent {
                             label="courseNum"/>
                     </div>
 
-                    <div className="class-input__form__add-button">
-                        <Button label="Add" />
-                    </div>
-                    <div className="class-input__form__cancel-button">
-                        <Button label="Cancel" />
+                    <div className="class-input__form__buttons">
+                        <div className="class-input__form__add-button">
+                            <Button label="Add"/>
+                        </div>
+                        <div className="class-input__form__cancel-button">
+                            <Button label="Cancel"/>
+                        </div>
                     </div>
                 </div>
             </React.Fragment>

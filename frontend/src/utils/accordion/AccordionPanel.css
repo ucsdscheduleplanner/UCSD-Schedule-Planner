@@ -1,17 +1,24 @@
 
-.accordion__panel.active {
+.accordion__panel__body.active {
     max-height: 1000px;
     transition: max-height 1s ease-in-out;
 }
 
-.accordion__panel__label {
-    background-color: blue;
-}
-
-.accordion__panel {
+.accordion__panel__body {
     overflow: hidden;
     max-height: 0;
     transition: max-height .5s cubic-bezier(1, 0, 0, 1);
+}
+
+.accordion__panel {
+    transition: all .6s cubic-bezier(1, 0, 0, 1);
+    background-color: white;
+}
+
+.accordion__panel.active {
+    background-color: #1E2B4B;
+    color: white;
+    border-radius: 2px;
 }
 
 

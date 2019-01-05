@@ -3,4 +3,15 @@
 .class-input__panel__header {
     text-align: center;
     font-size: 18px;
+    margin: .7em;
+}
+
+.class-input__panel__body {
+    overflow: hidden;
+    border-radius: 5px;
+    border: 1px solid black;
+    box-shadow: 0 0 10px 1px gray;
+}
+
+.class-input__panel__body .accordion__panel {
 }

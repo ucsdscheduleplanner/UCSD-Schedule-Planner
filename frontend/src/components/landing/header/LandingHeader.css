@@ -5,7 +5,7 @@
     grid-auto-flow: column;
 
     height: 10%;
-    background-color: blue;
+    background-color: #1E2B4B;
 }
 
 .landing__header__title {
@@ -20,7 +20,7 @@
     top: calc(10% / 2);
     transform: translate(-50%, -50%);
 
-    font-size: 18px;
+    font-size: 24px;
     color: white;
 }
 

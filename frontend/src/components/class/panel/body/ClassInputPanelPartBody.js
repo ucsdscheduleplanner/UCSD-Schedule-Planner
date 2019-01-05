@@ -1,6 +1,6 @@
 import React, {PureComponent} from 'react';
 
-export class ClassInputPanelBody extends PureComponent {
+export class ClassInputPanelPartBody extends PureComponent {
 
     render() {
         return (

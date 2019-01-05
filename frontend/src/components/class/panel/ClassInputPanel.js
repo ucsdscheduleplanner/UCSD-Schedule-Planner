@@ -1,6 +1,6 @@
 import React, {PureComponent} from 'react';
-import {ClassInputPanelHeader} from "./header/ClassInputPanelHeader";
-import {ClassInputPanelBody} from "./body/ClassInputPanelBody";
+import {ClassInputPanelPartHeader} from "./header/ClassInputPanelPartHeader";
+import {ClassInputPanelPartBody} from "./body/ClassInputPanelPartBody";
 import {Accordion} from "../../../utils/accordion/Accordion";
 import {AccordionBody, AccordionLabel, AccordionPanel} from "../../../utils/accordion/AccordionPanel";
 
@@ -17,10 +17,11 @@ export class ClassInputPanel extends PureComponent {
 
             <React.Fragment>
                 <div className="class-input__panel__header"> Modify Course Information</div>
-
-                <Accordion>
-                    {partList}
-                </Accordion>
+                <div className="class-input__panel__body">
+                    <Accordion>
+                        {partList}
+                    </Accordion>
+                </div>
             </React.Fragment>
         )
     }
@@ -33,10 +34,10 @@ class ClassInputPanelPart extends PureComponent {
             <React.Fragment>
                 <AccordionPanel label={this.props.label} {...this.props}>
                     <AccordionLabel>
-                        <ClassInputPanelHeader title={this.props.currentClass}/>
+                        <ClassInputPanelPartHeader title={this.props.currentClass}/>
                     </AccordionLabel>
                     <AccordionBody>
-                        <ClassInputPanelBody/>
+                        <ClassInputPanelPartBody/>
                     </AccordionBody>
                 </AccordionPanel>
             </React.Fragment>

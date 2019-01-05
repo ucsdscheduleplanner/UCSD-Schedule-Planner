@@ -9,6 +9,8 @@
 
 .landing__body--left {
     height: 100%;
+
+    padding: 0 1.5em 0 20%;
     border-right: 1px solid gray;
 }
 

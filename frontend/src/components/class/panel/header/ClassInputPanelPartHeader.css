@@ -1,0 +1,21 @@
+
+.class-input__panel__part__header {
+    display: grid;
+    grid-auto-flow: column;
+    grid-template-columns: 15% auto 15%;
+}
+
+.class-input__panel__part__header__icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.class-input__panel__part__header__title {
+    display: flex;
+    justify-content: left;
+    align-items: center;
+
+    margin: 1em;
+}
+

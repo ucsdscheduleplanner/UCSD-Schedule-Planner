@@ -1,8 +1,8 @@
 .class-input__form {
-    margin: 1em 2em 1em 5em;
+    margin-top: 1em;
+    margin-bottom: 2em;
 }
 
 .class-input__panel {
-    margin: 1em 2em 1em 5em;
-    height: 80%;
 }
+
