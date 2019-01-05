@@ -3,7 +3,7 @@
     height: 90%;
     display: grid;
 
-    grid-template-columns: 45% auto;
+    grid-template-columns: 35% auto;
     grid-auto-flow: column;
 }
 

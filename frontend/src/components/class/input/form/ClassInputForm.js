@@ -1,6 +1,7 @@
 import React, {PureComponent} from 'react';
 import "./ClassInputForm.css";
 import {MyAutocomplete} from "../../../../utils/autocomplete/MyAutocomplete";
+import {Button} from "../../../../utils/button/Button";
 
 export class ClassInputForm extends PureComponent {
     render() {
@@ -35,10 +36,10 @@ export class ClassInputForm extends PureComponent {
                     </div>
 
                     <div className="class-input__form__add-button">
-                        <button>Add</button>
+                        <Button label="Add" />
                     </div>
                     <div className="class-input__form__cancel-button">
-                        <button>Cancel</button>
+                        <Button label="Cancel" />
                     </div>
                 </div>
             </React.Fragment>

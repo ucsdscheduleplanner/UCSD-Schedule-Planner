@@ -1,5 +1,6 @@
 
 .class-input__form__header {
+    font-size: 18px;
     text-align: left;
     height: auto;
 }
@@ -41,8 +42,15 @@
     padding-left: 5%;
 }
 
-.class-input__form__cancel-button {
-    padding-left: 5%;
+.class-input__form__add-button .custom-button {
+    background-color: green;
+    padding: .5em 1em .5em 1em;
+}
+
+.class-input__form__cancel-button .custom-button {
+    color: blue;
+    background-color: transparent;
+    padding: .5em 1em .5em 1em;
 }
 
 /* Clear the input elements */
