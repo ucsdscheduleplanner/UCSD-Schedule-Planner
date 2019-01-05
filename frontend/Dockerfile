@@ -5,9 +5,13 @@ ENV DEBIAN_FRONTEND noninteractive
 RUN npm install -g yarn 
 
 WORKDIR /app
+
+COPY ./yarn.lock /app
+COPY ./package.json /app
+RUN yarn install 
+
 COPY . /app
 
-RUN yarn install 
 
 EXPOSE 3000
 

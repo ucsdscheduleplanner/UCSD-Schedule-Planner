@@ -1,5 +1,6 @@
 import React, {PureComponent} from 'react';
 import WeekCalendar from "./WeekCalendar";
+import memoize from 'memoize-one';
 import {TabView, TabPanel} from 'primereact/components/tabview/TabView';
 import "../../css/ResultPanel.css";
 
@@ -12,33 +13,40 @@ export class ResultPanel extends PureComponent {
 
     constructor(props) {
         super(props);
-
-        console.log(props.generationResult);
-
+        this.scheduleKey = 0;
         this.state = {
             scheduleIndex: 0,
-            currentSchedule: null,
-            hasSchedule: false,
-            schedules: props.generationResult.schedules
         };
+    }
 
-        this.state.errors = props.generationResult.errors;
-        this.state.hasError = Object.keys(this.state.errors).length > 0;
-        this.state.hasSchedule = props.generationResult.schedules.length > 0 && !this.state.hasError;
+    getKey() {
+        return this.scheduleKey++;
+    }
 
-        if (this.state.hasError) {
-            props.messageHandler.showError("Failed to generate generationResult", 1000);
-            props.messageHandler.showError(this.getErrorMsg(), 3500);
+    hasSchedule = memoize((schedules) => {
+        return schedules.length !== 0;
+    });
+
+    getCurrentSchedule = memoize((schedules, idx) => {
+        if(idx < schedules.length)
+            return schedules[idx];
+        return null;
+    });
+
+    componentDidUpdate(prevProps) {
+        let hasNewError = false;
+
+        if (this.props.generationResult && this.props.generationResult.errors)
+            hasNewError = Object.keys(this.props.generationResult.errors).length > 0;
+
+        if (hasNewError) {
+            this.props.messageHandler.showError("Failed to generate generationResult", 1000);
+            this.props.messageHandler.showError(this.getErrorMsg(), 3500);
         }
-
-        if (!this.state.hasSchedule)
-            return;
-
-        this.state.currentSchedule = props.generationResult.schedules[this.state.scheduleIndex];
     }
 
     getErrorMsg() {
-        let errors = this.state.errors;
+        let errors = this.props.generationResult.errors;
         let classWithMostConflicts = Object.keys(errors).reduce((key1, key2) => errors[key1].length > errors[key2].length ? key1 : key2);
         let conflicts = errors[classWithMostConflicts].join(", ");
         return `Failed to generate. Had the most trouble adding ${classWithMostConflicts}. During schedule generation, it 
@@ -46,15 +54,20 @@ export class ResultPanel extends PureComponent {
     }
 
     render() {
-        const schedules = this.state.schedules.map((element, index) => {
+        let schedules = this.props.generationResult.schedules;
+        const hasSchedule = this.hasSchedule(schedules);
+        const currentSchedule = this.getCurrentSchedule(schedules, this.state.scheduleIndex);
+
+
+        const scheduleComponents = schedules.map((element, index) => {
             const scheduleStr = `Schedule #${index}`;
             return (
-                <TabPanel header={scheduleStr} >
+                <TabPanel key={index} header={scheduleStr}>
                     <WeekCalendar
-                        key={index}
-                        visible={this.state.hasSchedule}
+                        key={this.getKey()}
+                        visible={hasSchedule}
                         messageHandler={this.props.messageHandler}
-                        schedule={this.state.hasSchedule ? this.state.currentSchedule : undefined}/>
+                        schedule={hasSchedule ? currentSchedule : undefined}/>
                 </TabPanel>
             );
         });
@@ -63,7 +76,7 @@ export class ResultPanel extends PureComponent {
             <WeekCalendar
                 empty={true}
                 messageHandler={this.props.messageHandler}
-                schedule={this.state.hasSchedule ? this.state.currentSchedule : undefined}/>
+                schedule={hasSchedule ? currentSchedule : undefined}/>
         );
 
         const calendarTabs = (
@@ -71,10 +84,10 @@ export class ResultPanel extends PureComponent {
                      onTabChange={(e) => {
                          this.setState({
                              scheduleIndex: e.index,
-                             currentSchedule: this.props.generationResult.schedules[e.index]
+                             currentSchedule: schedules[e.index]
                          });
                      }}>
-                {schedules}
+                {scheduleComponents}
             </TabView>
         );
 

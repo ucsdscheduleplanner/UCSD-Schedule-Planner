@@ -1,0 +1,17 @@
+
+.landing__body {
+    height: 90%;
+    display: grid;
+
+    grid-template-columns: 45% auto;
+    grid-auto-flow: column;
+}
+
+.landing__body--left {
+    height: 100%;
+    border-right: 1px solid gray;
+}
+
+.landing__body--right {
+    height: 100%;
+}

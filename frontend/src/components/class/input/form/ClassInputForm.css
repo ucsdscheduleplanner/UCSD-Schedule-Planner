@@ -1,0 +1,55 @@
+
+.class-input__form__header {
+    text-align: left;
+    height: auto;
+}
+
+.class-input__form__body {
+    display: flex;
+    justify-content: left;
+    align-items: center;
+}
+
+.class-input__form__department {
+    width: 25%;
+    padding-right: 2%;
+}
+
+.class-input__form__body label {
+    font-size: 10px;
+}
+
+.class-input__form__autocomplete {
+    height: 50px;
+}
+
+.class-input__form__autocomplete .react-autosuggest__container {
+    height: 100%;
+}
+
+.class-input__form__autocomplete .react-autosuggest__input {
+    padding: 10px;
+    height: 100%;
+}
+
+.class-input__form__courseNum {
+    width: 20%;
+    padding-left: 5%;
+}
+
+.class-input__form__add-button {
+    padding-left: 5%;
+}
+
+.class-input__form__cancel-button {
+    padding-left: 5%;
+}
+
+/* Clear the input elements */
+.class-input__form__department input, .class-input__form__courseNum input {
+    padding: 0;
+    width: 100%;
+}
+
+
+
