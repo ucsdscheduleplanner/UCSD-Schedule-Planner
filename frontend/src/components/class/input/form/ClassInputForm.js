@@ -1,25 +1,10 @@
 import React, {PureComponent} from 'react';
-import Autosuggest from 'react-autosuggest';
 import "./ClassInputForm.css";
+import {MyAutocomplete} from "../../../../utils/autocomplete/MyAutocomplete";
 
 export class ClassInputForm extends PureComponent {
-
     render() {
-
-        const departmentProps = {
-            id: "department",
-            value: "hello",
-            onChange: () => {
-            }
-        };
-
-        const courseNumProps = {
-            id: "courseNum",
-            value: "hello",
-            onChange: () => {
-            }
-        };
-
+        console.log(this.props.departments.includes(this.props.department));
         return (
             <React.Fragment>
                 <div className="class-input__form__header">
@@ -29,21 +14,28 @@ export class ClassInputForm extends PureComponent {
                 <div className="class-input__form__body">
                     <div className="class-input__form__department">
                         <label htmlFor="department">Department Code</label>
-                        <Autosuggest
-                            suggestions={[]}
-                            inputProps={departmentProps}
-                        />
+                        <MyAutocomplete
+                            className="class-input__form__autocomplete"
+                            suggestions={this.props.departments}
+                            value={this.props.department}
+                            onChange={(e) => this.props.inputHandler.onDepartmentChange(e)}
+                            defaultValue={"CSE"}
+                            label="department"/>
                     </div>
                     <div className="class-input__form__courseNum">
                         <label htmlFor="courseNum">Course Number</label>
-                        <Autosuggest id="courseNum"
-                                     suggestions={[]}
-                                     inputProps={courseNumProps}
-                        />
+                        <MyAutocomplete
+                            className="class-input__form__autocomplete"
+                            suggestions={this.props.courseNums}
+                            value={this.props.courseNum}
+                            onChange={(e) => this.props.inputHandler.onCourseNumChange(e)}
+                            defaultValue={"11"}
+                            disabled={!this.props.departments.includes(this.props.department)}
+                            label="courseNum"/>
                     </div>
 
                     <div className="class-input__form__add-button">
-                        <button>Add class</button>
+                        <button>Add</button>
                     </div>
                     <div className="class-input__form__cancel-button">
                         <button>Cancel</button>

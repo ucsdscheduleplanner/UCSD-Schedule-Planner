@@ -34,7 +34,6 @@ export class ResultPanel extends PureComponent {
     });
 
     componentDidUpdate(prevProps) {
-        console.log("GOT HERE");
         let hasNewError = false;
 
         if (this.props.generationResult && this.props.generationResult.errors)
