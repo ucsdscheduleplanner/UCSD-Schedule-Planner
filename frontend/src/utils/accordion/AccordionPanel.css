@@ -1,13 +1,16 @@
 
 .accordion__panel__body.active {
     max-height: 1000px;
-    transition: max-height 1s ease-in-out;
+    transition: max-height 1s ease-in-out, background-color .6s cubic-bezier(1, 0, 0, 1);
+
+    background-color: #151E30;
+    color: white;
 }
 
 .accordion__panel__body {
     overflow: hidden;
     max-height: 0;
-    transition: max-height .5s cubic-bezier(1, 0, 0, 1);
+    transition: max-height .5s cubic-bezier(1, 0, 0, 1), background-color .6s cubic-bezier(1, 0, 0, 1);
 }
 
 .accordion__panel {
@@ -15,7 +18,15 @@
     background-color: white;
 }
 
-.accordion__panel.active {
+.accordion__panel__label {
+    transition: all .6s cubic-bezier(1, 0, 0, 1);
+}
+
+.accordion__panel__label:hover {
+    cursor: pointer;
+}
+
+.accordion__panel__label.active {
     background-color: #1E2B4B;
     color: white;
     border-radius: 2px;

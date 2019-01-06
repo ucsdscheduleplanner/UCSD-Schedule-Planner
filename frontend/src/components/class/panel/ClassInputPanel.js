@@ -4,6 +4,8 @@ import {ClassInputPanelPartBody} from "./body/ClassInputPanelPartBody";
 import {Accordion} from "../../../utils/accordion/Accordion";
 import {AccordionBody, AccordionLabel, AccordionPanel} from "../../../utils/accordion/AccordionPanel";
 
+import {ReactComponent as EditIcon} from "../../../svg/icon-edit.svg";
+
 import "./ClassInputPanel.css";
 
 export class ClassInputPanel extends PureComponent {
@@ -16,7 +18,10 @@ export class ClassInputPanel extends PureComponent {
         return (
 
             <React.Fragment>
-                <div className="class-input__panel__header"> Modify Course Information</div>
+                <div className="class-input__panel__header">
+                    <EditIcon height="1em" width="1em"/>
+                    <span className="class-input__panel__header__title">Modify Course Information </span>
+                </div>
                 <div className="class-input__panel__body">
                     <Accordion>
                         {partList}
@@ -34,10 +39,10 @@ class ClassInputPanelPart extends PureComponent {
             <React.Fragment>
                 <AccordionPanel label={this.props.label} {...this.props}>
                     <AccordionLabel>
-                        <ClassInputPanelPartHeader title={this.props.currentClass}/>
+                        <ClassInputPanelPartHeader title={this.props.currentClass} isOpen={this.props.isOpen}/>
                     </AccordionLabel>
                     <AccordionBody>
-                        <ClassInputPanelPartBody/>
+                        <ClassInputPanelPartBody isOpen={this.props.isOpen}/>
                     </AccordionBody>
                 </AccordionPanel>
             </React.Fragment>

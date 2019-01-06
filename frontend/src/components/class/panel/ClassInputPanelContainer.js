@@ -6,9 +6,8 @@ import {connect} from "react-redux";
 class ClassInputPanelContainer extends PureComponent {
 
     render() {
-        console.log(this.props);
         return (
-            <ClassInputPanel classList={{0: "CSE 15L", 1: "CSE 12", 2: "CSE 11"}}/>
+            <ClassInputPanel classList={{0: "CSE 12", 1: "CSE 15L", 2: "CHEM 6A", 3: "HUM 1", 4: "ANTH 87"}}/>
         )
     }
 }

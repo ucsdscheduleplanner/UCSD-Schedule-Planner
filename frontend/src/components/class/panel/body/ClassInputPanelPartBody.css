@@ -1,0 +1,32 @@
+.class-input__panel__body .class-input__panel__part__body__instructor-pref .accordion__panel:after {
+    content: "";
+    display: block;
+    margin: 0 auto;
+    width: 95%;
+    border-bottom: thin solid blue;
+}
+
+.class-input__panel__part__body__instructor-pref .accordion__panel {
+    background-color: #1E2B4B;
+    transition: none;
+}
+
+.class-input__panel__part__body__header {
+    display: grid;
+    grid-auto-flow: column;
+    grid-template-columns: 15% auto 3em;
+}
+
+.class-input__panel__part__body__header__title {
+    display: flex;
+    justify-content: left;
+    align-items: center;
+    margin: .75em;
+}
+
+.class-input__panel__part__body__header__icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    fill: white;
+}

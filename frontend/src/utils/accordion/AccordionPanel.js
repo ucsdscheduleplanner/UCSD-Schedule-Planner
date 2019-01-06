@@ -22,8 +22,9 @@ export const AccordionPanel = (props) => {
 };
 
 export const AccordionLabel = (props) => {
+    const names = classNames(['accordion__panel__label', {"active": props.isOpen}]);
     return (
-        <div onClick={props.open} className="accordion__panel__label">
+        <div onClick={props.open} className={names} >
             {props.children}
         </div>
     );

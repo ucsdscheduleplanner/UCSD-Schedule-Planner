@@ -1,8 +1,14 @@
 
 .class-input__form__header {
+    /* needed so the svg is centered for some reason */
+    display: flex;
     font-size: 18px;
     text-align: left;
     height: auto;
+}
+
+.class-input__form__header__title {
+    padding-left: .2em;
 }
 
 .class-input__form__body {
@@ -36,6 +42,7 @@
 }
 
 .class-input__form__courseNum {
+    text-overflow-ellipsis: ellipsis;
 }
 
 .class-input__form__buttons {

@@ -3,13 +3,16 @@ import "./ClassInputForm.css";
 import {MyAutocomplete} from "../../../../utils/autocomplete/MyAutocomplete";
 import {Button} from "../../../../utils/button/Button";
 
+import {ReactComponent as SearchIcon} from "../../../../svg/icon-search.svg";
+
 export class ClassInputForm extends PureComponent {
     render() {
         console.log(this.props.departments.includes(this.props.department));
         return (
             <React.Fragment>
                 <div className="class-input__form__header">
-                    Search Courses to Add
+                    <SearchIcon className="svg-icon" width="1em" height="1em"/>
+                    <span className="class-input__form__header__title"> Search Courses to Add </span>
                 </div>
 
                 <div className="class-input__form__body">
