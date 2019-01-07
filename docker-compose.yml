@@ -1,14 +1,14 @@
 version: '3.0'
 
 services:
-  sdschedule-database:
-    container_name: sdschedule-database
-    image: mariadb:latest
-    environment:
-      - "MYSQL_ROOT_PASSWORD=password" 
-      - "MYSQL_DATABASE=classes"
-    volumes:
-      - sdschedule-data:/var/lib/mysql
+  #sdschedule-database:
+  #  container_name: sdschedule-database
+  #  image: mariadb:latest
+  #  environment:
+  #    - "MYSQL_ROOT_PASSWORD=password" 
+  #    - "MYSQL_DATABASE=classes"
+  #  volumes:
+  #    - sdschedule-data:/var/lib/mysql
   #sdschedule-database-mongodb:
   #  container_name: sdschedule-database-mongodb
   #  image: mongo:latest
@@ -18,6 +18,26 @@ services:
   #    - "MONGO_INITDB_DATABASE=classes"
   #  volumes:
   #    - sdschedule-data-mongodb:/data/db
+  sdschedule-database-redis:
+    # TODO: make persistent, AOF, no fsync
+    # About warnings:
+    # https://github.com/docker-library/redis/issues/19
+    # https://github.com/docker-library/redis/issues/55
+    # They are host-level config
+    container_name: sdschedule-database-redis
+    image: redis:latest
+    environment:
+      - "REDIS_PASSWORD=password"
+    command: [
+      "sh", "-c",
+      '
+       docker-entrypoint.sh
+       --requirepass "$$REDIS_PASSWORD"
+       --appendonly yes
+      '
+    ]
+    volumes:
+      - sdschedule-data-redis:/data
   sdschedule-backend:
     container_name: sdschedule-backend
     build: backend 
@@ -26,8 +46,9 @@ services:
     volumes:
       - "./backend:/app/"
     depends_on: 
-      - sdschedule-database
-      # - sdschedule-database-mongodb                                                                                                                                                      
+      # - sdschedule-database
+      # - sdschedule-database-mongodb
+      - sdschedule-database-redis
     environment:
       - "PYTHONUNBUFFERED=0"
       - "SDSCHEDULE_SCRAPE=${SDSCHEDULE_SCRAPE}"
@@ -42,5 +63,6 @@ services:
     depends_on: 
       - sdschedule-backend 
 volumes:
-  sdschedule-data:
+  #sdschedule-data:
   #sdschedule-data-mongodb:
+  sdschedule-data-redis:

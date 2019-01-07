@@ -6,8 +6,9 @@ from flask_cors import CORS
 from flask_caching import Cache
 
 # only change to switch database in this file
-from backend import generate_class_json, get_all_classes_in, get_departments
+# from backend import generate_class_json, get_all_classes_in, get_departments
 # from backend_mongodb import generate_class_json, get_all_classes_in, get_departments
+from backend_redis import generate_class_json, get_all_classes_in, get_departments
 
 application = Flask(__name__)
 CORS(application)

@@ -45,3 +45,4 @@ wcwidth==0.1.7
 websocket-client==0.54.0
 Werkzeug==0.14.1
 pymongo==3.5.1
+redis==3.0.1
