@@ -19,6 +19,9 @@ def export_to_redis():
         password=password
     )
 
+    # TODO: maybe delete docker volume is more efficient
+    r.flushdb(asynchronous=True)
+
     # Will connect to sqlite db
     sqlite_db = sqlite3.connect(DATABASE_PATH)
     sqlite_db.row_factory = sqlite3.Row
@@ -39,6 +42,7 @@ def export_to_redis():
         # CLASS_DATA:CSE:20:n => 0
         # CLASS_DATA:CSE:20:0 => new data to write
         r_key = 'CLASS_DATA:' + row["DEPARTMENT"] + ':' + row["COURSE_NUM"] + ':'
+        r.setnx(r_key+'n',0)
         r.watch(r_key+'n')
         r.hmset(r_key + str(r.get(r_key+'n')), 
                 {'DEPARTMENT': row["DEPARTMENT"],

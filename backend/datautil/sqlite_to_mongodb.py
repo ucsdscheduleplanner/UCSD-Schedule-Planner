@@ -28,6 +28,7 @@ def export_to_mongodb():
     sqlite_cursor.execute("SELECT * FROM CLASS_DATA")
     class_rows = sqlite_cursor.fetchall()
 
+    # TODO: clear existing data?
     for sql_row in class_rows:
         row = dict(sql_row)
         coll_class_data.insert_one({"DEPARTMENT": row["DEPARTMENT"],
