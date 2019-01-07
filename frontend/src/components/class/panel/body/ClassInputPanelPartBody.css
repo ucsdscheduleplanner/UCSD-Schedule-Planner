@@ -6,15 +6,29 @@
     border-bottom: thin solid blue;
 }
 
-.class-input__panel__part__body__instructor-pref .accordion__panel {
-    background-color: #1E2B4B;
+/**
+This is to make the instructor pref always darker blue
+ */
+.class-input__panel__part__body__instructor-pref {
+    color: white;
+    background-color: #151E30;
     transition: none;
 }
+
+/*!***/
+/*This is to keep the instructor pref darker blue even when clicked*/
+ /**!*/
+/*.class-input__panel__part__body__instructor-pref .accordion__panel__label.active {*/
+    /*background-color: #151E30;*/
+/*}*/
 
 .class-input__panel__part__body__header {
     display: grid;
     grid-auto-flow: column;
     grid-template-columns: 15% auto 3em;
+
+    background-color: #151E30;
+    color: white;
 }
 
 .class-input__panel__part__body__header__title {

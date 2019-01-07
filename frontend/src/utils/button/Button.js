@@ -1,33 +1,19 @@
-import React, {PureComponent} from 'react';
-import {CSSTransition} from 'react-transition-group';
-import "./Button.css";
+import React from 'react';
 import classNames from "classnames";
+import "./Button.css";
 
-export class Button extends PureComponent {
-    constructor(props) {
-        super(props);
-        this.state = {
-            label: props.label,
-            round: props.round,
-            classNames: "custom-button",
-        };
-        if(props.className) {
-            this.state.classNames = classNames(this.state.classNames, props.className);
-        }
+export const Button = (props) => {
+    const names = classNames(
+        props.className,
+        "custom-button",
+        "custom-button__corner--default",
+        {"custom-button__corner--round": props.round}
+    );
 
-        if(this.state.round) {
-            this.state.classNames = classNames(this.state.classNames, "custom-button__corner--round");
-        }
-        else {
-            this.state.classNames = classNames(this.state.classNames, "custom-button__corner--default");
-        }
-    }
-
-    render() {
-        return (
-            <button disabled={this.props.disabled} id={this.props.id} className={this.state.classNames}
-                    onClick={this.props.onClick}>
-                {this.state.label}</button>
-        );
-    }
-}
+    return (
+        <button disabled={props.disabled} id={props.id} className={names}
+                onClick={props.onClick}>
+            {props.label}
+        </button>
+    );
+};

@@ -12,11 +12,10 @@ export class ClassInputPanel extends PureComponent {
 
     render() {
         const partList = Object.keys(this.props.classList).map(index =>
-            <ClassInputPanelPart key={index} label={index} currentClass={this.props.classList[index]}/>
+            <ClassInputPanelPart key={index} inputHandler={this.props.inputHandler} label={index} currentClass={this.props.classList[index]}/>
         );
 
         return (
-
             <React.Fragment>
                 <div className="class-input__panel__header">
                     <EditIcon height="1em" width="1em"/>
@@ -39,10 +38,10 @@ class ClassInputPanelPart extends PureComponent {
             <React.Fragment>
                 <AccordionPanel label={this.props.label} {...this.props}>
                     <AccordionLabel>
-                        <ClassInputPanelPartHeader title={this.props.currentClass} isOpen={this.props.isOpen}/>
+                        <ClassInputPanelPartHeader title={this.props.currentClass} inputHandler={this.props.inputHandler} isOpen={this.props.isOpen}/>
                     </AccordionLabel>
                     <AccordionBody>
-                        <ClassInputPanelPartBody isOpen={this.props.isOpen}/>
+                        <ClassInputPanelPartBody isOpen={this.props.isOpen} inputHandler={this.props.inputHandler}/>
                     </AccordionBody>
                 </AccordionPanel>
             </React.Fragment>

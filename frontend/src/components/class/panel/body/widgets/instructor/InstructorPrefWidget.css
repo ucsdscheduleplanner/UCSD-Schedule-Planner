@@ -1,0 +1,18 @@
+.instructor-pref__container {
+    display: grid;
+    grid-row-gap: .5em;
+
+    margin: 1em;
+}
+
+.instructor-pref__button {
+    background-color: white;
+    transition: background-color .3s ease-in-out;
+    color: lightgrey;
+    width: 100%;
+    text-align: left;
+}
+
+.instructor-pref__button:hover {
+    background-color: blue;
+}
