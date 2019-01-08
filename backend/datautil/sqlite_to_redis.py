@@ -19,7 +19,8 @@ def export_to_redis():
         password=password
     )
 
-    # TODO: maybe delete docker volume is more efficient
+    # TODO: since it's AOF, maybe delete docker volume is more efficient
+    # It does not make sense to delete keys one by one first then write new ones here
     r.flushdb(asynchronous=True)
 
     # Will connect to sqlite db
@@ -35,10 +36,11 @@ def export_to_redis():
         row = dict(sql_row)
 
         # a lexicographically sorted set
+        # TODO: use webreg-style order
         # COURSE_NUM_BY_DEPT:CSE => 3,4GS, 6GS...
         r.zadd('COURSE_NUM_BY_DEPT:' + row["DEPARTMENT"], {row["COURSE_NUM"]: 0})
 
-        # write to :$n and incr :n
+        # write to :$n and incr :n, example:
         # CLASS_DATA:CSE:20:n => 0
         # CLASS_DATA:CSE:20:0 => new data to write
         r_key = 'CLASS_DATA:' + row["DEPARTMENT"] + ':' + row["COURSE_NUM"] + ':'
@@ -71,7 +73,7 @@ def export_to_redis():
         p.zadd("DEPARTMENT", {row["DEPT_CODE"]: 0})
     p.execute()
 
-    r.bgsave() # necessary?
+    r.bgsave() # TODO: is this necessary?
     sqlite_db.close()
 
     print("Finishing export to Redis")

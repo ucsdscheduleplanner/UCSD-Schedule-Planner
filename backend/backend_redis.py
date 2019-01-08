@@ -46,6 +46,7 @@ def get_all_classes_in(department):
                "INSTRUCTOR"  : course["INSTRUCTOR"],
                "TYPE"        : course["TYPE"],
                "DESCRIPTION" : course["DESCRIPTION"]}
+        # perhaps we can use defaultdict
         if row["COURSE_NUM"] not in ret_dict["CLASS_SUMMARY"]:
             ret_dict["CLASS_SUMMARY"][row["COURSE_NUM"]] = []
         ret_dict["CLASS_SUMMARY"][row["COURSE_NUM"]].append(row)
@@ -57,7 +58,7 @@ def get_departments():
     if not departments:
         dept_codes = r.zrange("DEPARTMENT",0,-1)
         # Converting to dict in order to make into JSON easier
-        departments = [dict(zip("DEPT_CODE",dept_code)) for dept_code in dept_codes]
+        departments = [{"DEPT_CODE":dept_code} for dept_code in dept_codes]
     return departments
 
 
@@ -72,7 +73,7 @@ def generate_class_json(department, course_num):
     # how many sections are there
     class_sections = r.get('CLASS_DATA:' + department + ':' + course_num + ':n')
     class_versions = []
-    for class_section in range(class_sections):
+    for class_section in range(int(class_sections)):
         class_versions.append(r.hgetall('CLASS_DATA:' + department + ':' + course_num + ':' + str(class_section)))
     # The different sections of the given class
     return class_versions
