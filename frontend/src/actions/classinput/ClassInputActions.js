@@ -46,6 +46,7 @@ export function initDepartments() {
 }
 
 export function enterEditMode(id) {
+    console.log("GOT HERE");
     return function (dispatch, getState) {
         const otherClass = getState().ClassList.selectedClasses[id];
 

@@ -13,7 +13,7 @@ export class ClassInputPanelPartHeader extends PureComponent {
         const plusMinusNames = classNames("class-input__panel__part__header__icon", {"active": this.props.isOpen});
 
         return (
-            <div className="class-input__panel__part__header">
+            <div className="class-input__panel__part__header" onClick={() => this.props.onClick(this.props.index)}>
                 <div className={plusMinusNames}>
                     <BurgerIcon/>
                 </div>
@@ -21,9 +21,7 @@ export class ClassInputPanelPartHeader extends PureComponent {
                     {this.props.title}
                 </div>
                 <div className={plusMinusNames}>
-                    {
-                        this.props.isOpen ? <MinusIcon/> : <PlusIcon/>
-                    }
+                    { this.props.isOpen ? <MinusIcon/> : <PlusIcon/> }
                 </div>
             </div>
         )

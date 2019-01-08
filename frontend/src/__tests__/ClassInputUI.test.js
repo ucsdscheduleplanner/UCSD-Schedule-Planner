@@ -98,28 +98,6 @@ describe("Ensuring ClassInputHandler can handle changes in the autocomplete fiel
         chaiExpect(state.classTypesToIgnore).to.eql([]);
     });
 
-    test('Making sure other fields are not nulled out if department field is edited but its value is not altered', () => {
-        const classInput = mount(
-            <ClassInputContainer store={store}/>
-        );
-
-        store.dispatch(setDepartments(["CSE", "DSC"]));
-        store.dispatch(setDepartment("CSE"));
-        store.dispatch(setCourseNum("12"));
-        store.dispatch(setClassTypesToIgnore(["LE", "blah"]));
-        store.dispatch(setInstructor("Mr. Cameron Trando"));
-
-        let inputHandler = getInputHandler(store);
-        inputHandler.onDepartmentChange("CSE");
-
-        let state = store.getState().ClassInput;
-
-        chaiExpect(state.department).to.equal("CSE");
-        chaiExpect(state.courseNum).to.equal("12");
-        chaiExpect(state.instructor).to.equal("Mr. Cameron Trando");
-        chaiExpect(state.classTypesToIgnore).to.eql(["LE", "blah"]);
-    });
-
     test('Making sure priority, ignored class types, and instructors are nulled out when changing courseNum field', () => {
         const classInput = mount(
             <ClassInputContainer store={store}/>
@@ -144,7 +122,7 @@ describe("Ensuring ClassInputHandler can handle changes in the autocomplete fiel
         chaiExpect(state.classTypesToIgnore).to.eql([]);
     });
 
-    test('Making sure priority, ignored class types, and instructors are unchanged when not making any changes to courseNum field', () => {
+    test('Instructor, types, and priority are unchanged when trying to change the courseNum to something that is not in the courseNums list', () => {
         const classInput = mount(
             <ClassInputContainer store={store}/>
         );
@@ -157,12 +135,38 @@ describe("Ensuring ClassInputHandler can handle changes in the autocomplete fiel
         store.dispatch(setInstructor("Mr. Cameron Trando"));
 
         let inputHandler = getInputHandler(store);
-        inputHandler.onCourseNumChange("12");
+        inputHandler.onCourseNumChange("1222");
 
         let state = store.getState().ClassInput;
 
+        // courseNum will change but others should still stay the same
+        chaiExpect(state.courseNum).to.equal("1222");
+
         // department should still stay the same
         chaiExpect(state.department).to.equal("CSE");
+        chaiExpect(state.instructor).to.equal("Mr. Cameron Trando");
+        chaiExpect(state.classTypesToIgnore).to.eql(["LE", "blah"]);
+    });
+
+    test('Everything besides department is unchanged when trying to change the department to something that is not in the departments list', () => {
+        const classInput = mount(
+            <ClassInputContainer store={store}/>
+        );
+
+        store.dispatch(setDepartments(["CSE", "DSC"]));
+        store.dispatch(setCourseNums(["11", "12"]));
+        store.dispatch(setDepartment("CSE"));
+        store.dispatch(setCourseNum("12"));
+        store.dispatch(setClassTypesToIgnore(["LE", "blah"]));
+        store.dispatch(setInstructor("Mr. Cameron Trando"));
+
+        let inputHandler = getInputHandler(store);
+        inputHandler.onDepartmentChange("CSEEEE");
+
+        let state = store.getState().ClassInput;
+
+        chaiExpect(state.department).to.equal("CSEEEE");
+
         chaiExpect(state.courseNum).to.equal("12");
         chaiExpect(state.instructor).to.equal("Mr. Cameron Trando");
         chaiExpect(state.classTypesToIgnore).to.eql(["LE", "blah"]);

@@ -6,17 +6,18 @@ import "./ClassInputPanelPartBody.css"
 import {ReactComponent as PlusIcon} from "../../../../svg/icon-plus.svg";
 import {RemoveCourseWidget} from "./widgets/remove_course/RemoveCourseWidget";
 import InstructorPrefWidgetContainer from "./widgets/instructor/InstructorPrefWidgetContainer";
+import ClassTypePrefWidgetContainer from "./widgets/class_types/ClassTypePrefWidgetContainer";
 
 export class ClassInputPanelPartBody extends PureComponent {
 
     render() {
         return (
             <div>
-                <InstructorPrefWidgetContainer inputHandler={this.props.inputHandler}/>
+                <InstructorPrefWidgetContainer Class={this.props.Class} inputHandler={this.props.inputHandler}/>
                 <ClassInputPanelPartBodySection label={"CAPES"}/>
-                <ClassInputPanelPartBodySection label={"View Class Types"}/>
+                <ClassTypePrefWidgetContainer Class={this.props.Class} inputHandler={this.props.inputHandler}/>
                 <ClassInputPanelPartBodySection label={"Course Description"}/>
-                <RemoveCourseWidget />
+                <RemoveCourseWidget/>
             </div>
         )
     }
@@ -28,13 +29,15 @@ class ClassInputPanelPartBodySection extends PureComponent {
         const plusMinusNames = classNames("class-input__panel__part__body__header__icon", {"active": this.props.isOpen});
 
         return (
-            <div className="class-input__panel__part__body__header">
-                <div/>
-                <div className="class-input__panel__part__body__header__title">
-                    {this.props.label}
-                </div>
-                <div className={plusMinusNames}>
-                    <PlusIcon/>
+            <div className="class-input__panel__pref">
+                <div className="class-input__panel__part__body__header">
+                    <div/>
+                    <div className="class-input__panel__part__body__header__title">
+                        {this.props.label}
+                    </div>
+                    <div className={plusMinusNames}>
+                        <PlusIcon/>
+                    </div>
                 </div>
             </div>
         );

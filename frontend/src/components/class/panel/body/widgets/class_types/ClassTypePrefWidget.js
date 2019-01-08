@@ -2,25 +2,25 @@ import React from 'react';
 import classNames from 'classnames';
 import PropTypes from "prop-types";
 
-import "./InstructorPrefWidget.css";
+import "./ClassTypePrefWidget.css";
 
 import {Accordion} from "../../../../../../utils/accordion/Accordion";
 import {AccordionBody, AccordionLabel, AccordionPanel} from "../../../../../../utils/accordion/AccordionPanel";
 import {ReactComponent as PlusIcon} from "../../../../../../svg/icon-plus.svg";
 import {HighlightButton} from "../../../../../../utils/button/highlight/HighlightButton";
 
-export const InstructorPrefWidget = (props) => {
+export const ClassTypePrefWidget = (props) => {
     const plusMinusNames = classNames("class-input__panel__part__body__header__icon", {"active": props.isOpen});
-    let instructorButtons = props.instructors.map((instructor, index) => {
+    let typeButtons = props.types.map((type, index) => {
         return (
-            <HighlightButton className="instructor-pref__button"
+            <HighlightButton className="type-pref__button"
                              key={props.Class.classTitle + index.toString()}
-                             onClick={() => props.inputHandler.onInstructorChange(instructor)}
-                             label={instructor}/>
+                             onClick={() => props.inputHandler.onClassTypesToIgnoreChange(type)}
+                             label={type}/>
         );
     });
 
-    instructorButtons = instructorButtons.length > 0 ? instructorButtons : [(<div> No instructors </div>)];
+    typeButtons = typeButtons.length > 0 ? typeButtons : [(<div> No class types </div>)];
 
     return (
         <div className="class-input__panel__pref">
@@ -31,7 +31,7 @@ export const InstructorPrefWidget = (props) => {
                             <div/>
 
                             <div className="class-input__panel__part__body__header__title">
-                                Instructor Preference
+                                View Class Types
                             </div>
                             <div className={plusMinusNames}>
                                 <PlusIcon/>
@@ -39,8 +39,8 @@ export const InstructorPrefWidget = (props) => {
                         </div>
                     </AccordionLabel>
                     <AccordionBody>
-                        <div className="instructor-pref__container">
-                            {instructorButtons}
+                        <div className="type-pref__container">
+                            {typeButtons}
                         </div>
                     </AccordionBody>
                 </AccordionPanel>
@@ -49,6 +49,7 @@ export const InstructorPrefWidget = (props) => {
     );
 };
 
-InstructorPrefWidget.propTypes = {
-    instructors: PropTypes.array.isRequired
+ClassTypePrefWidget.propTypes = {
+    inputHandler: PropTypes.object.isRequired,
+    types: PropTypes.array.isRequired
 };

@@ -26,7 +26,7 @@ export class ClassInputHandler {
     /**
      * Edits the department and runs business rule validation on it
      */
-    onDepartmentChange(rawDepartment) {
+    onDepartmentChange(rawDepartment, triggers = true) {
         if (!rawDepartment) {
             this.dispatch(setDepartment(null));
             return;
@@ -39,12 +39,11 @@ export class ClassInputHandler {
         // sets the department in the store
         this.dispatch(setDepartment(department));
 
-        // don't alter anything if the department isn't even valid
-        if (!state.departments.includes(department))
+        if(!triggers)
             return;
 
-        // no reason to change if the two are the same
-        if (state.department === department)
+        // don't alter anything if the department isn't even valid
+        if (!state.departments.includes(department))
             return;
 
         // set all other fields to blank
@@ -62,7 +61,7 @@ export class ClassInputHandler {
             this.dispatch(setEditOccurred(true));
     }
 
-    onCourseNumChange(rawCourseNum) {
+    onCourseNumChange(rawCourseNum, triggers = true) {
         if (!rawCourseNum) {
             this.dispatch(setCourseNum(null));
             return;
@@ -72,7 +71,7 @@ export class ClassInputHandler {
         let courseNum = rawCourseNum.trim();
         this.dispatch(setCourseNum(courseNum));
 
-        if (courseNum === state.courseNum)
+        if(!triggers)
             return;
 
         if (!state.courseNums.includes(courseNum))

@@ -3,9 +3,7 @@ import React, {PureComponent} from 'react';
 import {ClassInputForm} from "./ClassInputForm";
 import {connect} from "react-redux";
 
-
 class ClassInputFormContainer extends PureComponent {
-
     render() {
         return (
             <ClassInputForm
@@ -13,7 +11,6 @@ class ClassInputFormContainer extends PureComponent {
                 courseNum={this.props.courseNum}
                 departments={this.props.departments}
                 courseNums={this.props.courseNums}
-
 
                 // this comes from ClassInput
                 inputHandler={this.props.inputHandler}

@@ -6,13 +6,10 @@ import "./MyAutoComplete.css";
 export class MyAutocomplete extends Component {
     constructor(props) {
         super(props);
-        this.state = {
-            value: "",
-            suggestions: props.suggestions
-        };
     }
 
-    getSuggestions(value) {
+    getSuggestions() {
+        const value = this.props.value;
         console.log("getting suggestions");
         if (!value)
             return this.props.suggestions;
@@ -40,14 +37,13 @@ export class MyAutocomplete extends Component {
             console.warn(`Value ${newValue} is not a string in autocomplete`);
             return;
         }
-
-        this.setState({value: newValue.toUpperCase()});
+        this.props.onChange(newValue);
     };
 
     // Autosuggest will call this function every time you need to update suggestions.
     // You already implemented this logic above, so just use it.
     onSuggestionsFetchRequested({value}) {
-        this.setState({suggestions: this.getSuggestions(value)});
+        this.setState({state: this.state});
     };
 
     // Autosuggest will call this function every time you need to clear suggestions.
@@ -55,7 +51,8 @@ export class MyAutocomplete extends Component {
     };
 
     onSuggestionSelected(event, {suggestion}) {
-        this.props.onChange && this.props.onChange(suggestion);
+        console.log("suggestion selected");
+        this.props.onSelect && this.props.onSelect(suggestion);
     }
 
     shouldRenderSuggestions() {
@@ -71,7 +68,7 @@ export class MyAutocomplete extends Component {
         // TODO add on key down here to check for tab and enter and call onSuggestionSelected on there
         const inputProps = {
             placeholder: this.props.defaultValue ? this.props.defaultValue : "",
-            value: this.state.value,
+            value: this.props.value ? this.props.value : "",
             onChange: this.onChange.bind(this),
             disabled: this.props.disabled ? this.props.disabled : false
         };
@@ -83,7 +80,7 @@ export class MyAutocomplete extends Component {
         return (
             <div className={this.props.className}>
                 <Autosuggest
-                    suggestions={this.state.suggestions}
+                    suggestions={this.getSuggestions()}
                     onSuggestionsFetchRequested={this.onSuggestionsFetchRequested.bind(this)}
                     onSuggestionsClearRequested={this.onSuggestionsClearRequested.bind(this)}
                     getSuggestionValue={this.getSuggestionValue}

@@ -22,7 +22,8 @@ export class ClassInputForm extends PureComponent {
                             className="class-input__form__autocomplete"
                             suggestions={this.props.departments}
                             value={this.props.department}
-                            onChange={(e) => this.props.inputHandler.onDepartmentChange(e)}
+                            onSelect={(e) => this.props.inputHandler.onDepartmentChange(e, true)}
+                            onChange={(e) => this.props.inputHandler.onDepartmentChange(e, false)}
                             defaultValue={"CSE"}
                             label="department"/>
                     </div>
@@ -32,7 +33,8 @@ export class ClassInputForm extends PureComponent {
                             className="class-input__form__autocomplete"
                             suggestions={this.props.courseNums}
                             value={this.props.courseNum}
-                            onChange={(e) => this.props.inputHandler.onCourseNumChange(e)}
+                            onSelect={(e) => this.props.inputHandler.onCourseNumChange(e, false)}
+                            onChange={(e) => this.props.inputHandler.onCourseNumChange(e, false)}
                             defaultValue={"11"}
                             disabled={!this.props.departments.includes(this.props.department)}
                             label="courseNum"/>
@@ -40,7 +42,7 @@ export class ClassInputForm extends PureComponent {
 
                     <div className="class-input__form__buttons">
                         <div className="class-input__form__add-button">
-                            <Button label="Add"/>
+                            <Button label="Add" onClick={() => this.props.inputHandler.handleAdd()}/>
                         </div>
                         <div className="class-input__form__cancel-button">
                             <Button label="Cancel"/>

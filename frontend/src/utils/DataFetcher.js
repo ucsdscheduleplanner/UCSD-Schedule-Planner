@@ -199,13 +199,7 @@ export class DataFetcher {
       // converting back into set
       instructorsPerClass[classArrKey] = [...instructorsPerClass[classArrKey]];
       classTypesPerClass[classArrKey] = [...classTypesPerClass[classArrKey]]
-        .sort((a, b) => codeKeyToVal[a] - codeKeyToVal[b])
-        .map(classTypeStr => {
-          return {
-            label: codeToClassType[classTypeStr],
-            value: codeToClassType[classTypeStr],
-          };
-        });
+        .sort((a, b) => codeKeyToVal[a] - codeKeyToVal[b]);
     }
 
     // sorting based on comparator for the course nums

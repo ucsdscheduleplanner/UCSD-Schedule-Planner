@@ -1,27 +1,27 @@
 import React, {PureComponent} from 'react';
 import PropTypes from 'prop-types';
 import {connect} from "react-redux";
-import {InstructorPrefWidget} from "./InstructorPrefWidget";
+import {ClassTypePrefWidget} from "./ClassTypePrefWidget";
 
 
-class InstructorPrefWidgetContainer extends PureComponent {
+class ClassTypePrefWidgetContainer extends PureComponent {
 
     render() {
         return (
             //<InstructorPrefWidget instructors={this.props.instructors} inputHandler={this.props.inputHandler}/>
-            <InstructorPrefWidget {...this.props} instructors={this.props.instructors} />
+            <ClassTypePrefWidget {...this.props} types={this.props.types} />
         )
     }
 }
 
-InstructorPrefWidgetContainer.propTypes = {
+ClassTypePrefWidgetContainer.propTypes = {
     inputHandler: PropTypes.object.isRequired
 };
 
 function mapStateToProps(state) {
     return {
-        instructors: state.ClassInput.instructors
+        types: state.ClassInput.types
     }
 }
 
-export default connect(mapStateToProps)(InstructorPrefWidgetContainer);
+export default connect(mapStateToProps)(ClassTypePrefWidgetContainer);

@@ -9,18 +9,11 @@
 /**
 This is to make the instructor pref always darker blue
  */
-.class-input__panel__part__body__instructor-pref {
+.class-input__panel__pref {
     color: white;
     background-color: #151E30;
     transition: none;
 }
-
-/*!***/
-/*This is to keep the instructor pref darker blue even when clicked*/
- /**!*/
-/*.class-input__panel__part__body__instructor-pref .accordion__panel__label.active {*/
-    /*background-color: #151E30;*/
-/*}*/
 
 .class-input__panel__part__body__header {
     display: grid;
@@ -43,4 +36,16 @@ This is to make the instructor pref always darker blue
     justify-content: center;
     align-items: center;
     fill: white;
+}
+
+.class-input__panel__body .class-input__panel__pref .accordion__panel:after {
+    content: none;
+}
+
+.class-input__panel__body .class-input__panel__pref:after {
+    content: "";
+    display: block;
+    margin: 0 auto;
+    width: 95%;
+    border-bottom: thin solid blue;
 }

@@ -12,36 +12,37 @@ import {CacheManager} from './utils/CacheManager';
 import {setMessageHandler} from "./actions/classinput/ClassInputMutator";
 
 const CURRENT_VERSION = '1.4';
+
 class Landing extends Component {
-  async componentDidMount() {
-    // refreshes the cache based on version
-    await CacheManager.get().clearCacheIfNecessary(CURRENT_VERSION);
-  }
+    async componentDidMount() {
+        // refreshes the cache based on version
+        await CacheManager.get().clearCacheIfNecessary(CURRENT_VERSION);
+    }
 
-  render() {
-    return (
-      <div className="container">
-        <LeftSidePanel />
-        <MainPanel />
-        <RightSidePanel />
+    render() {
+        return (
+            <div className="container">
+                <LeftSidePanel/>
+                <MainPanel/>
+                <RightSidePanel/>
 
-        <MessageHandler ref={el => this.props.setMessageHandler(el)} />
-        <div />
-      </div>
-    );
-  }
+                <MessageHandler ref={el => this.props.setMessageHandler(el)}/>
+                <div/>
+            </div>
+        );
+    }
 }
 
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators(
-    {
-      setMessageHandler: setMessageHandler,
-    },
-    dispatch,
-  );
+    return bindActionCreators(
+        {
+            setMessageHandler: setMessageHandler,
+        },
+        dispatch,
+    );
 }
 
 export default connect(
-  null,
-  mapDispatchToProps,
+    null,
+    mapDispatchToProps,
 )(Landing);
