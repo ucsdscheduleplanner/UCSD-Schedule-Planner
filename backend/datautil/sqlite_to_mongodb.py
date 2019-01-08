@@ -23,12 +23,12 @@ def export_to_mongodb():
     sqlite_cursor = sqlite_db.cursor()
 
     # Creating the class data collection
+    mongo_db.drop_collection("CLASS_DATA")
     coll_class_data = mongo_db["CLASS_DATA"]
 
     sqlite_cursor.execute("SELECT * FROM CLASS_DATA")
     class_rows = sqlite_cursor.fetchall()
 
-    # TODO: clear existing data?
     for sql_row in class_rows:
         row = dict(sql_row)
         coll_class_data.insert_one({"DEPARTMENT": row["DEPARTMENT"],
@@ -47,6 +47,7 @@ def export_to_mongodb():
     """ 
     Making departments
     """
+    mongo_db.drop_collection("DEPARTMENT")
     coll_department = mongo_db["DEPARTMENT"]
 
     sqlite_cursor.execute("SELECT * FROM DEPARTMENT")
@@ -57,7 +58,7 @@ def export_to_mongodb():
         coll_department.insert_one({"DEPT_CODE": row["DEPT_CODE"]})
 
     # adding indexes
-    coll_class_data.create_index({"DEPARTMENT": 1, "COURSE_NUM": 1})
+    coll_class_data.create_index([("DEPARTMENT", pymongo.ASCENDING), ("COURSE_NUM", pymongo.ASCENDING)])
 
     # adding changes
     # mysql_db.commit()
