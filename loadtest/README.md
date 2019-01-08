@@ -10,6 +10,8 @@ Note: I did not optimize anything but only directly translated SQL.
 
 ## Summary
 
+The bottleneck of our backend is the python part where loops are used to process data.
+
 The first error happens when there are roughly 350 active users simultaneously.
 
 Three different requests have, surprisingly (maybe not since each thread performed exactly 1 request each),

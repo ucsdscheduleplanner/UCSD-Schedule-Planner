@@ -360,7 +360,7 @@ i_query=0
 while [[ $i_query -lt $queriesDept ]]; do
    deptToQuery=${deptArr[$RANDOM % ${#deptArr[@]} ]}
    curl --proxy localhost:9053 --user-agent "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36" localhost:22125/api_classes?department=$deptToQuery > /dev/null
-   # curl localhost:22125/api_classes?department=$deptToQuery
+   #curl --user-agent "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36" localhost:22125/api_classes?department=$deptToQuery
    i_query=$[$i_query+1]
 done
 
@@ -376,6 +376,7 @@ while [[ $i_query -lt $queriesData ]]; do
         --request POST \
         --data "{\"classes\":[{\"classTitle\":\"test\",\"courseNum\":\"$numTQ\",\"department\":\"$deptTQ\",\"priority\":0,\"conflicts\":null,\"instructor\":null}]}" \
         localhost:22125/api_data > /dev/null
+   # curl --header "Content-Type: application/json" --user-agent "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36" --request POST --data "{\"classes\":[{\"classTitle\":\"test\",\"courseNum\":\"$numTQ\",\"department\":\"$deptTQ\",\"priority\":0,\"conflicts\":null,\"instructor\":null}]}" localhost:22125/api_data
    i_query=$[$i_query+1]
 done
 
@@ -383,6 +384,7 @@ i_query=0
 
 while [[ $i_query -lt $queriesClasses ]]; do
    curl --proxy localhost:9053 --user-agent "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36" localhost:22125/api_department > /dev/null
+   # curl --user-agent "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36" localhost:22125/api_department > /dev/null
    i_query=$[$i_query+1]
 done
 
