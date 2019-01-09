@@ -9,9 +9,6 @@ import "../../css/ClassInput.css";
 
 export default class ClassInput extends PureComponent {
 
-    componentDidUpdate(prevProps, prevState, snapshot) {
-        this.props.inputHandler.autosave();
-    }
 
     getDepartmentSuggestions = memoize((query, departments) => {
         if(!query || !departments)

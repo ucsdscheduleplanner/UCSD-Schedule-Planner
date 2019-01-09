@@ -13,6 +13,11 @@ This is to make the instructor pref always darker blue
     color: white;
     background-color: #151E30;
     transition: none;
+
+}
+
+.class-input__panel__pref.clickable {
+    cursor: pointer;
 }
 
 .class-input__panel__part__body__header {

@@ -1,7 +1,7 @@
 import React, {PureComponent} from 'react';
 import {ClassInputPanelPartHeader} from "./ClassInputPanelPartHeader";
 import {connect} from "react-redux";
-import {enterEditMode} from "../../../../actions/classinput/ClassInputActions";
+import {toggleEditMode} from "../../../../actions/classinput/ClassInputActions";
 import {bindActionCreators} from "redux";
 
 class ClassInputPanelPartHeaderContainer extends PureComponent {
@@ -10,14 +10,14 @@ class ClassInputPanelPartHeaderContainer extends PureComponent {
         // if there is a prop onClick that is passed down then it will mess up the enterEditMode
         // BEWARE
         return (
-            <ClassInputPanelPartHeader onClick={this.props.enterEditMode} {...this.props} />
+            <ClassInputPanelPartHeader onClick={this.props.toggleEditMode} {...this.props} />
         )
     }
 }
 
 function mapDispatchToProps(dispatch) {
     return bindActionCreators({
-            enterEditMode: enterEditMode,
+            toggleEditMode: toggleEditMode,
         }, dispatch,
     );
 }

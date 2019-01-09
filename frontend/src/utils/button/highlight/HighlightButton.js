@@ -1,4 +1,5 @@
 import React, {PureComponent} from 'react';
+import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import {Button} from "../Button";
 import "./HighlightButton.css";
@@ -13,12 +14,14 @@ export class HighlightButton extends PureComponent {
     }
 
     onClick(evt) {
-        if (this.props.onClick)
-            this.props.onClick(evt);
-
-        if(this.state.highlighted)
+        evt.preventDefault();
+        if (this.state.highlighted) {
             this.setState({highlighted: false});
-        else this.setState({highlighted: true});
+            this.props.onDeselect(this.props.label);
+        } else {
+            this.setState({highlighted: true});
+            this.props.onSelect(this.props.label);
+        }
     };
 
     render() {
@@ -31,3 +34,9 @@ export class HighlightButton extends PureComponent {
         )
     }
 }
+
+HighlightButton.propTypes = {
+    onSelect: PropTypes.func.isRequired,
+    onDeselect: PropTypes.func.isRequired,
+    label: PropTypes.string.isRequired
+};

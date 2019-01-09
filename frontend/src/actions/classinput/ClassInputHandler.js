@@ -1,6 +1,6 @@
 import {
     setClassTypesToIgnore,
-    setCourseNum,
+    setCourseNum, setCourseNums,
     setDepartment,
     setEditOccurred,
     setID,
@@ -39,7 +39,7 @@ export class ClassInputHandler {
         // sets the department in the store
         this.dispatch(setDepartment(department));
 
-        if(!triggers)
+        if (!triggers)
             return;
 
         // don't alter anything if the department isn't even valid
@@ -56,9 +56,8 @@ export class ClassInputHandler {
         // populate the course nums and the data
         this.dispatch(populateSectionData(department));
 
-        // already know the edit was valid if we made it this far
         if (state.editMode)
-            this.dispatch(setEditOccurred(true));
+            this.autosave(true);
     }
 
     onCourseNumChange(rawCourseNum, triggers = true) {
@@ -71,7 +70,7 @@ export class ClassInputHandler {
         let courseNum = rawCourseNum.trim();
         this.dispatch(setCourseNum(courseNum));
 
-        if(!triggers)
+        if (!triggers)
             return;
 
         if (!state.courseNums.includes(courseNum))
@@ -81,10 +80,6 @@ export class ClassInputHandler {
         this.dispatch(setInstructor(null));
         this.dispatch(setPriority(null));
         this.dispatch(setClassTypesToIgnore(null));
-
-        // only record valid edits
-        if (state.editMode)
-            this.dispatch(setEditOccurred(true));
 
         const instructors = state.instructorsPerClass[courseNum];
         if (!instructors)
@@ -96,6 +91,10 @@ export class ClassInputHandler {
 
         this.dispatch(setTypes(types));
         this.dispatch(setInstructors(instructors));
+
+        // autosave after everything else has been set
+        if (state.editMode)
+            this.autosave(true);
     }
 
     onInstructorChange(rawInstructor) {
@@ -113,7 +112,7 @@ export class ClassInputHandler {
 
         // only record valid edits
         if (state.editMode)
-            this.dispatch(setEditOccurred(true));
+            this.autosave(true);
 
         this.dispatch(setPriority(null));
         this.dispatch(setClassTypesToIgnore(null));
@@ -128,7 +127,7 @@ export class ClassInputHandler {
         const state = this.getState().ClassInput;
         // record the edit
         if (state.editMode)
-            this.dispatch(setEditOccurred(true));
+            this.autosave(true);
         this.dispatch(setClassTypesToIgnore(classTypesToIgnore));
     }
 
@@ -141,7 +140,7 @@ export class ClassInputHandler {
         const state = this.getState().ClassInput;
         // record the edit
         if (state.editMode)
-            this.dispatch(setEditOccurred(true));
+            this.autosave(true);
 
         this.dispatch(setPriority(priority));
     }
@@ -149,15 +148,19 @@ export class ClassInputHandler {
     buildClassFromInput() {
         const state = this.getState().ClassInput;
         // should refactor this into ClassSkeleton
-        let newClass = {};
-        newClass['classTitle'] = `${state.department} ${state.courseNum}`;
-        newClass['courseNum'] = state.courseNum;
-        newClass['department'] = state.department;
-        newClass['instructor'] = state.instructor;
-        newClass['priority'] = state.priority;
-        newClass['classTypesToIgnore'] = state.classTypesToIgnore;
+        return Object.assign({},
+            {
+                classTitle: `${state.department} ${state.courseNum}`,
+                courseNum: state.courseNum,
+                department: state.department,
+                instructor: state.instructor,
+                priority: state.priority,
+                classTypesToIgnore: state.classTypesToIgnore,
 
-        return newClass;
+                instructors: state.instructors,
+                types: state.types
+            }
+        );
     }
 
     isValidAdd(newClass) {
@@ -219,6 +222,7 @@ export class ClassInputHandler {
     autosave(force = false) {
         const state = this.getState().ClassInput;
         if (force || (state.editMode && state.editOccurred)) {
+            console.log("autosaving");
             // just save everything
             let newClass = this.buildClassFromInput();
 
@@ -273,7 +277,7 @@ export class ClassInputHandler {
     isDuplicate(newClass, exclude = "") {
         let state = this.getState().ClassList;
 
-        if(typeof exclude !== "string")
+        if (typeof exclude !== "string")
             console.warn(`The given key ${exclude} is of type ${typeof exclude} instead of string, continuing`);
 
         return Object.keys(state.selectedClasses).reduce(function (accumulator, key) {
@@ -309,6 +313,18 @@ export class ClassInputHandler {
         this.dispatch(setClassTypesToIgnore(null));
 
         this.dispatch(setID(null));
+    }
+
+    clear() {
+        this.dispatch(setDepartment(null));
+        this.dispatch(setInstructor(null));
+        this.dispatch(setCourseNum(null));
+        this.dispatch(setPriority(null));
+        this.dispatch(setClassTypesToIgnore(null));
+
+        this.dispatch(setCourseNums(null));
+        this.dispatch(setInstructors(null));
+        this.dispatch(setTypes(null));
     }
 
     savePreferences() {

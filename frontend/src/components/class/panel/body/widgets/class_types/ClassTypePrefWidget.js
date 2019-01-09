@@ -7,25 +7,22 @@ import "./ClassTypePrefWidget.css";
 import {Accordion} from "../../../../../../utils/accordion/Accordion";
 import {AccordionBody, AccordionLabel, AccordionPanel} from "../../../../../../utils/accordion/AccordionPanel";
 import {ReactComponent as PlusIcon} from "../../../../../../svg/icon-plus.svg";
-import {HighlightButton} from "../../../../../../utils/button/highlight/HighlightButton";
+import {ListBox} from "../../../../../../utils/listbox/ListBox";
 
 export const ClassTypePrefWidget = (props) => {
     const plusMinusNames = classNames("class-input__panel__part__body__header__icon", {"active": props.isOpen});
-    let typeButtons = props.types.map((type, index) => {
-        return (
-            <HighlightButton className="type-pref__button"
-                             key={props.Class.classTitle + index.toString()}
-                             onClick={() => props.inputHandler.onClassTypesToIgnoreChange(type)}
-                             label={type}/>
-        );
-    });
 
-    typeButtons = typeButtons.length > 0 ? typeButtons : [(<div> No class types </div>)];
+    const listBox = props.types.length > 0 ? (
+        <ListBox keyPrefix={props.Class.classTitle}
+                 onClick={(selectedTypes) => props.inputHandler.onClassTypesToIgnoreChange(selectedTypes)}
+                 values={props.types}/>
+    ) : (<div> No class types </div>);
 
+    console.log(props.Class.classTitle);
     return (
         <div className="class-input__panel__pref">
             <Accordion>
-                <AccordionPanel label={props.label} {...props}>
+                <AccordionPanel label={props.Class.classTitle} {...props}>
                     <AccordionLabel>
                         <div className="class-input__panel__part__body__header">
                             <div/>
@@ -39,9 +36,7 @@ export const ClassTypePrefWidget = (props) => {
                         </div>
                     </AccordionLabel>
                     <AccordionBody>
-                        <div className="type-pref__container">
-                            {typeButtons}
-                        </div>
+                        {listBox}
                     </AccordionBody>
                 </AccordionPanel>
             </Accordion>

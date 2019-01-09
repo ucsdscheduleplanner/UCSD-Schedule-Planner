@@ -46,10 +46,14 @@ export default function ClassInputReducer(state = {
                 classTypesPerClass: action.classTypesPerClass
             });
         case SET_COURSE_NUMS:
+            if(!action.courseNums)
+                action.courseNums = [];
             return Object.assign({}, state, {
                 courseNums: action.courseNums
             });
         case SET_DEPARTMENTS:
+            if(!action.departments)
+                action.departments = [];
             return Object.assign({}, state, {
                 departments: action.departments
             });

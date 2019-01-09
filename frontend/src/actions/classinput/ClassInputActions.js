@@ -45,8 +45,19 @@ export function initDepartments() {
     }
 }
 
+export function toggleEditMode(id) {
+    return function (dispatch, getState) {
+        if (getState().ClassInput.id !== id)
+            dispatch(enterEditMode(id));
+        else {
+            if (getState().ClassInput.id === null)
+                dispatch(enterEditMode(id));
+            else dispatch(enterInputMode());
+        }
+    }
+}
+
 export function enterEditMode(id) {
-    console.log("GOT HERE");
     return function (dispatch, getState) {
         const otherClass = getState().ClassList.selectedClasses[id];
 

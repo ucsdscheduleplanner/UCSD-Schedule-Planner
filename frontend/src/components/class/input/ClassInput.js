@@ -5,9 +5,6 @@ import ClassInputPanelContainer from "../panel/ClassInputPanelContainer";
 
 
 export default class ClassInput extends PureComponent {
-    componentDidUpdate(prevProps, prevState, snapshot) {
-        this.props.inputHandler.autosave();
-    }
 
     render() {
         return (

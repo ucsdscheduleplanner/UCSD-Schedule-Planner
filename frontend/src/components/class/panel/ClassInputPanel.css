@@ -13,7 +13,6 @@
 .class-input__panel__body {
     overflow: hidden;
     border-radius: 5px;
-    border: 1px solid #aaa;
     box-shadow: 0 0 10px 1px gray;
 }
 

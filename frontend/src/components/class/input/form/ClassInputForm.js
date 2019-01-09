@@ -7,7 +7,9 @@ import {ReactComponent as SearchIcon} from "../../../../svg/icon-search.svg";
 
 export class ClassInputForm extends PureComponent {
     render() {
-        console.log(this.props.departments.includes(this.props.department));
+        console.log("rerendering");
+        console.log(this.props.courseNums);
+        console.log((this.props.editID ? this.props.editID : "") + this.props.department);
         return (
             <React.Fragment>
                 <div className="class-input__form__header">
@@ -19,22 +21,24 @@ export class ClassInputForm extends PureComponent {
                     <div className="class-input__form__department">
                         <label htmlFor="department">Department Code</label>
                         <MyAutocomplete
+                            key={this.props.editID}
+                            activeOnClick={true}
                             className="class-input__form__autocomplete"
                             suggestions={this.props.departments}
                             value={this.props.department}
                             onSelect={(e) => this.props.inputHandler.onDepartmentChange(e, true)}
-                            onChange={(e) => this.props.inputHandler.onDepartmentChange(e, false)}
                             defaultValue={"CSE"}
                             label="department"/>
                     </div>
                     <div className="class-input__form__courseNum">
                         <label htmlFor="courseNum">Course Number</label>
                         <MyAutocomplete
+                            key={(this.props.editID ? this.props.editID : "") + this.props.department}
+                            activeOnClick={false}
                             className="class-input__form__autocomplete"
                             suggestions={this.props.courseNums}
                             value={this.props.courseNum}
-                            onSelect={(e) => this.props.inputHandler.onCourseNumChange(e, false)}
-                            onChange={(e) => this.props.inputHandler.onCourseNumChange(e, false)}
+                            onSelect={(e) => this.props.inputHandler.onCourseNumChange(e, true)}
                             defaultValue={"11"}
                             disabled={!this.props.departments.includes(this.props.department)}
                             label="courseNum"/>
@@ -45,7 +49,7 @@ export class ClassInputForm extends PureComponent {
                             <Button label="Add" onClick={() => this.props.inputHandler.handleAdd()}/>
                         </div>
                         <div className="class-input__form__cancel-button">
-                            <Button label="Cancel"/>
+                            <Button label="Cancel" onClick={() => this.props.inputHandler.clear()}/>
                         </div>
                     </div>
                 </div>

@@ -7,7 +7,8 @@ import {initDepartments} from "../../../actions/classinput/ClassInputActions";
 
 class ClassInputContainer extends Component {
 
-    constructor(props) { super(props);
+    constructor(props) {
+        super(props);
         this.inputHandler = this.props.getInputHandler();
     }
 

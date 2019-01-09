@@ -15,7 +15,8 @@ export const InstructorPrefWidget = (props) => {
         return (
             <HighlightButton className="instructor-pref__button"
                              key={props.Class.classTitle + index.toString()}
-                             onClick={() => props.inputHandler.onInstructorChange(instructor)}
+                             onSelect={() => props.inputHandler.onInstructorChange(instructor)}
+                             onDeselect={() => props.inputHandler.onInstructorChange(null)}
                              label={instructor}/>
         );
     });
@@ -25,7 +26,7 @@ export const InstructorPrefWidget = (props) => {
     return (
         <div className="class-input__panel__pref">
             <Accordion>
-                <AccordionPanel label={props.label} {...props}>
+                <AccordionPanel label={props.Class.classTitle} {...props}>
                     <AccordionLabel>
                         <div className="class-input__panel__part__body__header">
                             <div/>

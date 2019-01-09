@@ -6,19 +6,26 @@ import "./MyAutoComplete.css";
 export class MyAutocomplete extends Component {
     constructor(props) {
         super(props);
+
+        this.state = {
+            value: this.props.value ? this.props.value : "",
+            suggestions: this.props.suggestions
+        }
     }
 
-    getSuggestions() {
-        const value = this.props.value;
+    getSuggestions(value) {
         console.log("getting suggestions");
-        if (!value)
+        if (!value) {
+            console.log("Nothing found, returning default");
+            console.log(this.props.suggestions);
             return this.props.suggestions;
+        }
 
         const inputValue = value.trim().toLowerCase();
         const inputLength = inputValue.length;
 
         let hello = inputLength === 0 ? this.props.suggestions : this.props.suggestions.filter(lang =>
-            lang.toLowerCase().slice(0, inputLength) === inputValue
+            lang.toLowerCase().slice(0, inputLength) === inputValue.toLowerCase()
         );
         console.log(hello);
         return hello;
@@ -33,17 +40,18 @@ export class MyAutocomplete extends Component {
     }
 
     onChange(event, {newValue}) {
-        if(typeof newValue !== "string") {
+        if (typeof newValue !== "string") {
             console.warn(`Value ${newValue} is not a string in autocomplete`);
             return;
         }
-        this.props.onChange(newValue);
+        this.setState({value: newValue.toUpperCase()});
     };
 
     // Autosuggest will call this function every time you need to update suggestions.
     // You already implemented this logic above, so just use it.
     onSuggestionsFetchRequested({value}) {
-        this.setState({state: this.state});
+        console.log("FETCHING " + value);
+        this.setState({suggestions: this.getSuggestions(value)});
     };
 
     // Autosuggest will call this function every time you need to clear suggestions.
@@ -56,11 +64,22 @@ export class MyAutocomplete extends Component {
     }
 
     shouldRenderSuggestions() {
-        return true;
+        return this.props.activeOnClick;
     }
 
     getSuggestionValue(suggestion) {
         return suggestion;
+    }
+
+    onKeyDown(e) {
+        let input;
+        switch(e.keyCode) {
+            // tab key
+            case 9:
+                input = e.target;
+                this.onSuggestionSelected(e, {suggestion: input.value});
+                break;
+        }
     }
 
     render() {
@@ -68,8 +87,9 @@ export class MyAutocomplete extends Component {
         // TODO add on key down here to check for tab and enter and call onSuggestionSelected on there
         const inputProps = {
             placeholder: this.props.defaultValue ? this.props.defaultValue : "",
-            value: this.props.value ? this.props.value : "",
+            value: this.state.value,
             onChange: this.onChange.bind(this),
+            onKeyDown: this.onKeyDown.bind(this),
             disabled: this.props.disabled ? this.props.disabled : false
         };
 
@@ -80,13 +100,13 @@ export class MyAutocomplete extends Component {
         return (
             <div className={this.props.className}>
                 <Autosuggest
-                    suggestions={this.getSuggestions()}
+                    suggestions={this.state.suggestions}
                     onSuggestionsFetchRequested={this.onSuggestionsFetchRequested.bind(this)}
                     onSuggestionsClearRequested={this.onSuggestionsClearRequested.bind(this)}
                     getSuggestionValue={this.getSuggestionValue}
                     renderSuggestion={this.renderSuggestion.bind(this)}
                     onSuggestionSelected={this.onSuggestionSelected.bind(this)}
-                    shouldRenderSuggestions={this.shouldRenderSuggestions.bind(this)}
+                    shouldRenderSuggestions={this.props.activeOnClick ? () => true: undefined}
                     scrollBar={true}
                     inputProps={inputProps}
                 />
@@ -96,9 +116,10 @@ export class MyAutocomplete extends Component {
 }
 
 MyAutocomplete.propTypes = {
+    key: PropTypes.any.isRequired,
     suggestions: PropTypes.array.isRequired,
     value: PropTypes.string.isRequired,
     label: PropTypes.string,
     defaultValue: PropTypes.string,
-    onChange: PropTypes.func,
+    onSelect: PropTypes.func,
 };
