@@ -31,7 +31,8 @@ export class ClassInputForm extends PureComponent {
                             className="class-input__form__autocomplete"
                             suggestions={this.props.departments}
                             value={this.props.department}
-                            onSelect={(e) => this.props.inputHandler.onDepartmentChange(e, true)}
+                            onBlur={async (e) => await this.props.inputHandler.onDepartmentChange(e.target.value, true)}
+                            onSelect={async (e) => await this.props.inputHandler.onDepartmentChange(e, true)}
                             defaultValue={"CSE"}
                             label="department"/>
                     </div>
@@ -43,6 +44,7 @@ export class ClassInputForm extends PureComponent {
                             className="class-input__form__autocomplete"
                             suggestions={this.props.courseNums}
                             value={this.props.courseNum}
+                            onBlur={(e) => this.props.inputHandler.onCourseNumChange(e.target.value, true)}
                             onSelect={(e) => this.props.inputHandler.onCourseNumChange(e, true)}
                             defaultValue={"11"}
                             disabled={!this.props.departments.includes(this.props.department)}

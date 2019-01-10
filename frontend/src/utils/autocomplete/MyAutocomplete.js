@@ -93,8 +93,14 @@ export class MyAutocomplete extends Component {
             disabled: this.props.disabled ? this.props.disabled : false
         };
 
+        if(this.props.onClick)
+            inputProps.onClick = this.props.onClick;
+
         if (this.props.label)
             inputProps.id = this.props.label;
+
+        if(this.props.onBlur)
+            inputProps.onBlur = this.props.onBlur;
 
         // Finally, render it!
         return (
