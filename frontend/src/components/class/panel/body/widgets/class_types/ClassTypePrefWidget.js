@@ -12,9 +12,13 @@ import {ListBox} from "../../../../../../utils/listbox/ListBox";
 export const ClassTypePrefWidget = (props) => {
     const plusMinusNames = classNames("class-input__panel__part__body__header__icon", {"active": props.isOpen});
 
+    console.log(props);
     const listBox = props.types.length > 0 ? (
         <ListBox keyPrefix={props.Class.classTitle}
-                 onClick={(selectedTypes) => props.inputHandler.onClassTypesToIgnoreChange(selectedTypes)}
+                 onClick={(selectedTypes) => {
+                     console.log(selectedTypes);
+                     props.inputHandler.onClassTypesToIgnoreChange(selectedTypes)
+                 }}
                  values={props.types}/>
     ) : (<div> No class types </div>);
 

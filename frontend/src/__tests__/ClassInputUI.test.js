@@ -14,6 +14,7 @@ import reducers from "../reducers";
 import thunk from "redux-thunk";
 import {mount} from 'enzyme';
 import {enterEditMode} from "../actions/classinput/ClassInputActions";
+import {DataFetcher} from "../utils/DataFetcher";
 
 function getInputHandler(store) {
     let fn = getReduxInputHandler();
@@ -39,16 +40,16 @@ describe("Ensuring ClassInputHandler can handle changes in the autocomplete fiel
         let inputHandler = getInputHandler(store);
 
         const newClass = inputHandler.buildClassFromInput();
-        const result = {
+        const expected = {
             classTitle: "CSE 12",
             department: "CSE",
             courseNum: "12",
             classTypesToIgnore: [],
             priority: null,
-            instructor: null
+            instructor: null,
         };
 
-        chaiExpect(result).to.eql(newClass);
+        chaiExpect(newClass).to.deep.include(expected);
     });
 
     test('Creates a more complex class from input', () => {
@@ -63,8 +64,8 @@ describe("Ensuring ClassInputHandler can handle changes in the autocomplete fiel
 
         let inputHandler = getInputHandler(store);
 
-        const newClass = inputHandler.buildClassFromInput();
-        const result = {
+        const result = inputHandler.buildClassFromInput();
+        const expected = {
             classTitle: "CSE 12",
             department: "CSE",
             courseNum: "12",
@@ -73,7 +74,7 @@ describe("Ensuring ClassInputHandler can handle changes in the autocomplete fiel
             instructor: "Mr. Cameron Trando"
         };
 
-        chaiExpect(result).to.eql(newClass);
+        chaiExpect(result).to.deep.include(expected);
     });
 
     test('Making sure other fields are nulled out when changing department field', () => {
@@ -173,7 +174,7 @@ describe("Ensuring ClassInputHandler can handle changes in the autocomplete fiel
     });
 
     describe("UI actions on class input operations", () => {
-        it("Makes a popup occur when hitting remove class in ClassInput", () => {
+        it("Makes a popup occur when hitting remove class in ClassInput", async () => {
             const classInput = mount(
                 <ClassInputContainer store={store}/>
             );
@@ -183,10 +184,24 @@ describe("Ensuring ClassInputHandler can handle changes in the autocomplete fiel
             store.dispatch(setDepartment("CSE"));
             store.dispatch(setCourseNum("12"));
 
+            let transactionID = store.getState().ClassInput.transactionID;
+
             let inputHandler = getInputHandler(store);
             inputHandler.handleAdd();
 
-            store.dispatch(enterEditMode("0"));
+            // mock function
+            DataFetcher.fetchClassSummaryFor = (department) => {
+                return new Promise((resolve, reject) => {
+                    resolve(
+                        {
+                            courseNums: ["11", "12"],
+                            instructorsPerClass: {"11": ["Joseph Politz", "Rick Ord"]},
+                            classTypesPerClass: {},
+                            descriptionsPerClass: {}
+                        }
+                    )});
+            };
+            await store.dispatch(enterEditMode(transactionID));
             inputHandler.handleRemove();
 
             let state = store.getState().ClassInput;

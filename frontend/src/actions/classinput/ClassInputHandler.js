@@ -3,7 +3,7 @@ import {
     setCourseNum, setCourseNums,
     setDepartment,
     setEditOccurred,
-    setID,
+    setTransactionID,
     setInstructor,
     setInstructors,
     setPriority,
@@ -53,12 +53,12 @@ export class ClassInputHandler {
         this.dispatch(setClassTypesToIgnore(null));
         this.dispatch(setPriority(null));
 
-        // populate the course nums and the data
-        this.dispatch(populateSectionData(department));
-
         if (state.editMode)
             this.autosave(true);
+        // populate the course nums and the data
+        return this.dispatch(populateSectionData(department));
     }
+
 
     onCourseNumChange(rawCourseNum, triggers = true) {
         if (!rawCourseNum) {
@@ -73,7 +73,7 @@ export class ClassInputHandler {
         if (!triggers)
             return;
 
-        if (!state.courseNums.includes(courseNum))
+        if (!state.courseNums.includes(courseNum))// && state.courseNums.length > 0)
             return;
 
         // must clear out the fields
@@ -104,6 +104,7 @@ export class ClassInputHandler {
         }
 
         const state = this.getState().ClassInput;
+        console.log(state);
         let instructor = rawInstructor.trim();
         this.dispatch(setInstructor(instructor));
 
@@ -124,25 +125,24 @@ export class ClassInputHandler {
             return;
         }
 
+        this.dispatch(setClassTypesToIgnore(classTypesToIgnore));
         const state = this.getState().ClassInput;
         // record the edit
         if (state.editMode)
             this.autosave(true);
-        this.dispatch(setClassTypesToIgnore(classTypesToIgnore));
     }
 
     onPriorityChange(priority) {
-        if (!priority) {
-            this.dispatch(setPriority(null));
-            return;
-        }
-
-        const state = this.getState().ClassInput;
-        // record the edit
-        if (state.editMode)
-            this.autosave(true);
-
-        this.dispatch(setPriority(priority));
+        // if (!priority) {
+        //     this.dispatch(setPriority(null));
+        //     return;
+        // }
+        //
+        // this.dispatch(setPriority(priority));
+        // const state = this.getState().ClassInput;
+        // // record the edit
+        // if (state.editMode)
+        //     this.autosave(true);
     }
 
     buildClassFromInput() {
@@ -175,7 +175,7 @@ export class ClassInputHandler {
 
     isValidEdit(newClass) {
         const state = this.getState().ClassInput;
-        if (this.isDuplicate(newClass, state.id)) {
+        if (this.isDuplicate(newClass, state.transactionID)) {
             return {
                 valid: false,
                 reason: `Class ${state.department} ${state.courseNum} has already been added!`
@@ -223,8 +223,10 @@ export class ClassInputHandler {
         const state = this.getState().ClassInput;
         if (force || (state.editMode && state.editOccurred)) {
             console.log("autosaving");
+            console.log(state);
             // just save everything
             let newClass = this.buildClassFromInput();
+            console.log(newClass);
 
             let {valid, reason} = this.isValidEdit(newClass);
             if (!valid) {
@@ -232,7 +234,7 @@ export class ClassInputHandler {
             }
 
             this.dispatch(setEditOccurred(false));
-            this.dispatch(editClass(state.id, newClass));
+            this.dispatch(editClass(state.transactionID, newClass));
             this.savePreferences();
         }
     }
@@ -264,7 +266,7 @@ export class ClassInputHandler {
             state.messageHandler.showSuccess(`Removed class ${state.department} ${state.courseNum}`, 1000);
         else state.messageHandler.showSuccess("Successfully removed class", 1000);
 
-        this.dispatch(removeClass(state.id));
+        this.dispatch(removeClass(state.transactionID));
         this.dispatch(enterInputMode());
     }
 
@@ -303,7 +305,7 @@ export class ClassInputHandler {
         }
 
         // using the addClass method from the reducer
-        this.dispatch(addClass(newClass));
+        this.dispatch(addClass(newClass, state.transactionID));
         this.savePreferences();
 
         // nulling out the other fields
@@ -312,7 +314,9 @@ export class ClassInputHandler {
         this.dispatch(setPriority(null));
         this.dispatch(setClassTypesToIgnore(null));
 
-        this.dispatch(setID(null));
+        console.log("adding");
+        console.log(state.transactionID);
+        this.dispatch(setTransactionID(null));
     }
 
     clear() {
@@ -325,6 +329,9 @@ export class ClassInputHandler {
         this.dispatch(setCourseNums(null));
         this.dispatch(setInstructors(null));
         this.dispatch(setTypes(null));
+
+        // null out this transaction
+        this.dispatch(setTransactionID(null));
     }
 
     savePreferences() {

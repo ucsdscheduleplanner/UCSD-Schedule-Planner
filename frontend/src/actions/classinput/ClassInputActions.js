@@ -3,9 +3,9 @@ import {
     setClassTypesToIgnore,
     setCourseNum,
     setCourseNums, setDepartment,
-    setDepartments, setEditMode, setID,
+    setDepartments, setEditMode, setTransactionID,
     setInstructor,
-    setPriority
+    setPriority, setInstructors, setTypes
 } from "./ClassInputMutator";
 import {setProgress} from "../ScheduleGenerationActions";
 import {getInputHandler} from "./ClassInputHandler";
@@ -23,10 +23,11 @@ export function removeClass(id) {
     }
 }
 
-export function addClass(newClass) {
+export function addClass(newClass, transactionID) {
     return {
         type: ADD_CLASS,
-        newClass: newClass
+        newClass: newClass,
+        transactionID: transactionID
     }
 }
 
@@ -45,34 +46,40 @@ export function initDepartments() {
     }
 }
 
-export function toggleEditMode(id) {
-    return function (dispatch, getState) {
-        if (getState().ClassInput.id !== id)
-            dispatch(enterEditMode(id));
-        else {
-            if (getState().ClassInput.id === null)
-                dispatch(enterEditMode(id));
-            else dispatch(enterInputMode());
-        }
+export function toggleEditMode(transactionID) {
+    return async function (dispatch, getState) {
+        const prevTransactionID = getState().ClassInput.transactionID;
+
+        // nothing changed, so should close it
+        if(prevTransactionID === transactionID) {
+            dispatch(setTransactionID(null));
+            dispatch(enterInputMode());
+        } else
+            await dispatch(enterEditMode(transactionID));
     }
 }
 
 export function enterEditMode(id) {
-    return function (dispatch, getState) {
+    return async function (dispatch, getState) {
         const otherClass = getState().ClassList.selectedClasses[id];
 
         let inputHandler = getInputHandler(dispatch, getState);
-        dispatch(populateSectionData(otherClass.department));
 
-        inputHandler.onDepartmentChange(otherClass.department);
+        await inputHandler.onDepartmentChange(otherClass.department);
+        console.log("DEPARTMENT CHANGE");
+        console.log(getState().ClassInput);
         inputHandler.onCourseNumChange(otherClass.courseNum);
+        console.log("COURSE NUM CHANGE");
+        console.log(getState().ClassInput);
         inputHandler.onInstructorChange(otherClass.instructor);
         inputHandler.onClassTypesToIgnoreChange(otherClass.classTypesToIgnore);
         inputHandler.onPriorityChange(otherClass.priority);
 
         dispatch(setEditMode(true));
         // setting current class id
-        dispatch(setID(id));
+        dispatch(setTransactionID(id));
+
+        console.log(getState().ClassInput);
     }
 }
 
@@ -86,16 +93,27 @@ export function enterInputMode() {
         dispatch(setCourseNum(null));
         dispatch(setDepartment(null));
 
+        dispatch(setInstructors(null));
+        dispatch(setTypes(null));
+        dispatch(setCourseNums(null));
+
         dispatch(setEditMode(false));
-        // just put it to one more than what it was before
-        dispatch(setID(null));
+
+        // make a new transaction id
+        dispatch(setTransactionID(null));
+
+        console.log(getState().ClassList);
     }
 }
 
 export function populateSectionData(department) {
     return async function (dispatch) {
+        console.log("Populating data for " + department);
         let {courseNums, instructorsPerClass, classTypesPerClass, descriptionsPerClass} =
             await DataFetcher.fetchClassSummaryFor(department);
+
+        console.log("FUCK ME MAN ");
+        console.log(courseNums);
 
         dispatch(setCourseNums(courseNums));
         dispatch(populateDataPerClass(instructorsPerClass, descriptionsPerClass, classTypesPerClass));

@@ -12,21 +12,22 @@ export class ClassInputPanel extends PureComponent {
 
     render() {
         console.log(this.props.classList);
-        const partList = Object.keys(this.props.classList).map(index => {
-            const Class = this.props.classList[index];
+        const partList = Object.keys(this.props.classList).map(id => {
+            const Class = this.props.classList[id];
 
             return (
-                <ClassInputPanelPart key={index}
+                <ClassInputPanelPart key={id}
                     // just having a separate index so know which class to edit
                     // don't want to confuse myself with key
-                                     index={index}
+                                     transactionID={id}
                                      inputHandler={this.props.inputHandler}
                                      label={Class.classTitle}
                                      Class={Class}/>
             );
         });
 
-        const openSection = this.props.classList && this.props.id ? this.props.classList[this.props.id].classTitle : null;
+        console.log(this.props.transactionID);
+        const openSection = this.props.classList[this.props.transactionID] ? this.props.classList[this.props.transactionID].classTitle : null;
 
         return (
             <React.Fragment>
@@ -53,7 +54,7 @@ class ClassInputPanelPart extends PureComponent {
                     <AccordionLabel>
                         <ClassInputPanelPartHeaderContainer
                             title={this.props.Class.classTitle}
-                            index={this.props.index}
+                            transactionID={this.props.transactionID}
                             inputHandler={this.props.inputHandler}
                             isOpen={this.props.isOpen}/>
                     </AccordionLabel>

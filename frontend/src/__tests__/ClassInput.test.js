@@ -31,6 +31,18 @@ describe("ClassInput component", () => {
         expect(tree).toMatchSnapshot();
     });
 
+    test("Initialization", () => {
+        const classInput = mount(
+            <ClassInputContainer store={store}/>
+        );
+
+        let state = store.getState().ClassInput;
+
+        chaiExpect(state.instructors).to.have.lengthOf(0);
+        chaiExpect(state.types).to.have.lengthOf(0);
+        chaiExpect(state.transactionID).to.not.equal(null);
+    });
+
     test('Can type in the department autocomplete and have it remember the input', () => {
         const classInput = mount(
             <ClassInputContainer store={store}/>

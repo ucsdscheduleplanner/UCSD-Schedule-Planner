@@ -30,7 +30,6 @@ export const InstructorPrefWidget = (props) => {
                     <AccordionLabel>
                         <div className="class-input__panel__part__body__header">
                             <div/>
-
                             <div className="class-input__panel__part__body__header__title">
                                 Instructor Preference
                             </div>

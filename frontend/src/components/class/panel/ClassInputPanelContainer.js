@@ -10,7 +10,7 @@ class ClassInputPanelContainer extends PureComponent {
         return (
             <ClassInputPanel inputHandler={this.props.inputHandler}
                              classList={this.props.classList}
-                             id={this.props.id}/>
+                             transactionID={this.props.transactionID}/>
         )
     }
 }
@@ -18,7 +18,7 @@ class ClassInputPanelContainer extends PureComponent {
 function mapStateToProps(state) {
     return {
         classList: state.ClassList.selectedClasses,
-        id: state.ClassInput.id
+        transactionID: state.ClassInput.transactionID
     }
 }
 

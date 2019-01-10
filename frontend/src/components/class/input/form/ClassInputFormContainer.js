@@ -2,6 +2,8 @@ import React, {PureComponent} from 'react';
 
 import {ClassInputForm} from "./ClassInputForm";
 import {connect} from "react-redux";
+import {enterInputMode} from "../../../../actions/classinput/ClassInputActions";
+import {bindActionCreators} from "redux";
 
 
 class ClassInputFormContainer extends PureComponent {
@@ -13,18 +15,26 @@ class ClassInputFormContainer extends PureComponent {
                 courseNum={this.props.courseNum}
                 departments={this.props.departments}
                 courseNums={this.props.courseNums}
-                editID={this.props.editID}
+                transactionID={this.props.transactionID}
 
                 // this comes from ClassInput
                 inputHandler={this.props.inputHandler}
+                enterInputMode={this.props.enterInputMode}
             />
         )
     }
 }
 
+function mapDispatchToProps(dispatch) {
+    return bindActionCreators({
+            enterInputMode: enterInputMode,
+        }, dispatch,
+    );
+}
+
 function mapStateToProps(state) {
     return {
-        editID: state.ClassInput.id,
+        transactionID: state.ClassInput.transactionID,
         departments: state.ClassInput.departments,
         courseNums: state.ClassInput.courseNums,
 
@@ -33,4 +43,4 @@ function mapStateToProps(state) {
     }
 }
 
-export default connect(mapStateToProps)(ClassInputFormContainer)
+export default connect(mapStateToProps, mapDispatchToProps)(ClassInputFormContainer)

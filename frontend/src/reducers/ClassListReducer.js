@@ -11,7 +11,9 @@ export default function ClassList(state = {
     switch (action.type) {
         case ADD_CLASS:
             copy = Object.assign({}, state.selectedClasses);
-            copy[state.bufferSize] = action.newClass;
+            // getting position based if an ID was passed along
+            let pos = action.transactionID ? action.transactionID : state.bufferSize;
+            copy[pos] = action.newClass;
             return Object.assign({}, state, {selectedClasses: copy, bufferSize: state.bufferSize + 1});
         case EDIT_CLASS:
             copy = Object.assign({}, state.selectedClasses);

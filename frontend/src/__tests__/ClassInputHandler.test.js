@@ -44,15 +44,14 @@ describe("ClassInput actions such as adding, editing and removing classes", () =
         store.dispatch(setInstructor("Mr. Cameron Trando"));
 
         let inputHandler = getInputHandler(store);
+        let transactionID = store.getState().ClassInput.transactionID;
         inputHandler.handleAdd();
 
         let classList = store.getState().ClassList;
-
         chaiExpect(Object.keys(classList.selectedClasses)).to.have.lengthOf(1);
+        let addedClass = classList.selectedClasses[transactionID];
 
-        let addedClass = classList.selectedClasses[0];
-
-        const result = {
+        const expected = {
             classTitle: "CSE 12",
             department: "CSE",
             courseNum: "12",
@@ -61,7 +60,7 @@ describe("ClassInput actions such as adding, editing and removing classes", () =
             instructor: "Mr. Cameron Trando"
         };
 
-        chaiExpect(addedClass).to.eql(result)
+        chaiExpect(addedClass).to.deep.include(expected)
     });
 
     test('Cannot add duplicate classes', () => {
@@ -162,9 +161,10 @@ describe("ClassInput actions such as adding, editing and removing classes", () =
             store.dispatch(setCourseNum("11"));
 
             let inputHandler = getInputHandler(store);
+            let transactionID = store.getState().ClassInput.transactionID;
             inputHandler.handleAdd();
 
-            store.dispatch(enterEditMode("0"));
+            store.dispatch(enterEditMode(transactionID));
 
             // making second class
             inputHandler.onDepartmentChange("DSC");
@@ -179,7 +179,7 @@ describe("ClassInput actions such as adding, editing and removing classes", () =
             let classList = store.getState().ClassList;
             chaiExpect(Object.keys(classList.selectedClasses)).to.have.lengthOf(1);
 
-            const result = {
+            const expected = {
                 classTitle: "DSC 11",
                 department: "DSC",
                 courseNum: "11",
@@ -188,8 +188,8 @@ describe("ClassInput actions such as adding, editing and removing classes", () =
                 instructor: null,
             };
 
-            let newClass = classList.selectedClasses[0];
-            chaiExpect(newClass).eql(result);
+            let result = classList.selectedClasses[transactionID];
+            chaiExpect(result).deep.include(expected);
         });
 
         it("Can choose to make no edit and be fine", () => {
@@ -203,14 +203,15 @@ describe("ClassInput actions such as adding, editing and removing classes", () =
             store.dispatch(setCourseNum("12"));
 
             let inputHandler = getInputHandler(store);
+            let transactionID = store.getState().ClassInput.transactionID;
             inputHandler.handleAdd();
 
-            store.dispatch(enterEditMode("0"));
+            store.dispatch(enterEditMode(transactionID));
             inputHandler.handleEdit();
 
             let classList = store.getState().ClassList;
             chaiExpect(Object.keys(classList.selectedClasses)).to.have.lengthOf(1);
-            chaiExpect(classList.selectedClasses[0].classTitle).to.equal("CSE 12");
+            chaiExpect(classList.selectedClasses[transactionID].classTitle).to.equal("CSE 12");
         });
 
         test('Can edit a more complex class with instructor and conflicts fields and so on correctly', () => {
@@ -233,9 +234,10 @@ describe("ClassInput actions such as adding, editing and removing classes", () =
             store.dispatch(setInstructor("Rick Ord"));
 
             let inputHandler = getInputHandler(store);
+            let transactionID = store.getState().ClassInput.transactionID;
             inputHandler.handleAdd();
 
-            store.dispatch(enterEditMode("0"));
+            store.dispatch(enterEditMode(transactionID));
 
             // need to reset this after entering edit mode
             store.dispatch(setDepartments(["CSE", "DSC"]));
@@ -253,7 +255,7 @@ describe("ClassInput actions such as adding, editing and removing classes", () =
             let classList = store.getState().ClassList;
             chaiExpect(Object.keys(classList.selectedClasses)).to.have.lengthOf(1);
 
-            const result = {
+            const expected = {
                 classTitle: "CSE 12",
                 department: "CSE",
                 courseNum: "12",
@@ -262,8 +264,8 @@ describe("ClassInput actions such as adding, editing and removing classes", () =
                 instructor: "Joseph Politz",
             };
 
-            let newClass = classList.selectedClasses[0];
-            chaiExpect(newClass).eql(result);
+            let result = classList.selectedClasses[transactionID];
+            chaiExpect(result).deep.include(expected);
         });
 
         test('Instructors options change correctly after editing a class and trying to edit other classes', () => {
@@ -298,6 +300,7 @@ describe("ClassInput actions such as adding, editing and removing classes", () =
             inputHandler.onClassTypesToIgnoreChange(["LE", "LA", "DI"]);
             inputHandler.onInstructorChange("Rick Ord");
 
+            let transactionID = store.getState().ClassInput.transactionID;
             inputHandler.handleAdd();
 
             inputHandler.onDepartmentChange("CSE");
@@ -305,7 +308,7 @@ describe("ClassInput actions such as adding, editing and removing classes", () =
 
             inputHandler.handleAdd();
 
-            store.dispatch(enterEditMode("0"));
+            store.dispatch(enterEditMode(transactionID));
             store.dispatch(populateDataPerClass({"11": ["Joseph Politz", "Rick Ord"], "12": ["Joseph Politz"]}));
 
             const state = store.getState().ClassInput;
@@ -326,20 +329,21 @@ describe("ClassInput actions such as adding, editing and removing classes", () =
             store.dispatch(setCourseNums(["11", "12"]));
             store.dispatch(setDepartment("CSE"));
             store.dispatch(setCourseNum("11"));
+
+            let transactionID = store.getState().ClassInput.transactionID;
+
             // adding first class
             let inputHandler = getInputHandler(store);
             inputHandler.handleAdd();
 
-
-            store.dispatch(enterEditMode("0"));
-            inputHandler.onCourseNumChange("12");
+            store.dispatch(enterEditMode(transactionID));
             store.dispatch(setCourseNum("Blank value"));
 
             inputHandler.handleEdit();
 
             let classList = store.getState().ClassList;
             chaiExpect(Object.keys(classList.selectedClasses)).to.have.lengthOf(1);
-            chaiExpect(classList.selectedClasses[0].courseNum).to.equal("11");
+            chaiExpect(classList.selectedClasses[transactionID].courseNum).to.equal("11");
         });
 
         test('Verifies that a class is is not a duplicate before allowing edit', () => {
@@ -356,21 +360,23 @@ describe("ClassInput actions such as adding, editing and removing classes", () =
             let inputHandler = getInputHandler(store);
             inputHandler.onDepartmentChange("CSE");
             inputHandler.onCourseNumChange("11");
+            let id1 = store.getState().ClassInput.transactionID;
             inputHandler.handleAdd();
 
             // making second class
             store.dispatch(setDepartment("CSE"));
             store.dispatch(setCourseNum("12"));
+            let id2 = store.getState().ClassInput.transactionID;
             inputHandler.handleAdd();
 
-            store.dispatch(enterEditMode("0"));
+            store.dispatch(enterEditMode(id1));
             store.dispatch(setCourseNum("12"));
             inputHandler.handleEdit();
 
             let classList = store.getState().ClassList;
             chaiExpect(Object.keys(classList.selectedClasses)).to.have.lengthOf(2);
-            chaiExpect(classList.selectedClasses[0].courseNum).to.equal("11");
-            chaiExpect(classList.selectedClasses[1].courseNum).to.equal("12");
+            chaiExpect(classList.selectedClasses[id1].courseNum).to.equal("11");
+            chaiExpect(classList.selectedClasses[id2].courseNum).to.equal("12");
         });
     });
 });
