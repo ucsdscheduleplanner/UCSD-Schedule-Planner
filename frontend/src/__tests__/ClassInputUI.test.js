@@ -77,7 +77,7 @@ describe("Ensuring ClassInputHandler can handle changes in the autocomplete fiel
         chaiExpect(result).to.deep.include(expected);
     });
 
-    test('Making sure other fields are nulled out when changing department field', () => {
+    test('Making sure other fields are nulled out when changing department field', async () => {
         const classInput = mount(
             <ClassInputContainer store={store}/>
         );
@@ -89,8 +89,22 @@ describe("Ensuring ClassInputHandler can handle changes in the autocomplete fiel
         store.dispatch(setInstructor("Mr. Cameron Trando"));
 
         let inputHandler = getInputHandler(store);
-        inputHandler.onDepartmentChange("DSC");
 
+        // mock function
+        DataFetcher.fetchClassSummaryFor = (department) => {
+            return new Promise((resolve, reject) => {
+                resolve(
+                    {
+                        courseNums: ["11", "12"],
+                        instructorsPerClass: {"11": ["Joseph Politz", "Rick Ord"]},
+                        classTypesPerClass: {},
+                        descriptionsPerClass: {}
+                    }
+                )
+            });
+        };
+
+        await inputHandler.onDepartmentChange("DSC");
         let state = store.getState().ClassInput;
 
         chaiExpect(state.department).to.equal("DSC");
@@ -149,7 +163,7 @@ describe("Ensuring ClassInputHandler can handle changes in the autocomplete fiel
         chaiExpect(state.classTypesToIgnore).to.eql(["LE", "blah"]);
     });
 
-    test('Everything besides department is unchanged when trying to change the department to something that is not in the departments list', () => {
+    test('Everything besides department is unchanged when trying to change the department to something that is not in the departments list', async () => {
         const classInput = mount(
             <ClassInputContainer store={store}/>
         );
@@ -162,7 +176,7 @@ describe("Ensuring ClassInputHandler can handle changes in the autocomplete fiel
         store.dispatch(setInstructor("Mr. Cameron Trando"));
 
         let inputHandler = getInputHandler(store);
-        inputHandler.onDepartmentChange("CSEEEE");
+        await inputHandler.onDepartmentChange("CSEEEE");
 
         let state = store.getState().ClassInput;
 
@@ -199,7 +213,8 @@ describe("Ensuring ClassInputHandler can handle changes in the autocomplete fiel
                             classTypesPerClass: {},
                             descriptionsPerClass: {}
                         }
-                    )});
+                    )
+                });
             };
             await store.dispatch(enterEditMode(transactionID));
             inputHandler.handleRemove();

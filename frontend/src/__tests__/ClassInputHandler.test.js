@@ -148,10 +148,24 @@ describe("ClassInput actions such as adding, editing and removing classes", () =
     });
 
     describe("Editing classes", () => {
-        test('Can edit a simple class correctly', () => {
+        test('Can edit a simple class correctly', async () => {
             const classInput = mount(
                 <ClassInputContainer store={store}/>
             );
+
+            // mock function
+            DataFetcher.fetchClassSummaryFor = (department) => {
+                return new Promise((resolve, reject) => {
+                    resolve(
+                        {
+                            courseNums: ["11", "12"],
+                            instructorsPerClass: {"11": ["Joseph Politz", "Rick Ord"]},
+                            classTypesPerClass: {},
+                            descriptionsPerClass: {}
+                        }
+                    )
+                });
+            };
 
             // making first class
             store.dispatch(setDepartments(["CSE", "DSC"]));
@@ -167,7 +181,7 @@ describe("ClassInput actions such as adding, editing and removing classes", () =
             store.dispatch(enterEditMode(transactionID));
 
             // making second class
-            inputHandler.onDepartmentChange("DSC");
+            await inputHandler.onDepartmentChange("DSC");
             inputHandler.onCourseNumChange("11");
 
             // adding again
@@ -214,7 +228,7 @@ describe("ClassInput actions such as adding, editing and removing classes", () =
             chaiExpect(classList.selectedClasses[transactionID].classTitle).to.equal("CSE 12");
         });
 
-        test('Can edit a more complex class with instructor and conflicts fields and so on correctly', () => {
+        test('Can edit a more complex class with instructor and conflicts fields and so on correctly', async () => {
             // need shallow here because ClassInput has a componentDidMount method causing what I believe to be a
             // race condition between updating in this test thread and updating in the componentDidMount thread,
             // giving wrong results - should not occur in production however
@@ -222,6 +236,20 @@ describe("ClassInput actions such as adding, editing and removing classes", () =
             const classInput = shallow(
                 <ClassInputContainer store={store}/>
             );
+
+            // mock function
+            DataFetcher.fetchClassSummaryFor = (department) => {
+                return new Promise((resolve, reject) => {
+                    resolve(
+                        {
+                            courseNums: ["11", "12"],
+                            instructorsPerClass: {"11": ["Joseph Politz", "Rick Ord"]},
+                            classTypesPerClass: {},
+                            descriptionsPerClass: {}
+                        }
+                    )
+                });
+            };
 
             // making first class
             store.dispatch(setDepartments(["CSE", "DSC"]));
@@ -237,7 +265,7 @@ describe("ClassInput actions such as adding, editing and removing classes", () =
             let transactionID = store.getState().ClassInput.transactionID;
             inputHandler.handleAdd();
 
-            store.dispatch(enterEditMode(transactionID));
+            await store.dispatch(enterEditMode(transactionID));
 
             // need to reset this after entering edit mode
             store.dispatch(setDepartments(["CSE", "DSC"]));
@@ -268,19 +296,24 @@ describe("ClassInput actions such as adding, editing and removing classes", () =
             chaiExpect(result).deep.include(expected);
         });
 
-        test('Instructors options change correctly after editing a class and trying to edit other classes', () => {
+        test('Instructors options change correctly after editing a class and trying to edit other classes', async () => {
             // need shallow here because ClassInput has a componentDidMount method causing what I believe to be a
             // race condition between updating in this test thread and updating in the componentDidMount thread,
             // giving wrong results - should not occur in production however
 
             let prev = DataFetcher.fetchClassSummaryFor;
+
             DataFetcher.fetchClassSummaryFor = (department) => {
-                return {
-                    courseNums: ["11", "12"],
-                    instructorsPerClass: {"11": ["Joseph Politz", "Rick Ord"]},
-                    classTypesPerClass: {},
-                    descriptionsPerClass: {}
-                }
+                return new Promise((resolve, reject) => {
+                    resolve(
+                        {
+                            courseNums: ["11", "12"],
+                            instructorsPerClass: {"11": ["Joseph Politz", "Rick Ord"]},
+                            classTypesPerClass: {},
+                            descriptionsPerClass: {}
+                        }
+                    )
+                });
             };
 
             const classInput = shallow(
@@ -295,7 +328,7 @@ describe("ClassInput actions such as adding, editing and removing classes", () =
                 {}, {}));
 
             let inputHandler = getInputHandler(store);
-            inputHandler.onDepartmentChange("CSE");
+            await inputHandler.onDepartmentChange("CSE");
             inputHandler.onCourseNumChange("11");
             inputHandler.onClassTypesToIgnoreChange(["LE", "LA", "DI"]);
             inputHandler.onInstructorChange("Rick Ord");
@@ -303,13 +336,12 @@ describe("ClassInput actions such as adding, editing and removing classes", () =
             let transactionID = store.getState().ClassInput.transactionID;
             inputHandler.handleAdd();
 
-            inputHandler.onDepartmentChange("CSE");
+            await inputHandler.onDepartmentChange("CSE");
             inputHandler.onCourseNumChange("12");
 
             inputHandler.handleAdd();
 
-            store.dispatch(enterEditMode(transactionID));
-            store.dispatch(populateDataPerClass({"11": ["Joseph Politz", "Rick Ord"], "12": ["Joseph Politz"]}));
+            await store.dispatch(enterEditMode(transactionID));
 
             const state = store.getState().ClassInput;
             chaiExpect(state.instructors).to.have.members(["Joseph Politz", "Rick Ord"]);
@@ -346,7 +378,7 @@ describe("ClassInput actions such as adding, editing and removing classes", () =
             chaiExpect(classList.selectedClasses[transactionID].courseNum).to.equal("11");
         });
 
-        test('Verifies that a class is is not a duplicate before allowing edit', () => {
+        test('Verifies that a class is is not a duplicate before allowing edit', async () => {
             // need shallow here or else each time we make a course num change with the listeners
             // then the edit is made right away
             const classInput = shallow(
@@ -358,7 +390,7 @@ describe("ClassInput actions such as adding, editing and removing classes", () =
 
             // making first class
             let inputHandler = getInputHandler(store);
-            inputHandler.onDepartmentChange("CSE");
+            await inputHandler.onDepartmentChange("CSE");
             inputHandler.onCourseNumChange("11");
             let id1 = store.getState().ClassInput.transactionID;
             inputHandler.handleAdd();

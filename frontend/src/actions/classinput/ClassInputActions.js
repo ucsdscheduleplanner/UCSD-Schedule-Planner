@@ -112,9 +112,6 @@ export function populateSectionData(department) {
         let {courseNums, instructorsPerClass, classTypesPerClass, descriptionsPerClass} =
             await DataFetcher.fetchClassSummaryFor(department);
 
-        console.log("FUCK ME MAN ");
-        console.log(courseNums);
-
         dispatch(setCourseNums(courseNums));
         dispatch(populateDataPerClass(instructorsPerClass, descriptionsPerClass, classTypesPerClass));
     }
