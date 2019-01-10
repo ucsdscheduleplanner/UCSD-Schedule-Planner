@@ -44,4 +44,21 @@ describe('Class list', () => {
         chaiExpect(Object.keys(state.selectedClasses)).to.have.lengthOf(3);
         chaiExpect(state.selectedClasses[3].classTitle).to.equal("newClass");
     });
+
+    test('Removes class correctly', () => {
+        let classInput = store.getState().ClassInput;
+        let transactionID = classInput.transactionID;
+
+        store.dispatch(addClass({classTitle: "newClass"}, transactionID));
+
+        let state = store.getState().ClassList;
+        chaiExpect(Object.keys(state.selectedClasses)).to.have.lengthOf(1);
+
+        chaiExpect(transactionID).to.not.equal(null);
+
+        // removing class now
+        store.dispatch(removeClass(transactionID));
+        state = store.getState().ClassList;
+        chaiExpect(Object.keys(state.selectedClasses)).to.have.lengthOf(0);
+    });
 });

@@ -17,12 +17,12 @@ export default function ClassList(state = {
             return Object.assign({}, state, {selectedClasses: copy, bufferSize: state.bufferSize + 1});
         case EDIT_CLASS:
             copy = Object.assign({}, state.selectedClasses);
-            copy[action.id] = action.editClass;
+            copy[action.transactionID] = action.editClass;
             return Object.assign({}, state, {selectedClasses: copy});
         case REMOVE_CLASS:
-            let id = parseInt(action.id, 10);
             copy = Object.assign({}, state.selectedClasses);
-            delete copy[id];
+            delete copy[action.transactionID];
+            console.log(copy);
             return Object.assign({}, state, {selectedClasses: copy});
         default:
             return state;

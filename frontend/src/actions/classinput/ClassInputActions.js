@@ -16,10 +16,10 @@ export const REMOVE_CLASS = "REMOVE_CLASS";
 
 export const POPULATE_DATA_PER_CLASS = "POPULATE_DATA_PER_CLASS";
 
-export function removeClass(id) {
+export function removeClass(transactionID) {
     return {
         type: REMOVE_CLASS,
-        id: id
+        transactionID: transactionID
     }
 }
 
@@ -31,10 +31,10 @@ export function addClass(newClass, transactionID) {
     }
 }
 
-export function editClass(id, editClass) {
+export function editClass(transactionID, editClass) {
     return {
         type: EDIT_CLASS,
-        id: id,
+        transactionID: transactionID,
         editClass: editClass,
     }
 }
