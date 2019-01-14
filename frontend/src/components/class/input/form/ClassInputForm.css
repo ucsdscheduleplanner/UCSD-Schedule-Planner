@@ -21,7 +21,10 @@
     column-gap: .5em;
 }
 
-.class-input__form__department {
+.class-input__form__department, .class-input__form__courseNum {
+    display: flex;
+    align-self: flex-end;
+    flex-direction: column;
 }
 
 .class-input__form__body label {

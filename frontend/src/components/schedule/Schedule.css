@@ -18,7 +18,8 @@
 
 .schedule__body {
     height: 100%;
-    margin: 0 12em 3em 2em;
+    min-height: 0;
+    margin: 0 5em 3em 2em;
 }
 
 .schedule__header__body {
@@ -29,18 +30,4 @@
     display: flex;
 }
 
-.schedule__body .dayz.week .x-labels {
-    padding-left: 0;
-    margin-left: 60px;
-    color: white;
-    background-color: #182B49;
-    border-top-left-radius: 5px;
-    border-top-right-radius: 5px;
-}
-
-.schedule__body .dayz.day .days, .dayz.week .days {
-    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.25);
-    border-bottom-left-radius: 5px;
-    border-bottom-right-radius: 5px;
-}
 

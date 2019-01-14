@@ -9,20 +9,35 @@ import {ReactComponent as EditIcon} from "../../../svg/icon-edit.svg";
 import "./ClassInputPanel.css";
 import ClassInputPanelPartHeaderContainer from "./header/ClassInputPanelPartHeaderContainer";
 import {ControlledAccordion} from "../../../utils/accordion/ControlledAccordion";
+import {ClassInputPanelPartHeader} from "./header/ClassInputPanelPartHeader";
 
 export class ClassInputPanel extends PureComponent {
 
     config(item, state) {
-        return state === 'leave' ? {duration: 325}: undefined;
+        return state === 'leave' ? {duration: 325} : undefined;
+    }
+
+    getEmptyValComponent() {
+        return (
+            <div className="class-input__panel__part__header__title">
+                No classes entered
+            </div>
+        )
+    }
+
+    getClassAccordionComponent(Class, openSection) {
+        return (<ControlledAccordion openSection={openSection}>
+            <ClassInputPanelPart key={Class.transactionID}
+                // just having a separate index so know which class to edit
+                // don't want to confuse myself with key
+                                 transactionID={Class.transactionID}
+                                 inputHandler={this.props.inputHandler}
+                                 label={Class.classTitle}
+                                 Class={Class}/>
+        </ControlledAccordion>)
     }
 
     render() {
-        console.log(this.props.classList);
-        const partList = Object.keys(this.props.classList).map(id => styles => {
-
-        });
-
-        console.log(this.props.transactionID);
         const openSection = this.props.classList[this.props.transactionID] ? this.props.classList[this.props.transactionID].classTitle : null;
 
         return (
@@ -33,7 +48,8 @@ export class ClassInputPanel extends PureComponent {
                 </div>
                 <div className="class-input__panel__body">
                     <Transition
-                        items={Object.values(this.props.classList)}
+                        items={Object.values(this.props.classList).length > 0 ?
+                            Object.values(this.props.classList) : [{"badProp": "hello", "transactionID": "world"}]}
                         keys={Class => Class.transactionID}
 
                         config={this.config.bind(this)}
@@ -42,17 +58,18 @@ export class ClassInputPanel extends PureComponent {
                         leave={{opacity: 0}}>
                         {
                             Class => props => {
+                                // using a dummy object
+                                if (Class.badProp) {
+                                    return (
+                                        <div style={props}>
+                                            {this.getEmptyValComponent()}
+                                        </div>
+                                    );
+                                }
+
                                 return (
                                     <div style={props}>
-                                        <ControlledAccordion openSection={openSection}>
-                                            <ClassInputPanelPart key={Class.transactionID}
-                                                // just having a separate index so know which class to edit
-                                                // don't want to confuse myself with key
-                                                                 transactionID={Class.transactionID}
-                                                                 inputHandler={this.props.inputHandler}
-                                                                 label={Class.classTitle}
-                                                                 Class={Class}/>
-                                        </ControlledAccordion>
+                                        {this.getClassAccordionComponent(Class, openSection)}
                                     </div>
                                 );
                             }
