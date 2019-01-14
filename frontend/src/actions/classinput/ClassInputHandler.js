@@ -158,7 +158,9 @@ export class ClassInputHandler {
                 classTypesToIgnore: state.classTypesToIgnore,
 
                 instructors: state.instructors,
-                types: state.types
+                types: state.types,
+
+                transactionID: state.transactionID
             }
         );
     }

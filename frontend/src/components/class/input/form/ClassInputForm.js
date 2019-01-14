@@ -52,9 +52,16 @@ export class ClassInputForm extends PureComponent {
                     </div>
 
                     <div className="class-input__form__buttons">
-                        <div className="class-input__form__add-button">
-                            <Button label="Add" onClick={() => this.props.inputHandler.handleAdd()}/>
-                        </div>
+                        {
+                            this.props.editMode ?
+                                <div className="class-input__form__edit-button">
+                                    <Button label="Edit" onClick={() => this.props.inputHandler.handleEdit()}/>
+                                </div>
+                                :
+                                <div className="class-input__form__add-button">
+                                    <Button label="Add" onClick={() => this.props.inputHandler.handleAdd()}/>
+                                </div>
+                        }
                         <div className="class-input__form__cancel-button">
                             <Button label="Cancel" onClick={() => this.props.enterInputMode()}/>
                         </div>

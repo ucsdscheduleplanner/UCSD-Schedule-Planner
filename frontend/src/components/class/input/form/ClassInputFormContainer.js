@@ -16,6 +16,7 @@ class ClassInputFormContainer extends PureComponent {
                 departments={this.props.departments}
                 courseNums={this.props.courseNums}
                 transactionID={this.props.transactionID}
+                editMode={this.props.editMode}
 
                 // this comes from ClassInput
                 inputHandler={this.props.inputHandler}
@@ -35,6 +36,7 @@ function mapDispatchToProps(dispatch) {
 function mapStateToProps(state) {
     return {
         transactionID: state.ClassInput.transactionID,
+        editMode: state.ClassInput.editMode,
         departments: state.ClassInput.departments,
         courseNums: state.ClassInput.courseNums,
 

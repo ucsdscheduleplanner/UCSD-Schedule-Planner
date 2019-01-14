@@ -1,6 +1,7 @@
 import React, {PureComponent} from 'react';
 import './LandingBody.css';
 import ClassInputContainer from "../../class/input/ClassInputContainer";
+import {Schedule} from "../../schedule/Schedule";
 
 export class LandingBody extends PureComponent {
     render() {
@@ -10,7 +11,7 @@ export class LandingBody extends PureComponent {
                     <ClassInputContainer/>
                 </div>
                 <div className="landing__body--right">
-
+                    <Schedule />
                 </div>
             </div>
         );

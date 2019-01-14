@@ -1,4 +1,6 @@
 import React, {PureComponent} from 'react';
+import {Transition, config, animated} from 'react-spring';
+
 import {ClassInputPanelPartBody} from "./body/ClassInputPanelPartBody";
 import {AccordionBody, AccordionLabel, AccordionPanel} from "../../../utils/accordion/AccordionPanel";
 
@@ -10,20 +12,14 @@ import {ControlledAccordion} from "../../../utils/accordion/ControlledAccordion"
 
 export class ClassInputPanel extends PureComponent {
 
+    config(item, state) {
+        return state === 'leave' ? {duration: 325}: undefined;
+    }
+
     render() {
         console.log(this.props.classList);
-        const partList = Object.keys(this.props.classList).map(id => {
-            const Class = this.props.classList[id];
+        const partList = Object.keys(this.props.classList).map(id => styles => {
 
-            return (
-                <ClassInputPanelPart key={id}
-                    // just having a separate index so know which class to edit
-                    // don't want to confuse myself with key
-                                     transactionID={id}
-                                     inputHandler={this.props.inputHandler}
-                                     label={Class.classTitle}
-                                     Class={Class}/>
-            );
         });
 
         console.log(this.props.transactionID);
@@ -36,16 +32,40 @@ export class ClassInputPanel extends PureComponent {
                     <span className="class-input__panel__header__title">Modify Course Information </span>
                 </div>
                 <div className="class-input__panel__body">
-                    <ControlledAccordion openSection={openSection}>
-                        {partList}
-                    </ControlledAccordion>
+                    <Transition
+                        items={Object.values(this.props.classList)}
+                        keys={Class => Class.transactionID}
+
+                        config={this.config.bind(this)}
+                        from={{opacity: 0}}
+                        enter={{opacity: 1}}
+                        leave={{opacity: 0}}>
+                        {
+                            Class => props => {
+                                return (
+                                    <div style={props}>
+                                        <ControlledAccordion openSection={openSection}>
+                                            <ClassInputPanelPart key={Class.transactionID}
+                                                // just having a separate index so know which class to edit
+                                                // don't want to confuse myself with key
+                                                                 transactionID={Class.transactionID}
+                                                                 inputHandler={this.props.inputHandler}
+                                                                 label={Class.classTitle}
+                                                                 Class={Class}/>
+                                        </ControlledAccordion>
+                                    </div>
+                                );
+                            }
+                        }
+                    </Transition>
                 </div>
             </React.Fragment>
         )
     }
 }
 
-class ClassInputPanelPart extends PureComponent {
+class ClassInputPanelPart
+    extends PureComponent {
 
     render() {
         return (

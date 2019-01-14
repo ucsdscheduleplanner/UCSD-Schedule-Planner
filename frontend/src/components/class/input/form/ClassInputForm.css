@@ -42,7 +42,7 @@
 }
 
 .class-input__form__courseNum {
-    text-overflow-ellipsis: ellipsis;
+
 }
 
 .class-input__form__buttons {
@@ -53,13 +53,20 @@
     flex-wrap: wrap;
 }
 
-.class-input__form__add-button, .class-input__form__cancel-button {
+.class-input__form__add-button, .class-input__form__cancel-button, .class-input__form__edit-button {
     font-size: 10px;
 }
 
 .class-input__form__add-button .custom-button {
     font-size: inherit;
     background-color: green;
+    padding: .5em 1em .5em 1em;
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.25);
+}
+
+.class-input__form__edit-button .custom-button {
+    font-size: inherit;
+    background-color: blueviolet;
     padding: .5em 1em .5em 1em;
 }
 

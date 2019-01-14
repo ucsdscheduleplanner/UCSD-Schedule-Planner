@@ -52,5 +52,5 @@ This is to make the instructor pref always darker blue
     display: block;
     margin: 0 auto;
     width: 95%;
-    border-bottom: thin solid blue;
+    border-bottom: thin solid #1E2B4B;
 }
