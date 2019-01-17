@@ -8,6 +8,9 @@ export class Schedule extends PureComponent {
 
 
     render() {
+        let generationResult = this.props.generationResult;
+        let schedule = generationResult.schedules.length > 0 ? generationResult.schedules[0]: [];
+
         return (
             <div className="schedule">
                 <div className="schedule__header">
@@ -18,7 +21,7 @@ export class Schedule extends PureComponent {
                 </div>
 
                 <div className="schedule__body">
-                    <WeekCalendar/>
+                    <WeekCalendar schedule={schedule}/>
                 </div>
             </div>
         )

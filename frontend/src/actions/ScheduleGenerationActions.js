@@ -161,15 +161,15 @@ export class ScheduleGeneratorPreprocessor {
 
 /**
  * This is in redux so we have hooks that determine the progress of generating the generationResult *
- * @param selectedClasses comes in as a dictionary so must convert to a list
  * @returns {Function}
  */
 // in the future, consider adding default parameters for an IT test here
-export function getSchedule(selectedClasses) {
+export function getSchedule() {
     return async function (dispatch, getState) {
+        console.log("hey why aren't you working");
+        console.log("Beginning generation");
         // let redux know that we are creating a generationResult
         dispatch(startGenerating());
-
         let {classData, classTypesToIgnore, preferences} = await new ScheduleGeneratorPreprocessor(dispatch, getState).preprocess();
         // tell middleware we want to create a generationResult with an action
         // this will allow the web worker to take over

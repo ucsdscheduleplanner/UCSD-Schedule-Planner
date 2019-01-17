@@ -6,7 +6,6 @@ import {connect} from "react-redux";
 class ClassInputPanelContainer extends PureComponent {
 
     render() {
-        console.log(this.props.id);
         return (
             <ClassInputPanel inputHandler={this.props.inputHandler}
                              classList={this.props.classList}

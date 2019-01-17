@@ -2,14 +2,11 @@ import React, {PureComponent} from "react";
 import Calendar from "react-big-calendar";
 import moment from 'moment';
 import "react-big-calendar/lib/css/react-big-calendar.css";
-import {Button} from "primereact/components/button/Button";
-import {ics} from "../../utils/download/ics";
-import ClassEvent from "./ClassEvent";
-import {addEvents} from "../../utils/download/GCalendar";
-import {TimeBuilder} from "../../utils/time/TimeUtils";
 import Dayz from "dayz/dist/dayz";
 import "dayz/dist/css/dayz.min.css";
 import "./WeekCalendar.css";
+import ClassEventWrapper from "./ClassEventWrapper";
+import {Test} from "./test";
 
 
 Calendar.setLocalizer(Calendar.momentLocalizer(moment));
@@ -18,16 +15,7 @@ Calendar.setLocalizer(Calendar.momentLocalizer(moment));
 class WeekCalendar extends PureComponent {
     constructor(props) {
         super(props);
-        // this.state = {
-        //     subsections: [],
-        //     events: [],
-        //     schedule: null,
-        // };
-
-        const date = moment();
         this.state = {
-            date,
-            display: 'week',
             events: new Dayz.EventsCollection([
                 {
                     content: '9am - 2pm (resizable)',
@@ -57,15 +45,29 @@ class WeekCalendar extends PureComponent {
                 },
             ]),
         };
-
-        // this.state.schedule = this.props.schedule;
-        // this.state.events = this.initEvents(this.props.schedule);
     }
 
-    initEvents(schedule) {
+    convertToRange(timeInterval) {
+        if (timeInterval === null)
+            return null;
+        let start = timeInterval.start;
+        let end = timeInterval.end;
+
+        if (start && end) {
+            start = moment(start);
+            end = moment(end);
+        } else {
+            console.warn("Start or end are not valid");
+            console.warn(start);
+            console.warn(end);
+        }
+
+        return moment.range(start, end);
+    }
+
+    createEvents(schedule) {
         let ret = [];
         for (let Class of schedule) {
-
             if (Class.sections.length === 0)
                 continue;
 
@@ -77,70 +79,41 @@ class WeekCalendar extends PureComponent {
                 let strippedClassData = Object.assign({}, Class, {sections: []});
                 let strippedSectionData = Object.assign({}, section, {subsections: []});
 
-                ret.push({
-                    ...strippedClassData,
-                    ...strippedSectionData,
-                    ...subsection,
-                    ...subsection.timeInterval
-                });
+                let timeRange = this.convertToRange(subsection.timeInterval);
+
+                ret.push(
+                    new ClassEventWrapper({
+                        content: strippedSectionData.classTitle,
+                        ...strippedClassData,
+                        ...strippedSectionData,
+                        ...subsection,
+                        range: timeRange
+                    })
+                );
             }
         }
-        return ret;
+        return new Dayz.EventsCollection(ret);
     }
 
-    downloadICS(subsections) {
-        let calendar = ics();
-        for (let subsection of subsections) {
-            let fiveWeeksAhead = new Date();
-            // setting five weeks ahead
-            fiveWeeksAhead.setDate(fiveWeeksAhead.getDate() + 35);
-            let recurringEventRule = {
-                freq: "WEEKLY",
-                until: fiveWeeksAhead,
-                interval: 1,
-                byday: [subsection.day]
-            };
-
-            calendar.addEvent(
-                subsection.classTitle,
-                subsection.description,
-                subsection.location,
-                subsection.timeInterval['start'],
-                subsection.timeInterval['end'],
-                recurringEventRule
-            )
-        }
-        calendar.download("Calendar");
+    onEventClick(ev, event) {
+        console.log("got clicked");
+        console.log(ev);
+        console.log(event);
     }
 
     render() {
-        // setting max and min times
-        const minTime = new TimeBuilder().withHour(8).build();
-        const maxTime = new TimeBuilder().withHour(23).build();
+        const relativeDate = moment();
+        const events = this.createEvents(this.props.schedule);
 
-        const dayFormat = {
-            dayFormat: 'ddd'
-        };
-
-        const icsDownload = (
-            <Button id="ics-button"
-                    label="Download Calendar" className="ui-button-info"
-                    onClick={this.downloadICS.bind(this, this.state.subsections)}
-                    disabled={this.props.empty}/>
-        );
-        const toGCalendar = (
-            <Button id="gcalendar-button" label="Add to Google Calendar" className="ui-button-info"
-                    onClick={addEvents.bind(this, this.state.subsections)}
-                    disabled={this.props.empty}/>
-        );
-        const components = {
-            event: ClassEvent
-        };
+        console.log(events);
 
         return (
             <div className="calendar">
                 <Dayz
-                    {...this.state}
+                    onEventClick={this.onEventClick.bind(this)}
+                    date={relativeDate}
+                    events={events}
+                    display="week"
                     displayHours={[8, 21]}
                 />
             </div>

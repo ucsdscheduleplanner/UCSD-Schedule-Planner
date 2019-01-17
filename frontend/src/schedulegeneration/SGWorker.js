@@ -628,6 +628,8 @@ export function SGWorker() {
 
         // only really care about errors if we failed to generate a generationResult
         let ret = new GenerationResult(schedules, errors);
+        console.log("Finished generating, result are...");
+        console.log(ret);
         return ret;
     }
 }

@@ -4,7 +4,8 @@
     display: flex;
     font-size: 18px;
     text-align: left;
-    height: auto;
+
+    margin: .4em;
 }
 
 .class-input__form__header__title {

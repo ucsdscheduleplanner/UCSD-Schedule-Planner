@@ -12,6 +12,7 @@ import {
 import {addClass, editClass, enterInputMode, populateSectionData, removeClass} from "./ClassInputActions";
 import {SchedulePreferenceInputHandler} from "../schedulepreference/SchedulePreferenceInputHandler";
 import {ignoreClassTypes} from "../ignoreclasstypes/IgnoreClassTypesActions";
+import {getSchedule} from "../ScheduleGenerationActions";
 
 /**
  * Is responsible for handling all ClassInput actions, which includes running business logic when changing fields to adding
@@ -248,6 +249,9 @@ export class ClassInputHandler {
             state.messageHandler.showError(errMsg, 1000);
 
         this.dispatch(enterInputMode());
+
+        // TODO check if this is a significant change, and if it is then regenerate schedule
+        this.dispatch(getSchedule());
     }
 
     /**
@@ -270,6 +274,8 @@ export class ClassInputHandler {
 
         this.dispatch(removeClass(state.transactionID));
         this.dispatch(enterInputMode());
+
+        this.dispatch(getSchedule());
     }
 
     /**
@@ -316,9 +322,9 @@ export class ClassInputHandler {
         this.dispatch(setPriority(null));
         this.dispatch(setClassTypesToIgnore(null));
 
-        console.log("adding");
-        console.log(state.transactionID);
         this.dispatch(setTransactionID(null));
+
+        this.dispatch(getSchedule());
     }
 
     clear() {

@@ -4,6 +4,7 @@ import {ClassInputForm} from "./ClassInputForm";
 import {connect} from "react-redux";
 import {enterInputMode} from "../../../../actions/classinput/ClassInputActions";
 import {bindActionCreators} from "redux";
+import {getSchedule} from "../../../../actions/ScheduleGenerationActions";
 
 
 class ClassInputFormContainer extends PureComponent {
@@ -21,6 +22,7 @@ class ClassInputFormContainer extends PureComponent {
                 // this comes from ClassInput
                 inputHandler={this.props.inputHandler}
                 enterInputMode={this.props.enterInputMode}
+                getSchedule={this.props.getSchedule}
             />
         )
     }
@@ -29,6 +31,7 @@ class ClassInputFormContainer extends PureComponent {
 function mapDispatchToProps(dispatch) {
     return bindActionCreators({
             enterInputMode: enterInputMode,
+            getSchedule: getSchedule
         }, dispatch,
     );
 }

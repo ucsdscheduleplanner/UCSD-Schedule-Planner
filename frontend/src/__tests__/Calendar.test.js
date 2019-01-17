@@ -5,7 +5,7 @@ import {mount, shallow} from 'enzyme';
 import {Dialog} from 'primereact/components/dialog/Dialog';
 import WeekCalendar from '../components/schedule/WeekCalendar';
 import {ResultPanel} from '../components/schedule/ResultPanel';
-import ClassEvent from '../components/schedule/ClassEvent';
+import ClassEventWrapper from '../components/schedule/ClassEventWrapper';
 
 import {expect} from 'chai';
 import moment from 'moment';
@@ -105,7 +105,7 @@ describe('Calendar component', () => {
       <WeekCalendar empty={false} schedule={testSchedule} />,
     );
 
-    expect(wrapper.contains(ClassEvent)).to.equal(true);
+    expect(wrapper.contains(ClassEventWrapper)).to.equal(true);
   });
 
   it('Renders the download ics button given a schedule', () => {

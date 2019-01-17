@@ -1,5 +1,6 @@
 import React, {PureComponent} from 'react';
-import {Transition, config, animated} from 'react-spring';
+import PropTypes from 'prop-types';
+import {Transition} from 'react-spring';
 
 import {ClassInputPanelPartBody} from "./body/ClassInputPanelPartBody";
 import {AccordionBody, AccordionLabel, AccordionPanel} from "../../../utils/accordion/AccordionPanel";
@@ -9,7 +10,6 @@ import {ReactComponent as EditIcon} from "../../../svg/icon-edit.svg";
 import "./ClassInputPanel.css";
 import ClassInputPanelPartHeaderContainer from "./header/ClassInputPanelPartHeaderContainer";
 import {ControlledAccordion} from "../../../utils/accordion/ControlledAccordion";
-import {ClassInputPanelPartHeader} from "./header/ClassInputPanelPartHeader";
 
 export class ClassInputPanel extends PureComponent {
 
@@ -37,6 +37,11 @@ export class ClassInputPanel extends PureComponent {
         </ControlledAccordion>)
     }
 
+    getItems() {
+        return Object.values(this.props.classList).length > 0 ?
+            Object.values(this.props.classList) : [{"badProp": "hello", "transactionID": "world"}];
+    }
+
     render() {
         const openSection = this.props.classList[this.props.transactionID] ? this.props.classList[this.props.transactionID].classTitle : null;
 
@@ -48,10 +53,8 @@ export class ClassInputPanel extends PureComponent {
                 </div>
                 <div className="class-input__panel__body">
                     <Transition
-                        items={Object.values(this.props.classList).length > 0 ?
-                            Object.values(this.props.classList) : [{"badProp": "hello", "transactionID": "world"}]}
+                        items={this.getItems()}
                         keys={Class => Class.transactionID}
-
                         config={this.config.bind(this)}
                         from={{opacity: 0}}
                         enter={{opacity: 1}}
@@ -106,3 +109,9 @@ class ClassInputPanelPart
         )
     }
 }
+
+ClassInputPanelPart.propTypes = {
+    Class: PropTypes.object.isRequired,
+    inputHandler: PropTypes.object.isRequired,
+    isOpen: PropTypes.bool.isRequired
+};

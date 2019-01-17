@@ -8,13 +8,13 @@ import {Button} from "../../../../utils/button/Button";
 import {ReactComponent as SearchIcon} from "../../../../svg/icon-search.svg";
 
 export class ClassInputForm extends PureComponent {
-    render() {
-        console.log("rerendering");
-        console.log(this.props.courseNums);
-        console.log((this.props.editID ? this.props.editID : "") + this.props.department);
 
-        // TODO consider having a transaction ID per time, and have cancel change the transaction id, then can
-        // just add the transaction id on add, and for edit
+    onAdd() {
+        this.props.inputHandler.handleAdd();
+        //this.props.getSchedule();
+    }
+
+    render() {
         return (
             <React.Fragment>
                 <div className="class-input__form__header">
@@ -59,7 +59,7 @@ export class ClassInputForm extends PureComponent {
                                 </div>
                                 :
                                 <div className="class-input__form__add-button">
-                                    <Button label="Add" onClick={() => this.props.inputHandler.handleAdd()}/>
+                                    <Button label="Add" onClick={this.onAdd.bind(this)}/>
                                 </div>
                         }
                         <div className="class-input__form__cancel-button">
