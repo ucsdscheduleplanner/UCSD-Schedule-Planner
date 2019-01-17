@@ -6,7 +6,6 @@ import Dayz from "dayz/dist/dayz";
 import "dayz/dist/css/dayz.min.css";
 import "./WeekCalendar.css";
 import ClassEventWrapper from "./ClassEventWrapper";
-import {Test} from "./test";
 
 
 Calendar.setLocalizer(Calendar.momentLocalizer(moment));
