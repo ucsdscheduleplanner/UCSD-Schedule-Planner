@@ -22,7 +22,8 @@ export default function ScheduleGeneration(state = {
     switch (action.type) {
         case START_GENERATING:
             return Object.assign({}, state, {
-                generating: action.generating
+                generating: action.generating,
+                generatingProgress: 0,
             });
         case FINISH_GENERATING:
             return Object.assign({}, state, {

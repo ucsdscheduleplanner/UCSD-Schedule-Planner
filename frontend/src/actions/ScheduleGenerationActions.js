@@ -166,7 +166,6 @@ export class ScheduleGeneratorPreprocessor {
 // in the future, consider adding default parameters for an IT test here
 export function getSchedule() {
     return async function (dispatch, getState) {
-        console.log("hey why aren't you working");
         console.log("Beginning generation");
         // let redux know that we are creating a generationResult
         dispatch(startGenerating());

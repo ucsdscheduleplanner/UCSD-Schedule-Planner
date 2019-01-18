@@ -2,6 +2,7 @@ import React, {PureComponent} from 'react';
 import {ReactComponent as ViewIcon} from "../../svg/icon-view.svg";
 import "./Schedule.css";
 import WeekCalendar from "./WeekCalendar";
+import {ScheduleProgressBar} from "./ScheduleProgressBar";
 
 
 export class Schedule extends PureComponent {
@@ -9,7 +10,17 @@ export class Schedule extends PureComponent {
 
     render() {
         let generationResult = this.props.generationResult;
-        let schedule = generationResult.schedules.length > 0 ? generationResult.schedules[0]: [];
+        let schedule = generationResult.schedules.length > 0 ? generationResult.schedules[0] : [];
+        console.log(this.props);
+        const progressBar = (
+            <ScheduleProgressBar
+                generatingProgress={this.props.generatingProgress}
+                totalNumPossibleSchedule={this.props.totalNumPossibleSchedule}/>
+        );
+
+        const calendar = (
+            <WeekCalendar schedule={schedule}/>
+        );
 
         return (
             <div className="schedule">
@@ -21,7 +32,7 @@ export class Schedule extends PureComponent {
                 </div>
 
                 <div className="schedule__body">
-                    <WeekCalendar schedule={schedule}/>
+                    { this.props.generating ? progressBar : calendar }
                 </div>
             </div>
         )

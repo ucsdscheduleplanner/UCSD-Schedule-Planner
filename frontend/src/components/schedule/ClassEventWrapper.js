@@ -1,6 +1,6 @@
 import React, {PureComponent} from 'react';
 import {Dialog} from 'primereact/components/dialog/Dialog';
-import "../../css/ClassEvent.css";
+import "./ClassEvent.css";
 import Dayz from "dayz/dist/dayz";
 
 

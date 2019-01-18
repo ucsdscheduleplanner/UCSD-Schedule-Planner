@@ -134,9 +134,6 @@ export function SGWorker() {
             startPref.setHours(startPref.getHours(), startPref.getMinutes(), 0);
             endPref.setHours(endPref.getHours(), endPref.getMinutes(), 0);
 
-            console.log(startPref);
-            console.log(endPref);
-
             let score = 0;
             // this shouldn't happen but if it does punish hardcore
             if (!subsection.timeInterval) {

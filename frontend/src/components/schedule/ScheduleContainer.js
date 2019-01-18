@@ -5,14 +5,17 @@ import {Schedule} from "./Schedule";
 class ScheduleContainer extends Component {
     render() {
         return (
-            <Schedule generationResult={this.props.generationResult}/>
+            <Schedule {...this.props}/>
         )
     }
 }
 
 function mapStateToProps(state) {
     return {
-        generationResult: state.ScheduleGenerate.generationResult
+        generationResult: state.ScheduleGenerate.generationResult,
+        generatingProgress: state.ScheduleGenerate.generatingProgress,
+        totalNumPossibleSchedule: state.ScheduleGenerate.totalNumPossibleSchedule,
+        generating: state.ScheduleGenerate.generating,
     }
 }
 
