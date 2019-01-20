@@ -111,6 +111,8 @@ export class ScheduleGeneratorPreprocessor {
     }
 
     processClassTypesToIgnore() {
+        console.log("HERE");
+        console.log(this.getState().IgnoreClassTypes);
         this.classTypesToIgnore = this.getState().IgnoreClassTypes.classMapping;
     }
 

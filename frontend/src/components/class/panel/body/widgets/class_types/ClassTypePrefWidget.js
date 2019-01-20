@@ -9,19 +9,45 @@ import {AccordionBody, AccordionLabel, AccordionPanel} from "../../../../../../u
 import {ReactComponent as PlusIcon} from "../../../../../../svg/icon-plus.svg";
 import {ListBox} from "../../../../../../utils/listbox/ListBox";
 
+
+const codeToClassType = {
+    AC: 'Activity',
+    CL: 'Clinical Clerkship',
+    CO: 'Conference',
+    DI: 'Discussion',
+    FI: 'Final Exam',
+    FM: 'Film',
+    FW: 'Fieldwork',
+    IN: 'Independent Study',
+    IT: 'Internship',
+    LA: 'Lab',
+    LE: 'Lecture',
+    MI: 'Midterm',
+    MU: 'Make-up Session',
+    OT: 'Other Additional Meeting',
+    PB: 'Problem Session',
+    PR: 'Practicum',
+    RE: 'Review Session',
+    SE: 'Seminar',
+    ST: 'Studio',
+    TU: 'Tutorial',
+};
+
+
 export const ClassTypePrefWidget = (props) => {
+    console.log(props.types);
+    const types = props.types.map(type => codeToClassType[type]);
+    console.log(types);
     const plusMinusNames = classNames("class-input__panel__part__body__header__icon", {"active": props.isOpen});
 
-    console.log(props);
-    const listBox = props.types.length > 0 ? (
+    const listBox = types.length > 0 ? (
         <ListBox
             className="type-pref__container"
             keyPrefix={props.Class.classTitle}
                  onClick={(selectedTypes) => {
-                     console.log(selectedTypes);
                      props.inputHandler.onClassTypesToIgnoreChange(selectedTypes)
                  }}
-                 values={props.types}/>
+                 values={types}/>
     ) : (<div> No class types </div>);
 
     console.log(props.Class.classTitle);

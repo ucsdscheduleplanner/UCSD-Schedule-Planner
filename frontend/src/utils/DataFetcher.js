@@ -10,29 +10,6 @@
 import {BACKEND_URL} from '../settings';
 import {CacheManager} from './CacheManager';
 
-const codeToClassType = {
-    AC: 'Activity',
-    CL: 'Clinical Clerkship',
-    CO: 'Conference',
-    DI: 'Discussion',
-    FI: 'Final Exam',
-    FM: 'Film',
-    FW: 'Fieldwork',
-    IN: 'Independent Study',
-    IT: 'Internship',
-    LA: 'Lab',
-    LE: 'Lecture',
-    MI: 'Midterm',
-    MU: 'Make-up Session',
-    OT: 'Other Additional Meeting',
-    PB: 'Problem Session',
-    PR: 'Practicum',
-    RE: 'Review Session',
-    SE: 'Seminar',
-    ST: 'Studio',
-    TU: 'Tutorial',
-};
-
 
 // used for ordering class types by priority
 const codeKeyToVal = {
