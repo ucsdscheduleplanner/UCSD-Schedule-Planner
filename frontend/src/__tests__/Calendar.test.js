@@ -5,7 +5,7 @@ import {mount, shallow} from 'enzyme';
 import {Dialog} from 'primereact/components/dialog/Dialog';
 import WeekCalendar from '../components/schedule/WeekCalendar';
 import {ResultPanel} from '../components/schedule/ResultPanel';
-import ClassEventWrapper from '../components/schedule/ClassEventWrapper';
+import ClassEventWrapper from '../components/schedule/event/ClassEventWrapper';
 
 import {expect} from 'chai';
 import moment from 'moment';

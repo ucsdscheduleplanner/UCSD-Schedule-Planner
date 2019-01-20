@@ -27,7 +27,9 @@ export default function ScheduleGeneration(state = {
             });
         case FINISH_GENERATING:
             return Object.assign({}, state, {
-                generating: action.generating
+                generating: action.generating,
+                totalNumPossibleSchedule: 1,
+                generatingProgress: 1
             });
         case UPDATE_WITH_GENERATION_RESULT:
             let generateSuccess = action.generationResult.length > 0;

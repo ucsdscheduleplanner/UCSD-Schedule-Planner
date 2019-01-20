@@ -1,4 +1,5 @@
 import React, {PureComponent} from 'react';
+import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import "./ListBox.css"
 import {HighlightButton} from "../button/highlight/HighlightButton";
@@ -40,8 +41,9 @@ export class ListBox extends PureComponent {
             );
         });
 
+        const names = classNames(this.props.className, "list-box__container");
         return (
-            <div className="list-box__container">
+            <div className={names}>
                 {buttons}
             </div>
         );

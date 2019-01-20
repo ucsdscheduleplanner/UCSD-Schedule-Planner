@@ -1,15 +1,21 @@
 import React, {PureComponent} from 'react';
 import {Dialog} from 'primereact/components/dialog/Dialog';
+import classNames from 'classnames';
 import "./ClassEvent.css";
-import Dayz from "dayz/dist/dayz";
 
 
-class ClassEvent extends PureComponent {
+export class ClassEvent extends PureComponent {
     constructor(props) {
         super(props);
         this.state = {
             visible: false
         }
+    }
+
+    getCurrentClassTitle() {
+        if(this.props.selectedClasses[this.props.transactionID])
+            return this.props.selectedClasses[this.props.transactionID].classTitle;
+        else return null;
     }
 
     render() {
@@ -31,6 +37,10 @@ class ClassEvent extends PureComponent {
         const location = `Location: ${this.props.location} ${this.props.room}`;
         const instructor = `Instructor: ${this.props.instructor}`;
 
+
+        const isSelected = this.getCurrentClassTitle() === classTitle;
+        const names = classNames("ce-button", {active: isSelected});
+
         return (
             <React.Fragment>
                 <Dialog header={classTitle} visible={this.state.visible} width="350px"
@@ -48,19 +58,10 @@ class ClassEvent extends PureComponent {
                         {/*<div className="ce-info">{time}</div>*/}
                     </div>
                 </Dialog>
-                <button className="ce-button" onClick={e => this.setState({visible: true})}>
+                <button className={names} onClick={e => this.setState({visible: true})}>
                     {classTitle}
                 </button>
             </React.Fragment>
         )
     }
 }
-
-export default class ClassEventWrapper extends Dayz.EventsCollection.Event {
-    defaultRenderImplementation() {
-        return (
-            <ClassEvent {...this.attributes} />
-        );
-    }
-}
-

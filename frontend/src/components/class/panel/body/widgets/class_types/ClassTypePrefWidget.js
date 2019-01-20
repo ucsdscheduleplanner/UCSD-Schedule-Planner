@@ -14,7 +14,9 @@ export const ClassTypePrefWidget = (props) => {
 
     console.log(props);
     const listBox = props.types.length > 0 ? (
-        <ListBox keyPrefix={props.Class.classTitle}
+        <ListBox
+            className="type-pref__container"
+            keyPrefix={props.Class.classTitle}
                  onClick={(selectedTypes) => {
                      console.log(selectedTypes);
                      props.inputHandler.onClassTypesToIgnoreChange(selectedTypes)

@@ -11,7 +11,7 @@ import './settings';
 import './css/utils.css';
 import thunkMiddleware from 'redux-thunk';
 import {SGMiddleWare} from "./utils/SGMiddleWare";
-import {NewLanding} from "./components/landing/NewLanding";
+import NewLanding from "./components/landing/NewLanding";
 
 const DEBUG = true;
 

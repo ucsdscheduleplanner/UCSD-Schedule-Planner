@@ -10,16 +10,11 @@
 
 .landing__header__title {
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
 }
 
 .landing__header__title__text {
-    position: absolute;
-    left: 50%;
-    top: calc(10% / 2);
-    transform: translate(-50%, -50%);
-
     font-weight: bold;
     font-size: 24px;
     color: white;

@@ -269,8 +269,8 @@ export class ClassInputHandler {
         }
 
         if (state.departments.includes(state.department) && state.courseNums.includes(state.courseNum))
-            state.messageHandler.showSuccess(`Removed class ${state.department} ${state.courseNum}`, 1000);
-        else state.messageHandler.showSuccess("Successfully removed class", 1000);
+            state.messageHandler.showSuccess(`Removed class ${state.department} ${state.courseNum}`, 2000);
+        else state.messageHandler.showSuccess("Successfully removed class", 2000);
 
         this.dispatch(removeClass(state.transactionID));
         this.dispatch(enterInputMode());
