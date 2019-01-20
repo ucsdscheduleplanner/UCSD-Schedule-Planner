@@ -45,12 +45,13 @@ export function setProgress(generatingProgress) {
 }
 
 
-export function generateSchedule(classData, classTypesToIgnore, preferences) {
+export function generateSchedule(classData, classTypesToIgnore, preferences, totalNumPossibleSchedule) {
     return {
         type: GENERATE_SCHEDULE,
         classData: classData,
         classTypesToIgnore: classTypesToIgnore,
-        preferences: preferences
+        preferences: preferences,
+        totalNumPossibleSchedule: totalNumPossibleSchedule
     }
 }
 
@@ -82,6 +83,7 @@ export class ScheduleGeneratorPreprocessor {
         // putting number of possible schedules
         let size = this.calculateMaxSize();
 
+        this.totalNumPossibleSchedule = size;
         console.log(`Total number of possible schedules is ${size}`);
         // this is for progress bar purposes
         this.dispatch(setTotalPossibleNumSchedule(size));
@@ -156,7 +158,8 @@ export class ScheduleGeneratorPreprocessor {
         return {
             classData: this.classData,
             preferences: this.preferences,
-            classTypesToIgnore: this.classTypesToIgnore
+            classTypesToIgnore: this.classTypesToIgnore,
+            totalNumPossibleSchedule: this.totalNumPossibleSchedule,
         }
     }
 }
@@ -171,10 +174,10 @@ export function getSchedule() {
         console.log("Beginning generation");
         // let redux know that we are creating a generationResult
         dispatch(startGenerating());
-        let {classData, classTypesToIgnore, preferences} = await new ScheduleGeneratorPreprocessor(dispatch, getState).preprocess();
+        let {classData, classTypesToIgnore, preferences, totalNumPossibleSchedule} = await new ScheduleGeneratorPreprocessor(dispatch, getState).preprocess();
         // tell middleware we want to create a generationResult with an action
         // this will allow the web worker to take over
-        dispatch(generateSchedule(classData, classTypesToIgnore, preferences));
+        dispatch(generateSchedule(classData, classTypesToIgnore, preferences, totalNumPossibleSchedule));
     }
 }
 

@@ -1,6 +1,4 @@
 import React from 'react';
-import ClassInputContainer from "../containers/ClassInputContainer";
-import {mount, shallow} from "enzyme";
 import {
     setClassTypesToIgnore,
     setCourseNum,
@@ -31,10 +29,6 @@ describe("ClassInput actions such as adding, editing and removing classes", () =
     });
 
     test('Can add a class successfully', () => {
-        const classInput = mount(
-            <ClassInputContainer store={store}/>
-        );
-
         store.dispatch(setDepartments(["CSE", "DSC"]));
         store.dispatch(setCourseNums(["11", "12"]));
         store.dispatch(setInstructors(["Mr. Cameron Trando"]));
@@ -64,10 +58,6 @@ describe("ClassInput actions such as adding, editing and removing classes", () =
     });
 
     test('Cannot add duplicate classes', () => {
-        const classInput = mount(
-            <ClassInputContainer store={store}/>
-        );
-
         // making first class
         store.dispatch(setDepartments(["CSE", "DSC"]));
         store.dispatch(setCourseNums(["11", "12"]));
@@ -96,10 +86,6 @@ describe("ClassInput actions such as adding, editing and removing classes", () =
     });
 
     test('Can add multiple classes', () => {
-        const classInput = mount(
-            <ClassInputContainer store={store}/>
-        );
-
         // making first class
         store.dispatch(setDepartments(["CSE", "DSC"]));
         store.dispatch(setCourseNums(["11", "12"]));
@@ -125,10 +111,6 @@ describe("ClassInput actions such as adding, editing and removing classes", () =
     });
 
     test('Duplicate checking only looks at the class title', () => {
-        const classInput = mount(
-            <ClassInputContainer store={store}/>
-        );
-
         // making first class
         store.dispatch(setDepartments(["CSE"]));
         store.dispatch(setCourseNums(["11"]));
@@ -149,10 +131,6 @@ describe("ClassInput actions such as adding, editing and removing classes", () =
 
     describe("Editing classes", () => {
         test('Can edit a simple class correctly', async () => {
-            const classInput = mount(
-                <ClassInputContainer store={store}/>
-            );
-
             // mock function
             DataFetcher.fetchClassSummaryFor = (department) => {
                 return new Promise((resolve, reject) => {
@@ -207,10 +185,6 @@ describe("ClassInput actions such as adding, editing and removing classes", () =
         });
 
         it("Can choose to make no edit and be fine", () => {
-            const classInput = mount(
-                <ClassInputContainer store={store}/>
-            );
-
             store.dispatch(setDepartments(["CSE", "DSC"]));
             store.dispatch(setCourseNums(["11", "12"]));
             store.dispatch(setDepartment("CSE"));
@@ -232,10 +206,6 @@ describe("ClassInput actions such as adding, editing and removing classes", () =
             // need shallow here because ClassInput has a componentDidMount method causing what I believe to be a
             // race condition between updating in this test thread and updating in the componentDidMount thread,
             // giving wrong results - should not occur in production however
-
-            const classInput = shallow(
-                <ClassInputContainer store={store}/>
-            );
 
             // mock function
             DataFetcher.fetchClassSummaryFor = (department) => {
@@ -297,10 +267,6 @@ describe("ClassInput actions such as adding, editing and removing classes", () =
         });
 
         test('Instructors options change correctly after editing a class and trying to edit other classes', async () => {
-            // need shallow here because ClassInput has a componentDidMount method causing what I believe to be a
-            // race condition between updating in this test thread and updating in the componentDidMount thread,
-            // giving wrong results - should not occur in production however
-
             let prev = DataFetcher.fetchClassSummaryFor;
 
             DataFetcher.fetchClassSummaryFor = (department) => {
@@ -315,11 +281,6 @@ describe("ClassInput actions such as adding, editing and removing classes", () =
                     )
                 });
             };
-
-            const classInput = shallow(
-                <ClassInputContainer store={store}/>
-            );
-
             // making first class
             store.dispatch(setDepartments(["CSE", "DSC"]));
             store.dispatch(setCourseNums(["11", "12"]));
@@ -350,12 +311,6 @@ describe("ClassInput actions such as adding, editing and removing classes", () =
         });
 
         test('Verifies that a class is valid before allowing edit', () => {
-            // need shallow here or else each time we make a course num change with the listeners
-            // then the edit is made right away
-            const classInput = shallow(
-                <ClassInputContainer store={store}/>
-            );
-
             // making first class
             store.dispatch(setDepartments(["CSE"]));
             store.dispatch(setCourseNums(["11", "12"]));
@@ -379,12 +334,6 @@ describe("ClassInput actions such as adding, editing and removing classes", () =
         });
 
         test('Verifies that a class is is not a duplicate before allowing edit', async () => {
-            // need shallow here or else each time we make a course num change with the listeners
-            // then the edit is made right away
-            const classInput = shallow(
-                <ClassInputContainer store={store}/>
-            );
-
             store.dispatch(setDepartments(["CSE"]));
             store.dispatch(setCourseNums(["11", "12"]));
 

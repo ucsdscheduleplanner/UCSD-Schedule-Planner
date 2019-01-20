@@ -1,8 +1,8 @@
 import React, {PureComponent} from 'react';
 import {ReactComponent as ViewIcon} from "../../svg/icon-view.svg";
 import "./Schedule.css";
-import WeekCalendar from "./WeekCalendar";
-import {ScheduleProgressBar} from "./ScheduleProgressBar";
+import WeekCalendar from "./calendar/WeekCalendar";
+import {ScheduleProgressBar} from "./progressbar/ScheduleProgressBar";
 
 
 export class Schedule extends PureComponent {

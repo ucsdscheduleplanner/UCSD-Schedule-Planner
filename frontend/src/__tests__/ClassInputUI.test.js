@@ -1,5 +1,4 @@
 import React from 'react';
-import ClassInputContainer from "../containers/ClassInputContainer";
 import {
     setClassTypesToIgnore,
     setCourseNum,
@@ -12,7 +11,6 @@ import {getInputHandler as getReduxInputHandler} from "../actions/classinput/Cla
 import {applyMiddleware, createStore} from "redux";
 import reducers from "../reducers";
 import thunk from "redux-thunk";
-import {mount} from 'enzyme';
 import {enterEditMode} from "../actions/classinput/ClassInputActions";
 import {DataFetcher} from "../utils/DataFetcher";
 
@@ -30,10 +28,6 @@ describe("Ensuring ClassInputHandler can handle changes in the autocomplete fiel
     });
 
     test('Creates a very bare class from input with just department and course number', () => {
-        const classInput = mount(
-            <ClassInputContainer store={store}/>
-        );
-
         store.dispatch(setDepartment("CSE"));
         store.dispatch(setCourseNum("12"));
 
@@ -53,10 +47,6 @@ describe("Ensuring ClassInputHandler can handle changes in the autocomplete fiel
     });
 
     test('Creates a more complex class from input', () => {
-        const classInput = mount(
-            <ClassInputContainer store={store}/>
-        );
-
         store.dispatch(setDepartment("CSE"));
         store.dispatch(setCourseNum("12"));
         store.dispatch(setClassTypesToIgnore(["LE", "blah"]));
@@ -78,10 +68,6 @@ describe("Ensuring ClassInputHandler can handle changes in the autocomplete fiel
     });
 
     test('Making sure other fields are nulled out when changing department field', async () => {
-        const classInput = mount(
-            <ClassInputContainer store={store}/>
-        );
-
         store.dispatch(setDepartments(["CSE", "DSC"]));
         store.dispatch(setDepartment("CSE"));
         store.dispatch(setCourseNum("12"));
@@ -114,10 +100,6 @@ describe("Ensuring ClassInputHandler can handle changes in the autocomplete fiel
     });
 
     test('Making sure priority, ignored class types, and instructors are nulled out when changing courseNum field', () => {
-        const classInput = mount(
-            <ClassInputContainer store={store}/>
-        );
-
         store.dispatch(setDepartments(["CSE", "DSC"]));
         store.dispatch(setCourseNums(["11", "12"]));
         store.dispatch(setDepartment("CSE"));
@@ -138,10 +120,6 @@ describe("Ensuring ClassInputHandler can handle changes in the autocomplete fiel
     });
 
     test('Instructor, types, and priority are unchanged when trying to change the courseNum to something that is not in the courseNums list', () => {
-        const classInput = mount(
-            <ClassInputContainer store={store}/>
-        );
-
         store.dispatch(setDepartments(["CSE", "DSC"]));
         store.dispatch(setCourseNums(["11", "12"]));
         store.dispatch(setDepartment("CSE"));
@@ -164,10 +142,6 @@ describe("Ensuring ClassInputHandler can handle changes in the autocomplete fiel
     });
 
     test('Everything besides department is unchanged when trying to change the department to something that is not in the departments list', async () => {
-        const classInput = mount(
-            <ClassInputContainer store={store}/>
-        );
-
         store.dispatch(setDepartments(["CSE", "DSC"]));
         store.dispatch(setCourseNums(["11", "12"]));
         store.dispatch(setDepartment("CSE"));
@@ -189,10 +163,6 @@ describe("Ensuring ClassInputHandler can handle changes in the autocomplete fiel
 
     describe("UI actions on class input operations", () => {
         it("Makes a popup occur when hitting remove class in ClassInput", async () => {
-            const classInput = mount(
-                <ClassInputContainer store={store}/>
-            );
-
             store.dispatch(setDepartments(["CSE", "DSC"]));
             store.dispatch(setCourseNums(["11", "12"]));
             store.dispatch(setDepartment("CSE"));

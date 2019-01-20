@@ -5,7 +5,7 @@ import "react-big-calendar/lib/css/react-big-calendar.css";
 import Dayz from "dayz/dist/dayz";
 import "dayz/dist/css/dayz.min.css";
 import "./WeekCalendar.css";
-import ClassEventWrapper from "./event/ClassEventWrapper";
+import ClassEventWrapper from "../event/ClassEventWrapper";
 
 
 Calendar.setLocalizer(Calendar.momentLocalizer(moment));

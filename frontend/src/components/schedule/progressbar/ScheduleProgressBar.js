@@ -8,16 +8,10 @@ export class ScheduleProgressBar extends Component {
         console.log(this.props.generatingProgress / this.props.totalNumPossibleSchedule);
         return (
             <div className="schedule-progress-bar">
-            <Circle percent={100* this.props.generatingProgress / this.props.totalNumPossibleSchedule}
+            <Circle percent={Math.round(100* this.props.generatingProgress / this.props.totalNumPossibleSchedule)}
                   strokeWidth="1"
                   strokeColor="green"/>
             </div>
         );
-        // {/*<ProgressBar*/
-        // }
-        // {/*showValue={true}*/
-        // }
-        // {/*value={Math.round(100 * this.props.generatingProgress / this.props.totalNumPossibleSchedule)}/>*/
-        // }
     }
 }

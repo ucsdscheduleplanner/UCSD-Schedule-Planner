@@ -1,9 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Landing from './Landing.js'
 import registerServiceWorker from './registerServiceWorker';
-import 'primereact/resources/themes/omega/theme.css';
-import 'primereact/resources/primereact.min.css';
 import {applyMiddleware, createStore} from 'redux';
 import {Provider} from 'react-redux';
 import reducers from './reducers/index';
@@ -13,7 +10,7 @@ import thunkMiddleware from 'redux-thunk';
 import {SGMiddleWare} from "./utils/SGMiddleWare";
 import NewLanding from "./components/landing/NewLanding";
 
-const DEBUG = true;
+const DEBUG = false;
 
 if (!DEBUG) {
     if (!window.console) window.console = {};

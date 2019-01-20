@@ -11,11 +11,11 @@ export function SGWorker() {
         let data = evt.data;
         console.log("Data for this run is:");
         console.log(data);
-        let {classData, classTypesToIgnore, preferences} = data;
+        let {classData, classTypesToIgnore, preferences, totalNumPossibleSchedule} = data;
         // have to convert from JSON preferences to preference objects
         let {specificPref, globalPref} = initPreferences(preferences);
 
-        let worker = new ScheduleGenerator(classData, classTypesToIgnore, specificPref, globalPref);
+        let worker = new ScheduleGenerator(classData, classTypesToIgnore, specificPref, globalPref, totalNumPossibleSchedule);
         let results = worker.generate();
 
         // returns a promise
@@ -62,7 +62,9 @@ export function SGWorker() {
         // have to convert from JSOn preferences to preference objects
 
         let {specificPref, globalPref} = initPreferences(preferences);
-        let worker = new ScheduleGenerator(classData, classTypesToIgnore, specificPref, globalPref);
+        // very high total num possible schedules to prevent increment progress from being run
+        // because when increment progress is run then because test is not using a web worker will fail
+        let worker = new ScheduleGenerator(classData, classTypesToIgnore, specificPref, globalPref, 500);
 
         return worker.generate();
     };
@@ -330,9 +332,10 @@ export function SGWorker() {
      * @param classTypesToIgnore a mapping from class title to types to ignore
      * @param specificPref
      * @param globalPref
+     * @param totalNumPossibleSchedule
      * @constructor
      */
-    function ScheduleGenerator(classData = [], classTypesToIgnore = {}, specificPref = {}, globalPref = {}) {
+    function ScheduleGenerator(classData = [], classTypesToIgnore = {}, specificPref = {}, globalPref = {}, totalNumPossibleSchedule = 1) {
         // error map represents an undirected graph where (u,v) exists in edge set E iff u is incompatible with v
         // key is u, value is list of v in which above relationship holds
         this.errorMap = {};
@@ -345,6 +348,7 @@ export function SGWorker() {
         this.classTypesToIgnore = classTypesToIgnore;
         this.specificPref = specificPref;
         this.globalPref = globalPref;
+        this.totalNumPossibleSchedule = totalNumPossibleSchedule;
 
         // an interval tree for generating schedules
         this.intervalTree = new SimpleIntervalTree();
@@ -407,7 +411,7 @@ export function SGWorker() {
             console.log("Batching updates for progress bar, currently batched: " + this.batchedUpdates);
             // doing stuff for progress bar for schedules
             this.batchedUpdates += val;
-            if (this.batchedUpdates > 10) {
+            if (this.batchedUpdates > .05 * this.totalNumPossibleSchedule) {
                 postMessage({type: INCREMENT_PROGRESS, amount: this.batchedUpdates});
                 this.batchedUpdates = 0;
             }

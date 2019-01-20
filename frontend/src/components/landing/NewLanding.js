@@ -3,7 +3,7 @@ import {LandingHeader} from "./header/LandingHeader";
 import {LandingBody} from "./body/LandingBody";
 import {ToastContainer} from 'react-toastify';
 
-import '../../css/NewLanding.css';
+import './NewLanding.css';
 import 'react-toastify/dist/ReactToastify.css';
 import {ToastMessageHandler} from "../../utils/message/ToastMessageHandler";
 import {bindActionCreators} from "redux";
