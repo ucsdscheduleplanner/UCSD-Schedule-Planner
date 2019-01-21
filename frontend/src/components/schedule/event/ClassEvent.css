@@ -1,9 +1,9 @@
-.dayz .event .evbody {
+.calendar .dayz .event .evbody {
     padding: 0;
     border: 0;
 }
 
-.dayz .event {
+.calendar .dayz .event {
     border: 0;
     background: none;
 }
@@ -11,7 +11,7 @@
 .ce-button {
     width: 100%;
     height: 100%;
-    background:#7A7A7A;
+    background: #7A7A7A;
     color: white;
     border: 0;
     padding: 0;
@@ -38,11 +38,11 @@
 }
 
 .ui-dialog.ui-widget .ui-dialog-titlebar {
-    background: rgba(24,43, 73, 1);
+    background: rgba(24, 43, 73, 1);
     color: white;
     font-size: 24px;
 }
 
 .ui-dialog .ui-dialog-titlebar-icon {
-    display: none!important;
+    display: none !important;
 }
