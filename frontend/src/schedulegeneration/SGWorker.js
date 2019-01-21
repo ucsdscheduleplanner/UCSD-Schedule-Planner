@@ -11,6 +11,7 @@ export function SGWorker() {
         let data = evt.data;
         console.log("Data for this run is:");
         console.log(data);
+
         let {classData, classTypesToIgnore, preferences, totalNumPossibleSchedule} = data;
         // have to convert from JSON preferences to preference objects
         let {specificPref, globalPref} = initPreferences(preferences);
@@ -31,8 +32,9 @@ export function SGWorker() {
      * @returns {ScheduleGenerator}
      */
     this.getScheduleGenerator = function (data) {
-        let {classData, conflicts, specificPref, globalPref} = data;
-        return new ScheduleGenerator(classData, conflicts, specificPref, globalPref);
+        // consider changing this so ScheduleGenerator can just handle data
+        let {classData, conflicts, specificPref, globalPref, totalNumPossibleSchedule} = data;
+        return new ScheduleGenerator(classData, conflicts, specificPref, globalPref, totalNumPossibleSchedule);
     };
 
     /**
@@ -556,9 +558,11 @@ export function SGWorker() {
             // current section
             let currentSection = currentClass.sections[i];
 
-            // no need to look at this section if it has no subsections
-            if (currentSection.subsections.length === 0)
+            // add this section anyways to trigger actually adding the schedule
+            if (currentSection.subsections.length === 0) {
+                this.dfs(result, currentSchedule, numClassesAdded + 1);
                 continue;
+            }
 
             // check first if we should even care to remove subsections
             if (this.isClassIgnored(currentClass)) {
