@@ -1,5 +1,5 @@
 import {makeTimeInterval} from "../utils/time/TimeUtils";
-import {SGWorker} from "../schedulegeneration/SGWorker";
+import {SGWorker} from "../utils/schedulegeneration/SGWorker";
 
 import {expect} from 'chai';
 

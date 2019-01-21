@@ -20,6 +20,10 @@
     transition: background .5s ease-in-out;
 }
 
+.ce-button:hover {
+    cursor: pointer;
+}
+
 .ce-button.active {
     background: #182B49;
 }

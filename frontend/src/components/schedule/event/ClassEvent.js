@@ -1,6 +1,7 @@
 import React, {PureComponent} from 'react';
 import classNames from 'classnames';
 import "./ClassEvent.css";
+import {Button} from "../../../utils/button/Button";
 
 
 export class ClassEvent extends PureComponent {
@@ -11,10 +12,25 @@ export class ClassEvent extends PureComponent {
         }
     }
 
-    getCurrentClassTitle() {
-        if(this.props.selectedClasses[this.props.transactionID])
-            return this.props.selectedClasses[this.props.transactionID].classTitle;
+    getUserSelectedClass() {
+        if (this.props.selectedClasses[this.props.transactionID])
+            return this.props.selectedClasses[this.props.transactionID];
         else return null;
+    }
+
+    getTransactionIDForClass() {
+        let classes = Object.values(this.props.selectedClasses);
+        for (let i = 0; i < classes.length; i++) {
+            if (classes[i].classTitle === this.props.classTitle)
+                return classes[i].transactionID;
+        }
+        return null;
+    }
+
+    onClick() {
+        let transactionID = this.getTransactionIDForClass();
+        if (transactionID)
+            this.props.toggleEditMode(transactionID);
     }
 
     render() {
@@ -36,33 +52,15 @@ export class ClassEvent extends PureComponent {
         const location = `Location: ${this.props.location} ${this.props.room}`;
         const instructor = `Instructor: ${this.props.instructor}`;
 
+        let isSelected = false;
+        let userSelectedClass = this.getUserSelectedClass();
+        if (userSelectedClass)
+            isSelected = this.getUserSelectedClass().classTitle === classTitle;
 
-        const isSelected = this.getCurrentClassTitle() === classTitle;
         const names = classNames("ce-button", {active: isSelected});
 
-         {/*<Dialog header={classTitle} visible={this.state.visible} width="350px"*/}
-                        {/*draggable={true}*/}
-                        {/*dismissableMask={true}*/}
-                        {/*responsive={true}*/}
-                        {/*closeOnEscape={true}*/}
-                        {/*minY={70} onHide={e => this.setState({visible: false})}*/}
-                        {/*blockScroll={true}*/}
-                        {/*className="ce-component">*/}
-                    {/*<div>*/}
-                        {/*<div className="ce-info">{courseID}</div>*/}
-                        {/*<div className="ce-info">{instructor}</div>*/}
-                        {/*<div className="ce-info">{location}</div>*/}
-                        {/*/!*<div className="ce-info">{time}</div>*!/*/}
-                    {/*</div>*/}
-                {/*</Dialog>*/}
-
         return (
-            <React.Fragment>
-
-                <button className={names} onClick={e => this.setState({visible: true})}>
-                    {classTitle}
-                </button>
-            </React.Fragment>
+            <Button label={classTitle} className={names} onClick={this.onClick.bind(this)}/>
         )
     }
 }

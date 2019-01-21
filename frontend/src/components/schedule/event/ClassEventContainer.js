@@ -1,6 +1,8 @@
 import React, {PureComponent} from 'react';
 import {ClassEvent} from "./ClassEvent";
 import {connect} from "react-redux";
+import {bindActionCreators} from "redux";
+import {toggleEditMode} from "../../../actions/classinput/ClassInputActions";
 
 
 class ClassEventContainer extends PureComponent  {
@@ -18,4 +20,10 @@ function mapStateToProps(state) {
     }
 }
 
-export default connect(mapStateToProps)(ClassEventContainer);
+function mapDispatchToProps(dispatch) {
+    return bindActionCreators({
+        toggleEditMode: toggleEditMode
+    }, dispatch);
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(ClassEventContainer);
