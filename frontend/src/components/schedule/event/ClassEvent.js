@@ -1,5 +1,4 @@
 import React, {PureComponent} from 'react';
-import {Dialog} from 'primereact/components/dialog/Dialog';
 import classNames from 'classnames';
 import "./ClassEvent.css";
 
@@ -41,23 +40,25 @@ export class ClassEvent extends PureComponent {
         const isSelected = this.getCurrentClassTitle() === classTitle;
         const names = classNames("ce-button", {active: isSelected});
 
+         {/*<Dialog header={classTitle} visible={this.state.visible} width="350px"*/}
+                        {/*draggable={true}*/}
+                        {/*dismissableMask={true}*/}
+                        {/*responsive={true}*/}
+                        {/*closeOnEscape={true}*/}
+                        {/*minY={70} onHide={e => this.setState({visible: false})}*/}
+                        {/*blockScroll={true}*/}
+                        {/*className="ce-component">*/}
+                    {/*<div>*/}
+                        {/*<div className="ce-info">{courseID}</div>*/}
+                        {/*<div className="ce-info">{instructor}</div>*/}
+                        {/*<div className="ce-info">{location}</div>*/}
+                        {/*/!*<div className="ce-info">{time}</div>*!/*/}
+                    {/*</div>*/}
+                {/*</Dialog>*/}
+
         return (
             <React.Fragment>
-                <Dialog header={classTitle} visible={this.state.visible} width="350px"
-                        draggable={true}
-                        dismissableMask={true}
-                        responsive={true}
-                        closeOnEscape={true}
-                        minY={70} onHide={e => this.setState({visible: false})}
-                        blockScroll={true}
-                        className="ce-component">
-                    <div>
-                        <div className="ce-info">{courseID}</div>
-                        <div className="ce-info">{instructor}</div>
-                        <div className="ce-info">{location}</div>
-                        {/*<div className="ce-info">{time}</div>*/}
-                    </div>
-                </Dialog>
+
                 <button className={names} onClick={e => this.setState({visible: true})}>
                     {classTitle}
                 </button>

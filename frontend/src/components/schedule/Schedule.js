@@ -6,8 +6,6 @@ import {ScheduleProgressBar} from "./progressbar/ScheduleProgressBar";
 
 
 export class Schedule extends PureComponent {
-
-
     render() {
         let generationResult = this.props.generationResult;
         let schedule = generationResult.schedules.length > 0 ? generationResult.schedules[0] : [];

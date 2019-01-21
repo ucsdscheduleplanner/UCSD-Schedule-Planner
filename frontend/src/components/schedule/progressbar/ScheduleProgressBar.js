@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
-import {ProgressBar} from 'primereact/components/progressbar/ProgressBar';
-import {Line, Circle} from 'rc-progress';
+import {Circle} from 'rc-progress';
 import "./ScheduleProgressBar.css";
 
 export class ScheduleProgressBar extends Component {
