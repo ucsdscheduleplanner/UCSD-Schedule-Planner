@@ -66,11 +66,7 @@ export function enterEditMode(id) {
         let inputHandler = getInputHandler(dispatch, getState);
 
         await inputHandler.onDepartmentChange(otherClass.department);
-        console.log("DEPARTMENT CHANGE");
-        console.log(getState().ClassInput);
         inputHandler.onCourseNumChange(otherClass.courseNum);
-        console.log("COURSE NUM CHANGE");
-        console.log(getState().ClassInput);
         inputHandler.onInstructorChange(otherClass.instructor);
         inputHandler.onClassTypesToIgnoreChange(otherClass.classTypesToIgnore);
         inputHandler.onPriorityChange(otherClass.priority);
@@ -78,8 +74,6 @@ export function enterEditMode(id) {
         dispatch(setEditMode(true));
         // setting current class id
         dispatch(setTransactionID(id));
-
-        console.log(getState().ClassInput);
     }
 }
 

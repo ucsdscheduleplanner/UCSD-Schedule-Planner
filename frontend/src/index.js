@@ -10,7 +10,7 @@ import thunkMiddleware from 'redux-thunk';
 import {SGMiddleWare} from "./utils/SGMiddleWare";
 import NewLanding from "./components/landing/NewLanding";
 
-const DEBUG = false;
+const DEBUG = true;
 
 if (!DEBUG) {
     if (!window.console) window.console = {};

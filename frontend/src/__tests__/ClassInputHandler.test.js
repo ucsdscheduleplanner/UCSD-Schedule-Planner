@@ -6,7 +6,7 @@ import {
     setDepartment,
     setDepartments,
     setInstructor,
-    setInstructors
+    setInstructors, setTypes
 } from "../actions/classinput/ClassInputMutator";
 import {applyMiddleware, createStore} from "redux";
 import reducers from "../reducers";
@@ -156,7 +156,7 @@ describe("ClassInput actions such as adding, editing and removing classes", () =
             let transactionID = store.getState().ClassInput.transactionID;
             inputHandler.handleAdd();
 
-            store.dispatch(enterEditMode(transactionID));
+            await store.dispatch(enterEditMode(transactionID));
 
             // making second class
             await inputHandler.onDepartmentChange("DSC");
@@ -166,7 +166,7 @@ describe("ClassInput actions such as adding, editing and removing classes", () =
             inputHandler.handleEdit();
 
             // returning back to input mode
-            store.dispatch(enterInputMode());
+            await store.dispatch(enterInputMode());
 
             let classList = store.getState().ClassList;
             chaiExpect(Object.keys(classList.selectedClasses)).to.have.lengthOf(1);
@@ -350,7 +350,7 @@ describe("ClassInput actions such as adding, editing and removing classes", () =
             let id2 = store.getState().ClassInput.transactionID;
             inputHandler.handleAdd();
 
-            store.dispatch(enterEditMode(id1));
+            await store.dispatch(enterEditMode(id1));
             store.dispatch(setCourseNum("12"));
             inputHandler.handleEdit();
 
@@ -359,5 +359,51 @@ describe("ClassInput actions such as adding, editing and removing classes", () =
             chaiExpect(classList.selectedClasses[id1].courseNum).to.equal("11");
             chaiExpect(classList.selectedClasses[id2].courseNum).to.equal("12");
         });
+
+        test("When changing between classes multiple times, gets the correct data", async () => {
+            store.dispatch(setDepartments(["CSE"]));
+            store.dispatch(setCourseNums(["11", "12"]));
+            store.dispatch(setTypes(["LE", "DI"]));
+
+            DataFetcher.fetchClassSummaryFor = (department) => {
+                return new Promise((resolve, reject) => {
+                    resolve(
+                        {
+                            courseNums: ["11", "12"],
+                            instructorsPerClass: {"11": ["Joseph Politz", "Rick Ord"]},
+                            classTypesPerClass: {"11": ["LE", "DI"], "12": ["LE"]},
+                            descriptionsPerClass: {}
+                        }
+                    )
+                });
+            };
+
+            // making first class
+            let inputHandler = getInputHandler(store);
+            store.dispatch(setDepartment("CSE"));
+            store.dispatch(setCourseNum("11"));
+            let id1 = store.getState().ClassInput.transactionID;
+            inputHandler.handleAdd();
+
+            // making second class
+            store.dispatch(setDepartment("CSE"));
+            store.dispatch(setCourseNum("12"));
+            let id2 = store.getState().ClassInput.transactionID;
+            inputHandler.handleAdd();
+
+            await store.dispatch(enterEditMode(id2));
+            let state = store.getState().ClassInput;
+            chaiExpect(state.types).to.have.lengthOf(1);
+
+            await store.dispatch(enterEditMode(id1));
+            state = store.getState().ClassInput;
+            console.log(state);
+            chaiExpect(state.types).to.have.lengthOf(2);
+
+            await store.dispatch(enterEditMode(id2));
+            state = store.getState().ClassInput;
+            console.log(state);
+            chaiExpect(state.types).to.have.lengthOf(1);
+        })
     });
 });

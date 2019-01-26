@@ -13,6 +13,12 @@ export class MyAutocomplete extends Component {
         }
     }
 
+    componentDidUpdate(prevProps) {
+        if(prevProps.suggestions !== this.props.suggestions){
+            this.setState({suggestions: this.getSuggestions(this.state.value)});
+        }
+    }
+
     getSuggestions(value) {
         console.log("getting suggestions");
         if (!value) {
@@ -73,11 +79,12 @@ export class MyAutocomplete extends Component {
 
     onKeyDown(e) {
         let input;
-        switch(e.keyCode) {
+        switch (e.keyCode) {
             // tab key
             case 9:
+                console.log(e);
                 input = e.target;
-                this.onSuggestionSelected(e, {suggestion: input.value});
+                //this.onSuggestionSelected(e, {suggestion: input.value});
                 break;
         }
     }
@@ -90,19 +97,18 @@ export class MyAutocomplete extends Component {
             value: this.state.value,
             onChange: this.onChange.bind(this),
             onKeyDown: this.onKeyDown.bind(this),
-            disabled: this.props.disabled ? this.props.disabled : false
+            tabIndex: this.props.tabIndex
         };
 
-        if(this.props.onClick)
+        if (this.props.onClick)
             inputProps.onClick = this.props.onClick;
 
         if (this.props.label)
             inputProps.id = this.props.label;
 
-        if(this.props.onBlur)
+        if (this.props.onBlur)
             inputProps.onBlur = this.props.onBlur;
 
-        // Finally, render it!
         return (
             <div className={this.props.className}>
                 <Autosuggest
@@ -112,7 +118,7 @@ export class MyAutocomplete extends Component {
                     getSuggestionValue={this.getSuggestionValue}
                     renderSuggestion={this.renderSuggestion.bind(this)}
                     onSuggestionSelected={this.onSuggestionSelected.bind(this)}
-                    shouldRenderSuggestions={this.props.activeOnClick ? () => true: undefined}
+                    shouldRenderSuggestions={this.props.activeOnClick ? () => true : undefined}
                     scrollBar={true}
                     inputProps={inputProps}
                 />
@@ -122,7 +128,7 @@ export class MyAutocomplete extends Component {
 }
 
 MyAutocomplete.propTypes = {
-    key: PropTypes.any.isRequired,
+    tabIndex: PropTypes.number.isRequired,
     suggestions: PropTypes.array.isRequired,
     value: PropTypes.string.isRequired,
     label: PropTypes.string,

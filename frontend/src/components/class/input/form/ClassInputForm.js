@@ -26,6 +26,7 @@ export class ClassInputForm extends PureComponent {
                     <div className="class-input__form__department">
                         <label htmlFor="department">Department Code</label>
                         <MyAutocomplete
+                            tabIndex={0}
                             key={this.props.transactionID}
                             activeOnClick={true}
                             className="class-input__form__autocomplete"
@@ -39,8 +40,9 @@ export class ClassInputForm extends PureComponent {
                     <div className="class-input__form__courseNum">
                         <label htmlFor="courseNum">Course Number</label>
                         <MyAutocomplete
-                            key={this.props.transactionID + this.props.department}
-                            activeOnClick={false}
+                            tabIndex={0}
+                            key={this.props.transactionID}
+                            activeOnClick={true}
                             className="class-input__form__autocomplete"
                             suggestions={this.props.courseNums}
                             value={this.props.courseNum}
