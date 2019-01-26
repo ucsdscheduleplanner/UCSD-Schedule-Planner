@@ -13,6 +13,11 @@
     text-align: left;
 }
 
-.instructor-pref__button:hover {
+.instructor-pref__button:focus {
+    outline: none;
+    box-shadow: 0 0 1pt 1pt white;
+}
+
+.instructor-pref__button.highlight-button.active {
     background-color: #277BFF;
 }

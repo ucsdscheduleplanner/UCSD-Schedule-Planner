@@ -35,14 +35,13 @@ const codeToClassType = {
 
 
 export const ClassTypePrefWidget = (props) => {
-    console.log(props.types);
     const types = props.types.map(type => codeToClassType[type]);
-    console.log(types);
     const plusMinusNames = classNames("class-input__panel__part__body__header__icon", {"active": props.isOpen});
 
     const listBox = types.length > 0 ? (
         <ListBox
             className="type-pref__container"
+            stylePerButton={["type-pref__button"]}
             keyPrefix={props.Class.classTitle}
                  onClick={(selectedTypes) => {
                      props.inputHandler.onClassTypesToIgnoreChange(selectedTypes)

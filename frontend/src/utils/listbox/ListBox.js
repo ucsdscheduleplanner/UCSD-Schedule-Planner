@@ -32,8 +32,9 @@ export class ListBox extends PureComponent {
 
     render() {
         let buttons = this.props.values.map((value, index) => {
+            const names = classNames("list-box__button", this.props.stylePerButton);
             return (
-                <HighlightButton className="list-box__button"
+                <HighlightButton className={names}
                                  key={this.props.keyPrefix + index.toString()}
                                  label={value}
                                  onSelect={(e) => this.onSelect(e)}
@@ -55,4 +56,5 @@ ListBox.propTypes = {
     keyPrefix: PropTypes.string.isRequired,
     values: PropTypes.array.isRequired,
     onClick: PropTypes.func.isRequired,
+    stylePerButton: PropTypes.array
 };
