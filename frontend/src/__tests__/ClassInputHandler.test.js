@@ -1,6 +1,4 @@
 import React from 'react';
-import ClassInputContainer from "../containers/ClassInputContainer";
-import {mount, shallow} from "enzyme";
 import {
     setClassTypesToIgnore,
     setCourseNum,
@@ -8,7 +6,7 @@ import {
     setDepartment,
     setDepartments,
     setInstructor,
-    setInstructors
+    setInstructors, setTypes
 } from "../actions/classinput/ClassInputMutator";
 import {applyMiddleware, createStore} from "redux";
 import reducers from "../reducers";
@@ -31,10 +29,6 @@ describe("ClassInput actions such as adding, editing and removing classes", () =
     });
 
     test('Can add a class successfully', () => {
-        const classInput = mount(
-            <ClassInputContainer store={store}/>
-        );
-
         store.dispatch(setDepartments(["CSE", "DSC"]));
         store.dispatch(setCourseNums(["11", "12"]));
         store.dispatch(setInstructors(["Mr. Cameron Trando"]));
@@ -44,15 +38,14 @@ describe("ClassInput actions such as adding, editing and removing classes", () =
         store.dispatch(setInstructor("Mr. Cameron Trando"));
 
         let inputHandler = getInputHandler(store);
+        let transactionID = store.getState().ClassInput.transactionID;
         inputHandler.handleAdd();
 
         let classList = store.getState().ClassList;
-
         chaiExpect(Object.keys(classList.selectedClasses)).to.have.lengthOf(1);
+        let addedClass = classList.selectedClasses[transactionID];
 
-        let addedClass = classList.selectedClasses[0];
-
-        const result = {
+        const expected = {
             classTitle: "CSE 12",
             department: "CSE",
             courseNum: "12",
@@ -61,14 +54,10 @@ describe("ClassInput actions such as adding, editing and removing classes", () =
             instructor: "Mr. Cameron Trando"
         };
 
-        chaiExpect(addedClass).to.eql(result)
+        chaiExpect(addedClass).to.deep.include(expected)
     });
 
     test('Cannot add duplicate classes', () => {
-        const classInput = mount(
-            <ClassInputContainer store={store}/>
-        );
-
         // making first class
         store.dispatch(setDepartments(["CSE", "DSC"]));
         store.dispatch(setCourseNums(["11", "12"]));
@@ -97,10 +86,6 @@ describe("ClassInput actions such as adding, editing and removing classes", () =
     });
 
     test('Can add multiple classes', () => {
-        const classInput = mount(
-            <ClassInputContainer store={store}/>
-        );
-
         // making first class
         store.dispatch(setDepartments(["CSE", "DSC"]));
         store.dispatch(setCourseNums(["11", "12"]));
@@ -126,10 +111,6 @@ describe("ClassInput actions such as adding, editing and removing classes", () =
     });
 
     test('Duplicate checking only looks at the class title', () => {
-        const classInput = mount(
-            <ClassInputContainer store={store}/>
-        );
-
         // making first class
         store.dispatch(setDepartments(["CSE"]));
         store.dispatch(setCourseNums(["11"]));
@@ -149,10 +130,20 @@ describe("ClassInput actions such as adding, editing and removing classes", () =
     });
 
     describe("Editing classes", () => {
-        test('Can edit a simple class correctly', () => {
-            const classInput = mount(
-                <ClassInputContainer store={store}/>
-            );
+        test('Can edit a simple class correctly', async () => {
+            // mock function
+            DataFetcher.fetchClassSummaryFor = (department) => {
+                return new Promise((resolve, reject) => {
+                    resolve(
+                        {
+                            courseNums: ["11", "12"],
+                            instructorsPerClass: {"11": ["Joseph Politz", "Rick Ord"]},
+                            classTypesPerClass: {},
+                            descriptionsPerClass: {}
+                        }
+                    )
+                });
+            };
 
             // making first class
             store.dispatch(setDepartments(["CSE", "DSC"]));
@@ -162,24 +153,25 @@ describe("ClassInput actions such as adding, editing and removing classes", () =
             store.dispatch(setCourseNum("11"));
 
             let inputHandler = getInputHandler(store);
+            let transactionID = store.getState().ClassInput.transactionID;
             inputHandler.handleAdd();
 
-            store.dispatch(enterEditMode("0"));
+            await store.dispatch(enterEditMode(transactionID));
 
             // making second class
-            inputHandler.onDepartmentChange("DSC");
+            await inputHandler.onDepartmentChange("DSC");
             inputHandler.onCourseNumChange("11");
 
             // adding again
             inputHandler.handleEdit();
 
             // returning back to input mode
-            store.dispatch(enterInputMode());
+            await store.dispatch(enterInputMode());
 
             let classList = store.getState().ClassList;
             chaiExpect(Object.keys(classList.selectedClasses)).to.have.lengthOf(1);
 
-            const result = {
+            const expected = {
                 classTitle: "DSC 11",
                 department: "DSC",
                 courseNum: "11",
@@ -188,39 +180,46 @@ describe("ClassInput actions such as adding, editing and removing classes", () =
                 instructor: null,
             };
 
-            let newClass = classList.selectedClasses[0];
-            chaiExpect(newClass).eql(result);
+            let result = classList.selectedClasses[transactionID];
+            chaiExpect(result).deep.include(expected);
         });
 
         it("Can choose to make no edit and be fine", () => {
-            const classInput = mount(
-                <ClassInputContainer store={store}/>
-            );
-
             store.dispatch(setDepartments(["CSE", "DSC"]));
             store.dispatch(setCourseNums(["11", "12"]));
             store.dispatch(setDepartment("CSE"));
             store.dispatch(setCourseNum("12"));
 
             let inputHandler = getInputHandler(store);
+            let transactionID = store.getState().ClassInput.transactionID;
             inputHandler.handleAdd();
 
-            store.dispatch(enterEditMode("0"));
+            store.dispatch(enterEditMode(transactionID));
             inputHandler.handleEdit();
 
             let classList = store.getState().ClassList;
             chaiExpect(Object.keys(classList.selectedClasses)).to.have.lengthOf(1);
-            chaiExpect(classList.selectedClasses[0].classTitle).to.equal("CSE 12");
+            chaiExpect(classList.selectedClasses[transactionID].classTitle).to.equal("CSE 12");
         });
 
-        test('Can edit a more complex class with instructor and conflicts fields and so on correctly', () => {
+        test('Can edit a more complex class with instructor and conflicts fields and so on correctly', async () => {
             // need shallow here because ClassInput has a componentDidMount method causing what I believe to be a
             // race condition between updating in this test thread and updating in the componentDidMount thread,
             // giving wrong results - should not occur in production however
 
-            const classInput = shallow(
-                <ClassInputContainer store={store}/>
-            );
+            // mock function
+            DataFetcher.fetchClassSummaryFor = (department) => {
+                return new Promise((resolve, reject) => {
+                    resolve(
+                        {
+                            courseNums: ["11", "12"],
+                            instructorsPerClass: {"11": ["Joseph Politz", "Rick Ord"]},
+                            classTypesPerClass: {},
+                            descriptionsPerClass: {}
+                        }
+                    )
+                });
+            };
 
             // making first class
             store.dispatch(setDepartments(["CSE", "DSC"]));
@@ -233,9 +232,10 @@ describe("ClassInput actions such as adding, editing and removing classes", () =
             store.dispatch(setInstructor("Rick Ord"));
 
             let inputHandler = getInputHandler(store);
+            let transactionID = store.getState().ClassInput.transactionID;
             inputHandler.handleAdd();
 
-            store.dispatch(enterEditMode("0"));
+            await store.dispatch(enterEditMode(transactionID));
 
             // need to reset this after entering edit mode
             store.dispatch(setDepartments(["CSE", "DSC"]));
@@ -253,7 +253,7 @@ describe("ClassInput actions such as adding, editing and removing classes", () =
             let classList = store.getState().ClassList;
             chaiExpect(Object.keys(classList.selectedClasses)).to.have.lengthOf(1);
 
-            const result = {
+            const expected = {
                 classTitle: "CSE 12",
                 department: "CSE",
                 courseNum: "12",
@@ -262,29 +262,25 @@ describe("ClassInput actions such as adding, editing and removing classes", () =
                 instructor: "Joseph Politz",
             };
 
-            let newClass = classList.selectedClasses[0];
-            chaiExpect(newClass).eql(result);
+            let result = classList.selectedClasses[transactionID];
+            chaiExpect(result).deep.include(expected);
         });
 
-        test('Instructors options change correctly after editing a class and trying to edit other classes', () => {
-            // need shallow here because ClassInput has a componentDidMount method causing what I believe to be a
-            // race condition between updating in this test thread and updating in the componentDidMount thread,
-            // giving wrong results - should not occur in production however
-
+        test('Instructors options change correctly after editing a class and trying to edit other classes', async () => {
             let prev = DataFetcher.fetchClassSummaryFor;
+
             DataFetcher.fetchClassSummaryFor = (department) => {
-                return {
-                    courseNums: ["11", "12"],
-                    instructorsPerClass: {"11": ["Joseph Politz", "Rick Ord"]},
-                    classTypesPerClass: {},
-                    descriptionsPerClass: {}
-                }
+                return new Promise((resolve, reject) => {
+                    resolve(
+                        {
+                            courseNums: ["11", "12"],
+                            instructorsPerClass: {"11": ["Joseph Politz", "Rick Ord"]},
+                            classTypesPerClass: {},
+                            descriptionsPerClass: {}
+                        }
+                    )
+                });
             };
-
-            const classInput = shallow(
-                <ClassInputContainer store={store}/>
-            );
-
             // making first class
             store.dispatch(setDepartments(["CSE", "DSC"]));
             store.dispatch(setCourseNums(["11", "12"]));
@@ -293,20 +289,20 @@ describe("ClassInput actions such as adding, editing and removing classes", () =
                 {}, {}));
 
             let inputHandler = getInputHandler(store);
-            inputHandler.onDepartmentChange("CSE");
+            await inputHandler.onDepartmentChange("CSE");
             inputHandler.onCourseNumChange("11");
             inputHandler.onClassTypesToIgnoreChange(["LE", "LA", "DI"]);
             inputHandler.onInstructorChange("Rick Ord");
 
+            let transactionID = store.getState().ClassInput.transactionID;
             inputHandler.handleAdd();
 
-            inputHandler.onDepartmentChange("CSE");
+            await inputHandler.onDepartmentChange("CSE");
             inputHandler.onCourseNumChange("12");
 
             inputHandler.handleAdd();
 
-            store.dispatch(enterEditMode("0"));
-            store.dispatch(populateDataPerClass({"11": ["Joseph Politz", "Rick Ord"], "12": ["Joseph Politz"]}));
+            await store.dispatch(enterEditMode(transactionID));
 
             const state = store.getState().ClassInput;
             chaiExpect(state.instructors).to.have.members(["Joseph Politz", "Rick Ord"]);
@@ -315,62 +311,99 @@ describe("ClassInput actions such as adding, editing and removing classes", () =
         });
 
         test('Verifies that a class is valid before allowing edit', () => {
-            // need shallow here or else each time we make a course num change with the listeners
-            // then the edit is made right away
-            const classInput = shallow(
-                <ClassInputContainer store={store}/>
-            );
-
             // making first class
             store.dispatch(setDepartments(["CSE"]));
             store.dispatch(setCourseNums(["11", "12"]));
             store.dispatch(setDepartment("CSE"));
             store.dispatch(setCourseNum("11"));
+
+            let transactionID = store.getState().ClassInput.transactionID;
+
             // adding first class
             let inputHandler = getInputHandler(store);
             inputHandler.handleAdd();
 
-
-            store.dispatch(enterEditMode("0"));
-            inputHandler.onCourseNumChange("12");
+            store.dispatch(enterEditMode(transactionID));
             store.dispatch(setCourseNum("Blank value"));
 
             inputHandler.handleEdit();
 
             let classList = store.getState().ClassList;
             chaiExpect(Object.keys(classList.selectedClasses)).to.have.lengthOf(1);
-            chaiExpect(classList.selectedClasses[0].courseNum).to.equal("11");
+            chaiExpect(classList.selectedClasses[transactionID].courseNum).to.equal("11");
         });
 
-        test('Verifies that a class is is not a duplicate before allowing edit', () => {
-            // need shallow here or else each time we make a course num change with the listeners
-            // then the edit is made right away
-            const classInput = shallow(
-                <ClassInputContainer store={store}/>
-            );
-
+        test('Verifies that a class is is not a duplicate before allowing edit', async () => {
             store.dispatch(setDepartments(["CSE"]));
             store.dispatch(setCourseNums(["11", "12"]));
 
             // making first class
             let inputHandler = getInputHandler(store);
-            inputHandler.onDepartmentChange("CSE");
+            await inputHandler.onDepartmentChange("CSE");
             inputHandler.onCourseNumChange("11");
+            let id1 = store.getState().ClassInput.transactionID;
             inputHandler.handleAdd();
 
             // making second class
             store.dispatch(setDepartment("CSE"));
             store.dispatch(setCourseNum("12"));
+            let id2 = store.getState().ClassInput.transactionID;
             inputHandler.handleAdd();
 
-            store.dispatch(enterEditMode("0"));
+            await store.dispatch(enterEditMode(id1));
             store.dispatch(setCourseNum("12"));
             inputHandler.handleEdit();
 
             let classList = store.getState().ClassList;
             chaiExpect(Object.keys(classList.selectedClasses)).to.have.lengthOf(2);
-            chaiExpect(classList.selectedClasses[0].courseNum).to.equal("11");
-            chaiExpect(classList.selectedClasses[1].courseNum).to.equal("12");
+            chaiExpect(classList.selectedClasses[id1].courseNum).to.equal("11");
+            chaiExpect(classList.selectedClasses[id2].courseNum).to.equal("12");
         });
+
+        test("When changing between classes multiple times, gets the correct data", async () => {
+            store.dispatch(setDepartments(["CSE"]));
+            store.dispatch(setCourseNums(["11", "12"]));
+            store.dispatch(setTypes(["LE", "DI"]));
+
+            DataFetcher.fetchClassSummaryFor = (department) => {
+                return new Promise((resolve, reject) => {
+                    resolve(
+                        {
+                            courseNums: ["11", "12"],
+                            instructorsPerClass: {"11": ["Joseph Politz", "Rick Ord"]},
+                            classTypesPerClass: {"11": ["LE", "DI"], "12": ["LE"]},
+                            descriptionsPerClass: {}
+                        }
+                    )
+                });
+            };
+
+            // making first class
+            let inputHandler = getInputHandler(store);
+            store.dispatch(setDepartment("CSE"));
+            store.dispatch(setCourseNum("11"));
+            let id1 = store.getState().ClassInput.transactionID;
+            inputHandler.handleAdd();
+
+            // making second class
+            store.dispatch(setDepartment("CSE"));
+            store.dispatch(setCourseNum("12"));
+            let id2 = store.getState().ClassInput.transactionID;
+            inputHandler.handleAdd();
+
+            await store.dispatch(enterEditMode(id2));
+            let state = store.getState().ClassInput;
+            chaiExpect(state.types).to.have.lengthOf(1);
+
+            await store.dispatch(enterEditMode(id1));
+            state = store.getState().ClassInput;
+            console.log(state);
+            chaiExpect(state.types).to.have.lengthOf(2);
+
+            await store.dispatch(enterEditMode(id2));
+            state = store.getState().ClassInput;
+            console.log(state);
+            chaiExpect(state.types).to.have.lengthOf(1);
+        })
     });
 });

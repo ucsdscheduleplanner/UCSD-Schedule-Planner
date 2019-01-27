@@ -1,0 +1,33 @@
+
+.accordion__panel__body.active {
+    max-height: 1000px;
+    transition: max-height 1s ease-in-out, background-color .4s cubic-bezier(1, 0, 0, 1);
+}
+
+.accordion__panel__body {
+    overflow: hidden;
+    max-height: 0;
+    transition: max-height .4s cubic-bezier(1, 0, 0, 1), background-color .4s cubic-bezier(1, 0, 0, 1);
+}
+
+.accordion__panel {
+    transition: all .4s cubic-bezier(1, 0, 0, 1);
+}
+
+.accordion__panel__label {
+    transition: all .4s cubic-bezier(1, 0, 0, 1);
+}
+
+.accordion__panel__label:hover {
+    cursor: pointer;
+}
+
+.accordion__panel__label.active {
+    background-color: #1E2B4B;
+    color: white;
+    border-radius: 2px;
+}
+
+
+
+

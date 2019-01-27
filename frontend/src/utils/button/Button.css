@@ -1,0 +1,33 @@
+.custom-button {
+    border: none;
+    padding: 0.8em 1.3em;
+    color: white;
+    text-align: center;
+    text-decoration: none !important;
+    cursor: pointer;
+    display: inline-block;
+    position: static;
+    font-size: 16px;
+    zoom: 1;
+    opacity: 1;
+    overflow: visible; /* the overflow property removes extra width in IE */
+}
+
+.custom-button:disabled {
+    opacity: 0.35;
+    cursor: default;
+}
+
+.custom-button:active {
+    opacity: 0.8;
+}
+
+.custom-button.custom-button__corner--default {
+    border-radius: 3px;
+}
+
+.custom-button.custom-button__corner--round {
+    border-radius: 20px;
+}
+
+

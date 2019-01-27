@@ -8,7 +8,9 @@
     "classnames": "^2.2.6",
     "init": "^0.1.2",
     "react": "^16.6.3",
+    "react-autosuggest": "^9.4.2",
     "react-dom": "^16.6.3",
+    "react-isolated-scroll": "^0.1.1",
     "react-transition-group": "^2.5.0",
     "sb": "^0.2.1",
     "storybook": "^1.0.0"

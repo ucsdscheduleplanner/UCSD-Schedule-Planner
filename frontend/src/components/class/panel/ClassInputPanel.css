@@ -1,0 +1,30 @@
+
+.class-input__panel__header {
+    display: flex;
+    font-size: 18px;
+    margin-top: .7em;
+    margin-bottom: .7em;
+}
+
+.class-input__panel__header__title {
+    padding-left: .2em;
+}
+
+.class-input__panel__body {
+    overflow: hidden;
+    border-radius: 5px;
+    box-shadow: 0 0 10px 1px gray;
+}
+
+.class-input__panel__body .accordion__panel:after {
+    content: "";
+    display: block;
+    margin: 0 auto;
+    width: 95%;
+    border-bottom: thin solid #E7E9ED;
+}
+
+
+
+.class-input__panel__body .accordion__panel {
+}
