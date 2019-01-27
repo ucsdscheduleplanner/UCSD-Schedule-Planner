@@ -22,7 +22,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
     return bindActionCreators({
-        toggleEditMode: toggleEditMode
+        toggleEditMode: toggleEditMode,
     }, dispatch);
 }
 

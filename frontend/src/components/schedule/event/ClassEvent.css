@@ -28,25 +28,21 @@
     background: #182B49;
 }
 
-.ce-info {
-    font-size: 20px;
-    line-height: 1.25;
-}
-
-.rbc-event {
-    padding: 0;
-}
-
-.rbc-day-slot .rbc-event {
-    border: none;
-}
-
-.ui-dialog.ui-widget .ui-dialog-titlebar {
-    background: rgba(24, 43, 73, 1);
+.ce-info__container {
+    background: #7A7A7A;
     color: white;
-    font-size: 24px;
+    opacity: .95;
 }
 
-.ui-dialog .ui-dialog-titlebar-icon {
-    display: none !important;
+.ce-info {
+    padding: 1em;
+}
+
+.ce-info__title {
+    font-weight: bold;
+    margin-bottom: .5em;
+}
+
+.ce-popover {
+    z-index: 1;
 }

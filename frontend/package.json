@@ -23,6 +23,7 @@
     "react-responsive": "^6.0.1",
     "react-scripts": "^2.1.1",
     "react-spring": "^7.2.8",
+    "react-tiny-popover": "^3.4.2",
     "react-transition-group": "^2.5.0",
     "redux": "^3.7.2",
     "redux-thunk": "^2.3.0",

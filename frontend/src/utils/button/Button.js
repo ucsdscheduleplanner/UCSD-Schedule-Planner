@@ -11,7 +11,7 @@ export const Button = (props) => {
     );
 
     return (
-        <button disabled={props.disabled} id={props.id} className={names}
+        <button disabled={props.disabled} id={props.id} className={names} {...props}
                 onClick={props.onClick}>
             {props.label}
         </button>
