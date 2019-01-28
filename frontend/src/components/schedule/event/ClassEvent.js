@@ -101,6 +101,7 @@ export class ClassEvent extends PureComponent {
                     containerClassName="ce-popover"
                     isOpen={this.state.popOverOpen}
                     position={['right']}
+                    transitionDuration={.25}
                     content={({position, targetRect, popoverRect}) => (
                         <ArrowContainer // if you'd like an arrow, you can import the ArrowContainer!
                             position={position}
