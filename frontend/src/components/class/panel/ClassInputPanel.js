@@ -9,7 +9,6 @@ import {ReactComponent as EditIcon} from "../../../svg/icon-edit.svg";
 
 import "./ClassInputPanel.css";
 import ClassInputPanelPartHeaderContainer from "./header/ClassInputPanelPartHeaderContainer";
-import {ControlledAccordion} from "../../../utils/accordion/ControlledAccordion";
 
 export class ClassInputPanel extends PureComponent {
 
@@ -26,15 +25,17 @@ export class ClassInputPanel extends PureComponent {
     }
 
     getClassAccordionComponent(Class, openSection) {
-        return (<ControlledAccordion openSection={openSection}>
+        const isOpen = openSection === Class.classTitle;
+        return (
             <ClassInputPanelPart key={Class.transactionID}
+                                 isOpen={isOpen}
                 // just having a separate index so know which class to edit
                 // don't want to confuse myself with key
                                  transactionID={Class.transactionID}
                                  inputHandler={this.props.inputHandler}
                                  label={Class.classTitle}
                                  Class={Class}/>
-        </ControlledAccordion>)
+        )
     }
 
     getItems() {
@@ -60,6 +61,7 @@ export class ClassInputPanel extends PureComponent {
                         enter={{opacity: 1}}
                         leave={{opacity: 0}}>
                         {
+                            // runs for each class and generates an accordion component
                             Class => props => {
                                 // using a dummy object
                                 if (Class.badProp) {
@@ -84,29 +86,25 @@ export class ClassInputPanel extends PureComponent {
     }
 }
 
-class ClassInputPanelPart
-    extends PureComponent {
-
+class ClassInputPanelPart extends PureComponent {
     render() {
         return (
-            <React.Fragment>
-                <AccordionPanel label={this.props.label} {...this.props}>
-                    <AccordionLabel>
-                        <ClassInputPanelPartHeaderContainer
-                            title={this.props.Class.classTitle}
-                            transactionID={this.props.transactionID}
-                            inputHandler={this.props.inputHandler}
-                            isOpen={this.props.isOpen}/>
-                    </AccordionLabel>
-                    <AccordionBody>
-                        <ClassInputPanelPartBody
-                            Class={this.props.Class}
-                            isOpen={this.props.isOpen}
-                            inputHandler={this.props.inputHandler}/>
-                    </AccordionBody>
-                </AccordionPanel>
-            </React.Fragment>
-        )
+            <AccordionPanel label={this.props.label} isOpen={this.props.isOpen}>
+                <AccordionLabel>
+                    <ClassInputPanelPartHeaderContainer
+                        title={this.props.Class.classTitle}
+                        transactionID={this.props.transactionID}
+                        inputHandler={this.props.inputHandler}
+                        isOpen={this.props.isOpen}/>
+                </AccordionLabel>
+                <AccordionBody>
+                    <ClassInputPanelPartBody
+                        Class={this.props.Class}
+                        isOpen={this.props.isOpen}
+                        inputHandler={this.props.inputHandler}/>
+                </AccordionBody>
+            </AccordionPanel>
+        );
     }
 }
 

@@ -4,7 +4,8 @@ import classNames from 'classnames';
 
 export const AccordionPanel = (props) => {
     const open = () => {
-        props.open(props.label);
+        if(props.open)
+            props.open(props.label);
     };
 
     const children =  React.Children.map(props.children, (e) => {

@@ -35,7 +35,6 @@ export class ClassEvent extends PureComponent {
     }
 
     onMouseEnter() {
-        console.log("entering");
         this.setState({popOverOpen: true});
     }
 
