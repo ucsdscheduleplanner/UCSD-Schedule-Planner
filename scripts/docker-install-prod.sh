@@ -19,6 +19,8 @@ if [ ! -f "docker-compose-prod.yml" ]; then
   exit 1
 fi
 
+download=false
+
 while test $# -gt 0; do
    case "$1" in 
        -h | --help)
@@ -27,7 +29,7 @@ while test $# -gt 0; do
           exit 0
           ;;
       -d | --download)
-          export SDSCHEDULE_SCRAPE=1
+          download=true
           shift
           ;;
       *)
@@ -39,7 +41,6 @@ done
 depends docker
 depends docker-compose
 
-docker-compose -f docker-compose-prod.yml build
-docker-compose -f docker-compose-prod.yml up 
+docker-compose -f docker-compose-prod.yml build --build-arg DOWNLOAD=${download}
 
 # the frontend container will auto exit after finishing "yarn run build"
