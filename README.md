@@ -49,20 +49,43 @@ The following utilities must be present for installation purposes:
 * docker
 * docker-compose
 
-# Installation 
+# Installation
 
 This project is designed to be portable. We use docker to ensure that there is
 clear separation between our tool's runtime environment and the
 rest of your system.
 
-To install, use the following command: 
+To clone, use the following command:
 
-```
-git clone https://github.com/ctrando/UCSD-Planner-Helper && cd UCSD-Planner-Helper && docker-compose build
+```bash
+git clone https://github.com/ctrando/UCSD-Planner-Helper
 ```
 
-After the download/build process finishes, run **one** of the following two commands
-depending on the context:
+Change into the directory:
+
+```bash
+cd UCSD-Planner-Helper
+```
+
+The app can be either run in development mode or production mode.
+
+* Production mode is intended for a real server.
+* To download the data, add additional flag. Note the scraping might take a while depends on your network environment.
+
+Build:
+
+```bash
+./scripts/docker-install-dev.sh [-d|--download]
+./scripts/docker-install-prod.sh [-d|--download]
+```
+
+Run:
+
+```bash
+```
+
+After the download/build process finishes, you can either run the app in development environment or
+production environment.
 
 1. `SDSCHEDULE_SCRAPE=1 docker-compose up` if you are a first-time user OR want to refresh cached data from WebReg. 
 2. `docker-compose up` for any other use case.

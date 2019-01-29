@@ -19,6 +19,8 @@ if [ ! -f "docker-compose-dev.yml" ]; then
   exit 1
 fi
 
+download=false
+
 while test $# -gt 0; do
    case "$1" in 
        -h | --help)
@@ -27,7 +29,7 @@ while test $# -gt 0; do
           exit 0
           ;;
       -d | --download)
-          export SDSCHEDULE_SCRAPE=1
+          download=true
           shift
           ;;
       *)
@@ -36,8 +38,8 @@ while test $# -gt 0; do
   esac
 done
 
+
 depends docker
 depends docker-compose
 
-docker-compose -f docker-compose-dev.yml build
-docker-compose -f docker-compose-dev.yml up 
+docker-compose -f docker-compose-dev.yml build --build-arg DOWNLOAD=${download}
