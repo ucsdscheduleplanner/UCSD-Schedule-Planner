@@ -1,36 +1,69 @@
-import {
-    ACTIVATE_SCHEDULE_PREFERENCES, DEACTIVATE_SCHEDULE_PREFERENCES,
-    SET_DAY_PREFERENCE, SET_END_TIME_PREFERENCE,
-    SET_START_TIME_PREFERENCE
-} from "../actions/SchedulePreferencesActions";
 import moment from "moment";
+import {
+    SET_CLASS_SPECIFIC_PREF,
+    SET_CONFLICTS_PREF,
+    SET_DAY_PREF,
+    SET_END_PREF,
+    SET_GLOBAL_PREF,
+    SET_START_PREF
+} from "../actions/schedulepreference/SchedulePreferenceMutator";
+import {SET_DISPLAYED} from "../actions/schedulepreference/SchedulePreferenceUIHandler";
+import {TimeBuilder} from "../utils/time/TimeUtils";
 
+const momentDefaultStart = moment("1970-01-01 17:00Z");
+const momentDefaultEnd = moment("1970-01-01 01:00Z");
+
+// todo make a time builder
+let defaultStart = new TimeBuilder().withHour(9).build();
+let defaultEnd = new TimeBuilder().withHour(17).build();
+
+const defaultGlobalPref = {
+    startPref: defaultStart,
+    endPref: defaultEnd,
+    dayPref: null
+};
 export default function SchedulePreferences(state = {
-    startTimePreference: moment("1970-01-01 17:00Z"),
-    endTimePreference: moment("1970-01-01 01:00Z"),
-    dayPreference: null,
-    activated: false,
+    startPref: momentDefaultStart,
+    endPref: momentDefaultEnd,
+    globalPref: defaultGlobalPref,
+    dayPref: null,
+    classSpecificPref: {},
+    displayed: false,
 }, action) {
     switch (action.type) {
-        case SET_START_TIME_PREFERENCE:
+        case SET_START_PREF:
             return Object.assign({}, state, {
-                startTimePreference: action.startTimePreference,
+                startPref: action.startPref,
             });
-        case SET_END_TIME_PREFERENCE:
+        case SET_END_PREF:
             return Object.assign({}, state, {
-                endTimePreference: action.endTimePreference,
+                endPref: action.endPref,
             });
-        case SET_DAY_PREFERENCE:
+        case SET_DAY_PREF:
+            if (!action.dayPref)
+                action.dayPref = null;
+            if (action.dayPref && action.dayPref.length === 0)
+                action.dayPref = null;
+
             return Object.assign({}, state, {
-                dayPreference: action.dayPreference,
+                dayPref: action.dayPref,
             });
-        case ACTIVATE_SCHEDULE_PREFERENCES:
+        case SET_CONFLICTS_PREF:
+            break;
+        case SET_GLOBAL_PREF:
             return Object.assign({}, state, {
-                activated: true
+                globalPref: action.globalPref,
             });
-        case DEACTIVATE_SCHEDULE_PREFERENCES:
+        case SET_CLASS_SPECIFIC_PREF:
+            let copy = Object.assign({}, state.classSpecificPref);
+            copy[action.classTitle] = action.classSpecificPref;
+
             return Object.assign({}, state, {
-                activated: false
+                classSpecificPref: copy,
+            });
+        case SET_DISPLAYED:
+            return Object.assign({}, state, {
+                displayed: action.displayed
             });
         default:
             return state;

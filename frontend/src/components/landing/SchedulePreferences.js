@@ -28,8 +28,6 @@ export default class SchedulePreferences extends PureComponent {
             {label: 'F', value: 'F'}
         ];
 
-        console.log(this.props.startTimePreference);
-
         const schedulePreferencesContent = (
             <div className="schedule-options-sidebar">
                 <div className="schedule-options-title"> Schedule Preferences</div>
@@ -39,11 +37,8 @@ export default class SchedulePreferences extends PureComponent {
                     <div className="time-preference-start">
                         Start:
                         <TimePicker style={{width: "100%"}}
-                                    value={this.props.startTimePreference}
-                                    onChange={(e) => {
-                                        console.log(e);
-                                        this.props.setStartTimePreference(e)
-                                    }}
+                                    value={this.props.startPref}
+                                    onChange={(e) => this.props.inputHandler.onStartTimeChange(e)}
                                     use12Hours={true}
                                     showSecond={false}/>
                     </div>
@@ -51,8 +46,8 @@ export default class SchedulePreferences extends PureComponent {
                     <div className="time-preference-end">
                         End:
                         <TimePicker use12Hours={true}
-                                    value={this.props.endTimePreference}
-                                    onChange={(e) => this.props.setEndTimePreference(e)}
+                                    value={this.props.endPref}
+                                    onChange={(e) => this.props.inputHandler.onEndTimeChange(e)}
                                     style={{width: "100%"}}
                                     showSecond={false}/>
                     </div>
@@ -60,8 +55,11 @@ export default class SchedulePreferences extends PureComponent {
                 <div className="day-preference">
                     <span className="day-preference-title">Day Preference:</span>
 
-                    <SelectButton id="day-preference" value={this.props.dayPreference} multiple={true} options={days}
-                                  onChange={(e) => this.props.setDayPreference(e.value)}/>
+                    <SelectButton id="day-preference"
+                                  value={this.props.dayPref}
+                                  multiple={true}
+                                  options={days}
+                                  onChange={(e) => this.props.inputHandler.onDayChange(e.value)}/>
                 </div>
             </div>
         );
@@ -69,23 +67,17 @@ export default class SchedulePreferences extends PureComponent {
         return (
             <MediaQuery query="(max-width: 700px)">
                 {(matches) => {
-                    let position;
-                    if (matches) {
-                        position = "bottom";
-
-                    } else {
-                        position = "left";
-                    }
+                    let position = matches ? "bottom" : "left";
                     return (
                         <Sidebar id="sidebar"
-                                 visible={this.props.activated}
+                                 visible={this.props.displayed}
                                  showCloseIcon={false}
                                  position={position}
-                                 onHide={this.props.deactivate}>
+                                 onHide={() => this.props.setDisplayed(false)}>
                             {schedulePreferencesContent}
                         </Sidebar>
-                    );
-                }}
+                    )}
+                }
             </MediaQuery>
         );
     }

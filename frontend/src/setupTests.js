@@ -23,3 +23,6 @@ setUpDomEnvironment();
 
 configure({ adapter: new Adapter() });
 chai.use(chaiEnzyme());
+
+// allowing tests to use chaiExpect to use chai so can use jest too
+global.chaiExpect = chai.expect;

@@ -1,4 +1,5 @@
 import React, {PureComponent} from 'react';
+import memoize from 'memoize-one';
 import {Rating} from "primereact/components/rating/Rating";
 import {ListBox} from "primereact/components/listbox/ListBox";
 import {Button} from "primereact/components/button/Button";
@@ -7,250 +8,83 @@ import "../../css/ClassInput.css";
 
 
 export default class ClassInput extends PureComponent {
-    constructor(props) {
-        super(props);
-        this.state = {
-            duplicate: false,
 
-            editOccurred: false,
-            instructorOptions: [],
-            departmentOptions: [],
-            classOptions: [],
-        };
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        this.props.inputHandler.autosave();
     }
 
-    clearFields(fields) {
-        let clearObj = fields.reduce((accumulator, field) => {
-            accumulator[field] = null;
-            return accumulator;
-        }, {});
-        this.setState(clearObj);
-    }
-
-    completeDepartmentSuggestions(event) {
-        let departmentOptions = this.props.departments.filter((department) => {
-            return department.toLowerCase().startsWith(event.query.toLowerCase());
+    getDepartmentSuggestions = memoize((query, departments) => {
+        if(!query || !departments)
+            return departments;
+        return departments.filter((department) => {
+            return department.toLowerCase().startsWith(query.toLowerCase());
         });
-        this.setState({departmentOptions: departmentOptions});
-    }
+    });
 
-    completeClassSuggestions(event) {
-        // hopefully this will never trigger
-        if (this.props.courseNums.length === 0) return;
-
-        // hits the caching layer here
-        let classOptions = this.props.courseNums.filter((Class) => {
-            if (Class) return Class.toLowerCase().startsWith(event.query.toLowerCase());
-            return false;
+    getCourseNumSuggestions = memoize((query, courseNums) => {
+        if(!query || !courseNums)
+            return courseNums;
+        return courseNums.filter((courseNum) => {
+            return courseNum.toLowerCase().startsWith(query.toLowerCase());
         });
-        this.setState({classOptions: classOptions});
-    }
+    });
 
-    completeInstructorSuggestions(event) {
-        if (this.props.instructorsPerClass && this.props.instructorsPerClass[this.props.currentCourseNum]) {
-            // hits the caching layer here
-            let instructorOptions = this.props.instructorsPerClass[this.props.currentCourseNum]
-                .filter((instructor) => {
-                    if (instructor) return instructor.toLowerCase().startsWith(event.query.toLowerCase());
-                    return false;
-                });
-            this.setState({instructorOptions: instructorOptions});
-        } else {
-            this.setState({instructorOptions: []});
-        }
-    }
-
-    getClassTypeOptions(courseNum) {
-        if (this.props.classTypesPerClass && this.props.classTypesPerClass[courseNum]) {
-            // filtering midterms and finals for now
-            // TODO find way to mess with labels and values to make this cleaner and less shaky
-            return this.props.classTypesPerClass[courseNum].filter((classType) => {
-                return classType["label"] !== "Final Exam" && classType["label"] !== "Midterm";
-            });
-        }
-        // need to return undefined for UI instead of null
-        return [{label: 'None'}];
-    }
+    getInstructorSuggestions = memoize((query, instructors) => {
+        if(!query || instructors)
+            return instructors;
+        return instructors.filter((instructor) => {
+            return instructor.toLowerCase().startsWith(query.toLowerCase());
+        });
+    });
 
     getDescriptionForCourseNum(courseNum) {
         return courseNum + " - " + this.props.descriptionsPerClass[courseNum];
     }
 
-    createClassFromInput() {
-        let newClass = {};
-        newClass['classTitle'] = `${this.props.currentDepartment} ${this.props.currentCourseNum}`;
-        newClass['courseNum'] = this.props.currentCourseNum;
-        newClass['department'] = this.props.currentDepartment;
-        newClass['priority'] = this.props.priority;
-        newClass['conflicts'] = this.props.conflicts;
-        newClass['instructor'] = this.props.currentInstructor;
-        return newClass;
-    }
-
-    handleSubmit() {
-        let error = false;
-        // gotta have course num and department to do anything
-        if (this.props.currentCourseNum === null || this.props.currentDepartment === null) return;
-
-        let classTitle = `${this.props.currentDepartment} ${this.props.currentCourseNum}`;
-
-        // testing whether this is a duplicate class
-        let duplicate = Object.values(this.props.selectedClasses).reduce(function (accumulator, previousClass) {
-            return accumulator || classTitle === previousClass['classTitle']
-        }, false);
-
-        // error checking on department and course num
-        if (!this.props.departments.includes(this.props.currentDepartment)) error = true;
-        if (!this.props.courseNums.includes(this.props.currentCourseNum)) error = true;
-
-        if (!duplicate && !error) {
-            // constructing new class to be added to UI
-            let newClass = this.createClassFromInput();
-
-            // using the addClass method from the reducer
-            this.props.addClass(this.props.uid, newClass);
-
-            // do cleanup
-            this.props.setCurrentInstructor(null);
-            this.props.setCurrentCourseNum(null);
-            this.props.setPriority(null);
-            this.props.setConflicts(null);
-        } else if (duplicate) {
-            this.props.messageHandler.showError(`Class ${this.props.currentDepartment} ${this.props.currentCourseNum}
-            has already been added!`);
-        } else {
-            this.props.messageHandler.showError(`Failed to add class ${this.props.currentDepartment} ${this.props.currentCourseNum}`, 1000);
-        }
-
-        this.props.setUID(this.props.uid + 1);
-        // set duplicate so we can do some UI stuff in case
-        this.setState({
-            duplicate: duplicate
-        });
-    }
-
-    // basically same function as handle submit
-    handleEdit() {
-        if (this.props.currentCourseNum === null || this.props.currentDepartment === null) return;
-        let classTitle = `${this.props.currentDepartment} ${this.props.currentCourseNum}`;
-        // testing whether this is a duplicate class
-        // handle edit means it must have a uid
-        let that = this;
-        let duplicate = Object.values(this.props.selectedClasses).reduce(function (accumulator, previousClass) {
-            return (that.props.selectedClasses[that.props.editUID] !== previousClass) &&
-                (accumulator || classTitle === previousClass['classTitle'])
-        }, false);
-
-        if (!duplicate) {
-            // constructing new class to be added to UI
-            let newClass = this.createClassFromInput();
-            // using the edit method from the reducer
-            this.props.editClass(this.props.editUID, newClass);
-        }
-    }
-
-    handleRemove() {
-        this.props.removeClass(this.props.editUID);
-
-        // show an error message saying what class was dropped if that class
-        // is a valid one
-        if (this.props.departments.includes(this.props.currentDepartment) &&
-            this.props.courseNums.includes(this.props.currentCourseNum)) {
-            this.props.messageHandler.showSuccess(`Removed class ${this.props.currentDepartment} 
-                                    ${this.props.currentCourseNum}`, 1000);
-        } else {
-            this.props.messageHandler.showSuccess("Successfully removed class", 1000);
-        }
-
-        this.props.enterInputMode();
-    }
-
-    checkForEdit() {
-        if (this.props.editMode && this.state.editOccurred) {
-            this.setState({editOccurred: false});
-            this.handleEdit();
-        }
-    }
-
     render() {
-        this.checkForEdit();
-
         let deleteButton = (
             <div className="form-button">
                 <Button label="Delete Class" className="ui-button-danger"
-                        disabled={this.props.currentCourseNum === null}
-                        onClick={this.handleRemove.bind(this)}
+                        disabled={this.props.courseNum === null}
+                        onClick={() => this.props.inputHandler.handleRemove()}
                 />
                 <Button label="Done editing" className="ui-button-info"
-                        disabled={this.props.currentCourseNum === null}
-                        onClick={this.props.enterInputMode}
+                        disabled={this.props.courseNum === null}
+                        onClick={() => this.props.inputHandler.handleEdit()}
                 />
             </div>
         );
 
         let addButton = (
-            <div className="form-button" onClick={this.handleSubmit.bind(this)}>
-                <Button label="Add Class" disabled={this.props.currentCourseNum === null}/>
+            <div className="form-button" onClick={() => this.props.inputHandler.handleAdd()}>
+                <Button label="Add Class" disabled={this.props.courseNum === null}/>
             </div>
         );
-
 
         let departmentAutoComplete = (
             <div className="form-field">
                 <div className="input-header"> Department:</div>
                 <AutoComplete id="department"
-                              suggestions={this.state.departmentOptions}
+                              suggestions={this.getDepartmentSuggestions(this.props.department, this.props.departments)}
                               dropdown={true}
-                              value={this.props.currentDepartment}
-                              onChange={(e) => {
-                                  this.props.setCurrentDepartment(e.value);
-                                  this.props.setCurrentCourseNum(null);
-                                  this.props.setCurrentInstructor(null);
-                                  this.props.setPriority(null);
-
-                                  if (!this.props.departments.includes(e.value.toUpperCase())) {
-                                      return;
-                                  }
-
-                                  this.props.setClassSummaryFromDepartment(e.value);
-
-                                  // check if the thing we selected is the same as the one we already had
-                                  if (e.value !== this.props.currentDepartment) {
-                                      this.props.setCurrentCourseNum(null);
-                                      this.props.setCurrentInstructor(null);
-                                      this.props.setPriority(null);
-                                  }
-
-                                  if (this.props.editMode) {
-                                      this.setState({editOccurred: true});
-                                  }
-                              }}
-                              completeMethod={this.completeDepartmentSuggestions.bind(this)}/>
+                              value={this.props.department}
+                              onChange={(e) => this.props.inputHandler.onDepartmentChange(e.value)}
+                              // need this dummy method to cause a rerender cause primereact
+                              completeMethod={(e) => this.setState({state: this.state})}
+                />
             </div>
         );
 
         let courseNumAutoComplete = (
             <div className="form-field">
                 <div className="input-header"> Course Number:</div>
-                <AutoComplete id="course-number" suggestions={this.state.classOptions}
+                <AutoComplete id="course-number"
+                              suggestions={this.getCourseNumSuggestions(this.props.courseNum, this.props.courseNums)}
                               itemTemplate={this.getDescriptionForCourseNum.bind(this)}
-                              value={this.props.currentCourseNum}
-                              onChange={(e) => {
-                                  // must clear out the fields
-                                  this.props.setCurrentCourseNum(e.value);
-                                  this.props.setCurrentInstructor(null);
-                                  this.props.setPriority(null);
-                                  this.props.setConflicts(null);
-
-                                  if (this.props.editMode && this.state.classOptions.includes(e.value)) {
-                                      this.setState({editOccurred: true});
-                                  }
-                              }}
-                              completeMethod={this.completeClassSuggestions.bind(this)}
-                              disabled={
-                                  !this.props.currentDepartment
-                                  || this.props.currentDepartment.length === 0
-                                  || !this.props.departments.includes(this.props.currentDepartment)}
+                              value={this.props.courseNum}
+                              onChange={(e) => this.props.inputHandler.onCourseNumChange(e.value)}
+                              completeMethod={(e) => this.setState({state: this.state})}
+                              disabled={!this.props.departments.includes(this.props.department)}
                               dropdown={true}/>
             </div>
         );
@@ -259,38 +93,25 @@ export default class ClassInput extends PureComponent {
             <div className="form-field">
                 <div className="input-header"> Instructor Preference:</div>
                 <AutoComplete id="instructor"
-                              suggestions={
-                                  // because to clear the thing we put undefined, we can just put the course num in whether
-                                  // it is actually in the dict or not because if not it will be undefined and show nothing
-                                  this.state.instructorOptions}
-                              value={this.props.currentInstructor}
-                              onChange={(e) => {
-                                  this.props.setCurrentInstructor(e.value);
-                                  if (this.props.editMode && this.state.instructorOptions.includes(e.value)) {
-                                      this.setState({editOccurred: true});
-                                  }
-                              }}
-                              completeMethod={this.completeInstructorSuggestions.bind(this)}
-                              disabled={this.props.currentCourseNum === null}
+                              suggestions={this.getInstructorSuggestions(this.props.instructor, this.props.instructors)}
+                              value={this.props.instructor}
+                              onChange={(e) => this.props.inputHandler.onInstructorChange(e.value)}
+                              completeMethod={(e) => this.setState({state: this.state})}
+                              disabled={!this.props.courseNums.includes(this.props.courseNum)}
                               dropdown={true}/>
             </div>
         );
 
         let ignoreClassPreference = (
             <div className="form-field">
-                <div className="input-header"> Ignore Class Types:</div>
+                <div className="input-header"> Class Types to Ignore:</div>
                 <ListBox value={
                     // same as above with the undefined
-                    this.props.conflicts}
-                         options={this.getClassTypeOptions(this.props.currentCourseNum)}
-                         onChange={(e) => {
-                             this.props.setConflicts(e.value);
-                             if (this.props.editMode) {
-                                 this.setState({editOccurred: true});
-                             }
-                         }}
+                    this.props.classTypesToIgnore}
+                         options={this.props.types}
+                         onChange={(e) => this.props.inputHandler.onClassTypesToIgnoreChange(e.value)}
                          multiple={true}
-                         disabled={this.props.currentCourseNum === null}/>
+                         disabled={!this.props.courseNums.includes(this.props.courseNum)}/>
             </div>
         );
 
@@ -300,14 +121,9 @@ export default class ClassInput extends PureComponent {
                 <Rating value={
                     // same as above with undefined
                     this.props.priority}
-                        onChange={(e) => {
-                            this.props.setPriority(e.value);
-                            if (this.props.editMode) {
-                                this.setState({editOccurred: true});
-                            }
-                        }}
+                        onChange={(e) => this.props.inputHandler.onPriorityChange(e.value)}
                         stars={3}
-                        disabled={this.props.currentCourseNum === null}
+                        disabled={this.props.courseNum === null}
                 />
             </div>
         );

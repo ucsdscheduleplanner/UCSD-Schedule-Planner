@@ -1,19 +1,27 @@
-import {GENERATE_SCHEDULE, INCREMENT_PROGRESS, RECEIVE_SCHEDULE} from "../actions/ScheduleGenerationActions";
+import {
+    FINISH_GENERATING,
+    finishedGenerating,
+    GENERATE_SCHEDULE,
+    INCREMENT_PROGRESS, incrementProgress, updateWithResult
+} from "../actions/ScheduleGenerationActions";
 import WebWorker from "./WebWorker";
-import {SGWorkerCode} from "../schedulegeneration/SGWorker";
-
+import {SGWorker} from "../schedulegeneration/SGWorker";
 
 
 export const SGMiddleWare = store => {
-    const worker = new WebWorker(SGWorkerCode);
+    const worker = new WebWorker(SGWorker);
     worker.onmessage = msg => {
         let {type, generationResult, amount} = msg.data;
+
         switch(type) {
-            case "FINISHED_GENERATION":
-                store.dispatch({type: RECEIVE_SCHEDULE, generating: false, generationResult: generationResult});
+            case FINISH_GENERATING:
+                // must update with result first because each dispatch causes a rerender so could mess stuff up
+                // TODO look into redux-batched-updates
+                store.dispatch(finishedGenerating());
+                store.dispatch(updateWithResult(generationResult));
                 break;
-            case "INCREMENT_PROGRESS":
-                store.dispatch({type: INCREMENT_PROGRESS, amount: amount})
+            case INCREMENT_PROGRESS:
+                store.dispatch(incrementProgress(amount));
                 break;
             default:
                 return;

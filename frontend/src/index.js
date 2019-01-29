@@ -14,33 +14,46 @@ import {SGMiddleWare} from "./utils/SGMiddleWare";
 
 const DEBUG = true;
 
-if(!DEBUG){
-    if(!window.console) window.console = {};
+if (!DEBUG) {
+    if (!window.console) window.console = {};
     const methods = ["debug", "warn", "log"];
-    for(let i=0;i<methods.length;i++){
-        console[methods[i]] = function(){};
+    for (let i = 0; i < methods.length; i++) {
+        console[methods[i]] = function () {
+        };
     }
 }
 
+if (!String.prototype.trim) {
+    (function() {
+        // Make sure we trim BOM and NBSP
+        var rtrim = /^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g;
+        String.prototype.trim = function() {
+            return this.replace(rtrim, '');
+        };
+    })();
+}
+
 String.prototype.formatUnicorn = String.prototype.formatUnicorn ||
-function () {
-    let str = this.toString();
-    if (arguments.length) {
-        const t = typeof arguments[0];
-        let key;
-        let args = ("string" === t || "number" === t) ?
-            Array.prototype.slice.call(arguments)
-            : arguments[0];
+    function () {
+        let str = this.toString();
+        if (arguments.length) {
+            const t = typeof arguments[0];
+            let key;
+            let args = ("string" === t || "number" === t) ?
+                Array.prototype.slice.call(arguments)
+                : arguments[0];
 
-        for (key in args) {
-            str = str.replace(new RegExp("\\{" + key + "\\}", "gi"), args[key]);
+            for (key in args) {
+                str = str.replace(new RegExp("\\{" + key + "\\}", "gi"), args[key]);
+            }
         }
-    }
 
-    return str;
-};
+        return str;
+    };
 
-const store = createStore(reducers, applyMiddleware(thunkMiddleware, SGMiddleWare));
+const store = createStore(reducers,
+    window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__(),
+    applyMiddleware(thunkMiddleware, SGMiddleWare));
 
 document.title = "Plan Your Schedule!";
 ReactDOM.render(

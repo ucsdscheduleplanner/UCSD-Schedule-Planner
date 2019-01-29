@@ -21,4 +21,8 @@ ENV PYTHONPATH /app
 
 EXPOSE 5000
 
-CMD ["bash", "./docker-run.sh"] 
+ARG DOWNLOAD=false
+# Need to set name to something else
+ENV DOWNLOADING=${DOWNLOAD}
+
+CMD bash ./docker-run.sh $DOWNLOADING
