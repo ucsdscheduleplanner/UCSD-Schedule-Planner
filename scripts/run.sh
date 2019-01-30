@@ -35,3 +35,4 @@ depends docker
 depends docker-compose
 
 docker-compose build --build-arg DOWNLOAD=${download}
+docker-compose up 
