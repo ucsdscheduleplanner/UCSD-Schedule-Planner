@@ -60,17 +60,20 @@ rest of your system.
 To install, use the following command: 
 
 ```
-git clone https://github.com/ctrando/UCSD-Planner-Helper && cd UCSD-Planner-Helper && docker-compose build
+git clone https://github.com/ctrando/UCSD-Planner-Helper && cd UCSD-Planner-Helper 
 ```
 
-After the download/build process finishes, run **one** of the following two commands
+After the download/build process finishes, run **either** of the two commands
 depending on the context:
 
-1. `SDSCHEDULE_SCRAPE=1 docker-compose up` if you are a first-time user OR want to refresh cached data from WebReg. 
-2. `docker-compose up` for any other use case.
+1. `./scripts/docker_install.sh --download` if you are a first-time user OR want to refresh cached data from WebReg. 
+2. `./scripts/docker_install.sh` to redownload dependencies
 
-The server will be live at http://localhost:3000. Make sure the ports 3000 and 5000 
-are not used on your machine.
+**and**
+
+1. `docker-compose up` to start the development servers
+
+The frontend server will be live at http://localhost:3000 and the backend server will be live at http://localhost:5000. Make sure the ports 3000 and 5000 are not used on your machine.
 
 # Contributing 
 
