@@ -1,8 +1,6 @@
 # UCSD Planner Helper
  
-**Live at [sdschedule.com](https://sdschedule.com)!**
-
-Designed for and by UCSD students. Use this tool to automatically generate
+**Live at [sdschedule.com](https://sdschedule.com)!** Designed for and by UCSD students. Use this tool to automatically generate
 your optimal class schedule without relying on WebReg.
 
 # Details 
@@ -32,12 +30,12 @@ we only provide schedule generation utilities, not enrollment features.</sup></s
 
 This project uses the following frameworks:
 
-* ReactJS and Redux, <sub>frontend logic </sub>
-* React Storybook, <sub> Component testing </sub>
-* Primereact, <sub> UI components </sub>
+* ReactJS and Redux <sub>frontend logic</sub>
+* React Storybook <sub>component testing</sub>
+* Primereact <sub>UI components</sub>
 * Flask <sub>backend server</sub>
 * Selenium <sub>web scraping</sub>
-* Cheerio <sub>html parsing</sub>
+* Cheerio <sub>HTML parsing</sub>
 * MySQL <sub>database for scraped results</sub>
 * Docker <sub>container management</sub>
 
@@ -57,29 +55,19 @@ This project is designed to be portable. We use docker to ensure that there is
 clear separation between our tool's runtime environment and the
 rest of your system.
 
-To install, first clone the repository and `cd` into it:
+To install, use the following command: 
 
 ```
-git clone https://github.com/ctrando/UCSD-Planner-Helper && cd UCSD-Planner-Helper
+git clone https://github.com/ctrando/UCSD-Planner-Helper && cd UCSD-Planner-Helper 
 ```
 
-Next, from the repository root directory, run the command:
+After the download/build process finishes, run **either** of the two commands
+depending on the context:
 
-```
-./scripts/docker_install.sh --download
-```
+1. `./scripts/run.sh --download` if you are a first-time user OR want to refresh cached data from WebReg. 
+2. `./scripts/run.sh` otherwise
 
-Wait until the command finishes. This may take up to 10 minutes to finish scraping everything.
-
-After the installation process has completed, you can run the following command to
-start up the schedule generation tool:
-
-```
-docker-compose up
-```
-
-The server will be live at http://localhost:3000. Make sure the ports 3000 and 5000 
-are not used on your machine.
+The frontend server will be live at http://localhost:3000 and the backend server will be live at http://localhost:5000. Make sure the ports 3000 and 5000 are not used on your machine.
 
 # Contributing 
 
