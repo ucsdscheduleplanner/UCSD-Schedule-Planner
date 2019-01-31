@@ -84,18 +84,14 @@ Build:
 Run:
 
 ```bash
+docker-compose -f docker-compose-dev.yml  # development
+docker-compose -f docker-compose-prod.yml # production
 ```
 
-After the download/build process finishes, you can either run the app in development environment or
-production environment.
-
-1. `SDSCHEDULE_SCRAPE=1 docker-compose up` if you are a first-time user OR want to refresh cached data from WebReg. 
-2. `docker-compose up` for any other use case.
-
-The server will be live at http://localhost:3000. Make sure the ports 3000 and 5000 
+The development server will be live at http://localhost:3000. Make sure the ports 3000 and 5000 
 are not used on your machine.
 
-# Contributing 
+# Contributing
 
 If you wish to contribute, please speak to [@ctrando](https://github.com/ctrando). 
 We emphasize good testing practices as well as maintainable and well-documented code.
