@@ -225,11 +225,9 @@ export class ClassInputHandler {
     autosave(force = false) {
         const state = this.getState().ClassInput;
         if (force || (state.editMode && state.editOccurred)) {
-            console.log("autosaving");
-            console.log(state);
+            console.log("Autosaving class...");
             // just save everything
             let newClass = this.buildClassFromInput();
-            console.log(newClass);
 
             let {valid, reason} = this.isValidEdit(newClass);
             if (!valid) {
