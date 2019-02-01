@@ -436,28 +436,6 @@ export function SGWorker() {
             }
         };
 
-        // I wrote this cause I had to don't judge me future person (probably Cameron)
-        /**
-         * Builds a class object after done with generation, copying over all the data from the previous class
-         * object but overwriting the sections field to replace it with only one section
-         * @param sectionNum the section number of the class I want to replace
-         * @returns {any}
-         */
-        ScheduleGenerator.prototype.buildClass = function (sectionNum) {
-            for (let Class of this.classData) {
-                // CSE 11$0 is the sectionNum
-                // CSE is the department
-                if (sectionNum.startsWith(Class.department)) {
-                    for (let curSection of Class.sections) {
-                        if (sectionNum === curSection.sectionNum) {
-                            // don't want to copy the previous sections field, only want the new one
-                            return Object.assign({}, Class, {sections: [curSection]});
-                        }
-                    }
-                }
-            }
-        };
-
         /**
          * Will evaluate the given schedule with the preference objects given
          * @param schedule the schedule to evaluate
@@ -607,10 +585,11 @@ export function SGWorker() {
 
         // get the top 5
         schedules = schedules.slice(0, k + 1);
+        return schedules.map(arr => arr[1]);
         // schedules is an array of tuples where arr[0] is the score and arr[1] is the list of sections
-        return schedules.map(arr => {
+        /*return schedules.map(arr => {
             return arr[1].map(sectionNum => this.buildClass(sectionNum));
-        });
+        });*/
     };
 
     ScheduleGenerator.prototype.generate = function () {

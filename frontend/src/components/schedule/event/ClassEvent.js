@@ -1,5 +1,6 @@
 import React, {PureComponent} from 'react';
 import classNames from 'classnames';
+import PropTypes from 'prop-types';
 import Popover, {ArrowContainer} from 'react-tiny-popover';
 import "./ClassEvent.css";
 import {Button} from "../../../utils/button/Button";
@@ -13,25 +14,9 @@ export class ClassEvent extends PureComponent {
         }
     }
 
-    getUserSelectedClass() {
-        if (this.props.selectedClasses[this.props.transactionID])
-            return this.props.selectedClasses[this.props.transactionID];
-        else return null;
-    }
-
-    getTransactionIDForClass() {
-        let classes = Object.values(this.props.selectedClasses);
-        for (let i = 0; i < classes.length; i++) {
-            if (classes[i].classTitle === this.props.classTitle)
-                return classes[i].transactionID;
-        }
-        return null;
-    }
-
     onClick() {
-        let transactionID = this.getTransactionIDForClass();
-        if (transactionID)
-            this.props.toggleEditMode(transactionID);
+        this.props.onClick();
+        this.setState({popOverOpen: false});
     }
 
     onMouseEnter() {
@@ -40,13 +25,6 @@ export class ClassEvent extends PureComponent {
 
     onMouseLeave() {
         this.setState({popOverOpen: false});
-    }
-
-    isSelected() {
-        let userSelectedClass = this.getUserSelectedClass();
-        if (userSelectedClass)
-            return this.getUserSelectedClass().classTitle === this.props.classTitle;
-        return null;
     }
 
     getInfoComponent() {
@@ -91,8 +69,7 @@ export class ClassEvent extends PureComponent {
     }
 
     render() {
-        const isSelected = this.isSelected();
-        const names = classNames("ce-button", {active: isSelected});
+        const names = classNames("ce-button", {active: this.props.isSelected});
 
         return (
             <React.Fragment>
@@ -122,3 +99,16 @@ export class ClassEvent extends PureComponent {
         );
     }
 }
+
+ClassEvent.propTypes = {
+    classTitle: PropTypes.string.isRequired,
+    instructor: PropTypes.string.isRequired,
+    range: PropTypes.object.isRequired,
+    id: PropTypes.string.isRequired,
+    location: PropTypes.string.isRequired,
+    room: PropTypes.string.isRequired,
+
+    isSelected: PropTypes.bool.isRequired,
+    isShadowed: PropTypes.bool,
+    onClick: PropTypes.func
+};

@@ -7,7 +7,7 @@ import {
     setInstructor,
     setPriority, setInstructors, setTypes
 } from "./ClassInputMutator";
-import {setProgress} from "../ScheduleGenerationActions";
+import {setProgress} from "../schedule/generation/ScheduleGenerationActions";
 import {getInputHandler} from "./ClassInputHandler";
 
 export const ADD_CLASS = "ADD_CLASS";
