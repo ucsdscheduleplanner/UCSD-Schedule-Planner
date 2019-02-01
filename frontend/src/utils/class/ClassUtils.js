@@ -42,7 +42,8 @@ export default class ClassUtils {
         for (let Class of classData) {
             // CSE 11$0 is the sectionNum
             // CSE is the department
-            if (sectionNum.startsWith(Class.department)) {
+            let classTitle = Class.title.replace(/\s+/g, '');
+            if (sectionNum.startsWith(classTitle)) {
                 for (let curSection of Class.sections) {
                     if (sectionNum === curSection.sectionNum) {
                         // don't want to copy the previous sections field, only want the new one
