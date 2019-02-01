@@ -19,11 +19,9 @@ DATABASE_PATH = os.path.join(DATABASE_FOLDER_PATH, "data.db")
 # Image directory
 IMAGE_DIR = os.path.join(HOME_DIR, 'images')
 
-# Where the classes are stored
+# Storage directories for cached HTML 
 HTML_STORAGE = "/cache/course_pages"
-
-# Where capes stored
-CAPES_STORAGE = os.path.join(HOME_DIR, 'capes')
+CAPES_STORAGE = "/cache/capes_pages" 
 
 DRIVER_PATH = "/usr/local/bin/chromedriver"
 
@@ -40,7 +38,7 @@ URLS
 # URLs
 DEPARTMENT_URL = 'https://act.ucsd.edu/scheduleOfClasses/scheduleOfClassesStudent.htm'
 SCHEDULE_OF_CLASSES = 'https://act.ucsd.edu/scheduleOfClasses/scheduleOfClassesStudent.htm'
-CAPES = 'http://cape.ucsd.edu/responses/Results.aspx?CourseNumber='
+CAPES_URL = 'http://cape.ucsd.edu/responses/Results.aspx?CourseNumber='
 
 """
 VARIABLES
@@ -57,3 +55,6 @@ DEPT_SEARCH_TIMEOUT = 5
 DAY_GRAPH_INTERVAL = .5
 
 POPUP_TEXT_COLOR = (.4, .4, .4, 1)
+
+# Maximum number of times to make a request for the same page
+MAX_RETRIES = 10
