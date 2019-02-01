@@ -5,6 +5,7 @@ import GenerateReducer from "./ScheduleGenerationReducer";
 import ClassListReducer from "./ClassListReducer";
 import IgnoreClassTypesReducer from "./IgnoreClassTypesReducer";
 import ScheduleReducer from "./ScheduleReducer";
+import ScheduleBuilderReducer from "./ScheduleBuilderReducer";
 
 const reducers = combineReducers({
     SchedulePreferences: SchedulePreferences,
@@ -13,6 +14,7 @@ const reducers = combineReducers({
     ClassList: ClassListReducer,
     IgnoreClassTypes: IgnoreClassTypesReducer,
     Schedule: ScheduleReducer,
+    ScheduleBuilder: ScheduleBuilderReducer,
 });
 
 export default reducers;
