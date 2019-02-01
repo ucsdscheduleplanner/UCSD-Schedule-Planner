@@ -3,10 +3,9 @@ import {
     finishedGenerating,
     GENERATE_SCHEDULE,
     INCREMENT_PROGRESS, incrementProgress, updateWithResult
-} from "../actions/schedule/generation/ScheduleGenerationActions";
+} from "../actions/ScheduleGenerationActions";
 import WebWorker from "./WebWorker";
 import {SGWorker} from "./schedulegeneration/SGWorker";
-import {setCurrentSchedule} from "../actions/schedule/ScheduleActions";
 
 function getErrorMsg(errors) {
     let classWithMostConflicts = Object.keys(errors).reduce((key1, key2) => errors[key1].length > errors[key2].length ? key1 : key2);

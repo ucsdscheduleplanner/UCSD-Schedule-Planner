@@ -86,7 +86,8 @@ describe('Schedule generation', () => {
                     subsections: [],
                 }]
             }
-        ], conflicts: {"CSE 12": ["DI"]},
+        ],
+        conflicts: {"CSE 12": ["DI"]},
         preferences: []
     };
 
@@ -145,7 +146,13 @@ describe('Schedule generation', () => {
         let schedule = result.schedules[0];
         let Class = schedule[0];
 
-        expect(Class).to.equal("CSE12$0");
+        expect(Class.title).to.equal("CSE 12");
+        expect(Class.number).to.equal("12");
+        expect(Class.sections.length).to.equal(1);
+
+        let section = Class.sections[0];
+
+        expect(section.sectionNum).contains("$0");
     });
 
     it('Returns nothing on given empty data', () => {

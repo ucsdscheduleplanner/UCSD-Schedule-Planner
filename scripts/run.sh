@@ -13,25 +13,16 @@ if [ ! -d ".git" ]; then
   exit 1
 fi
 
-params=()
-should_build=true
+download=false
 
 while test $# -gt 0; do
    case "$1" in 
-       -h | --help) 
-          echo "The run script for the UCSD Schedule Planner" 
-          echo ""
-          echo "-h, --help        Gives the possible commands"
+       -h | --help) echo "-h, --help        Gives the possible commands"
           echo "-d, --download    Will download data fresh from Schedule of Classes"
-          echo "--no-build        Will create the servers without rebuilding the docker containers"
           exit 0
           ;;
       -d | --download)
-          params+=('--build-arg DOWNLOAD=true')
-          shift
-          ;;
-      --no-build)
-          should_build=false
+          download=true
           shift
           ;;
       *)
@@ -43,9 +34,5 @@ done
 depends docker
 depends docker-compose
 
-if [ $should_build == true ] 
-then 
-  docker-compose build "${params[@]}"
-fi
-
+docker-compose build --build-arg DOWNLOAD=${download}
 docker-compose up 

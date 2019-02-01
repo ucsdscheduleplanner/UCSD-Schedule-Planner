@@ -4,17 +4,13 @@ import ClassInputReducer from './ClassInputReducer';
 import GenerateReducer from "./ScheduleGenerationReducer";
 import ClassListReducer from "./ClassListReducer";
 import IgnoreClassTypesReducer from "./IgnoreClassTypesReducer";
-import ScheduleReducer from "./ScheduleReducer";
-import ScheduleBuilderReducer from "./ScheduleBuilderReducer";
 
 const reducers = combineReducers({
     SchedulePreferences: SchedulePreferences,
     ClassInput: ClassInputReducer,
     ScheduleGenerate: GenerateReducer,
     ClassList: ClassListReducer,
-    IgnoreClassTypes: IgnoreClassTypesReducer,
-    Schedule: ScheduleReducer,
-    ScheduleBuilder: ScheduleBuilderReducer,
+    IgnoreClassTypes: IgnoreClassTypesReducer
 });
 
 export default reducers;

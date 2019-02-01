@@ -12,7 +12,7 @@ import {
 import {addClass, editClass, enterInputMode, populateSectionData, removeClass} from "./ClassInputActions";
 import {SchedulePreferenceInputHandler} from "../schedulepreference/SchedulePreferenceInputHandler";
 import {ignoreClassTypes} from "../ignoreclasstypes/IgnoreClassTypesActions";
-import {getSchedule} from "../schedule/generation/ScheduleGenerationActions";
+import {getSchedule} from "../ScheduleGenerationActions";
 
 /**
  * Is responsible for handling all ClassInput actions, which includes running business logic when changing fields to adding
@@ -225,9 +225,11 @@ export class ClassInputHandler {
     autosave(force = false) {
         const state = this.getState().ClassInput;
         if (force || (state.editMode && state.editOccurred)) {
-            console.log("Autosaving class...");
+            console.log("autosaving");
+            console.log(state);
             // just save everything
             let newClass = this.buildClassFromInput();
+            console.log(newClass);
 
             let {valid, reason} = this.isValidEdit(newClass);
             if (!valid) {

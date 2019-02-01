@@ -2,10 +2,10 @@ import React, {PureComponent} from "react";
 import moment from 'moment';
 import Dayz from "dayz/dist/dayz";
 
+import ClassEventWrapper from "../event/ClassEventWrapper";
+
 import "dayz/dist/css/dayz.min.css";
 import "./WeekCalendar.css";
-import ScheduleBuilderEventCollection from "../builder/event/ScheduleBuilderEventCollection";
-import ScheduleGeneratorEventCollection from "../generator/event/ScheduleGeneratorEventCollection";
 
 
 class WeekCalendar extends PureComponent {
@@ -27,34 +27,31 @@ class WeekCalendar extends PureComponent {
         return moment.range(start, end);
     }
 
-    /**
-     * Takes in classes and renders their sections and subsections
-     * @param schedule
-     * @returns {EventsCollection|*|EventsCollection|g}
-     */
     createEvents(schedule) {
         let ret = [];
         for (let Class of schedule) {
             if (Class.sections.length === 0)
                 continue;
 
-            for (let section of Class.sections) {
-                for (let subsection of section.subsections) {
-                    let strippedClassData = Object.assign({}, Class, {sections: []});
-                    let strippedSectionData = Object.assign({}, section, {subsections: []});
+            if (Class.sections.length > 1)
+                console.warn(`Bad things have happened and the Class ${Class.classTitle} has more than one section`)
 
-                    let timeRange = this.convertToRange(subsection.timeInterval);
+            const section = Class.sections[0];
+            for (let subsection of section.subsections) {
+                let strippedClassData = Object.assign({}, Class, {sections: []});
+                let strippedSectionData = Object.assign({}, section, {subsections: []});
 
-                    ret.push(
-                        new ScheduleBuilderEventCollection({
-                            content: strippedSectionData.classTitle,
-                            ...strippedClassData,
-                            ...strippedSectionData,
-                            ...subsection,
-                            range: timeRange
-                        })
-                    );
-                }
+                let timeRange = this.convertToRange(subsection.timeInterval);
+
+                ret.push(
+                    new ClassEventWrapper({
+                        content: strippedSectionData.classTitle,
+                        ...strippedClassData,
+                        ...strippedSectionData,
+                        ...subsection,
+                        range: timeRange
+                    })
+                );
             }
         }
         return new Dayz.EventsCollection(ret);

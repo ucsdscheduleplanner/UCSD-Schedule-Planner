@@ -20,17 +20,21 @@ export class MyAutocomplete extends Component {
     }
 
     getSuggestions(value) {
-        console.log(`Retrieving suggestions for value ${value}`);
+        console.log("getting suggestions");
         if (!value) {
+            console.log("Nothing found, returning default");
+            console.log(this.props.suggestions);
             return this.props.suggestions;
         }
 
         const inputValue = value.trim().toLowerCase();
         const inputLength = inputValue.length;
 
-        return inputLength === 0 ? this.props.suggestions : this.props.suggestions.filter(lang =>
+        let hello = inputLength === 0 ? this.props.suggestions : this.props.suggestions.filter(lang =>
             lang.toLowerCase().slice(0, inputLength) === inputValue.toLowerCase()
         );
+        console.log(hello);
+        return hello;
     };
 
     renderSuggestion(suggestion) {
@@ -52,6 +56,7 @@ export class MyAutocomplete extends Component {
     // Autosuggest will call this function every time you need to update suggestions.
     // You already implemented this logic above, so just use it.
     onSuggestionsFetchRequested({value}) {
+        console.log("FETCHING " + value);
         this.setState({suggestions: this.getSuggestions(value)});
     };
 
@@ -60,6 +65,7 @@ export class MyAutocomplete extends Component {
     };
 
     onSuggestionSelected(event, {suggestion}) {
+        console.log("suggestion selected");
         this.props.onSelect && this.props.onSelect(suggestion);
     }
 
@@ -76,6 +82,7 @@ export class MyAutocomplete extends Component {
         switch (e.keyCode) {
             // tab key
             case 9:
+                console.log(e);
                 input = e.target;
                 //this.onSuggestionSelected(e, {suggestion: input.value});
                 break;

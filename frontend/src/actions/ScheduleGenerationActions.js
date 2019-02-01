@@ -1,11 +1,10 @@
-import {DataFetcher} from "../../../utils/DataFetcher";
-import {DataCleaner} from "../../../utils/DataCleaner";
-import {setClassData, setCurrentSchedule} from "../ScheduleActions";
+import {DataFetcher} from "../utils/DataFetcher";
+import {DataCleaner} from "../utils/DataCleaner";
 
 export const START_GENERATING = 'START_GENERATING';
 export const GENERATE_SCHEDULE = "GENERATE_SCHEDULE";
 export const FINISH_GENERATING = 'FINISH_GENERATING';
-export const SET_GENERATION_RESULT = "SET_GENERATION_RESULT";
+export const UPDATE_WITH_GENERATION_RESULT = "UPDATE_WITH_GENERATION_RESULT";
 export const SET_TOTAL_POSSIBLE_NUM_SCHEDULE = "SET_TOTAL_POSSIBLE_NUM_SCHEDULE";
 export const INCREMENT_PROGRESS = "INCREMENT_PROGRESS";
 export const SET_PROGRESS = "SET_PROGRESS";
@@ -25,18 +24,8 @@ export function finishedGenerating() {
 }
 
 export function updateWithResult(result) {
-    return function (dispatch) {
-        dispatch(setGenerationResult(result));
-
-        if(result.schedules.length > 0)
-            dispatch(setCurrentSchedule(result.schedules[0]));
-        else dispatch(setCurrentSchedule([]));
-    }
-}
-
-export function setGenerationResult(result) {
     return {
-        type: SET_GENERATION_RESULT,
+        type: UPDATE_WITH_GENERATION_RESULT,
         generationResult: result,
     }
 }
@@ -79,9 +68,9 @@ export class ScheduleGeneratorPreprocessor {
         this.dispatch = dispatch;
         this.getState = getState;
 
-        if (!dispatch)
+        if(!dispatch)
             console.error("Dispatch is null, failing");
-        if (!getState)
+        if(!getState)
             console.error("getState is null, failing");
 
         // setting selected class to only the values of the one from the state
@@ -131,17 +120,17 @@ export class ScheduleGeneratorPreprocessor {
 
     calculateMaxSize() {
         return this.classData.reduce((accum, cur) => {
-            if (!cur) {
+            if(!cur) {
                 console.warn("Class is null in calculating max size");
                 return accum;
             }
 
-            if (!cur.sections) {
+            if(!cur.sections) {
                 console.warn(`Class ${cur.title} has no sections array!`);
                 return accum;
             }
 
-            if (cur.sections.length === 0) {
+            if(cur.sections.length === 0) {
                 console.warn(`Class ${cur.title} has no sections!`);
                 return accum;
             }
@@ -186,10 +175,6 @@ export function getSchedule() {
         // let redux know that we are creating a generationResult
         dispatch(startGenerating());
         let {classData, classTypesToIgnore, preferences, totalNumPossibleSchedule} = await new ScheduleGeneratorPreprocessor(dispatch, getState).preprocess();
-
-        // setting data for future use
-        dispatch(setClassData(classData));
-
         // tell middleware we want to create a generationResult with an action
         // this will allow the web worker to take over
         dispatch(generateSchedule(classData, classTypesToIgnore, preferences, totalNumPossibleSchedule));
