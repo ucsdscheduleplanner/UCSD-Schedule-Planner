@@ -4,8 +4,8 @@ import {
     START_GENERATING,
     SET_PROGRESS,
     SET_TOTAL_POSSIBLE_NUM_SCHEDULE,
-    UPDATE_WITH_GENERATION_RESULT
-} from '../actions/ScheduleGenerationActions';
+    SET_GENERATION_RESULT
+} from '../actions/schedule/generation/ScheduleGenerationActions';
 
 /**
  Should be able to access this through state.ScheduleGeneration
@@ -31,7 +31,7 @@ export default function ScheduleGeneration(state = {
                 totalNumPossibleSchedule: 1,
                 generatingProgress: 1
             });
-        case UPDATE_WITH_GENERATION_RESULT:
+        case SET_GENERATION_RESULT:
             let generateSuccess = action.generationResult.length > 0;
             return Object.assign({}, state, {
                 generationResult: action.generationResult,

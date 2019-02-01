@@ -4,7 +4,7 @@ import {ClassInputForm} from "./ClassInputForm";
 import {connect} from "react-redux";
 import {enterInputMode} from "../../../../actions/classinput/ClassInputActions";
 import {bindActionCreators} from "redux";
-import {getSchedule} from "../../../../actions/ScheduleGenerationActions";
+import {getSchedule} from "../../../../actions/schedule/generation/ScheduleGenerationActions";
 
 
 class ClassInputFormContainer extends PureComponent {

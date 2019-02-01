@@ -86,8 +86,7 @@ describe('Schedule generation', () => {
                     subsections: [],
                 }]
             }
-        ],
-        conflicts: {"CSE 12": ["DI"]},
+        ], conflicts: {"CSE 12": ["DI"]},
         preferences: []
     };
 

@@ -12,7 +12,7 @@ import {
 import {addClass, editClass, enterInputMode, populateSectionData, removeClass} from "./ClassInputActions";
 import {SchedulePreferenceInputHandler} from "../schedulepreference/SchedulePreferenceInputHandler";
 import {ignoreClassTypes} from "../ignoreclasstypes/IgnoreClassTypesActions";
-import {getSchedule} from "../ScheduleGenerationActions";
+import {getSchedule} from "../schedule/generation/ScheduleGenerationActions";
 
 /**
  * Is responsible for handling all ClassInput actions, which includes running business logic when changing fields to adding
