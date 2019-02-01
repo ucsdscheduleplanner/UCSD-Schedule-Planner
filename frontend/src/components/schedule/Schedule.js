@@ -3,10 +3,10 @@ import {ReactComponent as ViewIcon} from "../../svg/icon-view.svg";
 import ScheduleGeneratorContainer from "./generator/ScheduleGeneratorContainer";
 import Toggle from 'react-toggle';
 import "./Schedule.css";
-
 import ScheduleBuilderContainer from "./builder/ScheduleBuilderContainer";
 import {BUILDER_MODE, GENERATOR_MODE} from "../../reducers/ScheduleReducer";
 import PropTypes from 'prop-types';
+import {Button} from "../../utils/button/Button";
 
 
 export class Schedule extends PureComponent {
@@ -66,6 +66,9 @@ export class Schedule extends PureComponent {
                 <div className="schedule__body">
                     {this.props.scheduleMode === BUILDER_MODE ? <ScheduleBuilderContainer/> :
                         <ScheduleGeneratorContainer/>}
+                    <div className="option-panel">
+                        <Button className="export-calendar-button" label="Export Calendar"/>
+                    </div>
                 </div>
             </div>
         )
