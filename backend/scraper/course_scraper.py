@@ -1,6 +1,5 @@
 import os
 import sqlite3
-import time
 import sys
 import traceback 
 
@@ -14,8 +13,7 @@ from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.common.exceptions import TimeoutException
 
-from settings import HTML_STORAGE
-from settings import HOME_DIR 
+from settings import HOME_DIR, MAX_RETRIES, HTML_STORAGE
 from settings import DATABASE_PATH, DATABASE_FOLDER_PATH, DRIVER_PATH 
 from settings import TIMEOUT, DEPT_SEARCH_TIMEOUT  
 from settings import SCHEDULE_OF_CLASSES, QUARTER
@@ -28,9 +26,7 @@ QUARTER_INSERT_SCRIPT = """let select = document.getElementById("selectedTerm");
             document.getElementById("selectedTerm").value = "{}";
             """
 
-MAX_RETRIES = 10
-
-class Scraper:
+class CourseScraper:
     def __init__(self):
         # Keeping track of HTML directory
         self.dir_path = HTML_STORAGE
@@ -71,30 +67,10 @@ class Scraper:
             self.mutex.release()
         return local_crashed
 
-    # Tries getting the given page {max_retries} number of times before quitting
-    def get_page_with_retries(self, browser, page_url, max_retries, thread_id):
-        retries = 0
-        while True:
-            try:
-                browser.get(page_url)
-                return 
-            except TimeoutException as e:
-                retries += 1 
-                print ("[T{0}] Failed to download page {1}.".format(thread_id, page_url))
-                if retries < max_retries:
-                    print ("[T{0}] {1}/{2} attempts. Retrying ...".format(thread_id, retries, max_retries))
-                else:
-                    print ("[T{0}] {1}/{2} attempts. All retries have been exhausted.".format(thread_id, retries, max_retries))
-                    raise e
-
     def scrape(self):
         print('Beginning course scraping.')
-        curr_time = time.time()
         self.iter_departments()
-        if not self.crashed:
-            fin_time = time.time()
-            min_span = (fin_time - curr_time) / 60
-            print('Finished course scraping in {0:.4f} minutes.'.format(min_span))
+        print('Finished course scraping.')
 
     def iter_departments(self):
         # Number of threads is equivalent to the number of processors on the machine
@@ -113,7 +89,7 @@ class Scraper:
             t.join()
 
     def iter_departments_by_thread_handle_errors(self, thread_id, num_threads): 
-        # If a thread receives an error during execution, kill all threads & mark program as crashed
+        # If a thread receives an error during execution, kill all threads & mark program as crashed try:
         try:
             self.iter_departments_by_thread(thread_id, num_threads)
         except: 
@@ -124,9 +100,6 @@ class Scraper:
     def iter_departments_by_thread(self, thread_id, num_threads): 
         print("Thread {} is starting.".format(thread_id))
 
-        # Every thread handles departments of index i where i % num_threads == thread_id
-        counter = thread_id
-    
         # Set up Chrome options for the Selenium webdriver
         options = webdriver.ChromeOptions()
         options.add_argument('--headless')
@@ -140,7 +113,7 @@ class Scraper:
             
         self.get_page_with_retries(browser, self.login_url, MAX_RETRIES, thread_id)
 
-        while counter < len(self.departments):
+        for counter in range(thread_id, len(self.departments), num_threads):
             # Exit if any part of the scraper has crashed 
             if self.has_crashed():
                 print("Thread {} is exiting gracefully ...".format(thread_id), file=sys.stderr)
@@ -180,8 +153,6 @@ class Scraper:
                 print("Thread {} is exiting gracefully ...".format(thread_id), file=sys.stderr)
                 return 
 
-            counter += num_threads
-
         print("Thread {} has finished the work assigned to it.".format(thread_id))
 
     def iter_pages(self, department, browser, thread_id):
@@ -210,7 +181,24 @@ class Scraper:
             current_page += 1
             current_url = base_url + "?page={}".format(current_page)
             self.get_page_with_retries(browser, current_url, MAX_RETRIES, thread_id)
+    
+    # Tries getting the given page {max_retries} number of times before quitting
+    def get_page_with_retries(self, browser, page_url, max_retries, thread_id):
+        retries = 0
+        while True:
+            try:
+                browser.get(page_url)
+                return 
+            except TimeoutException as timeout_exception:
+                retries += 1 
+                print ("[T{0}] Failed to download page {1}.".format(thread_id, page_url))
+                if retries < max_retries:
+                    print ("[T{0}] {1}/{2} attempts. Retrying ...".format(thread_id, retries, max_retries))
+                else:
+                    print ("[T{0}] {1}/{2} attempts. All retries have been exhausted.".format(thread_id, retries, max_retries))
+                    raise timeout_exception
 
+    # Attempts to store the given page contents into a file in our cache
     def store_page(self, department, page_contents, num_page, thread_id):
         if not os.path.exists(self.dir_path):
             os.makedirs(self.dir_path)
@@ -218,7 +206,6 @@ class Scraper:
         if not os.path.exists(department_path):
             os.makedirs(department_path)
 
-        file = open(os.path.join(department_path, str(num_page) + '.html'), 'w')
-        file.write(page_contents)
-        print('[T{0}] Saving'.format(thread_id), '{0} (#{1})'.format(department, num_page), 'to', file.name, '...')
-        file.close()
+        with open(os.path.join(department_path, str(num_page) + '.html'), 'w') as f:
+            f.write(page_contents)
+            print('[T{0}] Saving'.format(thread_id), '{0} (#{1})'.format(department, num_page), 'to', f.name, '...')
