@@ -2,11 +2,10 @@ import os
 import sqlite3
 import bs4
 import re
-import time
+
 from settings import HTML_STORAGE, DATABASE_PATH, HOME_DIR
 
-
-class Parser:
+class CourseParser:
     def __init__(self):
         # initializing database
         os.chdir(HOME_DIR)
@@ -27,13 +26,11 @@ class Parser:
         self.description = None
 
     def parse(self):
-        print('Beginning parsing.')
-        curr_time = time.time()
+        print('Beginning course parsing.')
         self.parse_data()
         self.insert_data()
         self.close()
-        fin_time = time.time()
-        print('Finished parsing in {} seconds.'.format(fin_time - curr_time))
+        print('Finished course parsing.')
 
     def parse_data(self):
         for root, dirs, files in os.walk(os.curdir):
@@ -49,8 +46,7 @@ class Parser:
                         # Look for table rows
                         rows = soup.find_all(name='tr')
                         for row in rows:
-                            self.parse_row(dir, row)
-
+                            self.parse_row(dir, row) 
     """
     Will get info from the HTML and store it into a format that can be manipulated easily. 
     Then it will validate the information and make sure that it is in a usable format.
@@ -137,5 +133,3 @@ class Parser:
     def close(self):
         self.connection.commit()
         self.connection.close()
-
-
