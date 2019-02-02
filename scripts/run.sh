@@ -51,7 +51,19 @@ run_prod() {
 
   export SDSCHEDULE_SCRAPE
 
-  docker-compose -f docker-compose-production.yml up ${is_build}
+  docker-compose -f docker-compose-production.yml up ${is_build} --detach
+}
+
+stop_prod() {
+  if [ ! -f "docker-compose-production.yml" ]; then 
+    echo "Error: docker-compose-production.yml missing, which is required for docker-compose"
+    echo "Please check the repo for missing files"
+    exit 1
+  fi
+
+  export SDSCHEDULE_SCRAPE
+
+  docker-compose -f docker-compose-production.yml down
 }
 
 main() {
@@ -89,6 +101,7 @@ while test $# -gt 0; do
           echo "-d, --download    Will download data fresh from Schedule of Classes"
           echo "-p, --production  Will run in production mode"
           echo "-b, --build       Will create the servers without rebuilding the docker containers"
+          echo "-s, --stop        Stop the *production* services"
           exit 0
           ;;
       -d | --download)
@@ -99,6 +112,10 @@ while test $# -gt 0; do
           ;;
       -b | --build)
           is_build=${BUILD}
+          ;;
+      -b | --build)
+          stop_prod # move to new location?
+          exit 0
           ;;
       *)
           echo "Invalid arguments '$1' ignored"
