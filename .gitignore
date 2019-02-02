@@ -89,3 +89,4 @@ yarn-error.log*
 # nginx log
 nginx-access.log*
 nginx-error.log*
+web/log/*
