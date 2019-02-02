@@ -1,0 +1,32 @@
+
+.landing__body {
+    height: 90%;
+    display: grid;
+
+    grid-template-columns: 35% auto;
+    grid-auto-flow: column;
+}
+
+.landing__body--left {
+    padding: 5% 10% 10% 15%;
+    border-right: 1px solid rgba(0, 0, 0, .3);
+    overflow-y: scroll;
+}
+
+
+.landing__body--left::-webkit-scrollbar {
+    width: 5px;
+}
+
+.landing__body--left::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgb(24,43, 73);
+}
+
+.landing__body--left::-webkit-scrollbar-thumb {
+    background: rgb(24,43, 73);
+    outline: 1px solid rgb(24, 43, 73);
+    border-radius: 30px;
+}
+
+.landing__body--right {
+}

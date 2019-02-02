@@ -11,8 +11,9 @@ import {SET_MESSAGE_HANDLER} from "../actions/classinput/ClassInputMutator";
 import {SET_INSTRUCTORS} from "../actions/classinput/ClassInputMutator";
 import {SET_TYPES} from "../actions/classinput/ClassInputMutator";
 import {SET_EDIT_OCCURRED} from "../actions/classinput/ClassInputMutator";
-import {SET_ID} from "../actions/classinput/ClassInputMutator";
+import {SET_TRANSACTION_ID} from "../actions/classinput/ClassInputMutator";
 import {ConsoleMessageHandler} from "../utils/message/ConsoleMessageHandler";
+import uuid from 'uuid';
 
 export default function ClassInputReducer(state = {
     departments: [],
@@ -34,9 +35,7 @@ export default function ClassInputReducer(state = {
     // default is console message handler, but can be set to something else if needed
     messageHandler: new ConsoleMessageHandler(),
 
-    // id of the current class - really only for Class editing purposes
-    // if id is null that just means it hasn't been set yet, only set when edit mode is activated
-    id: null
+    transactionID: uuid.v4()
 }, action) {
     switch (action.type) {
         case POPULATE_DATA_PER_CLASS:
@@ -46,10 +45,14 @@ export default function ClassInputReducer(state = {
                 classTypesPerClass: action.classTypesPerClass
             });
         case SET_COURSE_NUMS:
+            if(!action.courseNums)
+                action.courseNums = [];
             return Object.assign({}, state, {
                 courseNums: action.courseNums
             });
         case SET_DEPARTMENTS:
+            if(!action.departments)
+                action.departments = [];
             return Object.assign({}, state, {
                 departments: action.departments
             });
@@ -121,9 +124,11 @@ export default function ClassInputReducer(state = {
             return Object.assign({}, state, {
                 messageHandler: action.messageHandler,
             });
-        case SET_ID:
+        case SET_TRANSACTION_ID:
+            if(!action.transactionID)
+                action.transactionID = uuid.v4();
             return Object.assign({}, state, {
-                id: action.id,
+                transactionID: action.transactionID,
             });
         default:
             return state;

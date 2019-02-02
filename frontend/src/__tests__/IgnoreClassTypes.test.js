@@ -2,7 +2,7 @@ import {applyMiddleware, createStore} from "redux";
 import reducers from "../reducers";
 import thunk from "redux-thunk";
 import {ignoreClassTypeCodes, ignoreClassTypes} from "../actions/ignoreclasstypes/IgnoreClassTypesActions";
-import {SGWorker} from "../schedulegeneration/SGWorker";
+import {SGWorker} from "../utils/schedulegeneration/SGWorker";
 import {makeTimeInterval} from "../utils/time/TimeUtils";
 
 const testInput = {

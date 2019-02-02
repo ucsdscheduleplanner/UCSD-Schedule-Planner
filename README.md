@@ -1,8 +1,6 @@
 # UCSD Planner Helper
  
-**Live at [sdschedule.com](https://sdschedule.com)!**
-
-Designed for and by UCSD students. Use this tool to automatically generate
+**Live at [sdschedule.com](https://sdschedule.com)!** Designed for and by UCSD students. Use this tool to automatically generate
 your optimal class schedule without relying on WebReg.
 
 # Details 

@@ -18,8 +18,6 @@ services:
       - "sdschedule-database"
     environment:
       - "PYTHONUNBUFFERED=0"
-    volumes:
-      - "./backend:/app"
   sdschedule-frontend:
     container_name: sdschedule-frontend
     build: frontend

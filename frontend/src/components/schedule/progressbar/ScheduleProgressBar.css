@@ -1,0 +1,9 @@
+.schedule-progress-bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.rc-progress-circle {
+    width: 50%;
+}

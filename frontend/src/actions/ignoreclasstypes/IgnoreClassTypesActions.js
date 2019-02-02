@@ -24,6 +24,9 @@ export const classTypeToCode = {
 };
 
 export function ignoreClassTypes(classTitle, classTypes) {
+    console.log("CLASS TITLE");
+    console.log(classTitle);
+    console.log(classTypes);
     return function(dispatch) {
         dispatch(ignoreClassTypeCodes(classTitle, classTypes.map(e => classTypeToCode[e])));
     }

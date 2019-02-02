@@ -11,7 +11,7 @@ export const SET_CLASS_TYPES_TO_IGNORE = "SET_CLASS_TYPES_TO_IGNORE";
 export const SET_PRIORITY = "SET_PRIORITY";
 export const SET_EDIT_MODE = "SET_EDIT_MODE";
 export const SET_MESSAGE_HANDLER = "SET_MESSAGE_HANDLER";
-export const SET_ID = "SET_ID";
+export const SET_TRANSACTION_ID = "SET_TRANSACTION_ID";
 
 export function setCourseNums(courseNums) {
     return {
@@ -91,13 +91,13 @@ export function setEditMode(mode) {
 
 /**
  * Sets the id for the current Class Input
- * @param id should be a string
+ * @param transactionID should be a string
  * @returns {{type: string, id: *}}
  */
-export function setID(id) {
+export function setTransactionID(transactionID) {
     return {
-        type: SET_ID,
-        id: id
+        type: SET_TRANSACTION_ID,
+        transactionID: transactionID
     }
 }
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import {SGWorker} from "../schedulegeneration/SGWorker";
+import {SGWorker} from "../utils/schedulegeneration/SGWorker";
 import {makeTimeInterval} from "../utils/time/TimeUtils";
 import {applyMiddleware, createStore} from "redux";
 import reducers from "../reducers";

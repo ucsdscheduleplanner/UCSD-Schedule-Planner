@@ -1,5 +1,5 @@
 import {makeTimeInterval} from "../utils/time/TimeUtils";
-import {ScheduleGeneratorPreprocessor} from "../actions/ScheduleGenerationActions";
+import {ScheduleGeneratorPreprocessor} from "../actions/schedule/generation/ScheduleGenerationActions";
 import {applyMiddleware, createStore} from "redux";
 import reducers from "../reducers";
 import thunk from "redux-thunk";
@@ -75,7 +75,7 @@ describe("Tests how the information is built up before schedule is generated", (
         store.dispatch(setClassSpecificPref("CSE 11", {test: "test"}));
         store.dispatch(setClassSpecificPref("CSE 12", {test: "test"}));
         store.dispatch(setClassSpecificPref("DSC 20", {test: "test"}));
-store.dispatch(addClass({classTitle: "CSE 11"}));
+        store.dispatch(addClass({classTitle: "CSE 11"}));
         store.dispatch(addClass({classTitle: "CSE 12"}));
         store.dispatch(addClass({classTitle: "DSC 20"}));
 

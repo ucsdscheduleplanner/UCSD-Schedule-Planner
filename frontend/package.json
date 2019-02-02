@@ -1,30 +1,34 @@
 {
   "name": "ucsd_webapp",
-  "version": "0.1.1", 
+  "version": "0.1.1",
   "homepage": "http://sdschedule.com/",
   "private": true,
   "dependencies": {
-    "chai-enzyme": "^1.0.0-beta.1",
     "classnames": "^2.2.6",
+    "dayz": "https://github.com/CTrando/dayz",
     "file-saver": "^1.3.8",
     "hoek": "^5.0.4",
     "localforage": "^1.7.3",
-    "memoize-one": "^5.0.0",
     "moment": "^2.22.2",
+    "moment-range": ">=3.0",
     "npm": "^6.4.1",
     "npm-check": "^5.9.0",
-    "primeicons": "^1.0.0",
-    "primereact": "git+https://github.com/CTrando/primereact.git",
+    "prop-types": "^15.6.2",
+    "rc-progress": "^2.3.0",
     "rc-time-picker": "^3.4.0",
     "react": "^16.6.1",
-    "react-big-calendar": "^0.19.2",
+    "react-autosuggest": "^9.4.2",
     "react-dom": "^16.6.1",
     "react-redux": "^5.1.0",
     "react-responsive": "^6.0.1",
     "react-scripts": "^2.1.1",
+    "react-spring": "^7.2.8",
+    "react-tiny-popover": "^3.4.2",
     "react-transition-group": "^2.5.0",
+    "reactjs-popup": "^1.3.2",
     "redux": "^3.7.2",
-    "redux-thunk": "^2.3.0"
+    "redux-thunk": "^2.3.0",
+    "uuid": "^3.3.2"
   },
   "scripts": {
     "analyze": "source-map-explorer build/static/js/main.*",
@@ -34,18 +38,22 @@
     "test-jest": "jest",
     "eject": "react-scripts eject",
     "predeploy": "npm run build",
-    "aws-deploy": "npm run build && aws s3 sync ./build s3://sdschedule.com --delete"
+    "aws-deploy": "npm run build && aws s3 sync ./build s3://sdschedule.com --delete",
+    "webpack-analyze": "react-scripts build --stats && webpack-bundle-analyzer build/bundle-stats.json -m static -r build/bundle-stats.html -O"
   },
   "proxy": "http://sdschedule-backend:5000/",
   "devDependencies": {
-    "source-map-explorer": "^1.6.0",
     "chai": "^4.2.0",
+    "chai-enzyme": "^1.0.0-beta.1",
     "enzyme": "^3.7.0",
     "enzyme-adapter-react-16": "^1.6.0",
     "jsdom": "^13.0.0",
-    "react-test-renderer": "^16.6.1"
+    "react-test-renderer": "^16.6.1",
+    "react-toastify": "^4.5.2",
+    "source-map-explorer": "^1.6.0",
+    "webpack-bundle-analyzer": "^3.0.3"
   },
-  "license": "MIT", 
+  "license": "MIT",
   "postinstall": "cd node_modules/primereact/ && npm install && npm run build",
   "browserslist": [
     ">0.2%",

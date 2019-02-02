@@ -1,6 +1,6 @@
 import React from "react";
 import {shallow} from 'enzyme';
-import WeekCalendar from "../components/schedule/WeekCalendar";
+import WeekCalendar from "../components/schedule/calendar/WeekCalendar";
 
 import {expect} from 'chai';
 
