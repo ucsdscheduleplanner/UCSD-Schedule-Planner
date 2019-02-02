@@ -122,8 +122,8 @@
     position: absolute;
     width: 14px;
     height: 10px;
-    top: 0px;
-    bottom: 0px;
+    top: 0;
+    bottom: 0;
     margin-top: auto;
     margin-bottom: auto;
     line-height: 0;

@@ -16,27 +16,36 @@ const GTIME_FORMAT = "YYYY-MM-DDTHH:mm:ssZ";
 const NUM_WEEKS_AHEAD = 5;
 const RECURRING_EVENT_RULE = "RRULE:FREQ=WEEKLY;COUNT=" + NUM_WEEKS_AHEAD;
 
-export function addEvents(subsections) {
+export function addEvents(schedule) {
     let events = [];
 
-    for (let i = 0; i < subsections.length; i++) {
-        const subsection = subsections[i];
-        events.push({
-            'summary': subsection.classTitle,
-            'location': subsection.location,
-            'description': subsection.description,
-            'start': {
-                "dateTime": moment(subsection.timeInterval['start']).format(GTIME_FORMAT),
-                "timeZone": "America/Los_Angeles"
-            },
-            'end': {
-                "dateTime": moment(subsection.timeInterval['end']).format(GTIME_FORMAT),
-                "timeZone": "America/Los_Angeles"
-            },
-            'recurrence': [
-                RECURRING_EVENT_RULE
-            ],
-        });
+    for (let Class of schedule) {
+        if (Class.sections.length === 0)
+            continue;
+
+        if (Class.sections.length > 1)
+            console.warn(`Bad things have happened and the Class ${Class.classTitle} has more than one section`)
+
+        const section = Class.sections[0];
+        for (let i = 0; i < section.subsections.length; i++) {
+            const subsection = section.subsections[i];
+            events.push({
+                'summary': section.classTitle,
+                'location': subsection.location,
+                'description': subsection.description,
+                'start': {
+                    "dateTime": moment(subsection.timeInterval['start']).format(GTIME_FORMAT),
+                    "timeZone": "America/Los_Angeles"
+                },
+                'end': {
+                    "dateTime": moment(subsection.timeInterval['end']).format(GTIME_FORMAT),
+                    "timeZone": "America/Los_Angeles"
+                },
+                'recurrence': [
+                    RECURRING_EVENT_RULE
+                ],
+            });
+        }
     }
     // Client ID and API key from the Developer Console
 

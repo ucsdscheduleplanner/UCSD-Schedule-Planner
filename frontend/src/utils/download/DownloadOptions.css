@@ -1,0 +1,28 @@
+.export-calendar-button {
+    color: #182B49;
+    background-color: white;
+    border: 0.15em solid #182B49;
+}
+
+.export-calendar__container {
+    background: #182B49;
+    opacity: .95;
+    padding: 0.2em;
+}
+
+.add-to-gcalendar-button {
+    background: white;
+    color: #182B49;
+    border: #182B49;
+    padding: 1em;
+    border-radius: 5px;
+    transition: background .5s ease-in-out;
+}
+
+.add-to-gcalendar-button:hover {
+    cursor: pointer;
+}
+
+.download-options-popover {
+    z-index: 1;
+}

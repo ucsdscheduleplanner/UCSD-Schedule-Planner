@@ -7,7 +7,7 @@ import ScheduleBuilderContainer from "./builder/ScheduleBuilderContainer";
 import {BUILDER_MODE, GENERATOR_MODE} from "../../reducers/ScheduleReducer";
 import PropTypes from 'prop-types';
 import {Button} from "../../utils/button/Button";
-
+import {DownloadOptions} from "../../utils/download/DownloadOptions";
 
 export class Schedule extends PureComponent {
 
@@ -42,6 +42,9 @@ export class Schedule extends PureComponent {
     }
 
     render() {
+        const downloadOptions = (
+            <DownloadOptions schedule={this.props.currentSchedule}/>
+        );
         return (
             <div className="schedule">
                 <div className="schedule__header">
@@ -68,6 +71,7 @@ export class Schedule extends PureComponent {
                         <ScheduleGeneratorContainer/>}
                     <div className="option-panel">
                         <Button className="export-calendar-button" label="Export Calendar"/>
+                        {downloadOptions}
                     </div>
                 </div>
             </div>
@@ -77,6 +81,7 @@ export class Schedule extends PureComponent {
 }
 
 Schedule.propTypes = {
+    currentSchedule: PropTypes.array.isRequired,
     scheduleMode: PropTypes.string.isRequired,
     setScheduleMode: PropTypes.func.isRequired,
 };
