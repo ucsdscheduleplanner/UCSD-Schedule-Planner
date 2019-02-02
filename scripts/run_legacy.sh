@@ -13,23 +13,25 @@ if [ ! -d ".git" ]; then
   exit 1
 fi
 
-if [ ! -f "docker-compose-dev.yml" ]; then 
-  echo "Error: docker-compose-dev.yml missing, which is required for docker-compose"
-  echo "Please check the repo for missing files"
-  exit 1
-fi
-
-download=false
+params=()
+should_build=true
 
 while test $# -gt 0; do
    case "$1" in 
-       -h | --help)
+       -h | --help) 
+          echo "The run script for the UCSD Schedule Planner" 
+          echo ""
           echo "-h, --help        Gives the possible commands"
           echo "-d, --download    Will download data fresh from Schedule of Classes"
+          echo "--no-build        Will create the servers without rebuilding the docker containers"
           exit 0
           ;;
       -d | --download)
-          download=true
+          params+=('--build-arg DOWNLOAD=true')
+          shift
+          ;;
+      --no-build)
+          should_build=false
           shift
           ;;
       *)
@@ -38,8 +40,12 @@ while test $# -gt 0; do
   esac
 done
 
-
 depends docker
 depends docker-compose
 
-docker-compose -f docker-compose-dev.yml build --build-arg DOWNLOAD=${download}
+if [ $should_build == true ] 
+then 
+  docker-compose build "${params[@]}"
+fi
+
+docker-compose up 
