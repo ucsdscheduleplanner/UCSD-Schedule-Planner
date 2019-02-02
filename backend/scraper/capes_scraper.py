@@ -17,10 +17,6 @@ CAPES_USER_AGENT = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/
 class CAPESScraper:
 
     def __init__(self):
-        # Set up global variables for CAPES-related paths
-        self.dir_path = CAPES_STORAGE
-        self.start_url = CAPES_URL
-
         # Read all departments from the SQL database 
         self.database = sqlite3.connect(DATABASE_PATH)
         self.cursor = self.database.cursor()
@@ -34,8 +30,10 @@ class CAPESScraper:
         self.mutex = Lock()
         self.crashed = False
 
-        # Go back to the home directory
-        os.chdir(HOME_DIR)
+        # Create top level folder if it doesn't exist
+        if os.path.exists(CAPES_STORAGE):
+            shutil.rmtree(CAPES_STORAGE)
+        os.makedirs(CAPES_STORAGE)
 
     # Thread-safe way of marking that at least one thread has crashed 
     def set_crashed(self):
@@ -98,7 +96,7 @@ class CAPESScraper:
             department = self.departments[counter]
 
             # Construct the CAPES url for all courses in that department
-            url = self.start_url + department
+            url = CAPES_URL + department
             url = url.rstrip()
 
             # Make a request to the specific CAPES url
@@ -132,11 +130,7 @@ class CAPESScraper:
 
     # Tries to store the given page contents into a file in our cache
     def store_page(self, department, page_contents, thread_id):
-        # Create any top level folders if they don't exist
-        if not os.path.exists(self.dir_path):
-            os.makedirs(self.dir_path)
-
         # Cache page content appropriately 
-        with open(os.path.join(self.dir_path, department + '.html'), 'w') as f:
+        with open(os.path.join(CAPES_STORAGE, department + '.html'), 'w') as f:
             f.write(page_contents)
             print('[T{0}] Saving'.format(thread_id), department, 'to', f.name, '...')

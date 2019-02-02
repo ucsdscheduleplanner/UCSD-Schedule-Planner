@@ -20,15 +20,6 @@ def main():
     execution_times['Department Scraping'] = '{0:.3f} minutes'.format((time.time() - timestamp) / 60)
 
     timestamp = time.time() 
-    capes_scraper = CAPESScraper()
-    capes_scraper.scrape()
-    execution_times['CAPES Scraping'] = '{0:.3f} minutes'.format((time.time() - timestamp) / 60)
-
-    if capes_scraper.crashed:
-        print("The CAPES scraper has crashed. Please retry.", file=sys.stderr)
-        sys.exit(1)
-    
-    timestamp = time.time() 
     course_scraper = CourseScraper() 
     course_scraper.scrape()
     execution_times['Course Scraping'] = '{0:.3f} minutes'.format((time.time() - timestamp) / 60)
@@ -36,11 +27,15 @@ def main():
     if course_scraper.crashed:
         print("The course scraper has crashed. Please retry.", file=sys.stderr)
         sys.exit(1)
-
+    
     timestamp = time.time() 
-    parser = CAPESParser()
-    parser.parse()
-    execution_times['CAPES Parsing'] = '{0:.3f} minutes'.format((time.time() - timestamp) / 60)
+    capes_scraper = CAPESScraper()
+    capes_scraper.scrape()
+    execution_times['CAPES Scraping'] = '{0:.3f} minutes'.format((time.time() - timestamp) / 60)
+
+    if capes_scraper.crashed:
+        print("The CAPES scraper has crashed. Please retry.", file=sys.stderr)
+        sys.exit(1)
 
     timestamp = time.time() 
     parser = CourseParser()
@@ -51,6 +46,11 @@ def main():
     cleaner = Cleaner()
     cleaner.clean()
     execution_times['Cleaning'] = '{0:.3f} minutes'.format((time.time() - timestamp) / 60)
+
+    timestamp = time.time() 
+    parser = CAPESParser()
+    parser.parse()
+    execution_times['CAPES Parsing'] = '{0:.3f} minutes'.format((time.time() - timestamp) / 60)
 
     timestamp = time.time() 
     export_to_mysql()

@@ -8,13 +8,8 @@ from settings import HTML_STORAGE, DATABASE_PATH, HOME_DIR
 class CourseParser:
     def __init__(self):
         # initializing database
-        os.chdir(HOME_DIR)
         self.connection = sqlite3.connect(DATABASE_PATH)
         self.cursor = self.connection.cursor()
-
-        # changing dir for HTML
-        self.dir = os.path.join(os.curdir, HTML_STORAGE)
-        os.chdir(self.dir)
 
         # Initializing storage for classes
         # List of list of classes
@@ -33,9 +28,9 @@ class CourseParser:
         print('Finished course parsing.')
 
     def parse_data(self):
-        for root, dirs, files in os.walk(os.curdir):
+        for root, dirs, files in os.walk(HTML_STORAGE):
             for dir in dirs:
-                print("Current department: {}".format(dir))
+                print("[Courses] Parsing department {}.".format(dir))
                 files = os.listdir(dir)
                 # just to sort based on number
                 files.sort(key=lambda x: int(re.findall('[0-9]+', x)[0]))

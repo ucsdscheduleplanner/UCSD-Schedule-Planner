@@ -2,6 +2,7 @@ import os
 import sqlite3
 import sys
 import traceback 
+import shutil 
 
 from threading import Thread, Lock
 
@@ -28,10 +29,6 @@ QUARTER_INSERT_SCRIPT = """let select = document.getElementById("selectedTerm");
 
 class CourseScraper:
     def __init__(self):
-        # Keeping track of HTML directory
-        self.dir_path = HTML_STORAGE
-        self.login_url = SCHEDULE_OF_CLASSES
-
         # Connecting to the database for the list of departments
         os.makedirs(DATABASE_FOLDER_PATH, exist_ok=True)
         self.database = sqlite3.connect(DATABASE_PATH)
@@ -46,8 +43,10 @@ class CourseScraper:
         self.mutex = Lock()
         self.crashed = False
 
-        # Go back to the home directory
-        os.chdir(HOME_DIR)
+        # Recreate top level folder 
+        if os.path.exists(HTML_STORAGE):
+            shutil.rmtree(HTML_STORAGE)
+        os.makedirs(HTML_STORAGE)
 
     # Thread-safe way of marking that at least one thread has crashed 
     def set_crashed(self):
@@ -111,7 +110,7 @@ class CourseScraper:
         browser.set_page_load_timeout(TIMEOUT)
         browser.implicitly_wait(1)
             
-        self.get_page_with_retries(browser, self.login_url, MAX_RETRIES, thread_id)
+        self.get_page_with_retries(browser, SCHEDULE_OF_CLASSES, MAX_RETRIES, thread_id)
 
         for counter in range(thread_id, len(self.departments), num_threads):
             # Exit if any part of the scraper has crashed 
@@ -122,7 +121,7 @@ class CourseScraper:
             # Access the appropriate department 
             department = self.departments[counter]
 
-            self.get_page_with_retries(browser, self.login_url, MAX_RETRIES, thread_id)
+            self.get_page_with_retries(browser, SCHEDULE_OF_CLASSES, MAX_RETRIES, thread_id)
             
             WebDriverWait(browser, TIMEOUT).until(EC.presence_of_element_located
                                                        ((By.ID, 'selectedSubjects')))
@@ -200,12 +199,12 @@ class CourseScraper:
 
     # Attempts to store the given page contents into a file in our cache
     def store_page(self, department, page_contents, num_page, thread_id):
-        if not os.path.exists(self.dir_path):
-            os.makedirs(self.dir_path)
-        department_path = os.path.join(self.dir_path, department)
+        # Create department folder if it doesn't exist
+        department_path = os.path.join(HTML_STORAGE, department)
         if not os.path.exists(department_path):
             os.makedirs(department_path)
 
+        # Save specific course HTML in department folder
         with open(os.path.join(department_path, str(num_page) + '.html'), 'w') as f:
             f.write(page_contents)
             print('[T{0}] Saving'.format(thread_id), '{0} (#{1})'.format(department, num_page), 'to', f.name, '...')

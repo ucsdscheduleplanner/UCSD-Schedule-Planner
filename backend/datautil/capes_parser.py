@@ -37,7 +37,7 @@ class CAPESParser:
 
                     # Some departments don't have CAPES reviews! (AESE)
                     if table:
-                        print("Current department: {}".format(department))
+                        print("[CAPES] Parsing department {}.".format(department))
                         
                         # Parse each row in the department 
                         rows = table.find_all(name='tr')
@@ -45,7 +45,7 @@ class CAPESParser:
                             self.parse_row(department, row)
 
                     else:
-                        print("Skipping department {}. No CAPES reviews.".format(department))
+                        print("[CAPES] Skipping department {}. No reviews found.".format(department))
 
 
     def parse_row(self, department, row):
