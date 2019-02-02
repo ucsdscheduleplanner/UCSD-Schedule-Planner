@@ -51,10 +51,11 @@ class CAPESParser:
     def parse_row(self, department, row):
         entries = row.find_all(name='td')
 
-        def extract_course(td):
+        def extract_course_num(td):
             anchor = td.find(name='a')
-            full_course = anchor.string
-            return full_course[:full_course.index(' -')]
+            raw_course = anchor.string
+            full_course = raw_course[:raw_course.index(' -')]
+            return full_course.split()[1]
 
         def strip_percentage(td):
             raw_percentage = td.find(name='span').string
@@ -76,7 +77,7 @@ class CAPESParser:
         assert(len(entries) == 10)
 
         instructor = entries[0].string.strip()
-        course = extract_course(entries[1])
+        course_num = extract_course_num(entries[1])
         term = entries[2].string
         enrollment = entries[3].string
         evaluations = entries[4].find(name='span').string
@@ -89,8 +90,8 @@ class CAPESParser:
         # Add entry to our buffer so it can be entered into the sqlite database 
         sql_entry = (
             department,
+            course_num,
             instructor, 
-            course,
             term,
             enrollment,
             evaluations,
@@ -106,7 +107,7 @@ class CAPESParser:
         # Drop old CAPES tables and create a new one
         self.cursor.execute("DROP TABLE IF EXISTS CAPES_DATA")
         self.cursor.execute("CREATE TABLE CAPES_DATA"
-                            "(DEPARTMENT TEXT, INSTRUCTOR TEXT, COURSE_NUM TEXT, "
+                            "(DEPARTMENT TEXT, COURSE_NUM TEXT, INSTRUCTOR TEXT, "
                             "TERM TEXT, ENROLLMENT TEXT, EVALUATIONS TEXT, PERCENT_RECOMMEND_CLASS TEXT, "
                             "PERCENT_RECOMMEND_INSTRUCTOR TEXT, HOURS_PER_WEEK TEXT, EXPECTED_GPA TEXT, "
                             "RECEIVED_GPA TEXT)")

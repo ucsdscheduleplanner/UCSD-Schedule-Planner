@@ -33,7 +33,7 @@ def export_to_mysql():
     # Creating the class data table
     mysql_cursor.execute("DROP TABLE IF EXISTS CLASS_DATA")
     mysql_cursor.execute("CREATE TABLE CLASS_DATA"
-                         "(DEPARTMENT VARCHAR(255), COURSE_NUM VARCHAR(255), SECTION_ID TEXT, COURSE_ID TEXT,"
+                         "(DEPARTMENT VARCHAR(255), COURSE_NUM VARCHAR(255), SECTION_ID TEXT, COURSE_ID TEXT, "
                          "TYPE TEXT, DAYS TEXT, TIME TEXT, LOCATION TEXT, ROOM TEXT, "
                          "INSTRUCTOR TEXT, DESCRIPTION TEXT)")
 
@@ -87,7 +87,18 @@ def export_to_mysql():
     SQLITE CAPES_DATA TO MYSQL CAPES_DATA 
     """
 
-    # TODO: Transferring from SQLITE CAPES table to MYSQL CAPES table
+    mysql_cursor.execute("DROP TABLE IF EXISTS CAPES_DATA")
+    mysql_cursor.execute("CREATE TABLE CAPES_DATA"
+                        "(DEPARTMENT VARCHAR(255), COURSE_NUM VARCHAR(255), INSTRUCTOR TEXT, "
+                        "TERM TEXT, ENROLLMENT TEXT, EVALUATIONS TEXT, PERCENT_RECOMMEND_CLASS TEXT, "
+                        "PERCENT_RECOMMEND_INSTRUCTOR TEXT, HOURS_PER_WEEK TEXT, EXPECTED_GPA TEXT, "
+                        "RECEIVED_GPA TEXT)")
+
+    sqlite_cursor.execute("SELECT * FROM CAPES_DATA")
+    capes_rows = sqlite_cursor.fetchall()
+
+    for sql_row in capes_rows:
+        pass
 
     """
     CLOSE DATABASES
