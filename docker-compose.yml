@@ -19,8 +19,6 @@ services:
     environment:
       - "PYTHONUNBUFFERED=0"
       - "SDSCHEDULE_SCRAPE=${SDSCHEDULE_SCRAPE}"
-    volumes:
-      - "./backend:/app"
   sdschedule-frontend:
     container_name: sdschedule-frontend
     build: frontend
@@ -32,6 +30,6 @@ services:
       - "./frontend/src:/app/src"
       - "./frontend/public:/app/public"
     environment:
-      - "ENV=PROD"
+      - "ENV=DEV"
 volumes:
   sdschedule-data:
