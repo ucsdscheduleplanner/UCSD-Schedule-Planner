@@ -39,12 +39,13 @@ class ScheduleBuilderContainer extends PureComponent {
     }
 
     render() {
+        const displayedSchedule = this.getDisplayedSchedule();
         console.log("CURRENT SCHEDULE");
-        console.log(this.getDisplayedSchedule());
+        console.log(displayedSchedule);
         return (
             <ScheduleBuilder
                 //currentSchedule={this.props.currentSchedule}
-                currentSchedule={this.getDisplayedSchedule()}
+                currentSchedule={displayedSchedule}
                 classData={this.props.classData}
             />
         )

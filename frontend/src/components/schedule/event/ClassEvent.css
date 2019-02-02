@@ -28,6 +28,11 @@
     background: #182B49;
 }
 
+.ce-button.shadowed {
+    background: #182B49;
+    opacity: .2;
+}
+
 .ce-info__container {
     background: #7A7A7A;
     color: white;

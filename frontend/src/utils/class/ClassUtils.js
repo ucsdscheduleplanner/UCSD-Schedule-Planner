@@ -52,6 +52,7 @@ export default class ClassUtils {
                 }
             }
         }
+        return null;
     };
 
 }

@@ -69,7 +69,7 @@ export class ClassEvent extends PureComponent {
     }
 
     render() {
-        const names = classNames("ce-button", {active: this.props.isSelected});
+        const names = classNames("ce-button", {active: this.props.isSelected, shadowed: this.props.isShadowed});
 
         return (
             <React.Fragment>

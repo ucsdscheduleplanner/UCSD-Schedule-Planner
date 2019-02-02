@@ -35,6 +35,9 @@ class WeekCalendar extends PureComponent {
     createEvents(schedule) {
         let ret = [];
         for (let Class of schedule) {
+            if (!Class)
+                continue;
+
             if (Class.sections.length === 0)
                 continue;
 
@@ -68,7 +71,99 @@ class WeekCalendar extends PureComponent {
 
     render() {
         const relativeDate = moment();
-        const events = this.createEvents(this.props.schedule);
+        let events = this.createEvents(this.props.schedule);
+        console.log(events);
+        let events1 = new Dayz.EventsCollection([
+            {
+                content: '9am - 2pm (resizable)',
+                resizable: {step: 15},
+                range: moment.range(moment('2019-02-01')
+                        .hour(9),
+                    moment('2019-02-01')
+                        .hour(14)),
+            },
+            {
+                content: '10am - 2pm (resizable)',
+                resizable: {step: 15},
+                range: moment.range(moment('2019-02-01')
+                        .hour(10),
+                    moment('2019-02-01')
+                        .hour(14)),
+            },
+            {
+                content: '10am - 2pm (resizable)',
+                resizable: {step: 15},
+                range: moment.range(moment('2019-02-01')
+                        .hour(10),
+                    moment('2019-02-01')
+                        .hour(14)),
+            },
+            {
+                content: '10am - 2pm (resizable)',
+                resizable: {step: 15},
+                range: moment.range(moment('2019-02-01')
+                        .hour(10),
+                    moment('2019-02-01')
+                        .hour(14)),
+            },
+
+
+            {
+                content: 'test3',
+                range: moment.range(moment('2019-01-28')
+                        .hour(15),
+                    moment('2019-01-28')
+                        .hour(20)),
+            },
+
+            {
+                content: 'test',
+                range: moment.range(moment('2019-01-29')
+                        .hour(8),
+                    moment('2019-01-29')
+                        .hour(9)),
+            },
+            {
+                content: 'test2',
+                range: moment.range(moment('2019-01-29')
+                        .hour(8),
+                    moment('2019-01-29')
+                        .hour(9)),
+            },
+            {
+                content: 'test',
+                range: moment.range(moment('2019-01-28')
+                        .hour(8),
+                    moment('2019-01-28')
+                        .hour(9)),
+            },
+            {
+                content: '10am - 2pm (resizable)',
+                resizable: {step: 15},
+                range: moment.range(moment('2019-02-01')
+                        .hour(12),
+                    moment('2019-02-01')
+                        .hour(16)),
+            },
+            {
+                content: '8am - 8pm (non-resizable)',
+                range: moment.range(moment('2015-09-07')
+                        .hour(8),
+                    moment('2015-09-07')
+                        .hour(21)
+                        .minutes(40)),
+            },
+
+            {
+                content: 'test2',
+                range: moment.range(moment('2019-01-28')
+                        .hour(8),
+                    moment('2019-01-28')
+                        .hour(9)),
+            },
+        ]);
+
+        console.log(events);
 
         return (
             <div className="calendar">

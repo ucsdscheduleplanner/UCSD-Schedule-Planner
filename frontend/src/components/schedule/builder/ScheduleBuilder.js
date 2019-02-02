@@ -9,7 +9,6 @@ export class ScheduleBuilder extends PureComponent {
         const schedule = this.props.currentSchedule.map(sectionNum =>
             ClassUtils.buildClass(sectionNum, this.props.classData));
 
-
         const calendar = (
             <WeekCalendar schedule={schedule}/>
         );

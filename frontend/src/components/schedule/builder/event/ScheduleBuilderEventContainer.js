@@ -13,10 +13,20 @@ class ScheduleBuilderEventContainer extends PureComponent {
     // dictate what behavior is needed too
     isSelected() {
         let userSelectedClass = ClassUtils.getClassFor(this.props.transactionID, this.props.selectedClasses);
-        if (userSelectedClass)
-            return userSelectedClass.classTitle === this.props.classTitle &&
-                // extra part about making sure the prop number is selected
-                this.props.currentSchedule.includes(this.props.sectionNum);
+        if (userSelectedClass && userSelectedClass.classTitle === this.props.classTitle)
+            return this.props.currentSchedule.includes(this.props.sectionNum);
+        return false;
+    }
+
+    /**
+     * Returns if the event should be shadowed transparently (whatever that means)
+     * @returns {boolean}
+     */
+    isShadowed() {
+        let userSelectedClass = ClassUtils.getClassFor(this.props.transactionID, this.props.selectedClasses);
+        // only want to return true if the Class has the same class title and is NOT the currently selected section num
+        if (userSelectedClass && userSelectedClass.classTitle === this.props.classTitle)
+            return !this.props.currentSchedule.includes(this.props.sectionNum);
         return false;
     }
 
@@ -58,6 +68,8 @@ class ScheduleBuilderEventContainer extends PureComponent {
 
     render() {
         const isSelected = this.isSelected();
+        const isShadowed = this.isShadowed();
+
         return (
             <ClassEvent
                 classTitle={this.props.classTitle}
@@ -68,6 +80,7 @@ class ScheduleBuilderEventContainer extends PureComponent {
                 room={this.props.room}
 
                 isSelected={isSelected}
+                isShadowed={isShadowed}
                 onClick={this.onClick.bind(this)}
             />
         )
