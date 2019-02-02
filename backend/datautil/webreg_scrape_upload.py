@@ -37,10 +37,10 @@ def main():
         print("The course scraper has crashed. Please retry.", file=sys.stderr)
         sys.exit(1)
 
-    # timestamp = time.time() 
-    # parser = CAPESParser()
-    # parser.parse()
-    # execution_times['CAPES Parsing'] = '{0:.3f} minutes'.format((time.time() - timestamp) / 60)
+    timestamp = time.time() 
+    parser = CAPESParser()
+    parser.parse()
+    execution_times['CAPES Parsing'] = '{0:.3f} minutes'.format((time.time() - timestamp) / 60)
 
     timestamp = time.time() 
     parser = CourseParser()

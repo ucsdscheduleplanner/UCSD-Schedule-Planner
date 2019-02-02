@@ -3,31 +3,16 @@ import sqlite3
 import bs4
 import re
 
-from settings import HTML_STORAGE, DATABASE_PATH, HOME_DIR
-
-'''
-TODO: Replace contents of CAPESParser! This is currently just a copy of CourseParser. 
-'''
+from settings import CAPES_STORAGE, DATABASE_PATH, HOME_DIR
 
 class CAPESParser:
     def __init__(self):
-        # initializing database
-        os.chdir(HOME_DIR)
+        # Initialize database
         self.connection = sqlite3.connect(DATABASE_PATH)
         self.cursor = self.connection.cursor()
 
-        # changing dir for HTML
-        self.dir = os.path.join(os.curdir, HTML_STORAGE)
-        os.chdir(self.dir)
-
-        # Initializing storage for classes
-        # List of list of classes
-        self.buffer_buffer = []
-        # List of classes
+        # Initialize buffer for storing to-be-inserted data 
         self.buffer = []
-
-        self.current_class = None
-        self.description = None
 
     def parse(self):
         print('Beginning CAPES parsing.')
@@ -37,103 +22,101 @@ class CAPESParser:
         print('Finished CAPES parsing.')
 
     def parse_data(self):
-        for root, dirs, files in os.walk(os.curdir):
-            for dir in dirs:
-                print("Current department: {}".format(dir))
-                files = os.listdir(dir)
-                # just to sort based on number
-                files.sort(key=lambda x: int(re.findall('[0-9]+', x)[0]))
-                for file in files:
-                    with open(os.path.join(dir, file)) as html:
-                        # Use lxml for parsing
-                        soup = bs4.BeautifulSoup(html, 'lxml')
-                        # Look for table rows
-                        rows = soup.find_all(name='tr')
-                        for row in rows:
-                            self.parse_row(dir, row)
+        for dirpath, _, filenames in os.walk(CAPES_STORAGE):
+            # Iterate over files only (no directories in this cache) 
+            for fn in filenames:
+                department = fn.replace('.html', '')
 
-    """
-    Will get info from the HTML and store it into a format that can be manipulated easily. 
-    Then it will validate the information and make sure that it is in a usable format.
-    """
+                # Open the given filename as a file object
+                with open(os.path.join(dirpath, fn)) as f:
+                    # Use BS4 LXML parser
+                    soup = bs4.BeautifulSoup(f, 'lxml')
+
+                    # Ignore thead (useless information) 
+                    table = soup.find(name='tbody')
+
+                    # Some departments don't have CAPES reviews! (AESE)
+                    if table:
+                        print("Current department: {}".format(department))
+                        
+                        # Parse each row in the department 
+                        rows = table.find_all(name='tr')
+                        for row in rows:
+                            self.parse_row(department, row)
+
+                    else:
+                        print("Skipping department {}. No CAPES reviews.".format(department))
+
 
     def parse_row(self, department, row):
-        course_num = row.find_all(name='td',
-                                  attrs={'class': 'crsheader'})
-        if course_num:
-            self.current_class = course_num[1].text
-            self.description = course_num[2].text.strip().replace('\n', '').replace('\t','')
-            # num slots on the top header
-            if len(course_num) == 4:
-                self.buffer_buffer.append((department,))
+        entries = row.find_all(name='td')
 
-        info = row.find_all(name='td',
-                            attrs={'class': 'brdr'})
+        def extract_course(td):
+            anchor = td.find(name='a')
+            full_course = anchor.string
+            return full_course[:full_course.index(' -')]
 
-        if info and len(info) > 5:
-            copy_dict = {}
-            counter = 0
+        def strip_percentage(td):
+            raw_percentage = td.find(name='span').string
+            assert('%' in raw_percentage)
+            return raw_percentage[:-2]
 
-            for i in info:
-                if 'colspan' in i.attrs:
-                    for j in range(0, int(i.attrs['colspan'])):
-                        copy_dict[counter] = i.text.strip()
-                        counter += 1
-                else:
-                    copy_dict[counter] = i.text.strip()
-                    counter += 1
-
-            course_num = self.current_class
-            section_id = copy_dict[2]
-            type = copy_dict[3]
-            days = copy_dict[5]
-            times = copy_dict[6]
-            location = copy_dict[7]
-            room = copy_dict[8]
-            instructor = copy_dict[9]
-
-            ret_info = (
-                department,
-                course_num,
-                section_id,
-                type,
-                days,
-                times,
-                location,
-                room,
-                instructor,
-                self.description,
-            )
-
-            self.buffer_buffer.append(ret_info)
-
-    """
-    Method to make final alterations to the dataset. 
-    Will put database in cleanable format; however, will not remove
-    database. 
-    """
-
-    def validate_info(self, data):
-        # Make sure final is not randomly in the wrong column
-        if data[1] == 'FINAL':
-            data[1] = None
-            data[2] = 'FINAL'
-        return tuple(data)
-
-    # Put data into database
-    def insert_data(self):
-        self.cursor.execute("DROP TABLE IF EXISTS CLASSES")
-        self.cursor.execute("CREATE TABLE CLASSES"
-                            "(ID INTEGER PRIMARY KEY, DEPARTMENT TEXT, COURSE_NUM TEXT, COURSE_ID TEXT, "
-                            "TYPE TEXT, DAYS TEXT, TIME TEXT, LOCATION TEXT, ROOM TEXT, "
-                            "INSTRUCTOR TEXT, DESCRIPTION TEXT)")
-
-        # TODO Make database insertion quicker
-        for info in self.buffer_buffer:
-            if len(info) > 1:
-                self.cursor.execute("INSERT OR IGNORE INTO CLASSES VALUES(?,?,?,?,?,?,?,?,?,?,?)", (None,) + info)
+        def extract_gpa(td):
+            full_grade = td.find(name='span').string
+            if full_grade == 'N/A':
+                # NaN values are stored as 0
+                return '0.00'
             else:
-                self.cursor.execute("INSERT INTO CLASSES(ID, DEPARTMENT) VALUES(?, ?)", (None,) + info)
+                # The grade can be recreated from the GPA
+                oparen = full_grade.index('(') 
+                cparen = full_grade.index(')') 
+                return full_grade[(oparen + 1):cparen]
+
+        # CAPES entries have ten columns
+        assert(len(entries) == 10)
+
+        instructor = entries[0].string.strip()
+        course = extract_course(entries[1])
+        term = entries[2].string
+        enrollment = entries[3].string
+        evaluations = entries[4].find(name='span').string
+        percent_recommend_class = strip_percentage(entries[5])
+        percent_recommend_instructor = strip_percentage(entries[6])
+        study_time = entries[7].find(name='span').string 
+        expected_gpa = extract_gpa(entries[8])
+        received_gpa = extract_gpa(entries[9])
+
+        # Add entry to our buffer so it can be entered into the sqlite database 
+        sql_entry = (
+            department,
+            instructor, 
+            course,
+            term,
+            enrollment,
+            evaluations,
+            percent_recommend_class,
+            percent_recommend_instructor,
+            study_time,
+            expected_gpa,
+            received_gpa
+        )
+        self.buffer.append(sql_entry)
+        
+    def insert_data(self):
+        # Drop old CAPES tables and create a new one
+        self.cursor.execute("DROP TABLE IF EXISTS CAPES_DATA")
+        self.cursor.execute("CREATE TABLE CAPES_DATA"
+                            "(DEPARTMENT TEXT, INSTRUCTOR TEXT, COURSE_NUM TEXT, "
+                            "TERM TEXT, ENROLLMENT TEXT, EVALUATIONS TEXT, PERCENT_RECOMMEND_CLASS TEXT, "
+                            "PERCENT_RECOMMEND_INSTRUCTOR TEXT, HOURS_PER_WEEK TEXT, EXPECTED_GPA TEXT, "
+                            "RECEIVED_GPA TEXT)")
+
+        # There are 11 blanks to fill in each insertion query 
+        blanks = ','.join(['?' for _ in range(11)])
+        insertion_query = "INSERT OR IGNORE INTO CAPES_DATA VALUES({})".format(blanks)
+
+        for sql_entry in self.buffer:
+            self.cursor.execute(insertion_query, sql_entry)
 
     def close(self):
         self.connection.commit()

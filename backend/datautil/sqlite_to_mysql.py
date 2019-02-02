@@ -12,6 +12,11 @@ endpoint = config["DB"]["ENDPOINT"]
 
 def export_to_mysql():
     print("Beginning export to MySQL")
+
+    """
+    CONNECT TO DATABASES 
+    """
+
     # Will connect to running mysql instance
     mysql_db = mysql.connect(host=endpoint, user=username, passwd=password, db="classes")
     # Will connect to sqlite db
@@ -20,6 +25,10 @@ def export_to_mysql():
 
     mysql_cursor = mysql_db.cursor()
     sqlite_cursor = sqlite_db.cursor()
+
+    """
+    SQLITE CLASS_DATA TO MYSQL CLASS_DATA
+    """
 
     # Creating the class data table
     mysql_cursor.execute("DROP TABLE IF EXISTS CLASS_DATA")
@@ -53,8 +62,9 @@ def export_to_mysql():
                               ))
 
     """ 
-    Making departments
+    SQLITE DEPARTMENT TO MYSQL DEPARTMENT 
     """
+
     mysql_cursor.execute("DROP TABLE IF EXISTS DEPARTMENT")
     mysql_cursor.execute('CREATE TABLE DEPARTMENT (DEPT_CODE TEXT)')
 
@@ -72,6 +82,16 @@ def export_to_mysql():
     # adding indexes
     index_str = "ALTER TABLE `CLASS_DATA` ADD INDEX (`DEPARTMENT`, `COURSE_NUM`)"
     mysql_cursor.execute(index_str)
+
+    """
+    SQLITE CAPES_DATA TO MYSQL CAPES_DATA 
+    """
+
+    # TODO: Transferring from SQLITE CAPES table to MYSQL CAPES table
+
+    """
+    CLOSE DATABASES
+    """
 
     # adding changes
     mysql_db.commit()
