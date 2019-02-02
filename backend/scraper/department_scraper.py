@@ -30,9 +30,6 @@ class DepartmentScraper:
         self.database.row_factory = sqlite3.Row
         self.cursor = self.database.cursor()
 
-        # Go back to the home directory
-        os.chdir(HOME_DIR)
-
     def create_table(self):
         self.cursor.execute('DROP TABLE IF EXISTS DEPARTMENT')
         self.cursor.execute('CREATE TABLE IF NOT EXISTS DEPARTMENT (DEPT_CODE TEXT)')

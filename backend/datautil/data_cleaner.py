@@ -1,5 +1,4 @@
 import sqlite3
-import time
 from itertools import groupby
 
 import itertools
@@ -22,12 +21,10 @@ class Cleaner:
 
     def clean(self):
         print('Begin cleaning database.')
-        curr_time = time.time()
         self.setup_tables()
         self.begin_processing()
         self.close()
-        fin_time = time.time()
-        print('Finished cleaning database in {} seconds.'.format(fin_time - curr_time))
+        print('Finished cleaning database.')
 
     def setup_tables(self):
         self.cursor.execute("DROP TABLE IF EXISTS CLASS_DATA")
