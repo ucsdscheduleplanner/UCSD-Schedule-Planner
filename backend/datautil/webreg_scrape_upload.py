@@ -14,47 +14,38 @@ import pprint
 def main():
     execution_times = {}
 
-    timestamp = time.time() 
-    department_scraper = DepartmentScraper()
-    department_scraper.scrape()
-    execution_times['Department Scraping'] = '{0:.3f} minutes'.format((time.time() - timestamp) / 60)
+    def record_execution_time(subroutine, label):
+        timestamp = time.time() 
+        subroutine() 
+        execution_times[label] = '{0:.3f} minutes'.format((time.time() - timestamp) / 60)
 
-    timestamp = time.time() 
+    department_scraper = DepartmentScraper()
+    record_execution_time(department_scraper.scrape, 'Department Scraping')
+
     course_scraper = CourseScraper() 
-    course_scraper.scrape()
-    execution_times['Course Scraping'] = '{0:.3f} minutes'.format((time.time() - timestamp) / 60)
+    record_execution_time(course_scraper.scrape, 'Course Scraping')
 
     if course_scraper.crashed:
         print("The course scraper has crashed. Please retry.", file=sys.stderr)
         sys.exit(1)
     
-    timestamp = time.time() 
     capes_scraper = CAPESScraper()
-    capes_scraper.scrape()
-    execution_times['CAPES Scraping'] = '{0:.3f} minutes'.format((time.time() - timestamp) / 60)
+    record_execution_time(capes_scraper.scrape, 'CAPES Scraping')
 
     if capes_scraper.crashed:
         print("The CAPES scraper has crashed. Please retry.", file=sys.stderr)
         sys.exit(1)
 
-    timestamp = time.time() 
     parser = CourseParser()
-    parser.parse()
-    execution_times['Course Parsing'] = '{0:.3f} minutes'.format((time.time() - timestamp) / 60)
+    record_execution_time(parser.parse, 'Course Parsing')
 
-    timestamp = time.time() 
     cleaner = Cleaner()
-    cleaner.clean()
-    execution_times['Cleaning'] = '{0:.3f} minutes'.format((time.time() - timestamp) / 60)
+    record_execution_time(cleaner.clean, 'Cleaning')
 
-    timestamp = time.time() 
     parser = CAPESParser()
-    parser.parse()
-    execution_times['CAPES Parsing'] = '{0:.3f} minutes'.format((time.time() - timestamp) / 60)
+    record_execution_time(parser.parse, 'CAPES Parsing')
 
-    timestamp = time.time() 
-    export_to_mysql()
-    execution_times['MySQL Exporting'] = '{0:.3f} minutes'.format((time.time() - timestamp) / 60) 
+    record_execution_time(export_to_mysql, 'MySQL Exporting')
 
     pprint.pprint(execution_times)
 

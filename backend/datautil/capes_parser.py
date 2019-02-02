@@ -59,7 +59,7 @@ class CAPESParser:
 
         def strip_percentage(td):
             raw_percentage = td.find(name='span').string
-            assert('%' in raw_percentage)
+            assert '%' in raw_percentage, 'No percentage found in string {}.'.format(raw_percentage)
             return raw_percentage[:-2]
 
         def extract_gpa(td):
@@ -73,8 +73,7 @@ class CAPESParser:
                 cparen = full_grade.index(')') 
                 return full_grade[(oparen + 1):cparen]
 
-        # CAPES entries have ten columns
-        assert(len(entries) == 10)
+        assert len(entries) == 10, 'Row {} should have 10 td entries.'.format(row)
 
         instructor = entries[0].string.strip()
         course_num = extract_course_num(entries[1])
