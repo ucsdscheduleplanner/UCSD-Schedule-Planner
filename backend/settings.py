@@ -19,9 +19,9 @@ DATABASE_PATH = os.path.join(DATABASE_FOLDER_PATH, "data.db")
 # Image directory
 IMAGE_DIR = os.path.join(HOME_DIR, 'images')
 
-# Storage directories for cached HTML 
-HTML_STORAGE = "/cache/course_pages"
-CAPES_STORAGE = "/cache/capes_pages" 
+# Downloaded HTML directories
+COURSES_HTML_PATH = "/cache/course_pages"
+CAPES_HTML_PATH = "/cache/capes_pages" 
 
 DRIVER_PATH = "/usr/local/bin/chromedriver"
 

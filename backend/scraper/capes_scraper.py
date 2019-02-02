@@ -8,7 +8,7 @@ from threading import Thread, Lock
 from requests.exceptions import Timeout 
 
 from settings import DATABASE_PATH, HOME_DIR, MAX_RETRIES
-from settings import CAPES_URL, CAPES_STORAGE
+from settings import CAPES_URL, CAPES_HTML_PATH
 
 CAPES_HOST = 'cape.ucsd.edu'
 CAPES_ACCEPT = 'html'
@@ -31,9 +31,9 @@ class CAPESScraper:
         self.crashed = False
 
         # Create top level folder if it doesn't exist
-        if os.path.exists(CAPES_STORAGE):
-            shutil.rmtree(CAPES_STORAGE)
-        os.makedirs(CAPES_STORAGE)
+        if os.path.exists(CAPES_HTML_PATH):
+            shutil.rmtree(CAPES_HTML_PATH)
+        os.makedirs(CAPES_HTML_PATH)
 
     # Thread-safe way of marking that at least one thread has crashed 
     def set_crashed(self):
@@ -131,6 +131,6 @@ class CAPESScraper:
     # Tries to store the given page contents into a file in our cache
     def store_page(self, department, page_contents, thread_id):
         # Cache page content appropriately 
-        with open(os.path.join(CAPES_STORAGE, department + '.html'), 'w') as f:
+        with open(os.path.join(CAPES_HTML_PATH, department + '.html'), 'w') as f:
             f.write(page_contents)
             print('[T{0}] Saving'.format(thread_id), department, 'to', f.name, '...')

@@ -14,7 +14,7 @@ from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.common.exceptions import TimeoutException
 
-from settings import HOME_DIR, MAX_RETRIES, HTML_STORAGE
+from settings import HOME_DIR, MAX_RETRIES, COURSES_HTML_PATH
 from settings import DATABASE_PATH, DATABASE_FOLDER_PATH, DRIVER_PATH 
 from settings import TIMEOUT, DEPT_SEARCH_TIMEOUT  
 from settings import SCHEDULE_OF_CLASSES, QUARTER
@@ -44,9 +44,9 @@ class CourseScraper:
         self.crashed = False
 
         # Recreate top level folder 
-        if os.path.exists(HTML_STORAGE):
-            shutil.rmtree(HTML_STORAGE)
-        os.makedirs(HTML_STORAGE)
+        if os.path.exists(COURSES_HTML_PATH):
+            shutil.rmtree(COURSES_HTML_PATH)
+        os.makedirs(COURSES_HTML_PATH)
 
     # Thread-safe way of marking that at least one thread has crashed 
     def set_crashed(self):
@@ -200,7 +200,7 @@ class CourseScraper:
     # Attempts to store the given page contents into a file in our cache
     def store_page(self, department, page_contents, num_page, thread_id):
         # Create department folder if it doesn't exist
-        department_path = os.path.join(HTML_STORAGE, department)
+        department_path = os.path.join(COURSES_HTML_PATH, department)
         if not os.path.exists(department_path):
             os.makedirs(department_path)
 

@@ -3,7 +3,7 @@ import sqlite3
 import bs4
 import re
 
-from settings import HTML_STORAGE, DATABASE_PATH, HOME_DIR
+from settings import COURSES_HTML_PATH, DATABASE_PATH, HOME_DIR
 
 class CourseParser:
     def __init__(self):
@@ -28,9 +28,10 @@ class CourseParser:
         print('Finished course parsing.')
 
     def parse_data(self):
-        for root, dirs, files in os.walk(HTML_STORAGE):
-            for dir in dirs:
-                print("[Courses] Parsing department {}.".format(dir))
+        for root, dirs, files in os.walk(COURSES_HTML_PATH):
+            for department in dirs:
+                print("[Courses] Parsing department {}.".format(department))
+                dir = os.path.join(root, department)
                 files = os.listdir(dir)
                 # just to sort based on number
                 files.sort(key=lambda x: int(re.findall('[0-9]+', x)[0]))
@@ -41,7 +42,7 @@ class CourseParser:
                         # Look for table rows
                         rows = soup.find_all(name='tr')
                         for row in rows:
-                            self.parse_row(dir, row) 
+                            self.parse_row(department, row) 
     """
     Will get info from the HTML and store it into a format that can be manipulated easily. 
     Then it will validate the information and make sure that it is in a usable format.

@@ -3,7 +3,7 @@ import sqlite3
 import bs4
 import re
 
-from settings import CAPES_STORAGE, DATABASE_PATH, HOME_DIR
+from settings import CAPES_HTML_PATH, DATABASE_PATH, HOME_DIR
 
 class CAPESParser:
     def __init__(self):
@@ -22,7 +22,7 @@ class CAPESParser:
         print('Finished CAPES parsing.')
 
     def parse_data(self):
-        for dirpath, _, filenames in os.walk(CAPES_STORAGE):
+        for dirpath, _, filenames in os.walk(CAPES_HTML_PATH):
             # Iterate over files only (no directories in this cache) 
             for fn in filenames:
                 department = fn.replace('.html', '')
