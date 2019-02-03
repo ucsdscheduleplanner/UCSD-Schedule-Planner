@@ -51,6 +51,8 @@ run_prod() {
 
   export SDSCHEDULE_SCRAPE
 
+  echo "Starting up production servers"
+
   docker-compose -f docker-compose-production.yml up ${is_build} --detach
 }
 
@@ -61,7 +63,7 @@ stop_prod() {
     exit 1
   fi
 
-  export SDSCHEDULE_SCRAPE
+  echo "Stopping containers in production mode"
 
   docker-compose -f docker-compose-production.yml down
 }
@@ -99,9 +101,14 @@ while test $# -gt 0; do
           echo ""
           echo "-h, --help        Show this very helpful message"
           echo "-d, --download    Will download data fresh from Schedule of Classes"
-          echo "-p, --production  Will run in production mode"
-          echo "-b, --build       Will create the servers without rebuilding the docker containers"
-          echo "-s, --stop        Stop the *production* services"
+          echo "-p, --production  Will run in production mode (detached)"
+          echo "-b, --build       Rebuild the services. Do this if files are modified"
+          echo "-s, --stop        Stop the detached *production* services"
+          echo ""
+          echo "Sample usage: "
+          echo ""
+          echo "-p -d -b          Rebuild the services, download fresh data, and run in production mode"
+          echo "-p                Run in production mode. Will build services if and only if no services built previously"
           exit 0
           ;;
       -d | --download)
@@ -113,7 +120,7 @@ while test $# -gt 0; do
       -b | --build)
           is_build=${BUILD}
           ;;
-      -b | --build)
+      -s | --stop)
           stop_prod # move to new location?
           exit 0
           ;;
