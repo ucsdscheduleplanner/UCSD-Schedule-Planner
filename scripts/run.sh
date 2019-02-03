@@ -89,9 +89,8 @@ main() {
 if [ $# -eq 0 ]; then
   echo
   echo "No args specified"
-  echo "Run in development mode without downloading data"
   echo "Try '-h' or '--help' for help message"
-  echo
+  exit 0
 fi
 
 while test $# -gt 0; do
