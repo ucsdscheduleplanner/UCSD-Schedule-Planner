@@ -131,12 +131,4 @@ while test $# -gt 0; do
   shift
 done
 
-<<<<<<< HEAD
-depends docker
-depends docker-compose
-
-docker-compose build --build-arg DOWNLOAD=${download}
-docker-compose up 
-=======
 main
->>>>>>> 58674d3... redesign the run script with different docker files for different environments
