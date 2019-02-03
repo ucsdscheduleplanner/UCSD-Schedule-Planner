@@ -9,6 +9,7 @@ services:
       - "MYSQL_DATABASE=classes"
     volumes:
       - "sdschedule-data:/var/lib/mysql"
+    restart: always
   sdschedule-backend:
     container_name: sdschedule-backend
     build: backend 
@@ -20,11 +21,10 @@ services:
       - "ENV=PROD"
       - "PYTHONUNBUFFERED=0"
       - "SDSCHEDULE_SCRAPE=${SDSCHEDULE_SCRAPE}"
+    restart: always
   sdschedule-frontend:
     container_name: sdschedule-frontend
     build: frontend
-    ports: 
-      - "3001:3000" # TODO unnecessary anymore 
     depends_on: 
       - "sdschedule-backend"
     volumes:
@@ -33,13 +33,13 @@ services:
       - "sdschedule-frontend-build:/app/build"
     environment:
       - "ENV=PROD"
+    restart: "no"
   web:
     container_name: sdschedule-web
     image: nginx
     ports:
-      # - "80:80"
-      # - "443:443"
-      - "3000:3000"
+      - "80:80"
+      - "443:443"
     depends_on:
       - "sdschedule-frontend"
     volumes:
