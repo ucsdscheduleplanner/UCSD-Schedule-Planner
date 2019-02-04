@@ -59,35 +59,36 @@ To clone, use the following command:
 
 ```bash
 git clone https://github.com/ctrando/UCSD-Planner-Helper
-```
-
-Change into the directory:
-
-```bash
 cd UCSD-Planner-Helper
 ```
 
-The app can be either run in development mode or production mode.
+Run this app using a simple shell script:
 
-* Production mode is intended for a real server.
-* To download the data, add additional flag. Note the scraping might take a while depends on your network environment.
-
-Build:
+* To download the data, add "-d" flag. Note the scraping might take a while depends on your network environment.
+* The app can be either run in development mode or production mode. Production mode uses Nginx.
+* If any changes made to the files (e.g. update), add "-b" flag to tell docker to rebuild. Or docker will always use the images existing.
+* "-s" flag is used to stop the detached services in production mode.
 
 ```bash
-./scripts/docker-install-dev.sh [-d|--download]
-./scripts/docker-install-prod.sh [-d|--download]
+./scripts/run.sh [-h|--help] [-d|--download] [-p|--production] [-b|--build] [-s|--stop]
 ```
 
-Run:
+Usage:
 
 ```bash
-docker-compose -f docker-compose-dev.yml  # development
-docker-compose -f docker-compose-prod.yml # production
+./scripts/run.sh -h       # display help message
+
+./scripts/run.sh          # run in development mode without reloading or rebuilding
+./scripts/run.sh -d       # run in development mode and download the data
+./scripts/run.sh -p       # run the app in production mode
+./scripts/run.sh -p -d    # run the app in production mode, and download data
+./scripts/run.sh -b -p -d # rebuild, run the app in production mode, and download data
 ```
 
 The development server will be live at http://localhost:3000. Make sure the ports 3000 and 5000 
 are not used on your machine.
+
+The production server will listen to 80 and 443 ports.
 
 # Contributing
 
