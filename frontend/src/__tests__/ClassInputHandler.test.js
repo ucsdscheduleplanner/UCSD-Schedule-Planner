@@ -25,6 +25,19 @@ describe("ClassInput actions such as adding, editing and removing classes", () =
 
     beforeEach((done) => {
         store = createStore(reducers, applyMiddleware(thunk));
+        DataFetcher.fetchClassSummaryFor = (department) => {
+            return new Promise((resolve, reject) => {
+                resolve(
+                    {
+                        courseNums: ["11", "12"],
+                        instructorsPerClass: {"11": ["Joseph Politz", "Rick Ord"]},
+                        classTypesPerClass: {"11": ["LE", "DI"], "12": ["LE"]},
+                        descriptionsPerClass: {}
+                    }
+                )
+            });
+        };
+
         done();
     });
 
@@ -405,5 +418,23 @@ describe("ClassInput actions such as adding, editing and removing classes", () =
             console.log(state);
             chaiExpect(state.types).to.have.lengthOf(1);
         })
+    });
+
+    test("After removing the only class, current schedule is empty list", async () => {
+        store.dispatch(setDepartments(["CSE"]));
+        store.dispatch(setCourseNums(["11", "12"]));
+
+        // making first class
+        let inputHandler = getInputHandler(store);
+        await inputHandler.onDepartmentChange("CSE");
+        inputHandler.onCourseNumChange("11");
+        let id1 = store.getState().ClassInput.transactionID;
+        inputHandler.handleAdd();
+
+        await store.dispatch(enterEditMode(id1));
+        inputHandler.handleemove();
+
+        const currentSchedule = store.getState().Schedule.currentSchedule;
+        chaiExpect(currentSchedule).to.have.lengthOf(0);
     });
 });

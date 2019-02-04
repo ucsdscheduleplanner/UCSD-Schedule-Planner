@@ -251,7 +251,6 @@ export class ClassInputHandler {
         // TODO check if this is a significant change, and if it is then regenerate schedule
         this.dispatch(getSchedule());
     }
-
     /**
      * Handle what occurs when the remove button is hit during edit mode
      *
@@ -262,7 +261,7 @@ export class ClassInputHandler {
         const state = this.getState().ClassInput;
 
         if (!state.editMode) {
-            console.warn("Somehow, the user was able to trigger class removal without being in edit mode, breaking now.")
+            console.warn("Somehow, the user was able to trigger class removal without being in edit mode, breaking now.");
             return;
         }
 
@@ -272,7 +271,6 @@ export class ClassInputHandler {
 
         this.dispatch(removeClass(state.transactionID));
         this.dispatch(enterInputMode());
-
         this.dispatch(getSchedule());
     }
 

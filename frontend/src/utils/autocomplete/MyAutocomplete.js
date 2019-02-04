@@ -83,8 +83,6 @@ export class MyAutocomplete extends Component {
     }
 
     render() {
-        // Autosuggest will pass through all these props to the input.
-        // TODO add on key down here to check for tab and enter and call onSuggestionSelected on there
         const inputProps = {
             placeholder: this.props.defaultValue ? this.props.defaultValue : "",
             value: this.state.value,
