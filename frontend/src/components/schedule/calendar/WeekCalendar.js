@@ -1,11 +1,12 @@
 import React, {PureComponent} from "react";
 import moment from 'moment';
 import Dayz from "dayz/dist/dayz";
-
+import classNames from "classnames";
 import ClassEventWrapper from "../event/ClassEventWrapper";
 
 import "dayz/dist/css/dayz.min.css";
 import "./WeekCalendar.css";
+import {isSafari} from "../../../settings";
 
 
 class WeekCalendar extends PureComponent {
@@ -66,9 +67,10 @@ class WeekCalendar extends PureComponent {
     render() {
         const relativeDate = moment();
         const events = this.createEvents(this.props.schedule);
+        const names = classNames("calendar", {safari: isSafari});
 
         return (
-            <div className="calendar">
+            <div className={names}>
                 <Dayz
                     onEventClick={this.onEventClick.bind(this)}
                     date={relativeDate}

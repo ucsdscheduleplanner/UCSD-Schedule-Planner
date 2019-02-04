@@ -2,6 +2,10 @@
     height: 100%;
 }
 
+.calendar.safari {
+    height: 35em;
+}
+
 .calendar .dayz.week .x-labels {
     padding-left: 0;
     margin-left: 60px;
