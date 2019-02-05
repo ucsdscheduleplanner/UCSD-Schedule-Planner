@@ -7,6 +7,7 @@ ENV_DEV='DEV'
 SDSCHEDULE_SCRAPE=0
 is_build=''
 environment='DEV'
+letsencrypt_email=""
 
 depends() {
   if type $1 >/dev/null 2>&1; then
@@ -17,6 +18,12 @@ depends() {
     exit 1
   fi
 }
+
+is_email_valid() {
+  regex="^([A-Za-z]+[A-Za-z0-9]*((\.|\-|\_)?[A-Za-z]+[A-Za-z0-9]*){1,})@(([A-Za-z]+[A-Za-z0-9]*)+((\.|\-|\_)?([A-Za-z]+[A-Za-z0-9]*)+){1,})+\.([A-Za-z]{2,})+"
+  [[ "${1}" =~ $regex ]]
+}
+
 
 check_depend() {
   depends docker
@@ -68,6 +75,17 @@ stop_prod() {
   docker-compose -f docker-compose-production.yml down
 }
 
+run_certbot() {
+  echo
+  echo "Will generate a brand new cert"
+  echo
+  docker exec sdschedule-certbot sed -i -r 's/(listen .*443)/\1;#/g; s/(ssl_(certificate|certificate_key|trusted_certificate) )/#;#\1/g' /etc/nginx/sites-enabled/sdschedule.conf
+  docker exec sdschedule-web  nginx -s reload
+  docker exec sdschedule-certbot certbot certonly --webroot -w /var/www/certbot -d sdschedule.com -n --force-renewal --agree-tos --email "$letsencrypt_email"
+  docker exec sdschedule-certbot sed -i -r 's/#?;#//g' /etc/nginx/sites-enabled/sdschedule.conf
+  docker exec sdschedule-web  nginx -s reload
+}
+
 main() {
   check_directory
   check_depend
@@ -97,11 +115,12 @@ while test $# -gt 0; do
       -h | --help) 
           echo "The run script for the UCSD Schedule Planner" 
           echo ""
-          echo "-h, --help        Show this very helpful message"
-          echo "-d, --download    Will download data fresh from Schedule of Classes"
-          echo "-p, --production  Will run in production mode (detached)"
-          echo "-b, --build       Rebuild the services. Do this if files are modified"
-          echo "-s, --stop        Stop the detached *production* services"
+          echo "-h, --help         Show this very helpful message"
+          echo "-d, --download     Will download data fresh from Schedule of Classes"
+          echo "-p, --production   Will run in production mode (detached)"
+          echo "-b, --build        Rebuild the services. Do this if files are modified"
+          echo "-s, --stop         Stop the detached *production* services"
+          echo "-c, --cert <email> Run certbot for production service for first time (after started). Use an email address as argument"
           echo ""
           echo "Sample usage: "
           echo ""
@@ -120,6 +139,15 @@ while test $# -gt 0; do
           ;;
       -s | --stop)
           stop_prod # move to new location?
+          exit 0
+          ;;
+      -c | --cert)
+          letsencrypt_email="$2"
+          if ! is_email_valid "$letsencrypt_email" ;then
+            echo "Invalid Email, plese try again"
+            exit -1
+          fi
+          run_certbot # move to new location?
           exit 0
           ;;
       *)

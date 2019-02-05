@@ -90,3 +90,6 @@ yarn-error.log*
 nginx-access.log*
 nginx-error.log*
 web/log/*
+
+# ssl
+web/letsencrypt/*
