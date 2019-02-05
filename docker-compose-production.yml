@@ -53,7 +53,7 @@ services:
       - "sdschedule-letsencrypt:/etc/letsencrypt:ro" # must keep sercret
       - "./web/letsencrypt/www:/var/www/_letsencrypt:ro"
     restart: always
-    command: sh -c "exec nginx -g 'daemon off;'; while true; do nginx -s reload; sleep 12h; done"
+    command: sh -c 'while :; do sleep 12h; nginx -s reload; done & nginx -g "daemon off;"'
   certbot:
     container_name: sdschedule-certbot
     image: certbot/certbot
@@ -63,7 +63,7 @@ services:
       - "./web/letsencrypt/www:/var/www/certbot"
       - "./web/log:/var/log/certbot/"
       - "./web/nginx/sites:/etc/nginx/sites-enabled"
-    entrypoint: sh -c "while true; do certbot renew; sleep 24h; done >> /var/log/certbot/certbot.log;"
+    entrypoint: sh -c "while :; do certbot renew; sleep 24h; done >> /var/log/certbot/certbot.log;"
     # short renew period for now
     
 volumes:
