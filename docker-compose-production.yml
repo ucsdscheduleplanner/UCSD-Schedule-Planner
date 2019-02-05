@@ -53,7 +53,7 @@ services:
       - "sdschedule-letsencrypt:/etc/letsencrypt:ro" # must keep sercret
       - "./web/letsencrypt/www:/var/www/_letsencrypt:ro"
     restart: always
-    command: sh -c "while true; do nginx -s reload; sleep 12h; done"
+    command: sh -c "exec nginx -g 'daemon off;'; while true; do nginx -s reload; sleep 12h; done"
   certbot:
     container_name: sdschedule-certbot
     image: certbot/certbot
