@@ -45,16 +45,28 @@ services:
     volumes:
       - "sdschedule-frontend-build:/var/www/sdschedule"
       - "sdschedule-sock:/tmp/sdschedule-sock"
-      #- "./web/key:/etc/nginx/ssl-key:ro" # for cloudflare origin ssl
-      #- /var/run/docker.sock:/tmp/docker.sock:ro
-      - "./web/letsencrypt:/etc/letsencrypt:ro"
       - "./web/nginx/nginx.conf:/etc/nginx/nginx.conf:ro"
       - "./web/nginx/sites:/etc/nginx/sites-enabled:ro"
       - "./web/nginx/snippets:/etc/nginx/snippets:ro"
       - "./web/html:/usr/share/nginx/html:ro"
       - "./web/log:/var/log/nginx"
+      - "sdschedule-letsencrypt:/etc/letsencrypt:ro" # must keep sercret
+      - "./web/letsencrypt/www:/var/www/_letsencrypt:ro"
     restart: always
+    command: while true; do nginx -s reload; sleep 12h; done
+  certbot:
+    container_name: sdschedule-certbot
+    image: certbot/certbot
+    restart: on-failure
+    volumes:
+      - "sdschedule-letsencrypt:/etc/letsencrypt" # must keep secret
+      - "./web/letsencrypt/www:/var/www/certbot"
+      - "./web/log:/var/log/certbot/"
+    entrypoint: sh -c "while true; do certbot renew; sleep 24h; done >> /var/log/certbot/certbot.log;"
+    # short renew period for now
+    
 volumes:
+  sdschedule-letsencrypt:
   sdschedule-data:
   sdschedule-frontend-build:
   sdschedule-sock:

@@ -68,6 +68,15 @@ stop_prod() {
   docker-compose -f docker-compose-production.yml down
 }
 
+run_certbot() {
+  echo
+  echo "Will generate a brand new cert"
+  echo
+  docker exec sdschedule-web sed -i -r 's/(listen .*443)/\1;#/g; s/(ssl_(certificate|certificate_key|trusted_certificate) )/#;#\1/g' /etc/nginx/sites-enabled/sdschedule.conf
+  docker exec sdschedule-certbot certonly --webroot -w /var/www/certbot -d sdschedule.com -n --force-renewal --agree-tos
+  docker exec sdschedule-web sed -i -r 's/#?;#//g' /etc/nginx/sites-enabled/sdschedule.conf
+}
+
 main() {
   check_directory
   check_depend
@@ -97,11 +106,12 @@ while test $# -gt 0; do
       -h | --help) 
           echo "The run script for the UCSD Schedule Planner" 
           echo ""
-          echo "-h, --help        Show this very helpful message"
-          echo "-d, --download    Will download data fresh from Schedule of Classes"
-          echo "-p, --production  Will run in production mode (detached)"
-          echo "-b, --build       Rebuild the services. Do this if files are modified"
-          echo "-s, --stop        Stop the detached *production* services"
+          echo "-h, --help         Show this very helpful message"
+          echo "-d, --download     Will download data fresh from Schedule of Classes"
+          echo "-p, --production   Will run in production mode (detached)"
+          echo "-b, --build        Rebuild the services. Do this if files are modified"
+          echo "-s, --stop         Stop the detached *production* services"
+          echo "-c, --cert <email> Run certbot for production service for first time. Use an email address as argument"
           echo ""
           echo "Sample usage: "
           echo ""
@@ -120,6 +130,10 @@ while test $# -gt 0; do
           ;;
       -s | --stop)
           stop_prod # move to new location?
+          exit 0
+          ;;
+      -c | --cert)
+          run_certbot # move to new location?
           exit 0
           ;;
       *)
