@@ -80,10 +80,10 @@ run_certbot() {
   echo "Will generate a brand new cert"
   echo
   docker exec sdschedule-certbot sed -i -r 's/(listen .*443)/\1;#/g; s/(ssl_(certificate|certificate_key|trusted_certificate) )/#;#\1/g' /etc/nginx/sites-enabled/sdschedule.conf
-  docker exec sdschedule-web  nginx -s reload
+  docker exec sdschedule-web nginx -s reload
   docker exec sdschedule-certbot certbot certonly --webroot -w /var/www/certbot -d sdschedule.com -n --force-renewal --agree-tos --email "$letsencrypt_email"
   docker exec sdschedule-certbot sed -i -r 's/#?;#//g' /etc/nginx/sites-enabled/sdschedule.conf
-  docker exec sdschedule-web  nginx -s reload
+  docker exec sdschedule-web nginx -s reload
 }
 
 main() {

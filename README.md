@@ -66,36 +66,42 @@ Run this app using a simple shell script:
 
 * To download the data, add "-d" flag. Note the scraping might take a while depends on your network environment.
 * The app can be either run in development mode or production mode. Production mode uses Nginx.
-* If any changes made to the files (e.g. update), add "-b" flag to tell docker to rebuild. Or docker will always use the images existing.
+* If any changes made to the files (e.g. update), add "-b" flag to tell docker to rebuild. Otherwise docker will always use the images existing.
 * "-s" flag is used to stop the detached services in production mode.
 
 ```bash
-./scripts/run.sh [-h|--help] [-d|--download] [-p|--production] [-b|--build] [-s|--stop]
+./scripts/run.sh [-h|--help] [-d|--download] [-p|--production] [-b|--build] [-s|--stop] [-c|--cert <email>]
 ```
 
 Usage:
 
 ```bash
-./scripts/run.sh -h       # display help message
+./scripts/run.sh -h        # display help message
 
-./scripts/run.sh          # run in development mode without reloading or rebuilding
-./scripts/run.sh -d       # run in development mode and download the data
-./scripts/run.sh -p       # run the app in production mode
-./scripts/run.sh -p -d    # run the app in production mode, and download data
-./scripts/run.sh -b -p -d # rebuild, run the app in production mode, and download data
+./scripts/run.sh           # run in development mode without reloading or rebuilding
+./scripts/run.sh -d        # run in development mode and download the data
+./scripts/run.sh -p        # run the app in production mode
+./scripts/run.sh -p -d     # run the app in production mode, and download data
+./scripts/run.sh -b -p -d  # rebuild, run the app in production mode, and download data
+
+./scripts/run.sh -s        # stop the running production mode services
+                           # give error if production services not started properly
+./scripts/run.sh -c e@mail # FIRST PRODUCTION RUN ONLY
+                           # generate a letsencrypt cert using given email
 ```
 
 The development server will be live at http://localhost:3000. Make sure the ports 3000 and 5000 
 are not used on your machine.
 
-## SSL
-
 The production server will listen to 80 and 443 ports (ssl enabled by default).
 
-Add SSL:
+## SSL
+
+Add https (Let's Encrypt):
 
 ```bash
 ./scripts/run.sh -p                 # make sure the production services are up
+                                    # recommend wait for a minute or so
 ./scripts/run.sh -c <your-email>    # give an email address
 ```
 
