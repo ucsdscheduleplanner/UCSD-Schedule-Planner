@@ -88,7 +88,20 @@ Usage:
 The development server will be live at http://localhost:3000. Make sure the ports 3000 and 5000 
 are not used on your machine.
 
-The production server will listen to 80 and 443 ports.
+## SSL
+
+The production server will listen to 80 and 443 ports (ssl enabled by default).
+
+Add SSL:
+
+```bash
+./scripts/run.sh -p                 # make sure the production services are up
+./scripts/run.sh -c <your-email>    # give an email address
+```
+
+If you don't want to use https,
+change the nginx config file, `UCSD-Planner-Helper\web\nginx\sites\sdschedule.conf`,
+as specified in that file.
 
 # Contributing
 
