@@ -124,7 +124,7 @@ while test $# -gt 0; do
           echo ""
           echo "Sample usage: "
           echo ""
-          echo "                  No arguments. Run developmen mode without downloading or rebuilding"
+          echo "                  No arguments. Run development mode without downloading or rebuilding"
           echo "-p -d -b          Rebuild the services, download fresh data, and run in production mode"
           echo "-p                Run in production mode. Will build services if and only if no services built previously"
           exit 0

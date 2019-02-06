@@ -86,7 +86,7 @@ Usage:
 
 ./scripts/run.sh -s        # stop the running production mode services
                            # give error if production services not started properly
-./scripts/run.sh -c e@mail # FIRST PRODUCTION RUN ONLY
+./scripts/run.sh -c e@mail # FIRST FIRST PRODUCTION RUN ONLY
                            # generate a letsencrypt cert using given email
 ```
 
