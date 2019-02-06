@@ -10,7 +10,7 @@ import {ReactComponent as PlusIcon} from "../../../../../../svg/icon-plus.svg";
 import {ListBox} from "../../../../../../utils/listbox/ListBox";
 
 
-const codeToClassType = {
+export const codeToClassType = {
     AC: 'Activity',
     CL: 'Clinical Clerkship',
     CO: 'Conference',

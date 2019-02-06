@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import Popover, {ArrowContainer} from 'react-tiny-popover';
 import "./ClassEvent.css";
 import {Button} from "../../../utils/button/Button";
+import {codeToClassType} from "../../class/panel/body/widgets/class_types/ClassTypePrefWidget";
 
 
 export class ClassEvent extends PureComponent {
@@ -45,11 +46,15 @@ export class ClassEvent extends PureComponent {
         const location = `Location: ${this.props.location} ${this.props.room}`;
         const instructor = `Instructor: ${this.props.instructor}`;
 
+        let formattedType = codeToClassType[this.props.type];
+        const type = formattedType ?formattedType: "";
+        const title = `${classTitle} ${type}`;
+
         return (
             <div className="ce-info__container">
                 <div className="ce-info">
                     <div className="ce-info__title">
-                        {classTitle}
+                        {title}
                     </div>
                     <div>
                         {courseID}
@@ -66,6 +71,10 @@ export class ClassEvent extends PureComponent {
                 </div>
             </div>
         )
+    }
+
+    getDisplayName() {
+        return `${this.props.classTitle} ${this.props.type}`;
     }
 
     render() {
@@ -90,7 +99,7 @@ export class ClassEvent extends PureComponent {
                         </ArrowContainer>
                     )}
                 >
-                    <Button label={this.props.classTitle} className={names}
+                    <Button label={this.getDisplayName()} className={names}
                             onMouseEnter={this.onMouseEnter.bind(this)}
                             onMouseLeave={this.onMouseLeave.bind(this)}
                             onClick={this.onClick.bind(this)}/>
@@ -103,6 +112,7 @@ export class ClassEvent extends PureComponent {
 ClassEvent.propTypes = {
     classTitle: PropTypes.string.isRequired,
     instructor: PropTypes.string.isRequired,
+    type: PropTypes.string.isRequired,
     range: PropTypes.object.isRequired,
     id: PropTypes.string.isRequired,
     location: PropTypes.string.isRequired,

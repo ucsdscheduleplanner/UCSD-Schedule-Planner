@@ -29,6 +29,7 @@ class ScheduleGeneratorEventContainer extends PureComponent {
                 classTitle={this.props.classTitle}
                 instructor={this.props.instructor}
                 range={this.props.range}
+                type={this.props.type}
                 id={this.props.id}
                 location={this.props.location}
                 room={this.props.room}
