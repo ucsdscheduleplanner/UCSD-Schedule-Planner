@@ -76,18 +76,18 @@ Run this app using a simple shell script:
 Usage:
 
 ```bash
-./scripts/run.sh -h        # display help message
+./scripts/run.sh -h                 # display help message
 
-./scripts/run.sh           # run in development mode without reloading or rebuilding
-./scripts/run.sh -d        # run in development mode and download the data
-./scripts/run.sh -p        # run the app in production mode
-./scripts/run.sh -p -d     # run the app in production mode, and download data
-./scripts/run.sh -b -p -d  # rebuild, run the app in production mode, and download data
+./scripts/run.sh                    # run in development mode without reloading or rebuilding
+./scripts/run.sh -d                 # run in development mode and download the data
+./scripts/run.sh -p                 # run the app in production mode
+./scripts/run.sh -p -d              # run the app in production mode, and download data
+./scripts/run.sh -b -p -d           # rebuild, run the app in production mode, and download data
 
-./scripts/run.sh -s        # stop the running production mode services
-                           # give error if production services not started properly
-./scripts/run.sh -c e@mail # FIRST FIRST PRODUCTION RUN ONLY
-                           # generate a letsencrypt cert using given email
+./scripts/run.sh -s                 # stop the running production mode services
+                                    # give error if production services not started properly
+./scripts/run.sh -c input@your.mail # FIRST FIRST PRODUCTION RUN ONLY
+                                    # generate a letsencrypt cert using given email
 ```
 
 The development server will be live at http://localhost:3000. Make sure the ports 3000 and 5000 
