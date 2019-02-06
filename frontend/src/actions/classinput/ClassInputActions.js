@@ -95,8 +95,6 @@ export function enterInputMode() {
 
         // make a new transaction id
         dispatch(setTransactionID(null));
-
-        console.log(getState().ClassList);
     }
 }
 
