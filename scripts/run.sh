@@ -151,7 +151,9 @@ while test $# -gt 0; do
           exit 0
           ;;
       *)
-          echo "Invalid arguments '$1' ignored"
+          echo "Invalid arguments '$1' detected"
+          echo "Aborting..."
+          exit -1
           ;;
   esac
   shift
