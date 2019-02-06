@@ -3,9 +3,16 @@
     height: 90%;
     display: grid;
 
+    grid-template-columns: 35% auto;
     grid-auto-flow: column;
 
     overflow: overlay;
+}
+
+@media screen and (max-width: 500px) {
+    .landing__body {
+        grid-template-columns: 300px auto;
+    }
 }
 
 .landing__body--left {

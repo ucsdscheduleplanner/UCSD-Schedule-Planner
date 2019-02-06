@@ -10,16 +10,6 @@ export class LandingHeader extends PureComponent {
                 <div className="landing__header__title">
                     <span className="landing__header__title__text">UCSD Schedule Planner</span>
                 </div>
-                <div className="landing__header__menu">
-                    <div className="landing__header__menu__links">
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                    </div>
-                </div>
-                <div className="landing__header__person__icon">
-                    Icon here
-                </div>
             </div>
         );
     }
