@@ -117,7 +117,7 @@ while test $# -gt 0; do
           echo ""
           echo "-h, --help         Show this very helpful message"
           echo "-d, --download     Will download data fresh from Schedule of Classes"
-          echo "-p, --production   Will run in production mode (detached)"
+          echo "-p, --production   Will run in production mode (detached daemon)"
           echo "-b, --build        Rebuild the services. Do this if files are modified"
           echo "-s, --stop         Stop the detached *production* services"
           echo "-c, --cert <email> Run certbot for production service for first time (after started). Use an email address as argument"

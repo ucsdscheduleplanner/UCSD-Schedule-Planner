@@ -95,6 +95,31 @@ are not used on your machine.
 
 The production server will listen to 80 and 443 ports (ssl enabled by default).
 
+## Production Mode
+
+In production, the docker services are run as **detached** daemons.
+
+Check status:
+
+```bash
+docker ps
+docker logs <service-name>
+```
+
+Service name can be:
+
+```bash
+sdschedule-backend   sdschedule-certbot   sdschedule-database  sdschedule-frontend  sdschedule-web
+```
+
+Graceful stop detached services:
+
+* `./scripts/run.sh -s` is just a shortcut for this
+
+```bash
+docker-compose -f docker-compose-production.yml down
+```
+
 ## SSL
 
 Add https (Let's Encrypt):
