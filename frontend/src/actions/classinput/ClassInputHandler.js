@@ -78,11 +78,6 @@ export class ClassInputHandler {
         if (!state.courseNums.includes(courseNum))// && state.courseNums.length > 0)
             return;
 
-        // must clear out the fields
-        this.dispatch(setInstructor(null));
-        this.dispatch(setPriority(null));
-        this.dispatch(setClassTypesToIgnore(null));
-
         const instructors = state.instructorsPerClass[courseNum];
         if (!instructors)
             console.warn(`Instructors are undefined for course num ${courseNum}`);
@@ -91,6 +86,9 @@ export class ClassInputHandler {
         if (!types)
             console.warn(`Class Types are undefined for course num ${courseNum}`);
 
+        // must clear out the fields
+        this.dispatch(setInstructor(null));
+        this.dispatch(setPriority(null));
         this.dispatch(setTypes(types));
         this.dispatch(setInstructors(instructors));
 
@@ -100,12 +98,14 @@ export class ClassInputHandler {
     }
 
     onInstructorChange(rawInstructor) {
+        const state = this.getState().ClassInput;
         if (!rawInstructor) {
             this.dispatch(setInstructor(null));
+            if (state.editMode)
+                this.autosave(true);
             return;
         }
 
-        const state = this.getState().ClassInput;
         console.log(state);
         let instructor = rawInstructor.trim();
         this.dispatch(setInstructor(instructor));
@@ -295,6 +295,15 @@ export class ClassInputHandler {
         newClass.classTypesToIgnore = state.types;
     }
 
+    clearInputs() {
+        // nulling out the other fields
+        this.dispatch(setInstructor(null));
+        this.dispatch(setCourseNum(null));
+        this.dispatch(setPriority(null));
+        this.dispatch(setClassTypesToIgnore(null));
+        this.dispatch(setTransactionID(null));
+    }
+
     handleAdd() {
         const state = this.getState().ClassInput;
         // gotta have course num and department to do anything
@@ -314,14 +323,8 @@ export class ClassInputHandler {
         // using the addClass method from the reducer
         this.dispatch(addClass(newClass, state.transactionID));
         this.savePreferences();
+        this.clearInputs();
 
-        // nulling out the other fields
-        this.dispatch(setInstructor(null));
-        this.dispatch(setCourseNum(null));
-        this.dispatch(setPriority(null));
-        this.dispatch(setClassTypesToIgnore(null));
-
-        this.dispatch(setTransactionID(null));
         this.dispatch(getSchedule());
     }
 

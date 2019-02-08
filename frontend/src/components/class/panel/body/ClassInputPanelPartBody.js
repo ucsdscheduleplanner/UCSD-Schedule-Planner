@@ -5,8 +5,8 @@ import "./ClassInputPanelPartBody.css"
 
 import {ReactComponent as PlusIcon} from "../../../../svg/icon-plus.svg";
 import {RemoveClassWidget} from "./widgets/remove_course/RemoveClassWidget";
-import {ClassTypePrefWidget} from "./widgets/class_types/ClassTypePrefWidget";
 import {InstructorPrefWidget} from "./widgets/instructor/InstructorPrefWidget";
+import ClassTypePrefWidgetContainer from "./widgets/class_types/ClassTypePrefWidgetContainer";
 
 export class ClassInputPanelPartBody extends PureComponent {
 
@@ -15,7 +15,7 @@ export class ClassInputPanelPartBody extends PureComponent {
             <div>
                 <InstructorPrefWidget Class={this.props.Class} inputHandler={this.props.inputHandler} instructors={this.props.Class.instructors}/>
                 <ClassInputPanelPartBodySection label={"CAPES"}/>
-                <ClassTypePrefWidget Class={this.props.Class} inputHandler={this.props.inputHandler} types={this.props.Class.types}/>
+                <ClassTypePrefWidgetContainer Class={this.props.Class} inputHandler={this.props.inputHandler} types={this.props.Class.types}/>
                 <ClassInputPanelPartBodySection label={"Course Description"}/>
                 <RemoveClassWidget inputHandler={this.props.inputHandler}/>
             </div>
