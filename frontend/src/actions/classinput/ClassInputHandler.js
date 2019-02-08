@@ -11,8 +11,8 @@ import {
 } from "./ClassInputMutator";
 import {addClass, editClass, enterInputMode, populateSectionData, removeClass} from "./ClassInputActions";
 import {SchedulePreferenceInputHandler} from "../schedulepreference/SchedulePreferenceInputHandler";
-import {ignoreClassTypes} from "../ignoreclasstypes/IgnoreClassTypesActions";
-import {getSchedule} from "../ScheduleGenerationActions";
+import {ignoreClassTypeCodes, ignoreClassTypes} from "../ignoreclasstypes/IgnoreClassTypesActions";
+import {getSchedule} from "../schedule/generation/ScheduleGenerationActions";
 
 /**
  * Is responsible for handling all ClassInput actions, which includes running business logic when changing fields to adding
@@ -77,11 +77,6 @@ export class ClassInputHandler {
         if (!state.courseNums.includes(courseNum))// && state.courseNums.length > 0)
             return;
 
-        // must clear out the fields
-        this.dispatch(setInstructor(null));
-        this.dispatch(setPriority(null));
-        this.dispatch(setClassTypesToIgnore(null));
-
         const instructors = state.instructorsPerClass[courseNum];
         if (!instructors)
             console.warn(`Instructors are undefined for course num ${courseNum}`);
@@ -90,6 +85,9 @@ export class ClassInputHandler {
         if (!types)
             console.warn(`Class Types are undefined for course num ${courseNum}`);
 
+        // must clear out the fields
+        this.dispatch(setInstructor(null));
+        this.dispatch(setPriority(null));
         this.dispatch(setTypes(types));
         this.dispatch(setInstructors(instructors));
 
@@ -99,12 +97,14 @@ export class ClassInputHandler {
     }
 
     onInstructorChange(rawInstructor) {
+        const state = this.getState().ClassInput;
         if (!rawInstructor) {
             this.dispatch(setInstructor(null));
+            if (state.editMode)
+                this.autosave(true);
             return;
         }
 
-        const state = this.getState().ClassInput;
         console.log(state);
         let instructor = rawInstructor.trim();
         this.dispatch(setInstructor(instructor));
@@ -249,7 +249,6 @@ export class ClassInputHandler {
             state.messageHandler.showError(errMsg, 1000);
 
         this.dispatch(enterInputMode());
-
         // TODO check if this is a significant change, and if it is then regenerate schedule
         this.dispatch(getSchedule());
     }
@@ -297,6 +296,16 @@ export class ClassInputHandler {
         }, false);
     }
 
+
+    clearInputs() {
+        // nulling out the other fields
+        this.dispatch(setInstructor(null));
+        this.dispatch(setCourseNum(null));
+        this.dispatch(setPriority(null));
+        this.dispatch(setClassTypesToIgnore(null));
+        this.dispatch(setTransactionID(null));
+    }
+
     handleAdd() {
         const state = this.getState().ClassInput;
         // gotta have course num and department to do anything
@@ -315,14 +324,7 @@ export class ClassInputHandler {
         // using the addClass method from the reducer
         this.dispatch(addClass(newClass, state.transactionID));
         this.savePreferences();
-
-        // nulling out the other fields
-        this.dispatch(setInstructor(null));
-        this.dispatch(setCourseNum(null));
-        this.dispatch(setPriority(null));
-        this.dispatch(setClassTypesToIgnore(null));
-
-        this.dispatch(setTransactionID(null));
+        this.clearInputs();
 
         this.dispatch(getSchedule());
     }
