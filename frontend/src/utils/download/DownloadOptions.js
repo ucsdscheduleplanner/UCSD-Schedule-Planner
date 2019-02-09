@@ -9,15 +9,13 @@ export class DownloadOptions extends PureComponent {
         super(props);
         this.state = {
             popOverOpen: false,
-            subsections: props.subsections
         }
     }
 
     onClick() {
         if(!this.state.popOverOpen) {
             this.setState({popOverOpen: true})
-        }
-        else {
+        } else {
             this.setState({popOverOpen: false});
         }
     }
@@ -25,7 +23,7 @@ export class DownloadOptions extends PureComponent {
     showOptions() {
         return (
             <div className="export-calendar__container">
-                <Button className="add-to-gcalendar-button" label="Add to Google Calendar"
+                <Button className="add-to-gcalendar-button" round={true} label="Add to Google Calendar"
                         onClick={addEvents.bind(this, this.props.schedule)}/>
             </div>
         );
@@ -37,7 +35,7 @@ export class DownloadOptions extends PureComponent {
                 <Popover
                     containerClassName="download-options-popover"
                     isOpen={this.state.popOverOpen}
-                    position={['bottom']}
+                    position={['left','bottom','top','right']}
                     transitionDuration={.25}
                     onClickOutside={() => this.setState({ popOverOpen: false })}
                     content={({position, targetRect, popoverRect}) => (
@@ -45,7 +43,7 @@ export class DownloadOptions extends PureComponent {
                             position={position}
                             targetRect={targetRect}
                             popoverRect={popoverRect}
-                            arrowColor={'#182B49'}
+                            arrowColor={'#7A7A7A'}
                             arrowSize={20}
                         >
                             {this.showOptions()}
@@ -53,7 +51,7 @@ export class DownloadOptions extends PureComponent {
                     )}
                 >
                     <Button className="export-calendar-button" label="Export Calendar"
-                            onClick={this.onClick.bind(this)}/>
+                            round={true} onClick={this.onClick.bind(this)}/>
                 </Popover>
             </React.Fragment>
         );

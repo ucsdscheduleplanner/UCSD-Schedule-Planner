@@ -33,9 +33,8 @@
 .schedule__body {
     height: 100%;
     min-height: 0;
-    margin: 0 2em 3em 2em;
-    display: flex;
-    flex-direction: row;
+    margin: 0 0 3em 2em;
+    display: grid;
 }
 
 .schedule__header__body {
@@ -197,12 +196,14 @@
     box-shadow: 0 0 5px 5px #0099E0;
 }
 .calendar {
-    flex: 0.85;
+    grid-column-start: 1;
+    grid-column-end: 15;
 }
 
 .option-panel {
-    flex: 0.15;
-    margin: 0 0 3em 2em;
+    grid-column-start: 16;
+    grid-column-end: 16;
+    margin: 0 1em 2em;
 }
 
 .export-calendar-button {
