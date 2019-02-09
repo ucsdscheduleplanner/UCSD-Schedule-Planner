@@ -69,7 +69,6 @@ export function enterEditMode(id) {
         inputHandler.onCourseNumChange(otherClass.courseNum);
         inputHandler.onInstructorChange(otherClass.instructor);
         inputHandler.onClassTypesToIgnoreChange(otherClass.classTypesToIgnore);
-        inputHandler.onPriorityChange(otherClass.priority);
 
         dispatch(setEditMode(true));
         // setting current class id

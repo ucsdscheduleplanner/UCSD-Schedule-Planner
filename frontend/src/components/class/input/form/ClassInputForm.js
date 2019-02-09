@@ -15,6 +15,7 @@ export class ClassInputForm extends PureComponent {
     }
 
     render() {
+        console.log(this.props);
         return (
             <React.Fragment>
                 <div className="class-input__form__header">
@@ -34,6 +35,7 @@ export class ClassInputForm extends PureComponent {
                             value={this.props.department}
                             onBlur={async (e) => await this.props.inputHandler.onDepartmentChange(e.target.value, true)}
                             onSelect={async (e) => await this.props.inputHandler.onDepartmentChange(e, true)}
+                            disabled={this.props.editMode}
                             defaultValue={"CSE"}
                             label="department"/>
                     </div>
@@ -49,7 +51,7 @@ export class ClassInputForm extends PureComponent {
                             onBlur={(e) => this.props.inputHandler.onCourseNumChange(e.target.value, true)}
                             onSelect={(e) => this.props.inputHandler.onCourseNumChange(e, true)}
                             defaultValue={"11"}
-                            disabled={!this.props.departments.includes(this.props.department)}
+                            disabled={this.props.editMode}
                             label="courseNum"/>
                     </div>
 

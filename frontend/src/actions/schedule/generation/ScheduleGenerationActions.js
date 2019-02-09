@@ -1,6 +1,7 @@
 import {DataFetcher} from "../../../utils/DataFetcher";
 import {DataCleaner} from "../../../utils/DataCleaner";
 import {setClassData, setCurrentSchedule} from "../ScheduleActions";
+import {GENERATOR_MODE} from "../../../reducers/ScheduleReducer";
 
 export const START_GENERATING = 'START_GENERATING';
 export const GENERATE_SCHEDULE = "GENERATE_SCHEDULE";
@@ -25,12 +26,17 @@ export function finishedGenerating() {
 }
 
 export function updateWithResult(result) {
-    return function (dispatch) {
+    return function (dispatch, getState) {
         dispatch(setGenerationResult(result));
 
-        if(result.schedules.length > 0)
-            dispatch(setCurrentSchedule(result.schedules[0]));
-        else dispatch(setCurrentSchedule([]));
+        const scheduleState = getState().Schedule;
+
+        if(result.schedules.length > 0) {
+            console.log("shouldn't be here");
+            // if in builder mode don't update at all
+            if (scheduleState.scheduleMode === GENERATOR_MODE)
+                dispatch(setCurrentSchedule(result.schedules[0]));
+        } else dispatch(setCurrentSchedule([]));
     }
 }
 

@@ -84,6 +84,7 @@ export class MyAutocomplete extends Component {
 
     render() {
         const inputProps = {
+            disabled: this.props.disabled,
             placeholder: this.props.defaultValue ? this.props.defaultValue : "",
             value: this.state.value,
             onChange: this.onChange.bind(this),
@@ -125,4 +126,5 @@ MyAutocomplete.propTypes = {
     label: PropTypes.string,
     defaultValue: PropTypes.string,
     onSelect: PropTypes.func,
+    disabled: PropTypes.bool
 };

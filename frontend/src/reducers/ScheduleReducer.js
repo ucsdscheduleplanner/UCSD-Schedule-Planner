@@ -10,7 +10,7 @@ export const BUILDER_MODE = "BUILDER_MODE";
 export default function ScheduleReducer(state = {
     currentSchedule: [],
     classData: [],
-    scheduleMode: null
+    scheduleMode: GENERATOR_MODE
 }, action) {
     switch (action.type) {
         case SET_CURRENT_SCHEDULE:

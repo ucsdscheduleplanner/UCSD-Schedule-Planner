@@ -13,6 +13,7 @@ import {addClass, editClass, enterInputMode, populateSectionData, removeClass} f
 import {SchedulePreferenceInputHandler} from "../schedulepreference/SchedulePreferenceInputHandler";
 import {ignoreClassTypes} from "../ignoreclasstypes/IgnoreClassTypesActions";
 import {getSchedule} from "../schedule/generation/ScheduleGenerationActions";
+import {GENERATOR_MODE} from "../../reducers/ScheduleReducer";
 
 /**
  * Is responsible for handling all ClassInput actions, which includes running business logic when changing fields to adding
@@ -54,8 +55,8 @@ export class ClassInputHandler {
         this.dispatch(setClassTypesToIgnore(null));
         this.dispatch(setPriority(null));
 
-        if (state.editMode)
-            this.autosave(true);
+        // if (state.editMode)
+        //     this.autosave(true);
         // populate the course nums and the data
         return this.dispatch(populateSectionData(department));
     }
@@ -94,8 +95,8 @@ export class ClassInputHandler {
         this.dispatch(setInstructors(instructors));
 
         // autosave after everything else has been set
-        if (state.editMode)
-            this.autosave(true);
+        // if (state.editMode)
+        //     this.autosave(true);
     }
 
     onInstructorChange(rawInstructor) {
@@ -133,19 +134,6 @@ export class ClassInputHandler {
             this.autosave(true);
     }
 
-    onPriorityChange(priority) {
-        // if (!priority) {
-        //     this.dispatch(setPriority(null));
-        //     return;
-        // }
-        //
-        // this.dispatch(setPriority(priority));
-        // const state = this.getState().ClassInput;
-        // // record the edit
-        // if (state.editMode)
-        //     this.autosave(true);
-    }
-
     buildClassFromInput() {
         const state = this.getState().ClassInput;
         // should refactor this into ClassSkeleton
@@ -178,11 +166,20 @@ export class ClassInputHandler {
 
     isValidEdit(newClass) {
         const state = this.getState().ClassInput;
+        const classList = this.getState().ClassList;
+
+        let oldClass = classList.selectedClasses[state.transactionID];
+
         if (this.isDuplicate(newClass, state.transactionID)) {
             return {
                 valid: false,
                 reason: `Class ${state.department} ${state.courseNum} has already been added!`
             };
+        } else if (oldClass.classTitle !== newClass.classTitle) {
+            return {
+                valid: false,
+                reason: `Cannot edit department or course number. To edit, please remove the class and add a new one in.`
+            }
         }
 
         return this.isValid(newClass);
@@ -247,10 +244,10 @@ export class ClassInputHandler {
             state.messageHandler.showError(errMsg, 1000);
 
         this.dispatch(enterInputMode());
-
         // TODO check if this is a significant change, and if it is then regenerate schedule
         this.dispatch(getSchedule());
     }
+
     /**
      * Handle what occurs when the remove button is hit during edit mode
      *
@@ -277,7 +274,7 @@ export class ClassInputHandler {
     /**
      * Checks if a class is already in the store
      * @param newClass the class to check for duplicates
-     * @param exclude class id to exclude
+     * @param exclude class id to exclude - we are using this because in an edit, the class we want is already in the store
      * @returns boolean the store contains the given class already
      */
     isDuplicate(newClass, exclude = "") {
@@ -291,6 +288,11 @@ export class ClassInputHandler {
                 return accumulator;
             return accumulator || newClass.classTitle === state.selectedClasses[key]['classTitle']
         }, false);
+    }
+
+    setDefaultValues(newClass) {
+        const state = this.getState().ClassInput;
+        newClass.classTypesToIgnore = state.types;
     }
 
     handleAdd() {
@@ -308,6 +310,7 @@ export class ClassInputHandler {
             return;
         }
 
+        this.setDefaultValues(newClass);
         // using the addClass method from the reducer
         this.dispatch(addClass(newClass, state.transactionID));
         this.savePreferences();
@@ -319,7 +322,6 @@ export class ClassInputHandler {
         this.dispatch(setClassTypesToIgnore(null));
 
         this.dispatch(setTransactionID(null));
-
         this.dispatch(getSchedule());
     }
 
