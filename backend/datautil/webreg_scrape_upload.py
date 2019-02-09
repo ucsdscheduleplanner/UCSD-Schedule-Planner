@@ -1,5 +1,5 @@
 from scraper.department_scraper import DepartmentScraper
-from scraper.capes_scraper import CAPESScraper 
+from scraper.capes_scraper import CAPESScraper
 from scraper.course_scraper import CourseScraper
 
 from datautil.capes_parser import CAPESParser
@@ -15,20 +15,16 @@ def main():
     execution_times = {}
 
     def record_execution_time(subroutine, label):
-        timestamp = time.time() 
-        subroutine() 
+        timestamp = time.time()
+        subroutine()
         execution_times[label] = '{0:.3f} minutes'.format((time.time() - timestamp) / 60)
 
     department_scraper = DepartmentScraper()
     record_execution_time(department_scraper.scrape, 'Department Scraping')
 
-    course_scraper = CourseScraper() 
+    course_scraper = CourseScraper()
     record_execution_time(course_scraper.scrape, 'Course Scraping')
 
-    if course_scraper.crashed:
-        print("The course scraper has crashed. Please retry.", file=sys.stderr)
-        sys.exit(1)
-    
     capes_scraper = CAPESScraper()
     record_execution_time(capes_scraper.scrape, 'CAPES Scraping')
 

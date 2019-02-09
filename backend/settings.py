@@ -21,7 +21,7 @@ IMAGE_DIR = os.path.join(HOME_DIR, 'images')
 
 # Downloaded HTML directories
 COURSES_HTML_PATH = "/cache/course_pages"
-CAPES_HTML_PATH = "/cache/capes_pages" 
+CAPES_HTML_PATH = "/cache/capes_pages"
 
 DRIVER_PATH = "/usr/local/bin/chromedriver"
 
@@ -37,7 +37,7 @@ URLS
 """
 # URLs
 DEPARTMENT_URL = 'https://act.ucsd.edu/scheduleOfClasses/scheduleOfClassesStudent.htm'
-SCHEDULE_OF_CLASSES = 'https://act.ucsd.edu/scheduleOfClasses/scheduleOfClassesStudent.htm'
+SCHEDULE_OF_CLASSES_URL = 'https://act.ucsd.edu/scheduleOfClasses/scheduleOfClassesStudent.htm'
 CAPES_URL = 'http://cape.ucsd.edu/responses/Results.aspx?CourseNumber='
 
 """
