@@ -1,17 +1,27 @@
-
 .schedule__header {
-    padding: 1em 2em;
-    margin: 1em;
+    margin: 2em 5em 1em 2em;
 }
 
 .schedule-header__text {
+    display: grid;
+    grid-auto-flow: column;
+    grid-template-columns: 4em 1fr 4em;
+}
+
+.schedule-header__helper-text {
+    font-size: 12px;
+}
+
+.schedule-header__icon {
     display: flex;
+    justify-self: flex-end;
 }
 
 .schedule__header__title {
     margin-left: 2%;
     margin-right: 2%;
     font-size: 18px;
+    min-width: 10em;
 }
 
 .schedule {

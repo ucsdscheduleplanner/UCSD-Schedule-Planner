@@ -15,7 +15,6 @@ export class ClassInputForm extends PureComponent {
     }
 
     render() {
-        console.log(this.props);
         return (
             <React.Fragment>
                 <div className="class-input__form__header">

@@ -7,10 +7,12 @@ import {ClassTypePrefWidget} from "./ClassTypePrefWidget";
 class ClassTypePrefWidgetContainer extends PureComponent {
 
     render() {
+        const ignoreClassTypes = this.props.ignoreClassTypeMapping[this.props.Class.classTitle];
+        console.log(this.props);
         return (
             <ClassTypePrefWidget Class={this.props.Class}
                                  inputHandler={this.props.inputHandler}
-                                 classTypesToIgnore={this.props.classTypesToIgnore}
+                                 ignoreClassTypes={ignoreClassTypes}
                                  types={this.props.Class.types}/>
         )
     }
@@ -18,7 +20,7 @@ class ClassTypePrefWidgetContainer extends PureComponent {
 
 function mapStateToProps(state) {
     return {
-        classTypesToIgnore: state.ClassInput.classTypesToIgnore,
+        ignoreClassTypeMapping: state.IgnoreClassTypes.classMapping,
     }
 }
 

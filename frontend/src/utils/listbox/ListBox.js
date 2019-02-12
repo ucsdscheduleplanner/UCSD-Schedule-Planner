@@ -5,11 +5,6 @@ import "./ListBox.css"
 import {HighlightButton} from "../button/highlight/HighlightButton";
 
 export class ListBox extends PureComponent {
-
-    constructor(props) {
-        super(props);
-    }
-
     getSelectedVals() {
         return this.props.values.filter(this.props.isSelected);
     }

@@ -10,6 +10,8 @@ class ScheduleContainer extends Component {
             <Schedule
                 scheduleMode={this.props.scheduleMode}
                 setScheduleMode={this.props.setScheduleMode}
+
+                messageHandler={this.props.messageHandler}
             />
         )
     }
@@ -24,6 +26,7 @@ function mapDispatchToProps(dispatch) {
 function mapStateToProps(state) {
     return {
         scheduleMode: state.Schedule.scheduleMode,
+        messageHandler: state.ClassInput.messageHandler,
     }
 }
 

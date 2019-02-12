@@ -3,6 +3,7 @@ import WeekCalendar from "../calendar/WeekCalendar";
 
 import PropTypes from "prop-types";
 import ClassUtils from "../../../utils/class/ClassUtils";
+import ScheduleBuilderEventCollection from "./event/ScheduleBuilderEventCollection";
 
 export class ScheduleBuilder extends PureComponent {
     render() {
@@ -10,7 +11,9 @@ export class ScheduleBuilder extends PureComponent {
             ClassUtils.buildClass(sectionNum, this.props.classData));
 
         const calendar = (
-            <WeekCalendar schedule={schedule}/>
+            <WeekCalendar
+                getCollection={(events) => new ScheduleBuilderEventCollection(events)}
+                schedule={schedule}/>
         );
 
         return (

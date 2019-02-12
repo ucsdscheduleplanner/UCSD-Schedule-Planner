@@ -20,21 +20,27 @@ class ScheduleBuilderEventContainer extends PureComponent {
 
     /**
      * Returns if the event should be shadowed transparently (whatever that means)
+     *
+     * Will shadow classes that aren't the same as the currently selected class
      * @returns {boolean}
      */
     isShadowed() {
         let userSelectedClass = ClassUtils.getClassFor(this.props.transactionID, this.props.selectedClasses);
-        // only want to return true if the Class has the same class title and is NOT the currently selected section num
-        if (userSelectedClass && userSelectedClass.classTitle === this.props.classTitle)
-            return !this.props.currentSchedule.includes(this.props.sectionNum);
-        return false;
+        if(!userSelectedClass)
+            return false;
+        return userSelectedClass.classTitle !== this.props.classTitle;
+    }
+
+    formatSectionNum(sectionNum) {
+        return sectionNum.substring(0, sectionNum.indexOf("$"));
     }
 
     replaceSectionNumInSchedule() {
         // TODO put formatting in another method
         let classTitle = this.props.classTitle.replace(/\s+/g, '');
         let currentSchedule = this.props.currentSchedule.slice();
-        currentSchedule = currentSchedule.filter(sectionNum => !sectionNum.startsWith(classTitle));
+        currentSchedule = currentSchedule.filter(e => this.formatSectionNum(e) !== classTitle);
+
         currentSchedule.push(this.props.sectionNum);
         this.props.setCurrentSchedule(currentSchedule);
     }

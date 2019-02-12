@@ -1,19 +1,18 @@
 import {
-    setClassTypesToIgnore,
-    setCourseNum, setCourseNums,
+    setCourseNum,
+    setCourseNums,
     setDepartment,
     setEditOccurred,
-    setTransactionID,
     setInstructor,
     setInstructors,
     setPriority,
+    setTransactionID,
     setTypes
 } from "./ClassInputMutator";
 import {addClass, editClass, enterInputMode, populateSectionData, removeClass} from "./ClassInputActions";
 import {SchedulePreferenceInputHandler} from "../schedulepreference/SchedulePreferenceInputHandler";
-import {ignoreClassTypes} from "../ignoreclasstypes/IgnoreClassTypesActions";
+import {ignoreClassTypeCodes} from "../ignoreclasstypes/IgnoreClassTypesActions";
 import {getSchedule} from "../schedule/generation/ScheduleGenerationActions";
-import {GENERATOR_MODE} from "../../reducers/ScheduleReducer";
 
 /**
  * Is responsible for handling all ClassInput actions, which includes running business logic when changing fields to adding
@@ -35,7 +34,6 @@ export class ClassInputHandler {
         }
 
         const state = this.getState().ClassInput;
-
         let department = rawDepartment.trim();
 
         // sets the department in the store
@@ -52,7 +50,6 @@ export class ClassInputHandler {
         this.dispatch(setCourseNum(null));
         this.dispatch(setInstructor(null));
         // will autoconvert to empty list
-        this.dispatch(setClassTypesToIgnore(null));
         this.dispatch(setPriority(null));
 
         // if (state.editMode)
@@ -106,7 +103,6 @@ export class ClassInputHandler {
             return;
         }
 
-        console.log(state);
         let instructor = rawInstructor.trim();
         this.dispatch(setInstructor(instructor));
 
@@ -118,20 +114,13 @@ export class ClassInputHandler {
             this.autosave(true);
 
         this.dispatch(setPriority(null));
-        this.dispatch(setClassTypesToIgnore(null));
     }
 
-    onClassTypesToIgnoreChange(classTypesToIgnore) {
-        if (!classTypesToIgnore) {
-            this.dispatch(setClassTypesToIgnore(null));
-            return;
-        }
-
-        this.dispatch(setClassTypesToIgnore(classTypesToIgnore));
+    onIgnoreClassTypes(types) {
         const state = this.getState().ClassInput;
-        // record the edit
-        if (state.editMode)
-            this.autosave(true);
+        const classTitle = `${state.department} ${state.courseNum}`;
+
+        this.dispatch(ignoreClassTypeCodes(classTitle, types));
     }
 
     buildClassFromInput() {
@@ -144,7 +133,6 @@ export class ClassInputHandler {
                 department: state.department,
                 instructor: state.instructor,
                 priority: state.priority,
-                classTypesToIgnore: state.classTypesToIgnore,
 
                 instructors: state.instructors,
                 types: state.types,
@@ -292,7 +280,7 @@ export class ClassInputHandler {
 
     setDefaultValues(newClass) {
         const state = this.getState().ClassInput;
-        newClass.classTypesToIgnore = state.types;
+        this.dispatch(ignoreClassTypeCodes(newClass.classTitle, state.types));
     }
 
     clearInputs() {
@@ -300,7 +288,6 @@ export class ClassInputHandler {
         this.dispatch(setInstructor(null));
         this.dispatch(setCourseNum(null));
         this.dispatch(setPriority(null));
-        this.dispatch(setClassTypesToIgnore(null));
         this.dispatch(setTransactionID(null));
     }
 
@@ -333,7 +320,6 @@ export class ClassInputHandler {
         this.dispatch(setInstructor(null));
         this.dispatch(setCourseNum(null));
         this.dispatch(setPriority(null));
-        this.dispatch(setClassTypesToIgnore(null));
 
         this.dispatch(setCourseNums(null));
         this.dispatch(setInstructors(null));
@@ -343,16 +329,13 @@ export class ClassInputHandler {
         this.dispatch(setTransactionID(null));
     }
 
+    /**
+     * Saves the preferences in the class
+     */
     savePreferences() {
-        const state = this.getState().ClassInput;
-
         // TODO this is terrible gotta fix this, why create an object like this?
         let inputHandler = new SchedulePreferenceInputHandler(this.dispatch, this.getState);
         inputHandler.setClassSpecificPref();
-
-        // sending the updates to the reducer for ignoring class types
-        const classTitle = `${state.department} ${state.courseNum}`;
-        this.dispatch(ignoreClassTypes(classTitle, state.classTypesToIgnore));
     }
 }
 

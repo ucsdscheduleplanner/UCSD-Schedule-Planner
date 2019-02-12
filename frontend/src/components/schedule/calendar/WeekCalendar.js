@@ -4,8 +4,7 @@ import Dayz from "dayz/dist/dayz";
 
 import "dayz/dist/css/dayz.min.css";
 import "./WeekCalendar.css";
-import ScheduleBuilderEventCollection from "../builder/event/ScheduleBuilderEventCollection";
-import ScheduleGeneratorEventCollection from "../generator/event/ScheduleGeneratorEventCollection";
+import PropTypes from 'prop-types';
 
 
 class WeekCalendar extends PureComponent {
@@ -49,7 +48,7 @@ class WeekCalendar extends PureComponent {
                     let timeRange = this.convertToRange(subsection.timeInterval);
 
                     ret.push(
-                        new ScheduleBuilderEventCollection({
+                        this.props.getCollection({
                             content: strippedSectionData.classTitle,
                             ...strippedClassData,
                             ...strippedSectionData,
@@ -90,6 +89,13 @@ class WeekCalendar extends PureComponent {
 
 WeekCalendar.defaultProps = {
     schedule: [],
+    getCollection: (events) => {
+        return new Dayz.EventsCollection.Event(events);
+    }
+};
+
+WeekCalendar.propTypes = {
+    getCollection: PropTypes.func,
 };
 
 export default WeekCalendar;

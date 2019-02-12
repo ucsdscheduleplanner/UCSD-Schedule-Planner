@@ -23,14 +23,22 @@ export class Schedule extends PureComponent {
     changeMode() {
         if (this.props.scheduleMode === BUILDER_MODE)
             this.props.setScheduleMode(GENERATOR_MODE);
-        else
+        else {
             this.props.setScheduleMode(BUILDER_MODE);
+            this.props.messageHandler.showWarning("Warning: This mode is experimental, some features may be buggy.", 2500);
+        }
     }
 
     getDisplayValue() {
-        if(this.props.scheduleMode === BUILDER_MODE)
+        if (this.props.scheduleMode === BUILDER_MODE)
             return "Schedule Builder";
         else return "Schedule Generator";
+    }
+
+    getHelperMessage() {
+        return (
+            <em className="schedule-header__helper-text">Click on a section below to get started!</em>
+        )
     }
 
     render() {
@@ -39,21 +47,25 @@ export class Schedule extends PureComponent {
                 <div className="schedule__header">
                     <div className="schedule__header__wrapper">
                         <div className="schedule-header__text">
-                            <ViewIcon/>
-                            <span className="schedule__header__title">Schedule View</span>
-                        </div>
-                        <div className="schedule-header__button">
+                            <ViewIcon className="schedule-header__icon"/>
+                            <div>
+                                <span className="schedule__header__title">{this.getDisplayValue()}</span>
+                                {
+                                    this.props.scheduleMode === BUILDER_MODE && this.getHelperMessage()
+                                }
+                            </div>
                             <Toggle
+                                className="schedule-header__button"
                                 checked={this.isToggled()}
                                 icons={false}
                                 onChange={this.changeMode.bind(this)}/>
-                            <span className="schedule-header__toggle-text">{this.getDisplayValue()}</span>
                         </div>
                     </div>
                 </div>
 
                 <div className="schedule__body">
-                    {this.props.scheduleMode === BUILDER_MODE ? <ScheduleBuilderContainer/> : <ScheduleGeneratorContainer/>}
+                    {this.props.scheduleMode === BUILDER_MODE ? <ScheduleBuilderContainer/> :
+                        <ScheduleGeneratorContainer/>}
                 </div>
             </div>
         )

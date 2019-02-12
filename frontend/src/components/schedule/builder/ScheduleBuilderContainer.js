@@ -35,10 +35,16 @@ class ScheduleBuilderContainer extends PureComponent {
         }
 
         let sectionNums = Class.sections.map(section => section.sectionNum);
-        return this.mergeClasses(sectionNums, this.props.currentSchedule);
+        let ret = this.mergeClasses(sectionNums, this.props.currentSchedule);
+
+        console.log(ret);
+        return ret;
     }
 
     render() {
+        console.log("RERENDERING WITH ");
+        console.log(this.props.currentSchedule);
+
         const displayedSchedule = this.getDisplayedSchedule();
         console.log("CURRENT SCHEDULE");
         console.log(displayedSchedule);

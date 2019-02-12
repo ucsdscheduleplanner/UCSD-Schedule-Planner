@@ -37,15 +37,16 @@ export const codeToClassType = {
 export const ClassTypePrefWidget = (props) => {
     const plusMinusNames = classNames("class-input__panel__part__body__header__icon", {"active": props.isOpen});
 
+    console.log(props);
     const listBox = props.types.length > 0 ? (
         <ListBox
-            isSelected={type => props.classTypesToIgnore.includes(type)}
+            isSelected={type => props.ignoreClassTypes.includes(type)}
             className="type-pref__container"
             stylePerButton={["type-pref__button"]}
             keyPrefix={props.Class.classTitle}
             getDisplayValue={type => codeToClassType[type]}
             onClick={(selectedTypes) => {
-                props.inputHandler.onClassTypesToIgnoreChange(selectedTypes)
+                props.inputHandler.onIgnoreClassTypes(selectedTypes)
             }}
             values={props.types}/>
     ) : (<div> No class types </div>);
@@ -79,5 +80,5 @@ export const ClassTypePrefWidget = (props) => {
 ClassTypePrefWidget.propTypes = {
     inputHandler: PropTypes.object.isRequired,
     types: PropTypes.array.isRequired,
-    classTypesToIgnore: PropTypes.array.isRequired
+    ignoreClassTypes: PropTypes.array.isRequired
 };

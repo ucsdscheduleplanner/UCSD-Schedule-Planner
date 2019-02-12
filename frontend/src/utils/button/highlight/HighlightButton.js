@@ -5,12 +5,7 @@ import {Button} from "../Button";
 import "./HighlightButton.css";
 
 export class HighlightButton extends PureComponent {
-
-    constructor(props) {
-        super(props);
-    }
-
-    onClick(evt) {
+    onClick() {
         if (this.props.highlighted) {
             this.props.onDeselect(this.props.value);
         } else {

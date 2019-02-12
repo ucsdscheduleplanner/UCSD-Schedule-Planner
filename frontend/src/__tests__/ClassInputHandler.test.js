@@ -20,6 +20,15 @@ function getInputHandler(store) {
     return fn(store.dispatch, store.getState);
 }
 
+/**
+ * For tests which set edit mode, because it has the async call onDepartmentChange, I want to wait for everything to
+ * resolve before moving on in the test
+ * @returns {Promise<any>}
+ */
+function flushPromises() {
+    return new Promise(resolve => setImmediate(resolve));
+}
+
 describe("ClassInput actions such as adding, editing and removing classes", () => {
     let store;
 
@@ -62,7 +71,6 @@ describe("ClassInput actions such as adding, editing and removing classes", () =
             classTitle: "CSE 12",
             department: "CSE",
             courseNum: "12",
-            classTypesToIgnore: ["LE", "blah"],
             priority: null,
             instructor: "Mr. Cameron Trando"
         };
@@ -161,9 +169,11 @@ describe("ClassInput actions such as adding, editing and removing classes", () =
             // making first class
             store.dispatch(setDepartments(["CSE", "DSC"]));
             store.dispatch(setCourseNums(["11", "12"]));
+            store.dispatch(setInstructors(["Joseph Politz", "Rick Ord"]));
 
             store.dispatch(setDepartment("CSE"));
             store.dispatch(setCourseNum("11"));
+            store.dispatch(setInstructor("Joseph Politz"));
 
             let inputHandler = getInputHandler(store);
             let transactionID = store.getState().ClassInput.transactionID;
@@ -172,8 +182,7 @@ describe("ClassInput actions such as adding, editing and removing classes", () =
             await store.dispatch(enterEditMode(transactionID));
 
             // making second class
-            await inputHandler.onDepartmentChange("DSC");
-            inputHandler.onCourseNumChange("11");
+            inputHandler.onInstructorChange("Rick Ord");
 
             // adding again
             inputHandler.handleEdit();
@@ -185,19 +194,18 @@ describe("ClassInput actions such as adding, editing and removing classes", () =
             chaiExpect(Object.keys(classList.selectedClasses)).to.have.lengthOf(1);
 
             const expected = {
-                classTitle: "DSC 11",
-                department: "DSC",
+                classTitle: "CSE 11",
+                department: "CSE",
                 courseNum: "11",
-                classTypesToIgnore: [],
                 priority: null,
-                instructor: null,
+                instructor: "Rick Ord",
             };
 
             let result = classList.selectedClasses[transactionID];
             chaiExpect(result).deep.include(expected);
         });
 
-        it("Can choose to make no edit and be fine", () => {
+        it("Can choose to make no edit and be fine", async () => {
             store.dispatch(setDepartments(["CSE", "DSC"]));
             store.dispatch(setCourseNums(["11", "12"]));
             store.dispatch(setDepartment("CSE"));
@@ -207,7 +215,9 @@ describe("ClassInput actions such as adding, editing and removing classes", () =
             let transactionID = store.getState().ClassInput.transactionID;
             inputHandler.handleAdd();
 
-            store.dispatch(enterEditMode(transactionID));
+            await store.dispatch(enterEditMode(transactionID));
+            flushPromises();
+
             inputHandler.handleEdit();
 
             let classList = store.getState().ClassList;
@@ -249,13 +259,11 @@ describe("ClassInput actions such as adding, editing and removing classes", () =
             inputHandler.handleAdd();
 
             await store.dispatch(enterEditMode(transactionID));
+            flushPromises();
 
             // need to reset this after entering edit mode
             store.dispatch(setDepartments(["CSE", "DSC"]));
             store.dispatch(setCourseNums(["11", "12"]));
-
-            // making edits
-            inputHandler.onCourseNumChange("12");
 
             store.dispatch(setInstructors(["Rick Ord", "Joseph Politz"]));
             inputHandler.onInstructorChange("Joseph Politz");
@@ -267,10 +275,9 @@ describe("ClassInput actions such as adding, editing and removing classes", () =
             chaiExpect(Object.keys(classList.selectedClasses)).to.have.lengthOf(1);
 
             const expected = {
-                classTitle: "CSE 12",
+                classTitle: "CSE 11",
                 department: "CSE",
-                courseNum: "12",
-                classTypesToIgnore: [],
+                courseNum: "11",
                 priority: null,
                 instructor: "Joseph Politz",
             };
@@ -304,7 +311,7 @@ describe("ClassInput actions such as adding, editing and removing classes", () =
             let inputHandler = getInputHandler(store);
             await inputHandler.onDepartmentChange("CSE");
             inputHandler.onCourseNumChange("11");
-            inputHandler.onClassTypesToIgnoreChange(["LE", "LA", "DI"]);
+            inputHandler.onIgnoreClassTypes(["LE", "LA", "DI"]);
             inputHandler.onInstructorChange("Rick Ord");
 
             let transactionID = store.getState().ClassInput.transactionID;
@@ -323,7 +330,7 @@ describe("ClassInput actions such as adding, editing and removing classes", () =
             DataFetcher.fetchClassSummaryFor = prev;
         });
 
-        test('Verifies that a class is valid before allowing edit', () => {
+        test('Verifies that a class is valid before allowing edit', async () => {
             // making first class
             store.dispatch(setDepartments(["CSE"]));
             store.dispatch(setCourseNums(["11", "12"]));
@@ -336,7 +343,8 @@ describe("ClassInput actions such as adding, editing and removing classes", () =
             let inputHandler = getInputHandler(store);
             inputHandler.handleAdd();
 
-            store.dispatch(enterEditMode(transactionID));
+            await store.dispatch(enterEditMode(transactionID));
+            flushPromises();
             store.dispatch(setCourseNum("Blank value"));
 
             inputHandler.handleEdit();
@@ -432,7 +440,9 @@ describe("ClassInput actions such as adding, editing and removing classes", () =
         inputHandler.handleAdd();
 
         await store.dispatch(enterEditMode(id1));
-        inputHandler.handleemove();
+        flushPromises();
+
+        inputHandler.handleRemove();
 
         const currentSchedule = store.getState().Schedule.currentSchedule;
         chaiExpect(currentSchedule).to.have.lengthOf(0);

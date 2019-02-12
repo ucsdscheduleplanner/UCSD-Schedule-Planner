@@ -4,6 +4,7 @@ import WeekCalendar from "../calendar/WeekCalendar";
 import PropTypes from "prop-types";
 import {ScheduleProgressBar} from "../progressbar/ScheduleProgressBar";
 import ClassUtils from "../../../utils/class/ClassUtils";
+import ScheduleGeneratorEventCollection from "./event/ScheduleGeneratorEventCollection";
 
 export class ScheduleGenerator extends PureComponent {
     render() {
@@ -17,7 +18,9 @@ export class ScheduleGenerator extends PureComponent {
             ClassUtils.buildClass(sectionNum, this.props.classData));
 
         const calendar = (
-            <WeekCalendar schedule={schedule}/>
+            <WeekCalendar
+                getCollection={(events) => new ScheduleGeneratorEventCollection(events)}
+                schedule={schedule}/>
         );
 
         return (

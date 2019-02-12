@@ -68,7 +68,6 @@ export function enterEditMode(id) {
         await inputHandler.onDepartmentChange(otherClass.department);
         inputHandler.onCourseNumChange(otherClass.courseNum);
         inputHandler.onInstructorChange(otherClass.instructor);
-        inputHandler.onClassTypesToIgnoreChange(otherClass.classTypesToIgnore);
 
         dispatch(setEditMode(true));
         // setting current class id
@@ -77,7 +76,7 @@ export function enterEditMode(id) {
 }
 
 export function enterInputMode() {
-    return function (dispatch, getState) {
+    return function (dispatch) {
         dispatch(setProgress(0));
 
         dispatch(setPriority(null));
