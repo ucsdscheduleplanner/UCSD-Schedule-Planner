@@ -13,7 +13,6 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.select import Select
 from selenium.webdriver.support.wait import WebDriverWait
 
-from scraper.department_scraper import DepartmentScraper
 from scraper.scraper_util import get_browser
 from settings import COURSES_HTML_PATH
 from settings import DATABASE_PATH, DATABASE_FOLDER_PATH
@@ -56,11 +55,13 @@ class CourseScraperThread(Thread):
         self.browser = None
 
     def start(self):
+        self.browser = get_browser()
         print("Thread {} is starting.".format(self.thread_id))
         self.thread.start()
 
     def join(self, **kwargs):
         self.thread.join(**kwargs)
+        self.browser.quit()
         print("Thread {} has finished the work assigned to it.".format(self.thread_id))
 
     def scrape_departments(self):
@@ -72,7 +73,6 @@ class CourseScraperThread(Thread):
     def scrape_department(self, department):
         # If a thread receives an error during execution, kill all threads & mark program as crashed try:
         try:
-            self.browser = get_browser()
             self._scrape_department(department)
         except:
             print("Error encountered by thread {}. Gracefully exiting ...".format(self.thread_id), file=sys.stderr)
