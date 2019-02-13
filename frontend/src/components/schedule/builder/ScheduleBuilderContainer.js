@@ -2,14 +2,46 @@ import React, {PureComponent} from 'react';
 import {connect} from "react-redux";
 import {ScheduleBuilder} from "./ScheduleBuilder";
 import ClassUtils from "../../../utils/class/ClassUtils";
+import {bindActionCreators} from "redux";
+import {getCleanClassData} from "../../../actions/schedule/generation/ScheduleGenerationActions";
+import {setCurrentSchedule} from "../../../actions/schedule/ScheduleActions";
 
 class ScheduleBuilderContainer extends PureComponent {
 
+    componentDidUpdate(prevProps) {
+        // this.props has the new props
+        // prepProps has the old props
+        if (this.props.selectedClasses !== prevProps.selectedClasses) {
+            this.props.getCleanClassData().then(() => {
+                this.addNewSection();
+            });
+        }
+    }
+
+    /**
+     * Will find the new class that was just added and put the first section into the current schedule
+     */
+    addNewSection() {
+        const prevSchedule = this.props.currentSchedule.slice();
+        const titles = prevSchedule.map(e => ClassUtils.formatSectionNum(e));
+        for (let Class of this.props.classData) {
+            console.log(Class);
+            const classTitle = ClassUtils.formatClassTitle(Class.title);
+            if(!titles.includes(classTitle)) {
+                for(let section of Class.sections) {
+                    prevSchedule.push(section.sectionNum);
+                    break;
+                }
+            }
+        }
+        this.props.setCurrentSchedule(prevSchedule);
+    }
+
     mergeClasses(sectionNums, currentSchedule) {
         let ret = sectionNums.slice();
-        for(let i = 0; i < currentSchedule.length; i++) {
+        for (let i = 0; i < currentSchedule.length; i++) {
             let sectionNum = currentSchedule[i];
-            if(!sectionNums.includes(sectionNum)) {
+            if (!sectionNums.includes(sectionNum)) {
                 ret.push(sectionNum);
             }
         }
@@ -42,12 +74,7 @@ class ScheduleBuilderContainer extends PureComponent {
     }
 
     render() {
-        console.log("RERENDERING WITH ");
-        console.log(this.props.currentSchedule);
-
         const displayedSchedule = this.getDisplayedSchedule();
-        console.log("CURRENT SCHEDULE");
-        console.log(displayedSchedule);
         return (
             <ScheduleBuilder
                 //currentSchedule={this.props.currentSchedule}
@@ -56,6 +83,13 @@ class ScheduleBuilderContainer extends PureComponent {
             />
         )
     }
+}
+
+function mapDispatchToProps(dispatch) {
+    return bindActionCreators({
+        getCleanClassData: getCleanClassData,
+        setCurrentSchedule: setCurrentSchedule
+    }, dispatch);
 }
 
 function mapStateToProps(state) {
@@ -67,4 +101,4 @@ function mapStateToProps(state) {
     }
 }
 
-export default connect(mapStateToProps)(ScheduleBuilderContainer)
+export default connect(mapStateToProps, mapDispatchToProps)(ScheduleBuilderContainer)

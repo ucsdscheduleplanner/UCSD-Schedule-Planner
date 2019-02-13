@@ -8,7 +8,7 @@ export class DataCleaner {
      * @param data is an object with each key as a course name, and its
      * elements are the sections
      **/
-    static cleanData(data) {
+    static clean(data) {
         // ret is a list of classes
         let ret = [];
 

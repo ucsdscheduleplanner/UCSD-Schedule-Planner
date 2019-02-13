@@ -311,8 +311,6 @@ export class ClassInputHandler {
         this.dispatch(addClass(newClass, state.transactionID));
         this.savePreferences();
         this.clearInputs();
-
-        this.dispatch(getSchedule());
     }
 
     clear() {

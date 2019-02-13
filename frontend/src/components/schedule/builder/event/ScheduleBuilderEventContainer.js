@@ -31,15 +31,12 @@ class ScheduleBuilderEventContainer extends PureComponent {
         return userSelectedClass.classTitle !== this.props.classTitle;
     }
 
-    formatSectionNum(sectionNum) {
-        return sectionNum.substring(0, sectionNum.indexOf("$"));
-    }
 
     replaceSectionNumInSchedule() {
         // TODO put formatting in another method
-        let classTitle = this.props.classTitle.replace(/\s+/g, '');
+        let classTitle = ClassUtils.formatClassTitle(this.props.classTitle);
         let currentSchedule = this.props.currentSchedule.slice();
-        currentSchedule = currentSchedule.filter(e => this.formatSectionNum(e) !== classTitle);
+        currentSchedule = currentSchedule.filter(e => ClassUtils.formatSectionNum(e) !== classTitle);
 
         currentSchedule.push(this.props.sectionNum);
         this.props.setCurrentSchedule(currentSchedule);

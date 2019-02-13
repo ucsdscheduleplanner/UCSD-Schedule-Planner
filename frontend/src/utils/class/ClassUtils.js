@@ -55,4 +55,11 @@ export default class ClassUtils {
         return null;
     };
 
+    static formatSectionNum(sectionNum) {
+        return sectionNum.substring(0, sectionNum.indexOf("$"));
+    }
+
+    static formatClassTitle(classTitle) {
+        return classTitle.replace(/\s+/g, '');
+    }
 }

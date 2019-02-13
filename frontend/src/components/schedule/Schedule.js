@@ -37,7 +37,7 @@ export class Schedule extends PureComponent {
 
     getHelperMessage() {
         return (
-            <em className="schedule-header__helper-text">Click on a section below to get started!</em>
+            <em className="schedule-header__helper-text">Click on a class below or to the left to get started!</em>
         )
     }
 
