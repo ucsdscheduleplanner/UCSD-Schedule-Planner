@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 import Popover, {ArrowContainer} from 'react-tiny-popover';
 import "./ClassEvent.css";
 import {Button} from "../../../utils/button/Button";
-import {codeToClassType} from "../../class/panel/body/widgets/class_types/ClassTypePrefWidget";
 
 
 export class ClassEvent extends PureComponent {
@@ -28,50 +27,6 @@ export class ClassEvent extends PureComponent {
         this.setState({popOverOpen: false});
     }
 
-    getInfoComponent() {
-        const classTitle = this.props.classTitle;
-        const courseID = `Course ID: ${this.props.id}`;
-
-        const TIME_STR = "h:mm a";
-        const range = this.props.range;
-        let startTime = 'TBD';
-        let endTime = 'TBD';
-
-        if (range) {
-            startTime = range.start.format(TIME_STR);
-            endTime = range.end.format(TIME_STR);
-        }
-
-        const time = `Time: ${startTime} - ${endTime}`;
-        const location = `Location: ${this.props.location} ${this.props.room}`;
-        const instructor = `Instructor: ${this.props.instructor}`;
-
-        let formattedType = codeToClassType[this.props.type];
-        const type = formattedType ?formattedType: "";
-        const title = `${classTitle} ${type}`;
-
-        return (
-            <div className="ce-info__container">
-                <div className="ce-info">
-                    <div className="ce-info__title">
-                        {title}
-                    </div>
-                    <div>
-                        {courseID}
-                    </div>
-                    <div>
-                        {location}
-                    </div>
-                    <div>
-                        {instructor}
-                    </div>
-                    <div>
-                        {time}
-                    </div>
-                </div>
-            </div>
-        )
-    }
 
     getDisplayName() {
         return `${this.props.classTitle} ${this.props.type}`;
@@ -95,7 +50,7 @@ export class ClassEvent extends PureComponent {
                             arrowColor={'#182B49'}
                             arrowSize={20}
                         >
-                            {this.getInfoComponent()}
+                            {this.props.getDisplayComponent()}
                         </ArrowContainer>
                     )}
                 >
@@ -110,6 +65,7 @@ export class ClassEvent extends PureComponent {
 }
 
 ClassEvent.propTypes = {
+    getDisplayComponent: PropTypes.func.isRequired,
     classTitle: PropTypes.string.isRequired,
     instructor: PropTypes.string.isRequired,
     type: PropTypes.string.isRequired,

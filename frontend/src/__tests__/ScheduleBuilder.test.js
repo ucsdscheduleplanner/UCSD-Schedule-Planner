@@ -8,6 +8,7 @@ import thunk from "redux-thunk";
 import {setClassData, setCurrentSchedule} from "../actions/schedule/ScheduleActions";
 import {setTransactionID} from "../actions/classinput/ClassInputMutator";
 import {addClass} from "../actions/classinput/ClassInputActions";
+import ClassUtils from "../utils/class/ClassUtils";
 
 describe("Schedule building", () => {
     let store;
@@ -99,5 +100,18 @@ describe("Schedule building", () => {
         let displayedSchedule = wrapper.dive().instance().getDisplayedSchedule();
         chaiExpect(displayedSchedule).to.have.lengthOf(3);
         chaiExpect(displayedSchedule).to.have.members(["CSE11$0", "CSE12$0", "CSE12$1"]);
+    });
+
+    test("Can dedupe events correctly", () => {
+        const wrapper = shallow(<ScheduleBuilderContainer store={store}/>);
+        let transactionID = addClassForTest("CSE 12");
+        store.dispatch(setTransactionID(transactionID));
+        store.dispatch(setClassData(testData));
+        store.dispatch(setCurrentSchedule(testSchedule));
+
+        const displayedSchedule = wrapper.dive().instance().getDisplayedSchedule();
+        const displayedEventsInfo = ClassUtils.getEventInfo(displayedSchedule, testData);
+        const dedupeEventsInfo = wrapper.dive().instance().dedupeEventsInfo(displayedEventsInfo);
+        chaiExpect(dedupeEventsInfo).to.have.lengthOf(2);
     });
 });

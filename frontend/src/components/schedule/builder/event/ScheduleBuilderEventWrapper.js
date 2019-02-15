@@ -3,7 +3,7 @@ import Dayz from "dayz/dist/dayz";
 import ScheduleBuilderEventContainer from "./ScheduleBuilderEventContainer";
 
 
-export default class ScheduleBuilderEventCollection extends Dayz.EventsCollection.Event {
+export default class ScheduleBuilderEventWrapper extends Dayz.EventsCollection.Event {
 
     /**
      * Method called when two events have the same time ranges, which one should be shown first

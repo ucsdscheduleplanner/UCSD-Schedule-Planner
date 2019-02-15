@@ -8,58 +8,14 @@ import PropTypes from 'prop-types';
 
 
 class WeekCalendar extends PureComponent {
-    convertToRange(timeInterval) {
-        if (timeInterval === null)
-            return null;
-        let start = timeInterval.start;
-        let end = timeInterval.end;
 
-        if (start && end) {
-            start = moment(start);
-            end = moment(end);
-        } else {
-            console.warn("Start or end are not valid");
-            console.warn(start);
-            console.warn(end);
-        }
-
-        return moment.range(start, end);
-    }
 
     /**
      * Takes in classes and renders their sections and subsections
-     * @param schedule
      * @returns {EventsCollection|*|EventsCollection|g}
      */
-    createEvents(schedule) {
-        let ret = [];
-        for (let Class of schedule) {
-            if (!Class)
-                continue;
-
-            if (Class.sections.length === 0)
-                continue;
-
-            for (let section of Class.sections) {
-                for (let subsection of section.subsections) {
-                    let strippedClassData = Object.assign({}, Class, {sections: []});
-                    let strippedSectionData = Object.assign({}, section, {subsections: []});
-
-                    let timeRange = this.convertToRange(subsection.timeInterval);
-
-                    ret.push(
-                        this.props.getCollection({
-                            content: strippedSectionData.classTitle,
-                            ...strippedClassData,
-                            ...strippedSectionData,
-                            ...subsection,
-                            range: timeRange
-                        })
-                    );
-                }
-            }
-        }
-        return new Dayz.EventsCollection(ret);
+    createEvents() {
+        return new Dayz.EventsCollection(this.props.events);
     }
 
     onEventClick(ev, event) {
@@ -70,7 +26,7 @@ class WeekCalendar extends PureComponent {
 
     render() {
         const relativeDate = moment();
-        const events = this.createEvents(this.props.schedule);
+        const events = this.createEvents();
 
         return (
             <div className="calendar">
@@ -79,7 +35,7 @@ class WeekCalendar extends PureComponent {
                     date={relativeDate}
                     events={events}
                     display="week"
-                    displayHours={[8, 21]}
+                    displayHours={[8, 23]}
                 />
             </div>
         );
@@ -88,14 +44,11 @@ class WeekCalendar extends PureComponent {
 
 
 WeekCalendar.defaultProps = {
-    schedule: [],
-    getCollection: (events) => {
-        return new Dayz.EventsCollection.Event(events);
-    }
+    events: [],
 };
 
 WeekCalendar.propTypes = {
-    getCollection: PropTypes.func,
+    events: PropTypes.array.isRequired,
 };
 
 export default WeekCalendar;

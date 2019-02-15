@@ -32,7 +32,6 @@ export function updateWithResult(result) {
         const scheduleState = getState().Schedule;
 
         if (result.schedules.length > 0) {
-            console.log("shouldn't be here");
             // if in builder mode don't update at all
             if (scheduleState.scheduleMode === GENERATOR_MODE)
                 dispatch(setCurrentSchedule(result.schedules[0]));
