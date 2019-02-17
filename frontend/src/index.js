@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 
 import registerServiceWorker from './registerServiceWorker';
-import {applyMiddleware, createStore} from 'redux';
+import {applyMiddleware, compose, createStore} from 'redux';
 import {SGMiddleWare} from "./utils/SGMiddleWare";
 import {Provider} from 'react-redux';
 
@@ -33,10 +33,11 @@ if (!String.prototype.trim) {
     })();
 }
 
+const composeEnhancer = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+
 
 const store = createStore(reducers,
-    window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__(),
-    applyMiddleware(thunkMiddleware, SGMiddleWare));
+    composeEnhancer(applyMiddleware(thunkMiddleware, SGMiddleWare)));
 
 document.title = "Plan Your Schedule!";
 ReactDOM.render(

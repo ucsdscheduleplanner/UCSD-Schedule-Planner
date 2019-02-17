@@ -1,6 +1,6 @@
 import React, {PureComponent} from 'react';
 import PropTypes from 'prop-types';
-import {Transition} from 'react-spring';
+import {Transition} from 'react-spring/renderprops';
 
 import {ClassInputPanelPartBody} from "./body/ClassInputPanelPartBody";
 import {AccordionBody, AccordionLabel, AccordionPanel} from "../../../utils/accordion/AccordionPanel";
