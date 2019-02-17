@@ -47,14 +47,15 @@ class ScheduleBuilderEventContainer extends PureComponent {
 
     getCourseID() {
         if (this.props.usedByID) {
-            return this.props.usedByID.map((id, index) => (
+            // convert set to map
+            return [...this.props.usedByID].map((id, index) => (
                 <div key={id + index}>
-                    ID: {id}
+                    Course ID: {id}
                 </div>
             ))
         }
         return (
-            <div> ID: {this.props.id} </div>
+            <div> Course ID: {this.props.id} </div>
         )
     }
 
@@ -132,7 +133,7 @@ class ScheduleBuilderEventContainer extends PureComponent {
             return;
         }
 
-        if (this.props.usedBySections && this.props.usedBySections.includes(this.props.currentSectionNum)) {
+        if (this.props.usedBySections && this.props.usedBySections.has(this.props.currentSectionNum)) {
             // go back to input mode if we clicked on an event and its used by multiple events
             this.props.enterInputMode();
             this.props.setCurrentSectionNum(null);
@@ -199,6 +200,6 @@ ScheduleBuilderEventContainer.propTypes = {
     currentSectionNum: PropTypes.string.isRequired,
     currentSchedule: PropTypes.array.isRequired,
     sectionNum: PropTypes.string.isRequired,
-    usedBySections: PropTypes.array,
-    usedByID: PropTypes.array,
+    usedBySections: PropTypes.instanceOf(Set),
+    usedByID: PropTypes.instanceOf(Set),
 };

@@ -123,12 +123,12 @@ class ScheduleBuilderContainer extends PureComponent {
 
                 if (shallowEqual) {
                     if (!obj1.usedBySections)
-                        obj1.usedBySections = [obj1.sectionNum];
+                        obj1.usedBySections = new Set([obj1.sectionNum]);
                     if(!obj1.usedByID)
-                        obj1.usedByID = [obj1.id];
+                        obj1.usedByID = new Set([obj1.id]);
 
-                    obj1.usedByID.push(obj2.id);
-                    obj1.usedBySections.push(obj2.sectionNum);
+                    obj1.usedByID.add(obj2.id);
+                    obj1.usedBySections.add(obj2.sectionNum);
                     visited[j] = true;
                 }
             }
