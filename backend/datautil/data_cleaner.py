@@ -121,9 +121,10 @@ class Cleaner:
                 # adding cartesian product to temp
                 # cur section is a list
                 for cur_section in cur_class_sections:
+                    # replica is a section (collection of classes, used replica here for reference to Tales of the Abyss)
+                    replica = cur_section.copy()
                     # class with type is a class
                     for class_with_type in type_group:
-                        replica = cur_section.copy()
                         copy = class_with_type.copy()
                         # always guaranteed to have at least one element in the list
                         copy["COURSE_ID"] = replica[0]["COURSE_ID"]
@@ -134,7 +135,7 @@ class Cleaner:
                             copy["INSTRUCTOR"] = replica[0]["INSTRUCTOR"]
 
                         replica.append(copy)
-                        temp_sections.append(replica)
+                    temp_sections.append(replica)
                 # setting current to temp
                 cur_class_sections = temp_sections
             class_sections.extend(cur_class_sections)
@@ -203,4 +204,4 @@ class Cleaner:
         self.database.execute("VACUUM")
         self.database.close()
 
-
+#Cleaner().clean()
