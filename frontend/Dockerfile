@@ -8,7 +8,6 @@ WORKDIR /app
 
 COPY ./yarn.lock /app
 COPY ./package.json /app
-RUN yarn 
 RUN yarn install 
 
 COPY . /app
