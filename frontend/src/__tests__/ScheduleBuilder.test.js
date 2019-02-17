@@ -1,7 +1,7 @@
 import React from 'react';
 import ScheduleBuilderContainer from "../components/schedule/builder/ScheduleBuilderContainer";
 import {makeTimeInterval} from "../utils/time/TimeUtils";
-import {shallow} from "enzyme";
+import {mount, shallow} from "enzyme";
 import {applyMiddleware, createStore} from "redux";
 import reducers from "../reducers";
 import thunk from "redux-thunk";
@@ -9,6 +9,7 @@ import {setClassData, setCurrentSchedule} from "../actions/schedule/ScheduleActi
 import {setTransactionID} from "../actions/classinput/ClassInputMutator";
 import {addClass} from "../actions/classinput/ClassInputActions";
 import ClassUtils from "../utils/class/ClassUtils";
+import {Provider} from "react-redux";
 
 describe("Schedule building", () => {
     let store;
@@ -70,6 +71,16 @@ describe("Schedule building", () => {
         }
     ];
 
+    function mountScheduleBuilder() {
+        const wrapper = mount(
+            <Provider store={store}>
+                <ScheduleBuilderContainer/>
+            </Provider>
+        );
+
+        return wrapper.find(ScheduleBuilderContainer).children().instance();
+    }
+
     const testSchedule = ["CSE12$0", "CSE11$0"];
 
     function addClassForTest(classTitle) {
@@ -79,39 +90,40 @@ describe("Schedule building", () => {
     }
 
     test("Displayed classes is correct with no classes", () => {
-        const wrapper = shallow(<ScheduleBuilderContainer store={store}/>);
+        const instance = mountScheduleBuilder();
+
         let transactionID = addClassForTest("CSE 12");
         store.dispatch(setTransactionID(transactionID));
         store.dispatch(setClassData(testData));
 
 
-        let displayedSchedule = wrapper.dive().instance().getDisplayedSchedule();
+        let displayedSchedule = instance.getDisplayedSchedule();
         chaiExpect(displayedSchedule).to.have.lengthOf(2);
         chaiExpect(displayedSchedule[0]).to.equal("CSE12$0");
     });
 
     test("Displayed classes should merge the classes in the schedule with the classes from classData", () => {
-        const wrapper = shallow(<ScheduleBuilderContainer store={store}/>);
+        const instance = mountScheduleBuilder();
         let transactionID = addClassForTest("CSE 12");
         store.dispatch(setTransactionID(transactionID));
         store.dispatch(setClassData(testData));
         store.dispatch(setCurrentSchedule(testSchedule));
 
-        let displayedSchedule = wrapper.dive().instance().getDisplayedSchedule();
+        let displayedSchedule = instance.getDisplayedSchedule();
         chaiExpect(displayedSchedule).to.have.lengthOf(3);
         chaiExpect(displayedSchedule).to.have.members(["CSE11$0", "CSE12$0", "CSE12$1"]);
     });
 
     test("Can dedupe events correctly", () => {
-        const wrapper = shallow(<ScheduleBuilderContainer store={store}/>);
+        const instance = mountScheduleBuilder();
         let transactionID = addClassForTest("CSE 12");
         store.dispatch(setTransactionID(transactionID));
         store.dispatch(setClassData(testData));
         store.dispatch(setCurrentSchedule(testSchedule));
 
-        const displayedSchedule = wrapper.dive().instance().getDisplayedSchedule();
+        const displayedSchedule = instance.getDisplayedSchedule();
         const displayedEventsInfo = ClassUtils.getEventInfo(displayedSchedule, testData);
-        const dedupeEventsInfo = wrapper.dive().instance().dedupeEventsInfo(displayedEventsInfo);
+        const dedupeEventsInfo = instance.dedupeEventsInfo(displayedEventsInfo);
         chaiExpect(dedupeEventsInfo).to.have.lengthOf(2);
     });
 });

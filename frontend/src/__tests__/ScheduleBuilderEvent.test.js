@@ -1,6 +1,6 @@
 import React from 'react';
 import {makeTimeInterval} from "../utils/time/TimeUtils";
-import {shallow} from "enzyme";
+import {mount, shallow} from "enzyme";
 import {applyMiddleware, createStore} from "redux";
 import reducers from "../reducers";
 import thunk from "redux-thunk";
@@ -8,6 +8,7 @@ import {setClassData, setCurrentSchedule} from "../actions/schedule/ScheduleActi
 import {addClass, enterInputMode} from "../actions/classinput/ClassInputActions";
 import ScheduleBuilderEventContainer from "../components/schedule/builder/event/ScheduleBuilderEventContainer";
 import {setTransactionID} from "../actions/classinput/ClassInputMutator";
+import {Provider} from "react-redux";
 
 /**
  * For tests which set edit mode, because it has the async call onDepartmentChange, I want to wait for everything to
@@ -25,6 +26,17 @@ describe("Tests for schedule builder event", () => {
         store = createStore(reducers, applyMiddleware(thunk));
         done();
     });
+
+
+    function mountScheduleBuilderEvent(props) {
+        const wrapper = mount(
+            <Provider store={store}>
+                <ScheduleBuilderEventContainer {...props} />
+            </Provider>
+        );
+
+        return wrapper.find(ScheduleBuilderEventContainer).children().instance();
+    }
 
     const testData = [
         {
@@ -93,14 +105,7 @@ describe("Tests for schedule builder event", () => {
         store.dispatch(setClassData(testData));
         store.dispatch(setCurrentSchedule(testSchedule));
 
-        const wrapper =
-            shallow(
-                <ScheduleBuilderEventContainer
-                    classTitle="CSE 12"
-                    sectionNum="CSE12$1"
-                    store={store}
-                />);
-        let instance = wrapper.dive().instance();
+        const instance = mountScheduleBuilderEvent({classTitle: "CSE 12", sectionNum: "CSE12$1"});
         instance.onClick();
         await flushPromises();
 
@@ -114,14 +119,7 @@ describe("Tests for schedule builder event", () => {
         store.dispatch(setClassData(testData));
         store.dispatch(setCurrentSchedule(testSchedule));
 
-        const wrapper =
-            shallow(
-                <ScheduleBuilderEventContainer
-                    classTitle="CSE 12"
-                    sectionNum="CSE12$0"
-                    store={store}
-                />);
-        let instance = wrapper.dive().instance();
+        const instance = mountScheduleBuilderEvent({classTitle: "CSE 12", sectionNum: "CSE12$0"});
         instance.onClick();
         await flushPromises();
 
@@ -134,17 +132,9 @@ describe("Tests for schedule builder event", () => {
         store.dispatch(setClassData(testData));
         store.dispatch(setCurrentSchedule(testSchedule));
 
-        const wrapper =
-            shallow(
-                <ScheduleBuilderEventContainer
-                    classTitle="CSE 12"
-                    sectionNum="CSE12$0"
-                    store={store}
-                />);
-
         chaiExpect(store.getState().ClassInput.editMode).to.equal(false);
 
-        let instance = wrapper.dive().instance();
+        const instance = mountScheduleBuilderEvent({classTitle: "CSE 12", sectionNum: "CSE12$0"});
         instance.onClick();
         await flushPromises();
 
@@ -156,31 +146,14 @@ describe("Tests for schedule builder event", () => {
         store.dispatch(setClassData(testData));
         store.dispatch(setCurrentSchedule(testSchedule));
 
-        const firstSection =
-            shallow(
-                <ScheduleBuilderEventContainer
-                    classTitle="CSE 12"
-                    sectionNum="CSE12$0"
-                    store={store}
-                />);
-
+        const firstInstance = mountScheduleBuilderEvent({classTitle: "CSE 12", sectionNum: "CSE12$0"});
         chaiExpect(store.getState().ClassInput.editMode).to.equal(false);
-
-        let firstInstance = firstSection.dive().instance();
         firstInstance.onClick();
 
         await flushPromises();
         chaiExpect(store.getState().ClassInput.editMode).to.equal(true);
 
-        const secondSection =
-            shallow(
-                <ScheduleBuilderEventContainer
-                    classTitle="CSE 12"
-                    sectionNum="CSE12$1"
-                    store={store}
-                />);
-
-        let secondInstance = secondSection.dive().instance();
+        const secondInstance = mountScheduleBuilderEvent({classTitle: "CSE 12", sectionNum: "CSE12$1"});
         secondInstance.onClick();
 
         await flushPromises();
@@ -192,37 +165,20 @@ describe("Tests for schedule builder event", () => {
         store.dispatch(setClassData(testData));
         store.dispatch(setCurrentSchedule(testSchedule));
 
-        const firstSection =
-            shallow(
-                <ScheduleBuilderEventContainer
-                    classTitle="CSE 12"
-                    sectionNum="CSE12$0"
-                    store={store}
-                />);
-
+        const firstInstance = mountScheduleBuilderEvent({classTitle: "CSE 12", sectionNum: "CSE12$0"});
         chaiExpect(store.getState().ClassInput.editMode).to.equal(false);
 
-        let firstInstance = firstSection.dive().instance();
         firstInstance.onClick();
 
         await flushPromises();
         chaiExpect(store.getState().ClassInput.editMode).to.equal(true);
 
-        const secondSection =
-            shallow(
-                <ScheduleBuilderEventContainer
-                    classTitle="CSE 12"
-                    sectionNum="CSE12$1"
-                    store={store}
-                />);
-
-        let secondInstance = secondSection.dive().instance();
+        const secondInstance = mountScheduleBuilderEvent({classTitle: "CSE 12", sectionNum: "CSE12$1"});
         secondInstance.onClick();
 
         await flushPromises();
         chaiExpect(store.getState().ClassInput.editMode).to.equal(true);
 
-        firstInstance = firstSection.dive().instance();
         firstInstance.onClick();
 
         await flushPromises();
@@ -234,22 +190,14 @@ describe("Tests for schedule builder event", () => {
         store.dispatch(setClassData(testData));
         store.dispatch(setCurrentSchedule(testSchedule));
 
-        const wrapper =
-            shallow(
-                <ScheduleBuilderEventContainer
-                    classTitle="CSE 12"
-                    sectionNum="CSE12$0"
-                    store={store}
-                />);
+        const instance = mountScheduleBuilderEvent({classTitle: "CSE 12", sectionNum: "CSE12$0"});
 
         chaiExpect(store.getState().ClassInput.editMode).to.equal(false);
 
-        let instance = wrapper.dive().instance();
         instance.onClick();
         await flushPromises();
         chaiExpect(store.getState().ClassInput.editMode).to.equal(true);
 
-        instance = wrapper.dive().instance();
         instance.onClick();
         await flushPromises();
         chaiExpect(store.getState().ClassInput.editMode).to.equal(false);
@@ -260,15 +208,7 @@ describe("Tests for schedule builder event", () => {
         store.dispatch(setClassData(testData));
         store.dispatch(setCurrentSchedule(testSchedule));
 
-        const wrapper =
-            shallow(
-                <ScheduleBuilderEventContainer
-                    classTitle="CSE 12"
-                    sectionNum="CSE12$0"
-                    store={store}
-                />);
-
-        let instance = wrapper.dive().instance();
+        const instance = mountScheduleBuilderEvent({classTitle: "CSE 12", sectionNum: "CSE12$0"});
         instance.onClick();
         await flushPromises();
         let sectionNum = store.getState().ScheduleBuilder.sectionNum;
@@ -280,16 +220,10 @@ describe("Tests for schedule builder event", () => {
         store.dispatch(setClassData(testData));
         store.dispatch(setCurrentSchedule(testSchedule));
 
-        const wrapper =
-            shallow(
-                <ScheduleBuilderEventContainer
-                    classTitle="CSE 12"
-                    sectionNum="CSE12$0"
-                    store={store}
-                />);
 
-        let instance = wrapper.dive().instance();
+        const instance = mountScheduleBuilderEvent({classTitle: "CSE 12", sectionNum: "CSE12$0"});
         instance.onClick();
+
         await flushPromises();
         let sectionNum = store.getState().ScheduleBuilder.sectionNum;
         chaiExpect(sectionNum).to.equal("CSE12$0");
@@ -305,15 +239,7 @@ describe("Tests for schedule builder event", () => {
             store.dispatch(setCurrentSchedule(testSchedule1));
             store.dispatch(setTransactionID(transactionID));
 
-            const wrapper =
-                shallow(
-                    <ScheduleBuilderEventContainer
-                        classTitle="CSE 20"
-                        sectionNum="CSE20$1"
-                        store={store}
-                    />);
-
-            let instance = wrapper.dive().instance();
+            const instance = mountScheduleBuilderEvent({classTitle: "CSE 20", sectionNum: "CSE20$1"});
             instance.onClick();
             await flushPromises();
 

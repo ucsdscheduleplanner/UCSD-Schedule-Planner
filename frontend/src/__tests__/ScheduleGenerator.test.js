@@ -10,8 +10,9 @@ import {setCourseNums, setDepartments} from "../actions/classinput/ClassInputMut
 import {getInputHandler as getReduxInputHandler} from "../actions/classinput/ClassInputHandler";
 import {flushPromises} from "./ClassInputHandler.test";
 import ScheduleGeneratorContainer from "../components/schedule/generator/ScheduleGeneratorContainer";
-import {shallow} from "enzyme";
+import {mount, shallow} from "enzyme";
 import {DataFetcher} from "../utils/DataFetcher";
+import {Provider} from "react-redux";
 
 describe('Schedule generation', () => {
 
@@ -243,11 +244,19 @@ describe("Schedule generator component tests", () => {
         inputHandler.handleAdd();
     }
 
+    function mountScheduleGenerator() {
+        const wrapper = mount(
+            <Provider store={store}>
+                <ScheduleGeneratorContainer/>
+            </Provider>
+        );
+
+        return wrapper.find(ScheduleGeneratorContainer).children().instance();
+    }
+
     test("It generates a new schedule after adding a class", async () => {
         // TODO
-        const scheduleGenerator = shallow(
-            <ScheduleGeneratorContainer store={store}/>
-        );
+        const instance = mountScheduleGenerator();
 
         let state = store.getState().Schedule;
         let classList = store.getState().ClassList;
@@ -259,7 +268,7 @@ describe("Schedule generator component tests", () => {
         flushPromises();
 
         scheduleGenerator.setProps({selectedClasses: classList.selectedClasses});
-        chaiExpect(scheduleGenerator.instance().props.componentDidUpdate).toBeCalled();
+        chaiExpect(instance.props.componentDidUpdate).toBeCalled();
 
         state = store.getState().Schedule;
         classList = store.getState().ClassList;
