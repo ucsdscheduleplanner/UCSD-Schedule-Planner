@@ -1,17 +1,19 @@
 
 .landing__header {
     display: grid;
-    grid-template-columns: 70px auto 150px 90px;
+    grid-template-columns: 70px auto;
     grid-auto-flow: column;
 
-    height: 10%;
+    min-height: 10%;
     background-color: #1E2B4B;
+    overflow: overlay;
 }
 
 .landing__header__title {
     display: flex;
     justify-content: flex-start;
     align-items: center;
+    padding: 1em;
 }
 
 .landing__header__title__text {

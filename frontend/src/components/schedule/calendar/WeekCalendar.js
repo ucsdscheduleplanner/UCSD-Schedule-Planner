@@ -5,6 +5,8 @@ import Dayz from "dayz/dist/dayz";
 import "dayz/dist/css/dayz.min.css";
 import "./WeekCalendar.css";
 import PropTypes from 'prop-types';
+import classNames from "classnames";
+import {isSafari} from "../../../settings";
 
 
 class WeekCalendar extends PureComponent {
@@ -27,9 +29,10 @@ class WeekCalendar extends PureComponent {
     render() {
         const relativeDate = moment();
         const events = this.createEvents();
+        const names = classNames("calendar", {safari: isSafari});
 
         return (
-            <div className="calendar">
+            <div className={names}>
                 <Dayz
                     onEventClick={this.onEventClick.bind(this)}
                     date={relativeDate}
