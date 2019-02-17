@@ -27,49 +27,13 @@ export class ClassEvent extends PureComponent {
         this.setState({popOverOpen: false});
     }
 
-    getInfoComponent() {
-        const classTitle = this.props.classTitle;
-        const courseID = `Course ID: ${this.props.id}`;
 
-        const TIME_STR = "h:mm a";
-        const range = this.props.range;
-        let startTime = 'TBD';
-        let endTime = 'TBD';
-
-        if (range) {
-            startTime = range.start.format(TIME_STR);
-            endTime = range.end.format(TIME_STR);
-        }
-
-        const time = `Time: ${startTime} - ${endTime}`;
-        const location = `Location: ${this.props.location} ${this.props.room}`;
-        const instructor = `Instructor: ${this.props.instructor}`;
-
-        return (
-            <div className="ce-info__container">
-                <div className="ce-info">
-                    <div className="ce-info__title">
-                        {classTitle}
-                    </div>
-                    <div>
-                        {courseID}
-                    </div>
-                    <div>
-                        {location}
-                    </div>
-                    <div>
-                        {instructor}
-                    </div>
-                    <div>
-                        {time}
-                    </div>
-                </div>
-            </div>
-        )
+    getDisplayName() {
+        return `${this.props.classTitle} ${this.props.type}`;
     }
 
     render() {
-        const names = classNames("ce-button", {active: this.props.isSelected});
+        const names = classNames("ce-button", {active: this.props.isSelected, shadowed: this.props.isShadowed});
 
         return (
             <React.Fragment>
@@ -86,11 +50,11 @@ export class ClassEvent extends PureComponent {
                             arrowColor={'#182B49'}
                             arrowSize={20}
                         >
-                            {this.getInfoComponent()}
+                            {this.props.getDisplayComponent()}
                         </ArrowContainer>
                     )}
                 >
-                    <Button label={this.props.classTitle} className={names}
+                    <Button label={this.getDisplayName()} className={names}
                             onMouseEnter={this.onMouseEnter.bind(this)}
                             onMouseLeave={this.onMouseLeave.bind(this)}
                             onClick={this.onClick.bind(this)}/>
@@ -101,8 +65,10 @@ export class ClassEvent extends PureComponent {
 }
 
 ClassEvent.propTypes = {
+    getDisplayComponent: PropTypes.func.isRequired,
     classTitle: PropTypes.string.isRequired,
     instructor: PropTypes.string.isRequired,
+    type: PropTypes.string.isRequired,
     range: PropTypes.object.isRequired,
     id: PropTypes.string.isRequired,
     location: PropTypes.string.isRequired,

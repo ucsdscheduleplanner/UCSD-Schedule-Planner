@@ -8,4 +8,8 @@ export class ToastMessageHandler {
     showSuccess(message, life) {
         toast.success(message, {autoClose: life});
     }
+
+    showWarning(message, life) {
+        toast.info(message, {autoClose: life});
+    }
 }

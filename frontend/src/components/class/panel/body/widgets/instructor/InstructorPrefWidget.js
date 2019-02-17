@@ -17,7 +17,8 @@ export const InstructorPrefWidget = (props) => {
                              key={props.Class.classTitle + index.toString()}
                              onSelect={() => props.inputHandler.onInstructorChange(instructor)}
                              onDeselect={() => props.inputHandler.onInstructorChange(null)}
-                             label={instructor}/>
+                             highlighted={props.Class.instructor === instructor}
+                             value={instructor}/>
         );
     });
 

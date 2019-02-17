@@ -5,38 +5,33 @@ import {Button} from "../Button";
 import "./HighlightButton.css";
 
 export class HighlightButton extends PureComponent {
-
-    constructor(props) {
-        super(props);
-        this.state = {
-            highlighted: false
-        }
-    }
-
-    onClick(evt) {
-        evt.preventDefault();
-        if (this.state.highlighted) {
-            this.setState({highlighted: false});
-            this.props.onDeselect(this.props.label);
+    onClick() {
+        if (this.props.highlighted) {
+            this.props.onDeselect(this.props.value);
         } else {
-            this.setState({highlighted: true});
-            this.props.onSelect(this.props.label);
+            this.props.onSelect(this.props.value);
         }
     };
 
     render() {
-        const names = classNames(this.props.className, "highlight-button", {"active": this.state.highlighted});
+        const names = classNames(this.props.className, "highlight-button", {"active": this.props.highlighted});
         // overriding onClick and className
         const props = Object.assign({}, this.props, {className: names, onClick: this.onClick.bind(this)});
 
         return (
-            <Button {...props} />
+            <Button label={this.props.getDisplayValue(this.props.value)} {...props} />
         )
     }
 }
 
+HighlightButton.defaultProps = {
+    getDisplayValue: (label) => label
+};
+
 HighlightButton.propTypes = {
+    getDisplayValue: PropTypes.func,
     onSelect: PropTypes.func.isRequired,
     onDeselect: PropTypes.func.isRequired,
-    label: PropTypes.string.isRequired
+    highlighted: PropTypes.bool.isRequired,
+    value: PropTypes.string.isRequired,
 };

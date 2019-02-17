@@ -38,7 +38,6 @@ describe("Ensuring ClassInputHandler can handle changes in the autocomplete fiel
             classTitle: "CSE 12",
             department: "CSE",
             courseNum: "12",
-            classTypesToIgnore: [],
             priority: null,
             instructor: null,
         };
@@ -49,7 +48,6 @@ describe("Ensuring ClassInputHandler can handle changes in the autocomplete fiel
     test('Creates a more complex class from input', () => {
         store.dispatch(setDepartment("CSE"));
         store.dispatch(setCourseNum("12"));
-        store.dispatch(setClassTypesToIgnore(["LE", "blah"]));
         store.dispatch(setInstructor("Mr. Cameron Trando"));
 
         let inputHandler = getInputHandler(store);
@@ -59,7 +57,6 @@ describe("Ensuring ClassInputHandler can handle changes in the autocomplete fiel
             classTitle: "CSE 12",
             department: "CSE",
             courseNum: "12",
-            classTypesToIgnore: ["LE", "blah"],
             priority: null,
             instructor: "Mr. Cameron Trando"
         };
@@ -96,7 +93,6 @@ describe("Ensuring ClassInputHandler can handle changes in the autocomplete fiel
         chaiExpect(state.department).to.equal("DSC");
         chaiExpect(state.courseNum).to.equal(null);
         chaiExpect(state.instructor).to.equal(null);
-        chaiExpect(state.classTypesToIgnore).to.eql([]);
     });
 
     test('Making sure priority, ignored class types, and instructors are nulled out when changing courseNum field', () => {
@@ -116,7 +112,6 @@ describe("Ensuring ClassInputHandler can handle changes in the autocomplete fiel
         chaiExpect(state.department).to.equal("CSE");
         chaiExpect(state.courseNum).to.equal("11");
         chaiExpect(state.instructor).to.equal(null);
-        chaiExpect(state.classTypesToIgnore).to.eql([]);
     });
 
     test('Instructor, types, and priority are unchanged when trying to change the courseNum to something that is not in the courseNums list', () => {

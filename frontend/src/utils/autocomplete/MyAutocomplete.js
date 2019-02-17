@@ -20,7 +20,6 @@ export class MyAutocomplete extends Component {
     }
 
     getSuggestions(value) {
-        console.log(`Retrieving suggestions for value ${value}`);
         if (!value) {
             return this.props.suggestions;
         }
@@ -71,25 +70,12 @@ export class MyAutocomplete extends Component {
         return suggestion;
     }
 
-    onKeyDown(e) {
-        let input;
-        switch (e.keyCode) {
-            // tab key
-            case 9:
-                input = e.target;
-                //this.onSuggestionSelected(e, {suggestion: input.value});
-                break;
-        }
-    }
-
     render() {
-        // Autosuggest will pass through all these props to the input.
-        // TODO add on key down here to check for tab and enter and call onSuggestionSelected on there
         const inputProps = {
+            disabled: this.props.disabled,
             placeholder: this.props.defaultValue ? this.props.defaultValue : "",
             value: this.state.value,
             onChange: this.onChange.bind(this),
-            onKeyDown: this.onKeyDown.bind(this),
             tabIndex: this.props.tabIndex
         };
 
@@ -127,4 +113,5 @@ MyAutocomplete.propTypes = {
     label: PropTypes.string,
     defaultValue: PropTypes.string,
     onSelect: PropTypes.func,
+    disabled: PropTypes.bool
 };

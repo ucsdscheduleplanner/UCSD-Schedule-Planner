@@ -1,6 +1,7 @@
 import {DataFetcher} from "../../../utils/DataFetcher";
 import {DataCleaner} from "../../../utils/DataCleaner";
 import {setClassData, setCurrentSchedule} from "../ScheduleActions";
+import {GENERATOR_MODE} from "../../../reducers/ScheduleReducer";
 
 export const START_GENERATING = 'START_GENERATING';
 export const GENERATE_SCHEDULE = "GENERATE_SCHEDULE";
@@ -25,12 +26,16 @@ export function finishedGenerating() {
 }
 
 export function updateWithResult(result) {
-    return function (dispatch) {
+    return function (dispatch, getState) {
         dispatch(setGenerationResult(result));
 
-        if(result.schedules.length > 0)
-            dispatch(setCurrentSchedule(result.schedules[0]));
-        else dispatch(setCurrentSchedule([]));
+        const scheduleState = getState().Schedule;
+
+        if (result.schedules.length > 0) {
+            // if in builder mode don't update at all
+            if (scheduleState.scheduleMode === GENERATOR_MODE)
+                dispatch(setCurrentSchedule(result.schedules[0]));
+        } else dispatch(setCurrentSchedule([]));
     }
 }
 
@@ -78,14 +83,12 @@ export class ScheduleGeneratorPreprocessor {
     constructor(dispatch, getState) {
         this.dispatch = dispatch;
         this.getState = getState;
+        this.selectedClasses = Object.values(this.getState().ClassList.selectedClasses);
 
         if (!dispatch)
             console.error("Dispatch is null, failing");
         if (!getState)
             console.error("getState is null, failing");
-
-        // setting selected class to only the values of the one from the state
-        this.selectedClasses = Object.values(this.getState().ClassList.selectedClasses);
     }
 
     processProgressBar() {
@@ -114,23 +117,14 @@ export class ScheduleGeneratorPreprocessor {
         }
     }
 
-    async processClassData() {
-        let classData = await DataFetcher.fetchClassData(this.selectedClasses);
-        // will put the data into
-        // CSE 11 -> section 0 [subsection, subsection], section 1 [subsection, subsection]
-        classData = DataCleaner.cleanData(classData);
-
-        this.classData = classData;
-    }
-
     processClassTypesToIgnore() {
-        console.log("HERE");
-        console.log(this.getState().IgnoreClassTypes);
         this.classTypesToIgnore = this.getState().IgnoreClassTypes.classMapping;
     }
 
     calculateMaxSize() {
-        return this.classData.reduce((accum, cur) => {
+        const classData = this.getState().Schedule.classData;
+        console.log(classData);
+        return classData.reduce((accum, cur) => {
             if (!cur) {
                 console.warn("Class is null in calculating max size");
                 return accum;
@@ -160,18 +154,26 @@ export class ScheduleGeneratorPreprocessor {
         }, {})
     }
 
-    async preprocess() {
-        await this.processClassData();
+    preprocess() {
         this.processPreferences();
         this.processClassTypesToIgnore();
         this.processProgressBar();
 
         return {
-            classData: this.classData,
             preferences: this.preferences,
             classTypesToIgnore: this.classTypesToIgnore,
             totalNumPossibleSchedule: this.totalNumPossibleSchedule,
         }
+    }
+}
+
+export function getCleanClassData() {
+    return async function (dispatch, getState) {
+        const state = getState().ClassList;
+        let classData = await DataFetcher.fetchClassData(Object.values(state.selectedClasses));
+        let cleanData = DataCleaner.clean(classData);
+
+        dispatch(setClassData(cleanData));
     }
 }
 
@@ -181,18 +183,18 @@ export class ScheduleGeneratorPreprocessor {
  */
 // in the future, consider adding default parameters for an IT test here
 export function getSchedule() {
-    return async function (dispatch, getState) {
+    return function (dispatch, getState) {
         console.log("Beginning generation");
         // let redux know that we are creating a generationResult
         dispatch(startGenerating());
-        let {classData, classTypesToIgnore, preferences, totalNumPossibleSchedule} = await new ScheduleGeneratorPreprocessor(dispatch, getState).preprocess();
 
-        // setting data for future use
-        dispatch(setClassData(classData));
-
-        // tell middleware we want to create a generationResult with an action
-        // this will allow the web worker to take over
-        dispatch(generateSchedule(classData, classTypesToIgnore, preferences, totalNumPossibleSchedule));
+        dispatch(getCleanClassData()).then(() => {
+            let {classTypesToIgnore, preferences, totalNumPossibleSchedule} = new ScheduleGeneratorPreprocessor(dispatch, getState).preprocess();
+            // tell middleware we want to create a generationResult with an action
+            // this will allow the web worker to take over
+            const classData = getState().Schedule.classData;
+            dispatch(generateSchedule(classData, classTypesToIgnore, preferences, totalNumPossibleSchedule));
+        });
     }
 }
 

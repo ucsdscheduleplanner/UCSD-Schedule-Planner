@@ -7,6 +7,7 @@ import thunk from "redux-thunk";
 import {setClassData, setCurrentSchedule} from "../actions/schedule/ScheduleActions";
 import {addClass, enterInputMode} from "../actions/classinput/ClassInputActions";
 import ScheduleBuilderEventContainer from "../components/schedule/builder/event/ScheduleBuilderEventContainer";
+import {setTransactionID} from "../actions/classinput/ClassInputMutator";
 
 /**
  * For tests which set edit mode, because it has the async call onDepartmentChange, I want to wait for everything to
@@ -293,5 +294,32 @@ describe("Tests for schedule builder event", () => {
         let sectionNum = store.getState().ScheduleBuilder.sectionNum;
         chaiExpect(sectionNum).to.equal("CSE12$0");
     });
+
+    describe("ScheduleBuilderEvent sets section num in schedule on click", () => {
+
+        test("Edge case with one event being a prefix of the other", async () => {
+            let transactionID = addClassForTest("CSE 20");
+            store.dispatch(setClassData(testData));
+
+            let testSchedule1 = ["CSE20$0", "CSE209A$0", "CSE11$0"];
+            store.dispatch(setCurrentSchedule(testSchedule1));
+            store.dispatch(setTransactionID(transactionID));
+
+            const wrapper =
+                shallow(
+                    <ScheduleBuilderEventContainer
+                        classTitle="CSE 20"
+                        sectionNum="CSE20$1"
+                        store={store}
+                    />);
+
+            let instance = wrapper.dive().instance();
+            instance.onClick();
+            await flushPromises();
+
+            const state = store.getState().Schedule;
+            chaiExpect(state.currentSchedule).to.have.deep.members(["CSE20$1", "CSE209A$0", "CSE11$0"]);
+        });
+    })
 });
 

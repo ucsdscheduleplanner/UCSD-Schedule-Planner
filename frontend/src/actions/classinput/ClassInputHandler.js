@@ -1,17 +1,17 @@
 import {
-    setClassTypesToIgnore,
-    setCourseNum, setCourseNums,
+    setCourseNum,
+    setCourseNums,
     setDepartment,
     setEditOccurred,
-    setTransactionID,
     setInstructor,
     setInstructors,
     setPriority,
+    setTransactionID,
     setTypes
 } from "./ClassInputMutator";
 import {addClass, editClass, enterInputMode, populateSectionData, removeClass} from "./ClassInputActions";
 import {SchedulePreferenceInputHandler} from "../schedulepreference/SchedulePreferenceInputHandler";
-import {ignoreClassTypes} from "../ignoreclasstypes/IgnoreClassTypesActions";
+import {ignoreClassTypeCodes} from "../ignoreclasstypes/IgnoreClassTypesActions";
 import {getSchedule} from "../schedule/generation/ScheduleGenerationActions";
 
 /**
@@ -34,7 +34,6 @@ export class ClassInputHandler {
         }
 
         const state = this.getState().ClassInput;
-
         let department = rawDepartment.trim();
 
         // sets the department in the store
@@ -51,11 +50,10 @@ export class ClassInputHandler {
         this.dispatch(setCourseNum(null));
         this.dispatch(setInstructor(null));
         // will autoconvert to empty list
-        this.dispatch(setClassTypesToIgnore(null));
         this.dispatch(setPriority(null));
 
-        if (state.editMode)
-            this.autosave(true);
+        // if (state.editMode)
+        //     this.autosave(true);
         // populate the course nums and the data
         return this.dispatch(populateSectionData(department));
     }
@@ -77,11 +75,6 @@ export class ClassInputHandler {
         if (!state.courseNums.includes(courseNum))// && state.courseNums.length > 0)
             return;
 
-        // must clear out the fields
-        this.dispatch(setInstructor(null));
-        this.dispatch(setPriority(null));
-        this.dispatch(setClassTypesToIgnore(null));
-
         const instructors = state.instructorsPerClass[courseNum];
         if (!instructors)
             console.warn(`Instructors are undefined for course num ${courseNum}`);
@@ -90,22 +83,26 @@ export class ClassInputHandler {
         if (!types)
             console.warn(`Class Types are undefined for course num ${courseNum}`);
 
+        // must clear out the fields
+        this.dispatch(setInstructor(null));
+        this.dispatch(setPriority(null));
         this.dispatch(setTypes(types));
         this.dispatch(setInstructors(instructors));
 
         // autosave after everything else has been set
-        if (state.editMode)
-            this.autosave(true);
+        // if (state.editMode)
+        //     this.autosave(true);
     }
 
     onInstructorChange(rawInstructor) {
+        const state = this.getState().ClassInput;
         if (!rawInstructor) {
             this.dispatch(setInstructor(null));
+            if (state.editMode)
+                this.autosave(true);
             return;
         }
 
-        const state = this.getState().ClassInput;
-        console.log(state);
         let instructor = rawInstructor.trim();
         this.dispatch(setInstructor(instructor));
 
@@ -117,33 +114,13 @@ export class ClassInputHandler {
             this.autosave(true);
 
         this.dispatch(setPriority(null));
-        this.dispatch(setClassTypesToIgnore(null));
     }
 
-    onClassTypesToIgnoreChange(classTypesToIgnore) {
-        if (!classTypesToIgnore) {
-            this.dispatch(setClassTypesToIgnore(null));
-            return;
-        }
-
-        this.dispatch(setClassTypesToIgnore(classTypesToIgnore));
+    onIgnoreClassTypes(types) {
         const state = this.getState().ClassInput;
-        // record the edit
-        if (state.editMode)
-            this.autosave(true);
-    }
+        const classTitle = `${state.department} ${state.courseNum}`;
 
-    onPriorityChange(priority) {
-        // if (!priority) {
-        //     this.dispatch(setPriority(null));
-        //     return;
-        // }
-        //
-        // this.dispatch(setPriority(priority));
-        // const state = this.getState().ClassInput;
-        // // record the edit
-        // if (state.editMode)
-        //     this.autosave(true);
+        this.dispatch(ignoreClassTypeCodes(classTitle, types));
     }
 
     buildClassFromInput() {
@@ -156,7 +133,6 @@ export class ClassInputHandler {
                 department: state.department,
                 instructor: state.instructor,
                 priority: state.priority,
-                classTypesToIgnore: state.classTypesToIgnore,
 
                 instructors: state.instructors,
                 types: state.types,
@@ -178,11 +154,20 @@ export class ClassInputHandler {
 
     isValidEdit(newClass) {
         const state = this.getState().ClassInput;
+        const classList = this.getState().ClassList;
+
+        let oldClass = classList.selectedClasses[state.transactionID];
+
         if (this.isDuplicate(newClass, state.transactionID)) {
             return {
                 valid: false,
                 reason: `Class ${state.department} ${state.courseNum} has already been added!`
             };
+        } else if (oldClass.classTitle !== newClass.classTitle) {
+            return {
+                valid: false,
+                reason: `Cannot edit department or course number. To edit, please remove the class and add a new one in.`
+            }
         }
 
         return this.isValid(newClass);
@@ -247,7 +232,6 @@ export class ClassInputHandler {
             state.messageHandler.showError(errMsg, 1000);
 
         this.dispatch(enterInputMode());
-
         // TODO check if this is a significant change, and if it is then regenerate schedule
         this.dispatch(getSchedule());
     }
@@ -262,7 +246,7 @@ export class ClassInputHandler {
         const state = this.getState().ClassInput;
 
         if (!state.editMode) {
-            console.warn("Somehow, the user was able to trigger class removal without being in edit mode, breaking now.")
+            console.warn("Somehow, the user was able to trigger class removal without being in edit mode, breaking now.");
             return;
         }
 
@@ -272,14 +256,13 @@ export class ClassInputHandler {
 
         this.dispatch(removeClass(state.transactionID));
         this.dispatch(enterInputMode());
-
         this.dispatch(getSchedule());
     }
 
     /**
      * Checks if a class is already in the store
      * @param newClass the class to check for duplicates
-     * @param exclude class id to exclude
+     * @param exclude class id to exclude - we are using this because in an edit, the class we want is already in the store
      * @returns boolean the store contains the given class already
      */
     isDuplicate(newClass, exclude = "") {
@@ -293,6 +276,19 @@ export class ClassInputHandler {
                 return accumulator;
             return accumulator || newClass.classTitle === state.selectedClasses[key]['classTitle']
         }, false);
+    }
+
+    setDefaultValues(newClass) {
+        const state = this.getState().ClassInput;
+        this.dispatch(ignoreClassTypeCodes(newClass.classTitle, state.types));
+    }
+
+    clearInputs() {
+        // nulling out the other fields
+        this.dispatch(setInstructor(null));
+        this.dispatch(setCourseNum(null));
+        this.dispatch(setPriority(null));
+        this.dispatch(setTransactionID(null));
     }
 
     handleAdd() {
@@ -310,19 +306,11 @@ export class ClassInputHandler {
             return;
         }
 
+        this.setDefaultValues(newClass);
         // using the addClass method from the reducer
         this.dispatch(addClass(newClass, state.transactionID));
         this.savePreferences();
-
-        // nulling out the other fields
-        this.dispatch(setInstructor(null));
-        this.dispatch(setCourseNum(null));
-        this.dispatch(setPriority(null));
-        this.dispatch(setClassTypesToIgnore(null));
-
-        this.dispatch(setTransactionID(null));
-
-        this.dispatch(getSchedule());
+        this.clearInputs();
     }
 
     clear() {
@@ -330,7 +318,6 @@ export class ClassInputHandler {
         this.dispatch(setInstructor(null));
         this.dispatch(setCourseNum(null));
         this.dispatch(setPriority(null));
-        this.dispatch(setClassTypesToIgnore(null));
 
         this.dispatch(setCourseNums(null));
         this.dispatch(setInstructors(null));
@@ -340,16 +327,13 @@ export class ClassInputHandler {
         this.dispatch(setTransactionID(null));
     }
 
+    /**
+     * Saves the preferences in the class
+     */
     savePreferences() {
-        const state = this.getState().ClassInput;
-
         // TODO this is terrible gotta fix this, why create an object like this?
         let inputHandler = new SchedulePreferenceInputHandler(this.dispatch, this.getState);
         inputHandler.setClassSpecificPref();
-
-        // sending the updates to the reducer for ignoring class types
-        const classTitle = `${state.department} ${state.courseNum}`;
-        this.dispatch(ignoreClassTypes(classTitle, state.classTypesToIgnore));
     }
 }
 

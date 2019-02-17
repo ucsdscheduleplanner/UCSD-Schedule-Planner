@@ -1,13 +1,15 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+
 import registerServiceWorker from './registerServiceWorker';
 import {applyMiddleware, createStore} from 'redux';
+import {SGMiddleWare} from "./utils/SGMiddleWare";
 import {Provider} from 'react-redux';
+
 import reducers from './reducers/index';
 import './settings';
 import './css/utils.css';
 import thunkMiddleware from 'redux-thunk';
-import {SGMiddleWare} from "./utils/SGMiddleWare";
 import NewLanding from "./components/landing/NewLanding";
 
 const DEBUG = true;
@@ -22,15 +24,14 @@ if (!DEBUG) {
 }
 
 if (!String.prototype.trim) {
-    (function() {
+    (function () {
         // Make sure we trim BOM and NBSP
         var rtrim = /^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g;
-        String.prototype.trim = function() {
+        String.prototype.trim = function () {
             return this.replace(rtrim, '');
         };
     })();
 }
-
 
 
 const store = createStore(reducers,
@@ -38,12 +39,6 @@ const store = createStore(reducers,
     applyMiddleware(thunkMiddleware, SGMiddleWare));
 
 document.title = "Plan Your Schedule!";
-// ReactDOM.render(
-//     <Provider store={store}>
-//         <Landing/>
-//     </Provider>
-//     , document.getElementById('root'));
-
 ReactDOM.render(
     <Provider store={store}>
         <NewLanding/>

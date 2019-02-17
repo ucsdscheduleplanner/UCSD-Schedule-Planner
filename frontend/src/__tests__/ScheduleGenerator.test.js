@@ -1,7 +1,17 @@
+import React from 'react';
 import {makeTimeInterval} from "../utils/time/TimeUtils";
 import {SGWorker} from "../utils/schedulegeneration/SGWorker";
 
 import {expect} from 'chai';
+import {applyMiddleware, createStore} from "redux";
+import reducers from "../reducers";
+import thunk from "redux-thunk";
+import {setCourseNums, setDepartments} from "../actions/classinput/ClassInputMutator";
+import {getInputHandler as getReduxInputHandler} from "../actions/classinput/ClassInputHandler";
+import {flushPromises} from "./ClassInputHandler.test";
+import ScheduleGeneratorContainer from "../components/schedule/generator/ScheduleGeneratorContainer";
+import {shallow} from "enzyme";
+import {DataFetcher} from "../utils/DataFetcher";
 
 describe('Schedule generation', () => {
 
@@ -193,4 +203,68 @@ describe('Schedule generation', () => {
 
         expect(result.schedules.length).to.equal(1);
     });
+});
+
+
+describe("Schedule generator component tests", () => {
+
+    let store;
+    beforeEach((done) => {
+        store = createStore(reducers, applyMiddleware(thunk));
+
+        DataFetcher.fetchClassSummaryFor = (department) => {
+            return new Promise((resolve, reject) => {
+                resolve(
+                    {
+                        courseNums: ["11", "12"],
+                        instructorsPerClass: {"11": ["Joseph Politz", "Rick Ord"]},
+                        classTypesPerClass: {"11": ["LE", "DI"], "12": ["LE"]},
+                        descriptionsPerClass: {}
+                    }
+                )
+            });
+        };
+
+        done();
+    });
+
+    function getInputHandler(store) {
+        let fn = getReduxInputHandler();
+        return fn(store.dispatch, store.getState);
+    }
+
+    async function addClass() {
+        store.dispatch(setDepartments(["CSE"]));
+        store.dispatch(setCourseNums(["11", "12"]));
+        // making first class
+        let inputHandler = getInputHandler(store);
+        await inputHandler.onDepartmentChange("CSE");
+        inputHandler.onCourseNumChange("11");
+        inputHandler.handleAdd();
+    }
+
+    test("It generates a new schedule after adding a class", async () => {
+        // TODO
+        const scheduleGenerator = shallow(
+            <ScheduleGeneratorContainer store={store}/>
+        );
+
+        let state = store.getState().Schedule;
+        let classList = store.getState().ClassList;
+        chaiExpect(Object.keys(state.classData)).to.have.lengthOf(0);
+        chaiExpect(state.currentSchedule).to.have.lengthOf(0);
+        chaiExpect(Object.keys(classList.selectedClasses)).to.have.lengthOf(0);
+
+        await addClass();
+        flushPromises();
+
+        scheduleGenerator.setProps({selectedClasses: classList.selectedClasses});
+        chaiExpect(scheduleGenerator.instance().props.componentDidUpdate).toBeCalled();
+
+        state = store.getState().Schedule;
+        classList = store.getState().ClassList;
+        chaiExpect(Object.keys(classList.selectedClasses)).to.have.lengthOf(1);
+        chaiExpect(Object.keys(state.classData)).to.have.lengthOf(1);
+        chaiExpect(state.currentSchedule).to.have.lengthOf(1);
+    })
 });

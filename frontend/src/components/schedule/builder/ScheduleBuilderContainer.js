@@ -2,14 +2,46 @@ import React, {PureComponent} from 'react';
 import {connect} from "react-redux";
 import {ScheduleBuilder} from "./ScheduleBuilder";
 import ClassUtils from "../../../utils/class/ClassUtils";
+import {bindActionCreators} from "redux";
+import {getCleanClassData} from "../../../actions/schedule/generation/ScheduleGenerationActions";
+import {setCurrentSchedule} from "../../../actions/schedule/ScheduleActions";
+import ScheduleBuilderEventWrapper from "./event/ScheduleBuilderEventWrapper";
 
 class ScheduleBuilderContainer extends PureComponent {
 
+    componentDidUpdate(prevProps) {
+        // this.props has the new props
+        // prepProps has the old props
+        if (this.props.selectedClasses !== prevProps.selectedClasses) {
+            this.props.getCleanClassData().then(() => {
+                this.addNewSection();
+            });
+        }
+    }
+
+    /**
+     * Will find the new class that was just added and put the first section into the current schedule
+     */
+    addNewSection() {
+        const prevSchedule = this.props.currentSchedule.slice();
+        const titles = prevSchedule.map(e => ClassUtils.formatSectionNum(e));
+        for (let Class of this.props.classData) {
+            const classTitle = ClassUtils.formatClassTitle(Class.title);
+            if (!titles.includes(classTitle)) {
+                for (let section of Class.sections) {
+                    prevSchedule.push(section.sectionNum);
+                    break;
+                }
+            }
+        }
+        this.props.setCurrentSchedule(prevSchedule);
+    }
+
     mergeClasses(sectionNums, currentSchedule) {
         let ret = sectionNums.slice();
-        for(let i = 0; i < currentSchedule.length; i++) {
+        for (let i = 0; i < currentSchedule.length; i++) {
             let sectionNum = currentSchedule[i];
-            if(!sectionNums.includes(sectionNum)) {
+            if (!sectionNums.includes(sectionNum)) {
                 ret.push(sectionNum);
             }
         }
@@ -35,20 +67,97 @@ class ScheduleBuilderContainer extends PureComponent {
         }
 
         let sectionNums = Class.sections.map(section => section.sectionNum);
-        return this.mergeClasses(sectionNums, this.props.currentSchedule);
+        let ret = this.mergeClasses(sectionNums, this.props.currentSchedule);
+
+        return ret;
+    }
+
+    testEqual(obj1, obj2) {
+        let prevCourseID = obj1.id;
+        let prevSectionNum = obj1.sectionNum;
+        let prevUsedBySections = obj1.usedBySections;
+        let prevUsedByID = obj1.usedByID;
+
+        let prevRange = obj1.range;
+        let prevRange2 = obj2.range;
+
+        obj1.id = obj2.id;
+        obj1.sectionNum = obj2.sectionNum;
+        obj1.usedBySections = obj2.usedBySections;
+        obj1.usedByID = obj2.usedByID;
+        obj1.range = null;
+
+        obj2.range = null;
+
+        let shallowEqual = JSON.stringify(obj1) === JSON.stringify(obj2);
+
+        obj1.id = prevCourseID;
+        obj1.sectionNum = prevSectionNum;
+        obj1.usedBySections = prevUsedBySections;
+        obj1.usedByID = prevUsedByID;
+        obj1.range = prevRange;
+
+        obj2.range = prevRange2;
+        return shallowEqual;
+    }
+
+    dedupeEventsInfo(eventsInfo) {
+        const ret = [];
+        let visited = Array(eventsInfo.length).fill(false);
+
+        for (let i = 0; i < eventsInfo.length; i++) {
+            if (visited[i])
+                continue;
+
+            let obj1 = eventsInfo[i];
+            obj1.usedBySections = null;
+
+            for (let j = i + 1; j < eventsInfo.length; j++) {
+                if (visited[j])
+                    continue;
+
+                let obj2 = eventsInfo[j];
+                obj2.usedBySections = null;
+
+                const shallowEqual = this.testEqual(obj1, obj2);
+
+                if (shallowEqual) {
+                    if (!obj1.usedBySections)
+                        obj1.usedBySections = [obj1.sectionNum];
+                    if(!obj1.usedByID)
+                        obj1.usedByID = [obj1.id];
+
+                    obj1.usedByID.push(obj2.id);
+                    obj1.usedBySections.push(obj2.sectionNum);
+                    visited[j] = true;
+                }
+            }
+            visited[i] = true;
+            ret.push(obj1);
+        }
+        return ret;
     }
 
     render() {
-        console.log("CURRENT SCHEDULE");
-        console.log(this.getDisplayedSchedule());
+        const displayedSchedule = this.getDisplayedSchedule();
+        const displayedEventsInfo = ClassUtils.getEventInfo(displayedSchedule, this.props.classData);
+        const eventsInfo = this.dedupeEventsInfo(displayedEventsInfo);
+        const events = eventsInfo.map(e => new ScheduleBuilderEventWrapper(e));
+
         return (
             <ScheduleBuilder
-                //currentSchedule={this.props.currentSchedule}
-                currentSchedule={this.getDisplayedSchedule()}
                 classData={this.props.classData}
+                events={events}
             />
         )
     }
+}
+
+function mapDispatchToProps(dispatch) {
+    return bindActionCreators({
+        getCleanClassData: getCleanClassData,
+        setCurrentSchedule: setCurrentSchedule
+    }, dispatch);
 }
 
 function mapStateToProps(state) {
@@ -60,4 +169,4 @@ function mapStateToProps(state) {
     }
 }
 
-export default connect(mapStateToProps)(ScheduleBuilderContainer)
+export default connect(mapStateToProps, mapDispatchToProps)(ScheduleBuilderContainer)

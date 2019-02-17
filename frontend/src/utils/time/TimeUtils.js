@@ -50,7 +50,7 @@ export class DayTime {
 
         if (this.time) {
             // always set the seconds to 0
-            ret.setHours(this.time.getHours(), this.time.getMinutes(), 0);
+            ret.setHours(this.time.getHours(), this.time.getMinutes(), 0, 0);
         }
         return ret;
     }

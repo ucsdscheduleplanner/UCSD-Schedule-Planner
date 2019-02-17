@@ -1,3 +1,4 @@
+import React from 'react';
 import {
     FINISH_GENERATING,
     finishedGenerating,
@@ -6,13 +7,21 @@ import {
 } from "../actions/schedule/generation/ScheduleGenerationActions";
 import WebWorker from "./WebWorker";
 import {SGWorker} from "./schedulegeneration/SGWorker";
-import {setCurrentSchedule} from "../actions/schedule/ScheduleActions";
 
 function getErrorMsg(errors) {
     let classWithMostConflicts = Object.keys(errors).reduce((key1, key2) => errors[key1].length > errors[key2].length ? key1 : key2);
     let conflicts = errors[classWithMostConflicts].join(", ");
-    return `Failed to generate. Had the most trouble adding ${classWithMostConflicts}. During schedule generation, it 
-        conflicted with ${conflicts}`
+
+    return (
+        <div>
+            <div>
+                Failed to automatically generate the calendar.
+            </div>
+            <div>
+                Had trouble adding ${classWithMostConflicts}, which conflicted with ${conflicts}.
+            </div>
+        </div>
+    )
 }
 
 export const SGMiddleWare = store => {
@@ -48,6 +57,7 @@ export const SGMiddleWare = store => {
         if (action.type !== GENERATE_SCHEDULE)
             return next(action);
 
+        // generation occurs here
         worker.postMessage(action);
         return next(action);
     }

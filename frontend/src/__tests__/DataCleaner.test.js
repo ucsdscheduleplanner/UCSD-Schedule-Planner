@@ -63,7 +63,7 @@ describe('Data cleaner', () => {
 
     it('Separates data into one class with one class and one section', () => { // get the data in some way and try to clean it
         // result should return a list of class objects
-        let result = DataCleaner.cleanData(testScrapeResult);
+        let result = DataCleaner.clean(testScrapeResult);
         expect(result.length).to.equal(1);
         let resClass = result[0];
 
@@ -84,7 +84,7 @@ describe('Data cleaner', () => {
 
     it('Separates data from multiple classes correctly', () => {
         // result should return a list of class objects
-        let result = DataCleaner.cleanData(testScrapeResultMultipleSubsections);
+        let result = DataCleaner.clean(testScrapeResultMultipleSubsections);
         expect(result.length).to.equal(1);
         let resClass = result[0];
 

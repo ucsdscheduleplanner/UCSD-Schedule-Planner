@@ -17,7 +17,7 @@
     padding: 0;
     border-radius: 5px;
 
-    transition: background .5s ease-in-out;
+    transition: all .5s ease-in-out;
 }
 
 .ce-button:hover {
@@ -26,6 +26,11 @@
 
 .ce-button.active {
     background: #182B49;
+}
+
+.ce-button.shadowed {
+    background: #182B49;
+    opacity: .2;
 }
 
 .ce-info__container {
