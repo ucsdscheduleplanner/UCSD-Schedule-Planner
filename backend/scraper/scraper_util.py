@@ -15,3 +15,15 @@ def get_browser():
     browser.set_page_load_timeout(TIMEOUT)
     browser.implicitly_wait(1)
     return browser
+
+
+class Browser:
+    def __init__(self):
+        self.browser = None
+
+    def __enter__(self):
+        self.browser = get_browser()
+        return self.browser
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.browser.quit()

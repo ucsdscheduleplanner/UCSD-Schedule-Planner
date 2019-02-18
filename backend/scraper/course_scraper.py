@@ -13,7 +13,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.select import Select
 from selenium.webdriver.support.wait import WebDriverWait
 
-from scraper.scraper_util import get_browser
+from scraper.scraper_util import Browser
 from settings import COURSES_HTML_PATH
 from settings import DATABASE_PATH, DATABASE_FOLDER_PATH
 from settings import SCHEDULE_OF_CLASSES_URL
@@ -55,20 +55,19 @@ class CourseScraperThread(Thread):
         self.browser = None
 
     def start(self):
-        self.browser = get_browser()
         print("Thread {} is starting.".format(self.thread_id))
         self.thread.start()
 
     def join(self, **kwargs):
         self.thread.join(**kwargs)
-        self.browser.quit()
         print("Thread {} has finished the work assigned to it.".format(self.thread_id))
 
     def scrape_departments(self):
-        while not self.work_queue.empty():
-            department = self.work_queue.get()
-            self.scrape_department(department)
-            self.work_queue.task_done()
+        with Browser() as self.browser:
+            while not self.work_queue.empty():
+                department = self.work_queue.get()
+                self.scrape_department(department)
+                self.work_queue.task_done()
 
     def scrape_department(self, department):
         # If a thread receives an error during execution, kill all threads & mark program as crashed try:
