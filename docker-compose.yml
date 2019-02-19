@@ -7,6 +7,7 @@ services:
     environment:
       - "MYSQL_ROOT_PASSWORD=password" 
       - "MYSQL_DATABASE=classes"
+      - "MYSQL_ROOT_HOST=%"
     volumes:
       - sdschedule-data:/var/lib/mysql
   sdschedule-backend:
