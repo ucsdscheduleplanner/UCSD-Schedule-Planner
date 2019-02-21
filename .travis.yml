@@ -16,7 +16,7 @@ cache:
   directories:
     - node_modules
 install:
-  # - rm -rf ./node_modules
+  # - rm -rf ./node_modules # clean up
   - yarn --version
 script:
   - ./frontend/scripts/test.sh # shall we just run the command
