@@ -21,4 +21,7 @@ install:
   # - rm -rf ./node_modules # clean up
   - yarn --version
 script:
+  - yarn --cwd ./frontend install
+  - yarn --cwd ./frontend build
+  # - yarn --cwd ./.frontend install --frozen-lockfile;
   - yarn --cwd ./frontend test --testPathIgnorePatterns "<rootDir>/src/__tests__/utils"
