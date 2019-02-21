@@ -64,6 +64,7 @@
     "not op_mini all"
   ],
   "resolutions": {
+      "terser": "^3.16.1",
       "ajv": "6.8.1"
   }
 }
