@@ -1,0 +1,27 @@
+dist: trusty
+language: minimal
+branches:
+  only:
+    - master
+    - scratch/issue79
+  # except:
+  # - legacy
+  # - experimental
+sudo: false
+before_install:
+  - nvm install node
+  - npm --version
+  - curl -o- -L https://yarnpkg.com/install.sh | bash -s -- --version 1.13.0 # might update
+  - export PATH=$HOME/.yarn/bin:$PATH
+cache:
+  yarn: true
+  directories:
+    - node_modules
+install:
+  # - rm -rf ./node_modules # clean up
+  - yarn --version
+script:
+  - yarn --cwd ./frontend install
+  - yarn --cwd ./frontend run build
+  # - yarn --cwd ./.frontend install --frozen-lockfile;
+  - yarn --cwd ./frontend test --testPathIgnorePatterns "<rootDir>/src/__tests__/utils"
