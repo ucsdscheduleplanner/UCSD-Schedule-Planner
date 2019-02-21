@@ -21,4 +21,4 @@ install:
   # - rm -rf ./node_modules # clean up
   - yarn --version
 script:
-  - ./frontend/scripts/test.sh # shall we just run the command
+  - yarn test -- --testPathIgnorePatterns "<rootDir>/src/__tests__/utils"
