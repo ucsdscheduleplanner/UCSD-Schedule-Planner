@@ -35,6 +35,7 @@ const codeKeyToVal = {
     TU_KEY: 6,
 };
 
+// eslint-disable-next-line
 String.prototype.formatUnicorn = String.prototype.formatUnicorn ||
     function () {
         let str = this.toString();
