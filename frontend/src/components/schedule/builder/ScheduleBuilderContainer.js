@@ -138,9 +138,20 @@ class ScheduleBuilderContainer extends PureComponent {
         return ret;
     }
 
+    getDisplayedEventInfo(displayedSchedule) {
+        return ClassUtils.getEventInfo(displayedSchedule, this.props.classData).filter((Class) => {
+            let displayedClassTypes = this.props.viewClassTypeMapping[Class.title];
+
+            if(displayedClassTypes && !displayedClassTypes.includes(Class.type))
+                return false;
+
+            return true;
+        });
+    }
+
     render() {
         const displayedSchedule = this.getDisplayedSchedule();
-        const displayedEventsInfo = ClassUtils.getEventInfo(displayedSchedule, this.props.classData);
+        const displayedEventsInfo = this.getDisplayedEventInfo(displayedSchedule);
         const eventsInfo = this.dedupeEventsInfo(displayedEventsInfo);
         const events = eventsInfo.map(e => new ScheduleBuilderEventWrapper(e));
 
@@ -166,6 +177,7 @@ function mapStateToProps(state) {
         transactionID: state.ClassInput.transactionID,
         selectedClasses: state.ClassList.selectedClasses,
         classData: state.Schedule.classData,
+        viewClassTypeMapping: state.ViewClassTypes.classMapping,
     }
 }
 

@@ -1,16 +1,15 @@
-import {IGNORE_CLASS_TYPE_CODES} from "../actions/class_types/ignore/IgnoreClassTypesActions";
+import {VIEW_CLASS_TYPE_CODES} from "../actions/class_types/view/ViewClassTypesActions";
 
-export default function IgnoreClassTypesReducer(state = {
-
+export default function ViewClassTypesReducer(state = {
     // maps class titles to what types are ignored for them
     classMapping: {}
 }, action) {
 
     let copy;
     switch (action.type) {
-        case IGNORE_CLASS_TYPE_CODES:
+        case VIEW_CLASS_TYPE_CODES:
             copy = Object.assign({}, state.classMapping);
-            copy[action.classTitle] = action.typesToIgnore;
+            copy[action.classTitle] = action.typesToView;
 
             return Object.assign({}, state, {
                 classMapping: copy

@@ -15,7 +15,6 @@ import {DataFetcher} from "../utils/DataFetcher";
 import {Provider} from "react-redux";
 
 describe('Schedule generation', () => {
-
     const testInput = {
         classData: [
             {
@@ -275,5 +274,5 @@ describe("Schedule generator component tests", () => {
         chaiExpect(Object.keys(classList.selectedClasses)).to.have.lengthOf(1);
         chaiExpect(Object.keys(state.classData)).to.have.lengthOf(1);
         chaiExpect(state.currentSchedule).to.have.lengthOf(1);
-    })
+    });
 });

@@ -1,0 +1,16 @@
+.type-pref__container .list-box__button {
+    background-color: white;
+    transition: background-color .3s ease-in-out;
+    color: lightgrey;
+    width: 100%;
+    text-align: left;
+}
+
+.type-pref__button.highlight-button.active {
+    background-color: #277BFF;
+}
+
+.type-pref__button.highlight-button:focus {
+    outline: none;
+    box-shadow: 0 0 1pt 1pt white;
+}

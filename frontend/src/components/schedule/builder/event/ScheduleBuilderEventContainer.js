@@ -7,7 +7,7 @@ import ClassUtils from "../../../../utils/class/ClassUtils";
 import {enterEditMode, enterInputMode, toggleEditMode} from "../../../../actions/classinput/ClassInputActions";
 import {setCurrentSchedule} from "../../../../actions/schedule/ScheduleActions";
 import {setSectionNum} from "../../../../actions/schedule/builder/ScheduleBuilderActions";
-import {codeToClassType} from "../../../class/panel/body/widgets/class_types/ClassTypePrefWidget";
+import {codeToClassType} from "../../../class/panel/body/widgets/class_types/ignore/IgnoreClassTypeWidget";
 
 class ScheduleBuilderEventContainer extends PureComponent {
     // TODO write test for this method

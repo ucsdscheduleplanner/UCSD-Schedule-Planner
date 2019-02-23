@@ -2,12 +2,12 @@ import React from 'react';
 import classNames from 'classnames';
 import PropTypes from "prop-types";
 
-import "./ClassTypePrefWidget.css";
+import "./IgnoreClassTypeWidget.css";
 
-import {Accordion} from "../../../../../../utils/accordion/Accordion";
-import {AccordionBody, AccordionLabel, AccordionPanel} from "../../../../../../utils/accordion/AccordionPanel";
-import {ReactComponent as PlusIcon} from "../../../../../../svg/icon-plus.svg";
-import {ListBox} from "../../../../../../utils/listbox/ListBox";
+import {Accordion} from "../../../../../../../utils/accordion/Accordion";
+import {AccordionBody, AccordionLabel, AccordionPanel} from "../../../../../../../utils/accordion/AccordionPanel";
+import {ReactComponent as PlusIcon} from "../../../../../../../svg/icon-plus.svg";
+import {ListBox} from "../../../../../../../utils/listbox/ListBox";
 
 
 export const codeToClassType = {
@@ -34,7 +34,7 @@ export const codeToClassType = {
 };
 
 
-export const ClassTypePrefWidget = (props) => {
+export const IgnoreClassTypeWidget = (props) => {
     const plusMinusNames = classNames("class-input__panel__part__body__header__icon", {"active": props.isOpen});
 
     console.log(props);
@@ -61,7 +61,7 @@ export const ClassTypePrefWidget = (props) => {
                             <div/>
 
                             <div className="class-input__panel__part__body__header__title">
-                                View Class Types
+                                Ignore Class Types
                             </div>
                             <div className={plusMinusNames}>
                                 <PlusIcon/>
@@ -77,7 +77,7 @@ export const ClassTypePrefWidget = (props) => {
     );
 };
 
-ClassTypePrefWidget.propTypes = {
+IgnoreClassTypeWidget.propTypes = {
     inputHandler: PropTypes.object.isRequired,
     types: PropTypes.array.isRequired,
     ignoreClassTypes: PropTypes.array.isRequired
