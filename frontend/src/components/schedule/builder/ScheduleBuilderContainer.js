@@ -73,32 +73,23 @@ class ScheduleBuilderContainer extends PureComponent {
     }
 
     testEqual(obj1, obj2) {
-        let prevCourseID = obj1.id;
-        let prevSectionNum = obj1.sectionNum;
-        let prevUsedBySections = obj1.usedBySections;
-        let prevUsedByID = obj1.usedByID;
+        let comp1 = Object.assign({}, obj1, {
+            id: null,
+            sectionNum: null,
+            usedBySections: null,
+            usedByID: null,
+            range: null
+        });
 
-        let prevRange = obj1.range;
-        let prevRange2 = obj2.range;
+        let comp2 = Object.assign({}, obj2, {
+            id: null,
+            sectionNum: null,
+            usedBySections: null,
+            usedByID: null,
+            range: null
+        });
 
-        obj1.id = obj2.id;
-        obj1.sectionNum = obj2.sectionNum;
-        obj1.usedBySections = obj2.usedBySections;
-        obj1.usedByID = obj2.usedByID;
-        obj1.range = null;
-
-        obj2.range = null;
-
-        let shallowEqual = JSON.stringify(obj1) === JSON.stringify(obj2);
-
-        obj1.id = prevCourseID;
-        obj1.sectionNum = prevSectionNum;
-        obj1.usedBySections = prevUsedBySections;
-        obj1.usedByID = prevUsedByID;
-        obj1.range = prevRange;
-
-        obj2.range = prevRange2;
-        return shallowEqual;
+        return JSON.stringify(comp1) === JSON.stringify(comp2);
     }
 
     dedupeEventsInfo(eventsInfo) {
@@ -123,12 +114,12 @@ class ScheduleBuilderContainer extends PureComponent {
 
                 if (shallowEqual) {
                     if (!obj1.usedBySections)
-                        obj1.usedBySections = [obj1.sectionNum];
-                    if(!obj1.usedByID)
-                        obj1.usedByID = [obj1.id];
+                        obj1.usedBySections = new Set([obj1.sectionNum]);
+                    if (!obj1.usedByID)
+                        obj1.usedByID = new Set([obj1.id]);
 
-                    obj1.usedByID.push(obj2.id);
-                    obj1.usedBySections.push(obj2.sectionNum);
+                    obj1.usedByID.add(obj2.id);
+                    obj1.usedBySections.add(obj2.sectionNum);
                     visited[j] = true;
                 }
             }
