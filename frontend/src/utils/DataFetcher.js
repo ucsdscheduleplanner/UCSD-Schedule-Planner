@@ -139,7 +139,6 @@ export class DataFetcher {
             CLASS_SUMMARY_CACHE_STR.formatUnicorn(department),
         );
 
-        console.log("GOT HERE");
         if (isCached) {
             console.log(`Hit caching level for department ${department}`);
             return await CacheManager.get().getFromCache(
@@ -147,7 +146,6 @@ export class DataFetcher {
             );
         }
 
-        console.log("GOT BAD");
         let response = await fetch(
             `${BACKEND_URL}/api_classes?department=${department}`,
             {

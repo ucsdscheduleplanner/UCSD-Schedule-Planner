@@ -11,8 +11,9 @@ import {
 } from "./ClassInputMutator";
 import {addClass, editClass, enterInputMode, populateSectionData, removeClass} from "./ClassInputActions";
 import {SchedulePreferenceInputHandler} from "../schedulepreference/SchedulePreferenceInputHandler";
-import {ignoreClassTypeCodes} from "../ignoreclasstypes/IgnoreClassTypesActions";
+import {ignoreClassTypeCodes} from "../class_types/ignore/IgnoreClassTypesActions";
 import {getSchedule} from "../schedule/generation/ScheduleGenerationActions";
+import {TESTING_viewClassTypeCodes} from "../class_types/view/ViewClassTypesActions";
 
 /**
  * Is responsible for handling all ClassInput actions, which includes running business logic when changing fields to adding
@@ -121,6 +122,13 @@ export class ClassInputHandler {
         const classTitle = `${state.department} ${state.courseNum}`;
 
         this.dispatch(ignoreClassTypeCodes(classTitle, types));
+    }
+
+    onViewClassTypes(types) {
+        const state = this.getState().ClassInput;
+        const classTitle = `${state.department} ${state.courseNum}`;
+
+        this.dispatch(TESTING_viewClassTypeCodes(classTitle, types));
     }
 
     buildClassFromInput() {
@@ -281,6 +289,7 @@ export class ClassInputHandler {
     setDefaultValues(newClass) {
         const state = this.getState().ClassInput;
         this.dispatch(ignoreClassTypeCodes(newClass.classTitle, state.types));
+        this.dispatch(TESTING_viewClassTypeCodes(newClass.classTitle, state.types));
     }
 
     clearInputs() {

@@ -5,7 +5,7 @@ import reducers from "../reducers";
 import thunk from "redux-thunk";
 import {setClassSpecificPref} from "../actions/schedulepreference/SchedulePreferenceMutator";
 import {addClass} from "../actions/classinput/ClassInputActions";
-import {ignoreClassTypeCodes} from "../actions/ignoreclasstypes/IgnoreClassTypesActions";
+import {ignoreClassTypeCodes} from "../actions/class_types/ignore/IgnoreClassTypesActions";
 
 
 describe("Tests how the information is built up before schedule is generated", () => {

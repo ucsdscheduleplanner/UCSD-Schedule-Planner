@@ -4,7 +4,7 @@ import {bindActionCreators} from "redux";
 import {toggleEditMode} from "../../../../actions/classinput/ClassInputActions";
 import {ClassEvent} from "../../event/ClassEvent";
 import ClassUtils from "../../../../utils/class/ClassUtils";
-import {codeToClassType} from "../../../class/panel/body/widgets/class_types/ClassTypePrefWidget";
+import {codeToClassType} from "../../../class/panel/body/widgets/class_types/ignore/IgnoreClassTypeWidget";
 
 
 class ScheduleGeneratorEventContainer extends PureComponent {

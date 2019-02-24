@@ -15,7 +15,7 @@ import {Provider} from "react-redux";
  * resolve before moving on in the test
  * @returns {Promise<any>}
  */
-function flushPromises() {
+export function flushPromises() {
     return new Promise(resolve => setImmediate(resolve));
 }
 

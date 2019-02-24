@@ -1,15 +1,11 @@
 import React from 'react';
-import ScheduleBuilderContainer from "../components/schedule/builder/ScheduleBuilderContainer";
-import {makeTimeInterval} from "../utils/time/TimeUtils";
-import {mount, shallow} from "enzyme";
 import {applyMiddleware, createStore} from "redux";
 import reducers from "../reducers";
 import thunk from "redux-thunk";
 import {setClassData, setCurrentSchedule} from "../actions/schedule/ScheduleActions";
 import {setTransactionID} from "../actions/classinput/ClassInputMutator";
-import {addClass} from "../actions/classinput/ClassInputActions";
 import ClassUtils from "../utils/class/ClassUtils";
-import {Provider} from "react-redux";
+import {addClassForTest, mountScheduleBuilder, testData, testSchedule} from "./utils/ScheduleBuidlerTestUtils";
 
 describe("Schedule building", () => {
     let store;
@@ -19,80 +15,10 @@ describe("Schedule building", () => {
         done();
     });
 
-    const testData = [
-        {
-            title: "CSE 12",
-            number: "12",
-            description: "Basic Data Struct & OO Design  ( 4Units)",
-            department: "CSE",
-            sections: [{
-                id: "961434",
-                sectionNum: "CSE12$0",
-                subsections: [{
-                    day: "Tu",
-                    instructor: "Politz, Joseph Gibbs",
-                    location: "YORK",
-                    room: "115",
-                    timeInterval: makeTimeInterval("17:00-17:50", "Tu"),
-                    type: "DI",
-                }]
-            },
-                {
-                    id: "961434",
-                    sectionNum: "CSE12$1",
-                    subsections: [{
-                        day: "Tu",
-                        instructor: "Politz, Joseph Gibbs",
-                        location: "YORK",
-                        room: "115",
-                        timeInterval: makeTimeInterval("17:00-17:50", "Tu"),
-                        type: "DI",
-                    }]
-                }
-            ]
-        },
-        {
-            title: "CSE 11",
-            number: "11",
-            description: "Random class",
-            department: "CSE",
-            sections: [{
-                id: "961434",
-                sectionNum: "CSE11$0",
-                subsections: [{
-                    day: "Tu",
-                    instructor: "Trando, Cameron",
-                    location: "WLH",
-                    room: "2001",
-                    timeInterval: makeTimeInterval("17:00-17:50", "Tu"),
-                    type: "DI",
-                }]
-            }]
-        }
-    ];
-
-    function mountScheduleBuilder() {
-        const wrapper = mount(
-            <Provider store={store}>
-                <ScheduleBuilderContainer/>
-            </Provider>
-        );
-
-        return wrapper.find(ScheduleBuilderContainer).children().instance();
-    }
-
-    const testSchedule = ["CSE12$0", "CSE11$0"];
-
-    function addClassForTest(classTitle) {
-        let transactionID = store.getState().ClassInput.transactionID;
-        store.dispatch(addClass({classTitle: classTitle}, transactionID));
-        return transactionID;
-    }
-
     test("Displayed classes is correct with no classes", () => {
-        const instance = mountScheduleBuilder();
+        const instance = mountScheduleBuilder(store);
 
-        let transactionID = addClassForTest("CSE 12");
+        let transactionID = addClassForTest("CSE 12", store);
         store.dispatch(setTransactionID(transactionID));
         store.dispatch(setClassData(testData));
 
@@ -103,8 +29,8 @@ describe("Schedule building", () => {
     });
 
     test("Displayed classes should merge the classes in the schedule with the classes from classData", () => {
-        const instance = mountScheduleBuilder();
-        let transactionID = addClassForTest("CSE 12");
+        const instance = mountScheduleBuilder(store);
+        let transactionID = addClassForTest("CSE 12", store);
         store.dispatch(setTransactionID(transactionID));
         store.dispatch(setClassData(testData));
         store.dispatch(setCurrentSchedule(testSchedule));
@@ -115,8 +41,8 @@ describe("Schedule building", () => {
     });
 
     test("Can dedupe events correctly", () => {
-        const instance = mountScheduleBuilder();
-        let transactionID = addClassForTest("CSE 12");
+        const instance = mountScheduleBuilder(store);
+        let transactionID = addClassForTest("CSE 12", store);
         store.dispatch(setTransactionID(transactionID));
         store.dispatch(setClassData(testData));
         store.dispatch(setCurrentSchedule(testSchedule));

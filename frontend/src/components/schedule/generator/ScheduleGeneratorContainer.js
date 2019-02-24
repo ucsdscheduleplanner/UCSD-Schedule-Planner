@@ -16,16 +16,19 @@ class ScheduleGeneratorContainer extends PureComponent {
         }
     }
 
-    getSubsectionsForSchedule() {
-        const ret = [];
-        for(let sectionNum of this.props.currentSchedule) {
-            ret.push(ClassUtils.getSubsectionsFor(sectionNum, this.props.classData));
-        }
-        return ret;
+    getDisplayedEventInfo(displayedSchedule) {
+        return ClassUtils.getEventInfo(displayedSchedule, this.props.classData).filter((Class) => {
+            let displayedClassTypes = this.props.viewClassTypeMapping[Class.title];
+
+            if (displayedClassTypes && !displayedClassTypes.includes(Class.type))
+                return false;
+
+            return true;
+        });
     }
 
     render() {
-        const displayedEventsInfo = ClassUtils.getEventInfo(this.props.currentSchedule, this.props.classData);
+        const displayedEventsInfo = this.getDisplayedEventInfo(this.props.currentSchedule);
         const events = displayedEventsInfo.map(e => new ScheduleGeneratorEventWrapper(e));
 
         return (
@@ -56,6 +59,8 @@ function mapStateToProps(state) {
         totalNumPossibleSchedule: state.ScheduleGenerate.totalNumPossibleSchedule,
         generating: state.ScheduleGenerate.generating,
         classData: state.Schedule.classData,
+
+        viewClassTypeMapping: state.ViewClassTypes.classMapping,
     }
 }
 
