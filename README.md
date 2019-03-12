@@ -139,3 +139,6 @@ as specified in that file.
 If you wish to contribute, please speak to [@ctrando](https://github.com/ctrando). 
 We emphasize good testing practices as well as maintainable and well-documented code.
 Contributing guidelines will be posted in the near future.
+
+#Credits 
+SVGs taken from Heroicons UI: https://github.com/sschoger/heroicons-ui
