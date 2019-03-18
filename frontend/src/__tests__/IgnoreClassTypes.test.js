@@ -4,6 +4,7 @@ import thunk from "redux-thunk";
 import {ignoreClassTypeCodes} from "../actions/class_types/ignore/IgnoreClassTypesActions";
 import {SGWorker} from "../utils/schedulegeneration/SGWorker";
 import {makeTimeInterval} from "../utils/time/TimeUtils";
+import {getStore} from "./utils/ReduxUtils";
 
 const testInput = {
     classData: [
@@ -126,7 +127,7 @@ const moreComplexInput = {
 describe("Setting class types to ignore", () => {
     let store;
     beforeEach((done) => {
-        store = createStore(reducers, applyMiddleware(thunk));
+        store = getStore();
         done();
     });
 

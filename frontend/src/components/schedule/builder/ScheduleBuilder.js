@@ -1,12 +1,12 @@
 import React, {PureComponent} from 'react';
-import WeekCalendar from "../calendar/WeekCalendar";
 
 import PropTypes from "prop-types";
+import WeekCalendarContainer from "../calendar/WeekCalendarContainer";
 
 export class ScheduleBuilder extends PureComponent {
     render() {
         const calendar = (
-            <WeekCalendar
+            <WeekCalendarContainer
                 events={this.props.events}
             />
         );

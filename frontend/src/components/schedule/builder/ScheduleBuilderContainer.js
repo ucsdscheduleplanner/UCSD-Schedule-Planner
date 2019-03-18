@@ -158,7 +158,7 @@ class ScheduleBuilderContainer extends PureComponent {
 function mapDispatchToProps(dispatch) {
     return bindActionCreators({
         getCleanClassData: getCleanClassData,
-        setCurrentSchedule: setCurrentSchedule
+        setCurrentSchedule: setCurrentSchedule,
     }, dispatch);
 }
 

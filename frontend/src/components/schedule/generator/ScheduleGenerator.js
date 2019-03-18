@@ -1,8 +1,8 @@
 import React, {PureComponent} from 'react';
-import WeekCalendar from "../calendar/WeekCalendar";
 
 import PropTypes from "prop-types";
 import {ScheduleProgressBar} from "../progressbar/ScheduleProgressBar";
+import WeekCalendarContainer from "../calendar/WeekCalendarContainer";
 
 export class ScheduleGenerator extends PureComponent {
     render() {
@@ -13,7 +13,7 @@ export class ScheduleGenerator extends PureComponent {
         );
 
         const calendar = (
-            <WeekCalendar
+            <WeekCalendarContainer
                 events={this.props.events}
             />
         );

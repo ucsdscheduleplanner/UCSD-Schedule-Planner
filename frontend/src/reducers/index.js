@@ -7,6 +7,7 @@ import IgnoreClassTypesReducer from "./IgnoreClassTypesReducer";
 import ScheduleReducer from "./ScheduleReducer";
 import ScheduleBuilderReducer from "./ScheduleBuilderReducer";
 import ViewClassTypesReducer from "./ViewClassTypesReducer";
+import TimePreferenceReducer from "./TimePreferenceReducer";
 
 const reducers = combineReducers({
     SchedulePreferences: SchedulePreferences,
@@ -17,6 +18,7 @@ const reducers = combineReducers({
     ScheduleBuilder: ScheduleBuilderReducer,
     IgnoreClassTypes: IgnoreClassTypesReducer,
     ViewClassTypes: ViewClassTypesReducer,
+    TimePreference: TimePreferenceReducer
 });
 
 export default reducers;

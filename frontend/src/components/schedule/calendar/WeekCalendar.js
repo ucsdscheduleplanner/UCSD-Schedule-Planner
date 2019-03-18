@@ -11,7 +11,6 @@ import {isSafari} from "../../../settings";
 
 class WeekCalendar extends PureComponent {
 
-
     /**
      * Takes in classes and renders their sections and subsections
      * @returns {EventsCollection|*|EventsCollection|g}
@@ -26,6 +25,11 @@ class WeekCalendar extends PureComponent {
         console.log(event);
     }
 
+    onDayDoubleClick(event, date) {
+        const newRange = moment.range(date.clone(), date.clone().add(1, 'hour'));
+        this.props.addTimePreference(newRange);
+    }
+
     render() {
         const relativeDate = moment();
         const events = this.createEvents();
@@ -34,11 +38,10 @@ class WeekCalendar extends PureComponent {
         return (
             <div className={names}>
                 <Dayz
+                    onDayDoubleClick={this.onDayDoubleClick.bind(this)}
                     onEventClick={this.onEventClick.bind(this)}
                     date={relativeDate}
-                    events={events}
-                    display="week"
-                    displayHours={[8, 23]}
+                    events={events} display="week" displayHours={[8, 23]}
                 />
             </div>
         );
@@ -48,11 +51,12 @@ class WeekCalendar extends PureComponent {
 
 WeekCalendar.defaultProps = {
     events: [],
+    addTimePreference: () => {}
 };
 
 WeekCalendar.propTypes = {
     events: PropTypes.array.isRequired,
+    addTimePreference: PropTypes.func
 };
 
 export default WeekCalendar;
-
