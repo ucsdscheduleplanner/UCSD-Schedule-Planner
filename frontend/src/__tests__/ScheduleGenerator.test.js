@@ -252,27 +252,4 @@ describe("Schedule generator component tests", () => {
 
         return wrapper.find(ScheduleGeneratorContainer).children().instance();
     }
-
-    test("It generates a new schedule after adding a class", async () => {
-        // TODO
-        const instance = mountScheduleGenerator();
-
-        let state = store.getState().Schedule;
-        let classList = store.getState().ClassList;
-        chaiExpect(Object.keys(state.classData)).to.have.lengthOf(0);
-        chaiExpect(state.currentSchedule).to.have.lengthOf(0);
-        chaiExpect(Object.keys(classList.selectedClasses)).to.have.lengthOf(0);
-
-        await addClass();
-        flushPromises();
-
-        scheduleGenerator.setProps({selectedClasses: classList.selectedClasses});
-        chaiExpect(instance.props.componentDidUpdate).toBeCalled();
-
-        state = store.getState().Schedule;
-        classList = store.getState().ClassList;
-        chaiExpect(Object.keys(classList.selectedClasses)).to.have.lengthOf(1);
-        chaiExpect(Object.keys(state.classData)).to.have.lengthOf(1);
-        chaiExpect(state.currentSchedule).to.have.lengthOf(1);
-    });
 });
