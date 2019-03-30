@@ -3,7 +3,7 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import Popover, {ArrowContainer} from 'react-tiny-popover';
 import "./ClassEvent.css";
-import {Button} from "../../../utils/button/Button";
+import {Event} from "./Event";
 
 
 export class ClassEvent extends PureComponent {
@@ -54,10 +54,13 @@ export class ClassEvent extends PureComponent {
                         </ArrowContainer>
                     )}
                 >
-                    <Button label={this.getDisplayName()} className={names}
-                            onMouseEnter={this.onMouseEnter.bind(this)}
-                            onMouseLeave={this.onMouseLeave.bind(this)}
-                            onClick={this.onClick.bind(this)}/>
+                    <Event
+                        getDisplayName={this.getDisplayName.bind(this)}
+                        className={names}
+                        onMouseLeave={this.onMouseLeave.bind(this)}
+                        onMouseEnter={this.onMouseEnter.bind(this)}
+                        onClick={this.onClick.bind(this)}
+                    />
                 </Popover>
             </React.Fragment>
         );

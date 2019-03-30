@@ -6,8 +6,8 @@ export default class TimePreferenceEventWrapper extends Dayz.EventsCollection.Ev
 
     constructor(range) {
         const event = {
-            content: "hello world",
-            range: range
+            range: range,
+            resizable: {step: 15}
         };
         super(event);
     }

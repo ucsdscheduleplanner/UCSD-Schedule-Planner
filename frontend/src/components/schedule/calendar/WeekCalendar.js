@@ -19,13 +19,14 @@ class WeekCalendar extends PureComponent {
         return new Dayz.EventsCollection(this.props.events);
     }
 
-    onEventClick(ev, event) {
-        console.log("got clicked");
-        console.log(ev);
-        console.log(event);
+    onEventResize(ev, event) {
+        const start = event.start.format('hh:mma');
+        const end = event.end.format('hh:mma');
+        event.set({content: `${start} - ${end} (resizable)`});
     }
 
     onDayDoubleClick(event, date) {
+        console.log("Adding reserved time!");
         const newRange = moment.range(date.clone(), date.clone().add(1, 'hour'));
         this.props.addTimePreference(newRange);
     }
@@ -38,8 +39,8 @@ class WeekCalendar extends PureComponent {
         return (
             <div className={names}>
                 <Dayz
+                    onEventResize={this.onEventResize.bind(this)}
                     onDayDoubleClick={this.onDayDoubleClick.bind(this)}
-                    onEventClick={this.onEventClick.bind(this)}
                     date={relativeDate}
                     events={events} display="week" displayHours={[8, 23]}
                 />
@@ -51,7 +52,8 @@ class WeekCalendar extends PureComponent {
 
 WeekCalendar.defaultProps = {
     events: [],
-    addTimePreference: () => {}
+    addTimePreference: () => {
+    }
 };
 
 WeekCalendar.propTypes = {

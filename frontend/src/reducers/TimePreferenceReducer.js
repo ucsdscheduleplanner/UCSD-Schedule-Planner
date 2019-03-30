@@ -18,7 +18,7 @@ export default function TimePreferenceReducer(state = {
          * Called to remove a time preference, action should only hold the time that should be removed
          */
         case REMOVE_TIME_PREFERENCE:
-            oldPreferences = state.times.filter(preference => preference !== action.times);
+            oldPreferences = state.times.filter(preference => preference !== action.time);
 
             return Object.assign({}, state, {
                 times: oldPreferences
