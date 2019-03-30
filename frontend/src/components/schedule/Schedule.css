@@ -33,8 +33,7 @@
 .schedule__body {
     height: 100%;
     min-height: 0;
-    margin: 0 0 3em 2em;
-    display: grid;
+    margin: 0 2em 3em 2em;
 }
 
 .schedule__header__body {
@@ -194,20 +193,4 @@
     -webkit-box-shadow: 0 0 5px 5px #0099E0;
     -moz-box-shadow: 0 0 5px 5px #0099E0;
     box-shadow: 0 0 5px 5px #0099E0;
-}
-.calendar {
-    grid-column-start: 1;
-    grid-column-end: 15;
-}
-
-.option-panel {
-    grid-column-start: 16;
-    grid-column-end: 16;
-    margin: 0 1em 2em;
-}
-
-.export-calendar-button {
-    color: #182B49;
-    background-color: white;
-    border: 0.15em solid #182B49;
 }

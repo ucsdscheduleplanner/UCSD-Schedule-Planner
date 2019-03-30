@@ -1,8 +1,8 @@
 .export-calendar-button {
+    width: 100%;
     color: #182B49;
-    background-color: white;
-    border: 0.15em solid #182B49;
-    margin: 0 1em 0;
+    background-color: inherit;
+    padding: 0;
 }
 
 .export-calendar__container {
@@ -14,8 +14,6 @@
 .add-to-gcalendar-button {
     background: white;
     color: #182B49;
-    border: 0.2em solid #182B49;
-    padding: 1em;
     transition: background .5s ease-in-out;
 }
 
@@ -23,6 +21,30 @@
     cursor: pointer;
 }
 
+.add-to-gcalendar-button.custom-button.custom-button__corner--default {
+    -webkit-border-radius: 0;
+    -moz-border-radius: 0;
+    border-radius: 0;
+}
+
 .download-options-popover {
+    border: thin solid gray;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
     z-index: 1;
+}
+
+.options-panel {
+    width: 50px;
+    background-color: white;
+}
+
+.options-panel button {
+    padding: .5em;
+}
+
+.options-list {
+    display: flex;
+    flex-direction: column;
 }

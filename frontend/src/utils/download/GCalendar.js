@@ -1,4 +1,5 @@
 import moment from 'moment';
+import ClassUtils from "../class/ClassUtils";
 
 const CONFIG_KEY_CLIENT_ID = "client-id";
 const CONFIG_API_KEY = "api-key";
@@ -16,37 +17,33 @@ const GTIME_FORMAT = "YYYY-MM-DDTHH:mm:ssZ";
 const NUM_WEEKS_AHEAD = 5;
 const RECURRING_EVENT_RULE = "RRULE:FREQ=WEEKLY;COUNT=" + NUM_WEEKS_AHEAD;
 
-export function addEvents(schedule) {
+export function getEvents(schedule, classData) {
     let events = [];
+    const data = ClassUtils.getEventInfo(schedule, classData);
 
-    for (let Class of schedule) {
-        if (Class.sections.length === 0)
-            continue;
-
-        if (Class.sections.length > 1)
-            console.warn(`Bad things have happened and the Class ${Class.classTitle} has more than one section`)
-
-        const section = Class.sections[0];
-        for (let i = 0; i < section.subsections.length; i++) {
-            const subsection = section.subsections[i];
-            events.push({
-                'summary': section.classTitle,
-                'location': subsection.location,
-                'description': subsection.description,
-                'start': {
-                    "dateTime": moment(subsection.timeInterval['start']).format(GTIME_FORMAT),
-                    "timeZone": "America/Los_Angeles"
-                },
-                'end': {
-                    "dateTime": moment(subsection.timeInterval['end']).format(GTIME_FORMAT),
-                    "timeZone": "America/Los_Angeles"
-                },
-                'recurrence': [
-                    RECURRING_EVENT_RULE
-                ],
-            });
-        }
+    for (let Class of data) {
+        events.push({
+            'summary': Class.classTitle,
+            'location': `${Class.location} ${Class.room}`,
+            'description': Class.description,
+            'start': {
+                "dateTime": Class.range.start.format(GTIME_FORMAT),
+                "timeZone": "America/Los_Angeles"
+            },
+            'end': {
+                "dateTime": Class.range.end.format(GTIME_FORMAT),
+                "timeZone": "America/Los_Angeles"
+            },
+            'recurrence': [
+                RECURRING_EVENT_RULE
+            ],
+        });
     }
+    return events;
+}
+
+export function addToCalendar(schedule, classData) {
+    const events = getEvents(schedule, classData);
     // Client ID and API key from the Developer Console
 
     const CLIENT_ID = configs[CONFIG_KEY_CLIENT_ID];

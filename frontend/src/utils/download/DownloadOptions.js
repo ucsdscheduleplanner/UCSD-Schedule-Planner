@@ -1,7 +1,9 @@
 import React, {PureComponent} from 'react';
-import {addEvents} from "./GCalendar";
+import {ReactComponent as CalendarIcon} from "../../svg/icon-calendar.svg";
+import PropTypes from 'prop-types';
+import {addToCalendar} from "./GCalendar";
 import {Button} from "../../utils/button/Button";
-import Popover, {ArrowContainer} from 'react-tiny-popover';
+import Popover from 'react-tiny-popover';
 import './DownloadOptions.css';
 
 export class DownloadOptions extends PureComponent {
@@ -13,18 +15,15 @@ export class DownloadOptions extends PureComponent {
     }
 
     onClick() {
-        if(!this.state.popOverOpen) {
-            this.setState({popOverOpen: true})
-        } else {
-            this.setState({popOverOpen: false});
-        }
+        this.setState({popOverOpen: !this.state.popOverOpen});
     }
 
     showOptions() {
         return (
-            <div className="export-calendar__container">
-                <Button className="add-to-gcalendar-button" round={true} label="Add to Google Calendar"
-                        onClick={addEvents.bind(this, this.props.schedule)}/>
+            <div className="options-list">
+                <Button className="add-to-gcalendar-button" label="Google Calendar"
+                        onClick={addToCalendar.bind(this, this.props.currentSchedule, this.props.classData)}/>
+                <Button className="add-to-gcalendar-button" label="Outlook" />
             </div>
         );
     }
@@ -35,25 +34,27 @@ export class DownloadOptions extends PureComponent {
                 <Popover
                     containerClassName="download-options-popover"
                     isOpen={this.state.popOverOpen}
-                    position={['left','bottom','top','right']}
+                    position={['bottom', 'left', 'top', 'right']}
                     transitionDuration={.25}
-                    onClickOutside={() => this.setState({ popOverOpen: false })}
-                    content={({position, targetRect, popoverRect}) => (
-                        <ArrowContainer
-                            position={position}
-                            targetRect={targetRect}
-                            popoverRect={popoverRect}
-                            arrowColor={'#7A7A7A'}
-                            arrowSize={20}
-                        >
+                    onClickOutside={() => this.setState({popOverOpen: false})}
+                    content={() => (
+                        <div>
                             {this.showOptions()}
-                        </ArrowContainer>
+                        </div>
                     )}
                 >
-                    <Button className="export-calendar-button" label="Export Calendar"
-                            round={true} onClick={this.onClick.bind(this)}/>
+                    <Button className="export-calendar-button" onClick={this.onClick.bind(this)}>
+                        <CalendarIcon/>
+                    </Button>
                 </Popover>
             </React.Fragment>
         );
     }
 }
+
+DownloadOptions.propTypes = {
+    classData: PropTypes.array.isRequired,
+    currentSchedule: PropTypes.array.isRequired
+};
+
+

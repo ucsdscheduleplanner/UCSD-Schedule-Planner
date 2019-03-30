@@ -6,8 +6,7 @@ import "./Schedule.css";
 import ScheduleBuilderContainer from "./builder/ScheduleBuilderContainer";
 import {BUILDER_MODE, GENERATOR_MODE} from "../../reducers/ScheduleReducer";
 import PropTypes from 'prop-types';
-import {Button} from "../../utils/button/Button";
-import {DownloadOptions} from "../../utils/download/DownloadOptions";
+import DownloadOptionsContainer from "../../utils/download/DownloadOptionsContainer";
 
 export class Schedule extends PureComponent {
 
@@ -42,9 +41,6 @@ export class Schedule extends PureComponent {
     }
 
     render() {
-        const downloadOptions = (
-            <DownloadOptions schedule={this.props.currentSchedule}/>
-        );
         return (
             <div className="schedule">
                 <div className="schedule__header">
@@ -57,6 +53,7 @@ export class Schedule extends PureComponent {
                                     this.props.scheduleMode === BUILDER_MODE && this.getHelperMessage()
                                 }
                             </div>
+                            <DownloadOptionsContainer />
                             <Toggle
                                 className="schedule-header__button"
                                 checked={this.isToggled()}
@@ -66,13 +63,11 @@ export class Schedule extends PureComponent {
                     </div>
                 </div>
 
+
                 <div className="schedule__body">
                     {this.props.scheduleMode === BUILDER_MODE ? <ScheduleBuilderContainer/> :
                         <ScheduleGeneratorContainer/>}
-                    <div className="option-panel">
-                        <Button className="export-calendar-button" label="Export Calendar"/>
-                        {downloadOptions}
-                    </div>
+
                 </div>
             </div>
         )
@@ -81,7 +76,6 @@ export class Schedule extends PureComponent {
 }
 
 Schedule.propTypes = {
-    currentSchedule: PropTypes.array.isRequired,
     scheduleMode: PropTypes.string.isRequired,
     setScheduleMode: PropTypes.func.isRequired,
 };
