@@ -12,9 +12,14 @@
 }
 
 .add-to-gcalendar-button {
+    border-bottom: thin solid gray;
     background: white;
     color: #182B49;
     transition: background .5s ease-in-out;
+}
+
+.ics-button {
+    border-bottom: none;
 }
 
 .add-to-gcalendar-button:hover {

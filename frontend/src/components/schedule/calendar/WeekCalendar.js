@@ -20,12 +20,6 @@ class WeekCalendar extends PureComponent {
         return new Dayz.EventsCollection(this.props.events);
     }
 
-    onEventClick(ev, event) {
-        console.log("got clicked");
-        console.log(ev);
-        console.log(event);
-    }
-
     render() {
         const relativeDate = moment();
         const events = this.createEvents();
@@ -34,7 +28,6 @@ class WeekCalendar extends PureComponent {
         return (
             <div className={names}>
                 <Dayz
-                    onEventClick={this.onEventClick.bind(this)}
                     date={relativeDate}
                     events={events}
                     display="week"

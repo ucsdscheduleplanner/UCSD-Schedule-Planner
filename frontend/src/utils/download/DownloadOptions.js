@@ -5,6 +5,7 @@ import {addToCalendar} from "./GCalendar";
 import {Button} from "../../utils/button/Button";
 import Popover from 'react-tiny-popover';
 import './DownloadOptions.css';
+import {downloadICS} from "./ics";
 
 export class DownloadOptions extends PureComponent {
     constructor(props) {
@@ -23,7 +24,8 @@ export class DownloadOptions extends PureComponent {
             <div className="options-list">
                 <Button className="add-to-gcalendar-button" label="Google Calendar"
                         onClick={addToCalendar.bind(this, this.props.currentSchedule, this.props.classData)}/>
-                <Button className="add-to-gcalendar-button" label="Outlook"/>
+                <Button className="add-to-gcalendar-button ics-button" label="ics"
+                        onClick={downloadICS.bind(this, this.props.currentSchedule, this.props.classData)}/>
             </div>
         );
     }
