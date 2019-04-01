@@ -4,7 +4,7 @@ ENV_PROD='PROD'
 ENV_DEV='DEV'
 
 # variables
-SDSCHEDULE_SCRAPE=0
+is_download=0
 is_build=''
 environment='DEV'
 letsencrypt_email=""
@@ -44,9 +44,11 @@ run_dev() {
     exit 1
   fi
 
-  export SDSCHEDULE_SCRAPE
-
-  docker-compose up ${is_build}
+  if [[ $is_download -eq 1  ]]; then
+    docker-compose up ${is_build}
+  else
+    docker-compose up ${is_build} --scale sdschedule-scraper=0
+  fi
 }
 
 run_prod() {
@@ -56,11 +58,13 @@ run_prod() {
     exit 1
   fi
 
-  export SDSCHEDULE_SCRAPE
-
   echo "Starting up production servers"
 
-  docker-compose -f docker-compose-production.yml up ${is_build} --detach
+  if [[ $is_download -eq 1  ]]; then
+    docker-compose -f docker-compose-production.yml up ${is_build} --detach
+  else
+    docker-compose -f docker-compose-production.yml up ${is_build} --detach --scale sdschedule-scraper=0
+  fi
 }
 
 stop_prod() {
@@ -130,7 +134,7 @@ while test $# -gt 0; do
           exit 0
           ;;
       -d | --download)
-          SDSCHEDULE_SCRAPE=1
+          is_download=1
           ;;
       -p | --production)
           environment=${ENV_PROD}

@@ -19,6 +19,4 @@ COPY . /app
 
 ENV PYTHONPATH /app
 
-EXPOSE 5000
-
 CMD ["bash", "./docker-run.sh"] 
