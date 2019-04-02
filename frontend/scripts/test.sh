@@ -1,1 +1,1 @@
-yarn test -- --testPathIgnorePatterns "<rootDir>/src/__tests__/utils"
+yarn test -u --testPathIgnorePatterns "<rootDir>/src/__tests__/utils"
