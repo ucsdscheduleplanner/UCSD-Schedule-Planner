@@ -11,7 +11,7 @@
     padding: 0.4em 0.8em;
 }
 
-.add-to-gcalendar-button {
+.gcalendar-button {
     border-bottom: thin solid gray;
     background: white;
     color: #182B49;
@@ -22,11 +22,11 @@
     border-bottom: none;
 }
 
-.add-to-gcalendar-button:hover {
+.gcalendar-button:hover {
     cursor: pointer;
 }
 
-.add-to-gcalendar-button.custom-button.custom-button__corner--default {
+.gcalendar-button.custom-button.custom-button__corner--default {
     -webkit-border-radius: 0;
     -moz-border-radius: 0;
     border-radius: 0;

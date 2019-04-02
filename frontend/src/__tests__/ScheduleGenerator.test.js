@@ -253,7 +253,7 @@ describe("Schedule generator component tests", () => {
         return wrapper.find(ScheduleGeneratorContainer).children().instance();
     }
 
-    test("It generates a new schedule after adding a class", async () => {
+    test.skip("It generates a new schedule after adding a class", async () => {
         // TODO
         const instance = mountScheduleGenerator();
 

@@ -1,6 +1,4 @@
 import React from "react";
-import {shallow} from 'enzyme';
-import WeekCalendar from "../components/schedule/calendar/WeekCalendar";
 
 import {expect} from 'chai';
 import {testData, testSchedule} from "./utils/ScheduleBuidlerTestUtils";
@@ -13,10 +11,6 @@ describe('Google calendar integration', () => {
     let store;
     beforeEach(() => {
         store = getStore();
-    });
-
-    test('Renders correctly', () => {
-        expect(shallow(<WeekCalendar/>).find("#gcalendar-button").length).to.equal(1);
     });
 
     test("Gets the correct events from the schedule", () => {

@@ -76,6 +76,7 @@ class ScheduleBuilderContainer extends PureComponent {
         let comp1 = Object.assign({}, obj1, {
             id: null,
             sectionNum: null,
+            classTitle: null,
             usedBySections: null,
             usedByID: null,
             range: null
@@ -84,6 +85,7 @@ class ScheduleBuilderContainer extends PureComponent {
         let comp2 = Object.assign({}, obj2, {
             id: null,
             sectionNum: null,
+            classTitle: null,
             usedBySections: null,
             usedByID: null,
             range: null

@@ -22,9 +22,9 @@ export class DownloadOptions extends PureComponent {
     showOptions() {
         return (
             <div className="options-list">
-                <Button className="add-to-gcalendar-button" label="Google Calendar"
+                <Button className="gcalendar-button" label="Google Calendar"
                         onClick={addToCalendar.bind(this, this.props.currentSchedule, this.props.classData)}/>
-                <Button className="add-to-gcalendar-button ics-button" label="ics"
+                <Button className="gcalendar-button ics-button" label="ics"
                         onClick={downloadICS.bind(this, this.props.currentSchedule, this.props.classData)}/>
             </div>
         );
