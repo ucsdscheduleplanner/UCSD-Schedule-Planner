@@ -1,5 +1,4 @@
 import os
-import sys
 
 """
 This class is a storage area for various variables and settings.
@@ -13,17 +12,17 @@ PATHS
 HOME_DIR = os.path.dirname(os.path.abspath(__file__))
 
 # Database directory
-DATABASE_FOLDER_PATH = "/cache/database"
+DATABASE_FOLDER_PATH = os.path.join(HOME_DIR, "cache", "database")
 DATABASE_PATH = os.path.join(DATABASE_FOLDER_PATH, "data.db")
 
 # Image directory
 IMAGE_DIR = os.path.join(HOME_DIR, 'images')
 
 # Downloaded HTML directories
-COURSES_HTML_PATH = "/cache/course_pages"
-CAPES_HTML_PATH = "/cache/capes_pages"
+COURSES_HTML_PATH = os.path.join(HOME_DIR, "cache", "course_pages")
+CAPES_HTML_PATH = os.path.join("cache", "capes_pages")
 
-DRIVER_PATH = "/usr/local/bin/chromedriver"
+DRIVER_PATH = os.path.join("driver", "chromedriver_linux")
 
 """
 MODES
@@ -43,8 +42,11 @@ CAPES_URL = 'http://cape.ucsd.edu/responses/Results.aspx?CourseNumber='
 """
 VARIABLES
 """
+
+RAW_QUARTER_TABLE = "{}_RAW"
+
 # Current quarter (in string)
-QUARTER = "WI19"
+QUARTERS_TO_SCRAPE = ["SP19", "WI19"]
 # Time for timeout for browser
 TIMEOUT = 30
 

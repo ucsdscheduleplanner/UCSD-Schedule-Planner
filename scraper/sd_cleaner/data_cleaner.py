@@ -2,7 +2,7 @@ import itertools
 import sqlite3
 from itertools import groupby
 
-from settings import DATABASE_PATH
+from settings import DATABASE_PATH, QUARTERS_TO_SCRAPE, RAW_QUARTER_TABLE
 from utils.timeutils import TimeIntervalCollection
 
 """
@@ -26,29 +26,33 @@ class Cleaner:
         print('Finished cleaning database.')
 
     def setup_tables(self):
-        self.cursor.execute("DROP TABLE IF EXISTS CLASS_DATA")
-        self.cursor.execute("CREATE TABLE CLASS_DATA"
-                            "(DEPARTMENT TEXT, COURSE_NUM TEXT, SECTION_ID TEXT, COURSE_ID TEXT,"
-                            "TYPE TEXT, DAYS TEXT, TIME TEXT, LOCATION TEXT, ROOM TEXT, "
-                            "INSTRUCTOR TEXT, DESCRIPTION TEXT)")
+        for quarter in QUARTERS_TO_SCRAPE:
+            self.cursor.execute("DROP TABLE IF EXISTS {}".format(quarter))
+            self.cursor.execute("CREATE TABLE {}"
+                                "(DEPARTMENT TEXT, COURSE_NUM TEXT, SECTION_ID TEXT, COURSE_ID TEXT,"
+                                "TYPE TEXT, DAYS TEXT, TIME TEXT, LOCATION TEXT, ROOM TEXT, "
+                                "INSTRUCTOR TEXT, DESCRIPTION TEXT)".format(quarter))
 
     def begin_processing(self):
         # getting list of departments
         self.cursor.execute("SELECT * FROM DEPARTMENT")
         departments = [i["DEPT_CODE"] for i in self.cursor.fetchall()]
 
-        # handle each department separately
-        for department in departments:
-            self.process_department(department)
+        # handle each department and quarter separately
+        for quarter in QUARTERS_TO_SCRAPE:
+            print("Cleaning quarter {}".format(quarter))
+            for department in departments:
+                self.process_department(department, quarter)
 
     """
     Will store in format with partitions for the courseNums in the same format : i.e CSE3$0 means section 0 of CSE3.
     """
 
-    def process_department(self, department):
+    def process_department(self, department, quarter):
+        raw_table_name = RAW_QUARTER_TABLE.format(quarter)
         # getting all courseNums in department in order
         self.cursor.execute(
-            "SELECT * FROM CLASSES WHERE DEPARTMENT = ? ORDER BY ID", (department,))
+            "SELECT * FROM {} WHERE DEPARTMENT = ? ORDER BY ID".format(raw_table_name), (department,))
         visible_classes = [dict(row) for row in self.cursor.fetchall()]
         # doing this so fast_ptr knows where to stop
         visible_classes.append({"COURSE_NUM": None})
@@ -83,10 +87,10 @@ class Cleaner:
 
         for c in classes_to_insert:
             sql_str = """\
-                      INSERT INTO CLASS_DATA(DEPARTMENT, COURSE_NUM, SECTION_ID, \
+                      INSERT INTO {}(DEPARTMENT, COURSE_NUM, SECTION_ID, \
                       COURSE_ID, TYPE, DAYS, TIME, LOCATION, ROOM, INSTRUCTOR, DESCRIPTION)  \
                       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) \
-                    """
+                    """.format(quarter)
             self.cursor.execute(sql_str,
                                 (c["DEPARTMENT"],
                                  c["COURSE_NUM"],
@@ -205,4 +209,4 @@ class Cleaner:
         self.database.execute("VACUUM")
         self.database.close()
 
-# Cleaner().clean()
+#Cleaner().clean()

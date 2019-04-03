@@ -14,14 +14,14 @@ from selenium.webdriver.support.select import Select
 from selenium.webdriver.support.wait import WebDriverWait
 
 from scraper.scraper_util import Browser
+from settings import COURSES_HTML_PATH, QUARTERS_TO_SCRAPE
 from settings import DATABASE_PATH, DATABASE_FOLDER_PATH
-from settings import MAX_RETRIES, COURSES_HTML_PATH
 from settings import SCHEDULE_OF_CLASSES_URL
 from settings import TIMEOUT, DEPT_SEARCH_TIMEOUT
 
 QUARTER_INSERT_SCRIPT = """let select = document.getElementById("selectedTerm");
             let opt = document.createElement('option');
-            opt.value = "WI19";
+            opt.value = "SP19";
             opt.innerHTML = "bad";
             select.appendChild(opt);
             document.getElementById("selectedTerm").value = "{}";
@@ -65,30 +65,32 @@ class CourseScraperThread(Thread):
     def scrape_departments(self):
         with Browser() as self.browser:
             while not self.work_queue.empty():
-                department = self.work_queue.get()
-                self.scrape_department(department)
+                work = self.work_queue.get()
+                department = work["department"]
+                quarter = work["quarter"]
+                self.scrape_department(department, quarter)
                 self.work_queue.task_done()
 
-    def scrape_department(self, department):
+    def scrape_department(self, department, quarter):
         # If a thread receives an error during execution, kill all threads & mark program as crashed try:
         try:
-            self._scrape_department(department)
+            self._scrape_department(department, quarter)
         except:
             print("Error encountered by thread {}. Gracefully exiting ...".format(self.thread_id), file=sys.stderr)
             traceback.print_exc(file=sys.stderr)
 
-    def _scrape_department(self, department):
+    def _scrape_department(self, department, quarter):
         try:
             self.get_page(SCHEDULE_OF_CLASSES_URL)
             WebDriverWait(self.browser, TIMEOUT).until(EC.presence_of_element_located((By.ID, 'selectedSubjects')))
-            self.search_department(department)
-            self.scrape_pages(department)
+            self.search_department(department, quarter)
+            self.scrape_pages(department, quarter)
         except:
             print("Thread {} is exiting gracefully ...".format(self.thread_id), file=sys.stderr)
 
-    def search_department(self, department):
+    def search_department(self, department, quarter):
         # Script for running with the bug where we insert our own quarter code in the form
-        # browser.execute_script(QUARTER_INSERT_SCRIPT.format(QUARTER))
+        self.browser.execute_script(QUARTER_INSERT_SCRIPT.format(quarter))
         dept_select = Select(self.browser.find_element_by_id("selectedSubjects"))
         truncated_dept = department + (4 - len(department)) * " "
         WebDriverWait(self.browser, TIMEOUT).until(
@@ -122,7 +124,7 @@ class CourseScraperThread(Thread):
                                                                                              self.max_retries))
                     raise timeout_exception
 
-    def scrape_pages(self, department):
+    def scrape_pages(self, department, quarter):
         # now I should be at the course pages
         current_page = 1
         base_url = self.browser.current_url
@@ -141,20 +143,21 @@ class CourseScraperThread(Thread):
                 return True
 
             html = self.browser.page_source
-            self.save_page(department, html, current_page)
+            self.save_page(department, quarter, html, current_page)
 
             current_page += 1
             current_url = base_url + "?page={}".format(current_page)
             self.get_page(current_url)
 
     # Attempts to store the given page contents into a file in our cache
-    def save_page(self, department, page_contents, num_page):
+    def save_page(self, department, quarter, page_contents, num_page):
+        quarter_path = os.path.join(COURSES_HTML_PATH, quarter)
         # Create department folder if it doesn't exist
-        department_path = os.path.join(COURSES_HTML_PATH, department)
+        department_path = os.path.join(quarter_path, department)
         if not os.path.exists(department_path):
             os.makedirs(department_path)
         file_path = os.path.join(department_path, str(num_page) + '.html')
-        log_msg = '[T{0}] Saving {1} (#{2}) to {3}'.format(self.thread_id, department, num_page, file_path)
+        log_msg = '[T{0}] Saving {1} (Page #{2}) (Quarter {3}) to {4}'.format(self.thread_id, department, num_page, quarter, file_path)
         writer.write(file_path, page_contents, log_msg)
 
 
@@ -170,8 +173,10 @@ class CourseScraper:
         # fetching the data returns a tuple with one element,
         # so using list comprehension to convert the data
         self.departments = [i[0] for i in self.cursor.fetchall()]
-        for department in self.departments:
-            self.department_queue.put(department)
+
+        for quarter in QUARTERS_TO_SCRAPE:
+            for department in self.departments:
+                self.department_queue.put({"department": department, "quarter": quarter})
 
         # Recreate top level folder
         if os.path.exists(COURSES_HTML_PATH):

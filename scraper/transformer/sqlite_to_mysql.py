@@ -2,13 +2,14 @@ import configparser
 import os
 import sqlite3
 import MySQLdb as mysql
-from settings import DATABASE_PATH
+from settings import DATABASE_PATH, QUARTERS_TO_SCRAPE
 
 config = configparser.ConfigParser()
 config.read(os.path.join(os.path.abspath(os.path.dirname(__file__)), "..", "config", "config.example.ini"))
 username = config["DB"]["USERNAME"]
 password = config["DB"]["PASSWORD"]
 endpoint = config["DB"]["ENDPOINT"]
+
 
 def export_to_mysql():
     print("Beginning export to MySQL")
@@ -30,53 +31,57 @@ def export_to_mysql():
     SQLITE CLASS_DATA TO MYSQL CLASS_DATA
     """
 
-    # Creating the class data table
-    mysql_cursor.execute("DROP TABLE IF EXISTS CLASS_DATA")
-    mysql_cursor.execute("CREATE TABLE CLASS_DATA"
-                         "(DEPARTMENT VARCHAR(255), COURSE_NUM VARCHAR(255), SECTION_ID TEXT, COURSE_ID TEXT, "
-                         "TYPE TEXT, DAYS TEXT, TIME TEXT, LOCATION TEXT, ROOM TEXT, "
-                         "INSTRUCTOR TEXT, DESCRIPTION TEXT)")
+    for quarter in QUARTERS_TO_SCRAPE:
+        # Creating the class data table
+        mysql_cursor.execute("DROP TABLE IF EXISTS {}".format(quarter))
+        mysql_cursor.execute("CREATE TABLE {}"
+                             "(DEPARTMENT VARCHAR(255), COURSE_NUM VARCHAR(255), SECTION_ID TEXT, COURSE_ID TEXT, "
+                             "TYPE TEXT, DAYS TEXT, TIME TEXT, LOCATION TEXT, ROOM TEXT, "
+                             "INSTRUCTOR TEXT, DESCRIPTION TEXT)".format(quarter))
 
-    sqlite_cursor.execute("SELECT * FROM CLASS_DATA")
-    class_rows = sqlite_cursor.fetchall()
+        class_index_str = "ALTER TABLE `{}` ADD INDEX (DEPARTMENT(15), COURSE_NUM(150))".format(quarter)
+        mysql_cursor.execute(class_index_str)
 
-    for sql_row in class_rows:
-        sql_str = """\
-                          INSERT INTO CLASS_DATA(DEPARTMENT, COURSE_NUM, SECTION_ID, \
+        sqlite_cursor.execute("SELECT * FROM {}".format(quarter))
+        class_rows = sqlite_cursor.fetchall()
+
+        for sql_row in class_rows:
+            sql_str = """\
+                          INSERT INTO {}(DEPARTMENT, COURSE_NUM, SECTION_ID, \
                           COURSE_ID, TYPE, DAYS, TIME, LOCATION, ROOM, INSTRUCTOR, DESCRIPTION)  \
                           VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) \
-                        """
-        row = dict(sql_row)
-        mysql_cursor.execute(sql_str,
-                             (row["DEPARTMENT"],
-                              row["COURSE_NUM"],
-                              row["SECTION_ID"],
-                              row["COURSE_ID"],
-                              row["TYPE"],
-                              row["DAYS"],
-                              row["TIME"],
-                              row["LOCATION"],
-                              row["ROOM"],
-                              row["INSTRUCTOR"],
-                              row["DESCRIPTION"],
-                              ))
+                        """.format(quarter)
+            row = dict(sql_row)
+            mysql_cursor.execute(sql_str,
+                                 (row["DEPARTMENT"],
+                                  row["COURSE_NUM"],
+                                  row["SECTION_ID"],
+                                  row["COURSE_ID"],
+                                  row["TYPE"],
+                                  row["DAYS"],
+                                  row["TIME"],
+                                  row["LOCATION"],
+                                  row["ROOM"],
+                                  row["INSTRUCTOR"],
+                                  row["DESCRIPTION"],
+                                  ))
     """
     SQLITE CAPES_DATA TO MYSQL CAPES_DATA 
     """
 
     mysql_cursor.execute("DROP TABLE IF EXISTS CAPES_DATA")
     mysql_cursor.execute("CREATE TABLE CAPES_DATA"
-                        "(DEPARTMENT VARCHAR(255), COURSE_NUM VARCHAR(255), INSTRUCTOR TEXT, "
-                        "TERM TEXT, ENROLLMENT TEXT, EVALUATIONS TEXT, PERCENT_RECOMMEND_CLASS TEXT, "
-                        "PERCENT_RECOMMEND_INSTRUCTOR TEXT, HOURS_PER_WEEK TEXT, EXPECTED_GPA TEXT, "
-                        "RECEIVED_GPA TEXT)")
+                         "(DEPARTMENT VARCHAR(255), COURSE_NUM VARCHAR(255), INSTRUCTOR TEXT, "
+                         "TERM TEXT, ENROLLMENT TEXT, EVALUATIONS TEXT, PERCENT_RECOMMEND_CLASS TEXT, "
+                         "PERCENT_RECOMMEND_INSTRUCTOR TEXT, HOURS_PER_WEEK TEXT, EXPECTED_GPA TEXT, "
+                         "RECEIVED_GPA TEXT)")
 
     sqlite_cursor.execute("SELECT * FROM CAPES_DATA")
     capes_rows = sqlite_cursor.fetchall()
 
     sql_columns = ["DEPARTMENT", "COURSE_NUM", "INSTRUCTOR", "TERM", "ENROLLMENT", "EVALUATIONS",
-                    "PERCENT_RECOMMEND_CLASS", "PERCENT_RECOMMEND_INSTRUCTOR", "HOURS_PER_WEEK",
-                    "EXPECTED_GPA", "RECEIVED_GPA"]
+                   "PERCENT_RECOMMEND_CLASS", "PERCENT_RECOMMEND_INSTRUCTOR", "HOURS_PER_WEEK",
+                   "EXPECTED_GPA", "RECEIVED_GPA"]
     column_names = ', '.join(sql_columns)
     column_blanks = ', '.join(['%s' for _ in range(len(sql_columns))])
 
@@ -104,10 +109,7 @@ def export_to_mysql():
         row = dict(sql_row)
         mysql_cursor.execute(sql_str, (row["DEPT_CODE"],))
 
-    class_index_str = "ALTER TABLE `CLASS_DATA` ADD INDEX (`DEPARTMENT`, `COURSE_NUM`)"
-    mysql_cursor.execute(class_index_str)
-
-    capes_index_str = "ALTER TABLE `CAPES_DATA` ADD INDEX (`DEPARTMENT`, `COURSE_NUM`)"
+    capes_index_str = "ALTER TABLE `CAPES_DATA` ADD INDEX (DEPARTMENT(15), COURSE_NUM(150))"
     mysql_cursor.execute(capes_index_str)
 
     """
@@ -121,3 +123,6 @@ def export_to_mysql():
     mysql_db.close()
 
     print("Finishing export to MySQL")
+
+
+#export_to_mysql()

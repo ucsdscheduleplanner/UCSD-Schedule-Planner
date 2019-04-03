@@ -8,6 +8,7 @@ from scraper_impl.department_scraper import DepartmentScraper
 from sd_cleaner.data_cleaner import Cleaner
 from sd_parser.capes_parser import CAPESParser
 from sd_parser.data_parser import CourseParser
+from settings import QUARTERS_TO_SCRAPE
 from transformer.sqlite_to_mysql import export_to_mysql
 
 
@@ -23,7 +24,7 @@ def main():
     record_execution_time(department_scraper.scrape, 'Department Scraping')
 
     course_scraper = CourseScraper()
-    record_execution_time(course_scraper.scrape, 'Course Scraping')
+    record_execution_time(course_scraper.scrape, 'Course Scraping {} '.format(QUARTERS_TO_SCRAPE))
 
     capes_scraper = CAPESScraper()
     record_execution_time(capes_scraper.scrape, 'CAPES Scraping')
@@ -33,7 +34,7 @@ def main():
         sys.exit(1)
 
     parser = CourseParser()
-    record_execution_time(parser.parse, 'Course Parsing')
+    record_execution_time(parser.parse, 'Course Parsing {}'.format(QUARTERS_TO_SCRAPE))
 
     cleaner = Cleaner()
     record_execution_time(cleaner.clean, 'Cleaning')

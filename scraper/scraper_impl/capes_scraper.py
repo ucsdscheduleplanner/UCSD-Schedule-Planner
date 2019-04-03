@@ -1,14 +1,15 @@
 import os
+import shutil
 import sqlite3
-import requests
 import sys
 import traceback
-
 from threading import Thread, Lock
+
+import requests
 from requests.exceptions import Timeout
 
-from settings import DATABASE_PATH, MAX_RETRIES
 from settings import CAPES_URL, CAPES_HTML_PATH
+from settings import DATABASE_PATH, MAX_RETRIES
 
 CAPES_HOST = 'cape.ucsd.edu'
 CAPES_ACCEPT = 'html'
