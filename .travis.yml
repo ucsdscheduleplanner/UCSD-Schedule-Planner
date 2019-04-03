@@ -1,11 +1,10 @@
 dist: trusty
 language: minimal
-branches:
-  # only:      # will be useful if we have limited plan someday
-  #   - master
-  except:
-  - legacy
-  - experimental
+# branches:
+#   only:      
+#   - master
+#  except:
+#  - legacy
 sudo: false
 before_install:
   - nvm install node
