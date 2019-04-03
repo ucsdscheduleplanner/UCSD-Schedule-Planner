@@ -1,7 +1,7 @@
 dist: trusty
 language: minimal
 branches:
-  # only:
+  # only:      # will be useful if we have limited plan someday
   #   - master
   except:
   - legacy
@@ -10,14 +10,16 @@ sudo: false
 before_install:
   - nvm install node
   - npm --version
-  - curl -o- -L https://yarnpkg.com/install.sh | bash -s -- --version 1.13.0 # might update
+  # need to manually update the version (if needed)
+  # https://yarnpkg.com/lang/en/docs/install-ci/
+  - curl -o- -L https://yarnpkg.com/install.sh | bash -s -- --version 1.15.2
   - export PATH=$HOME/.yarn/bin:$PATH
 cache:
   yarn: true
   directories:
     - node_modules
 install:
-  # - rm -rf ./node_modules # clean up
+  # - rm -rf ./node_modules # clean up if don't want cache
   - yarn --version
 script:
   - yarn --cwd ./frontend install
