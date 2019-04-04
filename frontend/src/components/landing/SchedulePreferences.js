@@ -9,7 +9,7 @@ import 'rc-time-picker/assets/index.css';
 import TimePicker from 'rc-time-picker';
 
 /*
-    This class should hold the UI for settings options for the generationResult.
+    This class should hold the UI for settings option for the generationResult.
  */
 export default class SchedulePreferences extends PureComponent {
     constructor(props) {

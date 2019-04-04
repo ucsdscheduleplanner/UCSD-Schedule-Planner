@@ -50,6 +50,8 @@ describe("Schedule building", () => {
         const displayedSchedule = instance.getDisplayedSchedule();
         const displayedEventsInfo = ClassUtils.getEventInfo(displayedSchedule, testData);
         const dedupeEventsInfo = instance.dedupeEventsInfo(displayedEventsInfo);
+
+        console.log(dedupeEventsInfo);
         chaiExpect(dedupeEventsInfo).to.have.lengthOf(2);
     });
 });

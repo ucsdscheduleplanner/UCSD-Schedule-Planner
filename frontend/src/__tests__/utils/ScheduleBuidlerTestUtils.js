@@ -14,6 +14,7 @@ export const testData = [
         department: "CSE",
         sections: [{
             id: "961434",
+            classTitle: "CSE 12",
             sectionNum: "CSE12$0",
             subsections: [{
                 day: "Tu",
@@ -26,6 +27,7 @@ export const testData = [
         },
             {
                 id: "961434",
+                classTitle: "CSE 12",
                 sectionNum: "CSE12$1",
                 subsections: [{
                     day: "Tu",
@@ -45,6 +47,7 @@ export const testData = [
         department: "CSE",
         sections: [{
             id: "961434",
+            classTitle: "CSE 11",
             sectionNum: "CSE11$0",
             subsections: [{
                 day: "Tu",

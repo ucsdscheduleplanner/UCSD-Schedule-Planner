@@ -3,11 +3,10 @@ import {ReactComponent as ViewIcon} from "../../svg/icon-view.svg";
 import ScheduleGeneratorContainer from "./generator/ScheduleGeneratorContainer";
 import Toggle from 'react-toggle';
 import "./Schedule.css";
-
 import ScheduleBuilderContainer from "./builder/ScheduleBuilderContainer";
 import {BUILDER_MODE, GENERATOR_MODE} from "../../reducers/ScheduleReducer";
 import PropTypes from 'prop-types';
-
+import DownloadOptionsContainer from "../../utils/download/DownloadOptionsContainer";
 
 export class Schedule extends PureComponent {
 
@@ -54,6 +53,7 @@ export class Schedule extends PureComponent {
                                     this.props.scheduleMode === BUILDER_MODE && this.getHelperMessage()
                                 }
                             </div>
+                            <DownloadOptionsContainer />
                             <Toggle
                                 className="schedule-header__button"
                                 checked={this.isToggled()}
@@ -63,9 +63,11 @@ export class Schedule extends PureComponent {
                     </div>
                 </div>
 
+
                 <div className="schedule__body">
                     {this.props.scheduleMode === BUILDER_MODE ? <ScheduleBuilderContainer/> :
                         <ScheduleGeneratorContainer/>}
+
                 </div>
             </div>
         )

@@ -23,11 +23,11 @@
 }
 
 .custom-button.custom-button__corner--default {
-    border-radius: 3px;
+    border-radius: 0.3em;
 }
 
 .custom-button.custom-button__corner--round {
-    border-radius: 20px;
+    border-radius: 0.6em;
 }
 
 

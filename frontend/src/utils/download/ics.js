@@ -6,6 +6,40 @@
 /* exported ics */
 
 import FileSaver from 'file-saver';
+import ClassUtils from "../class/ClassUtils";
+
+const GTIME_FORMAT = "YYYY-MM-DDTHH:mm:ssZ";
+
+function getEvents(schedule, classData) {
+    return ClassUtils.getEventInfo(schedule, classData);
+}
+
+export function downloadICS(schedule, classData) {
+    const events = getEvents(schedule, classData);
+    const calendar = ics();
+
+    for (let event of events) {
+        let fiveWeeksAhead = new Date();
+        // setting five weeks ahead
+        fiveWeeksAhead.setDate(fiveWeeksAhead.getDate() + 35);
+        let recurringEventRule = {
+            freq: "WEEKLY",
+            until: fiveWeeksAhead,
+            interval: 1,
+            byday: [event.day]
+        };
+
+        calendar.addEvent(
+            event.classTitle,
+            event.description,
+            event.location,
+            event.range.start.format(GTIME_FORMAT),
+            event.range.start.format(GTIME_FORMAT),
+            recurringEventRule
+        )
+    }
+    calendar.download("Calendar");
+}
 
 export function ics(uidDomain, prodId) {
     if (navigator.userAgent.indexOf('MSIE') > -1 && navigator.userAgent.indexOf('MSIE 10') === -1) {

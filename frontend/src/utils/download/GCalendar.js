@@ -1,4 +1,5 @@
 import moment from 'moment';
+import ClassUtils from "../class/ClassUtils";
 
 const CONFIG_KEY_CLIENT_ID = "client-id";
 const CONFIG_API_KEY = "api-key";
@@ -16,21 +17,21 @@ const GTIME_FORMAT = "YYYY-MM-DDTHH:mm:ssZ";
 const NUM_WEEKS_AHEAD = 5;
 const RECURRING_EVENT_RULE = "RRULE:FREQ=WEEKLY;COUNT=" + NUM_WEEKS_AHEAD;
 
-export function addEvents(subsections) {
+export function getEvents(schedule, classData) {
     let events = [];
+    const data = ClassUtils.getEventInfo(schedule, classData);
 
-    for (let i = 0; i < subsections.length; i++) {
-        const subsection = subsections[i];
+    for (let Class of data) {
         events.push({
-            'summary': subsection.classTitle,
-            'location': subsection.location,
-            'description': subsection.description,
+            'summary': Class.classTitle,
+            'location': `${Class.location} ${Class.room}`,
+            'description': Class.description,
             'start': {
-                "dateTime": moment(subsection.timeInterval['start']).format(GTIME_FORMAT),
+                "dateTime": Class.range.start.format(GTIME_FORMAT),
                 "timeZone": "America/Los_Angeles"
             },
             'end': {
-                "dateTime": moment(subsection.timeInterval['end']).format(GTIME_FORMAT),
+                "dateTime": Class.range.end.format(GTIME_FORMAT),
                 "timeZone": "America/Los_Angeles"
             },
             'recurrence': [
@@ -38,6 +39,11 @@ export function addEvents(subsections) {
             ],
         });
     }
+    return events;
+}
+
+export function addToCalendar(schedule, classData) {
+    const events = getEvents(schedule, classData);
     // Client ID and API key from the Developer Console
 
     const CLIENT_ID = configs[CONFIG_KEY_CLIENT_ID];

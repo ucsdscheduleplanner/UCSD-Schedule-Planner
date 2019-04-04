@@ -33,7 +33,7 @@
 .schedule__body {
     height: 100%;
     min-height: 0;
-    margin: 0 5em 3em 2em;
+    margin: 0 2em 3em 2em;
 }
 
 .schedule__header__body {
@@ -120,8 +120,8 @@
     position: absolute;
     width: 14px;
     height: 10px;
-    top: 0px;
-    bottom: 0px;
+    top: 0;
+    bottom: 0;
     margin-top: auto;
     margin-bottom: auto;
     line-height: 0;
@@ -194,4 +194,3 @@
     -moz-box-shadow: 0 0 5px 5px #0099E0;
     box-shadow: 0 0 5px 5px #0099E0;
 }
-

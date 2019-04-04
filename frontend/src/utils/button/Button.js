@@ -16,6 +16,13 @@ export const Button = (props) => {
                 onMouseLeave={props.onMouseLeave}
                 onClick={props.onClick}>
             {props.label}
+            {props.children}
         </button>
     );
+};
+
+Button.defaultProps = {
+    onClick: () => {},
+    onMouseEnter: () => {},
+    onMouseLeave: () => {}
 };
