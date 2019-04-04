@@ -89,7 +89,7 @@ class CAPESScraper:
 
         # Iterate through each department that the thread is assigned to
         for counter in range(thread_id, len(self.departments), num_threads):
-            # Exit if any part of the scraper_impl has crashed
+            # Exit if any part of the scraper has crashed
             if self.has_crashed():
                 print("Thread {} is exiting gracefully ...".format(thread_id), file=sys.stderr)
                 return
