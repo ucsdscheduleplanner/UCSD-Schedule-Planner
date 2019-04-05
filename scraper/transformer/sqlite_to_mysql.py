@@ -1,14 +1,13 @@
-import configparser
-import os
 import sqlite3
-import MySQLdb as mysql
-from settings import DATABASE_PATH, QUARTERS_TO_SCRAPE
 
-config = configparser.ConfigParser()
-config.read(os.path.join(os.path.abspath(os.path.dirname(__file__)), "..", "config", "config.example.ini"))
-username = config["DB"]["USERNAME"]
-password = config["DB"]["PASSWORD"]
-endpoint = config["DB"]["ENDPOINT"]
+import MySQLdb as mysql
+
+from settings import DATABASE_PATH, QUARTERS_TO_SCRAPE, CONFIG
+
+username = CONFIG["DB"]["USERNAME"]
+password = CONFIG["DB"]["PASSWORD"]
+endpoint = CONFIG["DB"]["ENDPOINT"]
+database_name = CONFIG["DB"]["DB_NAME"]
 
 
 def export_to_mysql():
@@ -18,20 +17,40 @@ def export_to_mysql():
     CONNECT TO DATABASES 
     """
 
-    # Will connect to running mysql instance
-    mysql_db = mysql.connect(host=endpoint, user=username, passwd=password, db="classes")
+    print("Creating database {} if it doesn't exist".format(database_name))
+    # Will connect to running mysql instance and create the database - have to reconnect after creating
+    mysql_db = mysql.connect(host=endpoint, user=username, passwd=password)
+    mysql_db.cursor().execute("CREATE DATABASE IF NOT EXISTS {}".format(database_name))
+    mysql_db.close()
+    print("Connecting to mysql...")
+    mysql_db = mysql.connect(host=endpoint, user=username, passwd=password, db=database_name)
+    mysql_cursor = mysql_db.cursor()
+
+    print("Connecting to sqlite...")
+    mysql_db = mysql.connect(host=endpoint, user=username, passwd=password, db=database_name)
     # Will connect to sqlite db
     sqlite_db = sqlite3.connect(DATABASE_PATH)
     sqlite_db.row_factory = sqlite3.Row
-
-    mysql_cursor = mysql_db.cursor()
     sqlite_cursor = sqlite_db.cursor()
+
+    print("Creating quarters table if it doesn't exist...")
+    mysql_cursor.execute("DROP TABLE IF EXISTS {}".format("QUARTERS"))
+    mysql_cursor.execute("CREATE TABLE {}(QUARTERS VARCHAR(40))".format("QUARTERS"))
+    for quarter in QUARTERS_TO_SCRAPE:
+        quarter_sql_str = """\
+                          INSERT INTO {}(QUARTERS) \
+                          VALUES (%s) \
+                        """.format("QUARTERS")
+        mysql_cursor.execute(quarter_sql_str, (quarter,))
 
     """
     SQLITE CLASS_DATA TO MYSQL CLASS_DATA
     """
 
+    print("Transferring data from sqlite to mysql...")
     for quarter in QUARTERS_TO_SCRAPE:
+        print("Creating table {} if it doesn't exist...".format(quarter))
+
         # Creating the class data table
         mysql_cursor.execute("DROP TABLE IF EXISTS {}".format(quarter))
         mysql_cursor.execute("CREATE TABLE {}"
@@ -119,10 +138,13 @@ def export_to_mysql():
     # adding changes
     mysql_db.commit()
 
+    print("Closing connections")
+
     sqlite_db.close()
     mysql_db.close()
 
     print("Finishing export to MySQL")
 
 
-#export_to_mysql()
+if __name__ == "__main__":
+    export_to_mysql()

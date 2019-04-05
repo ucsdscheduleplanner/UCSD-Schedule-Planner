@@ -1,4 +1,8 @@
+import json
 import os
+import configparser
+
+
 
 """
 This class is a storage area for various variables and settings.
@@ -10,6 +14,9 @@ PATHS
 
 # Where the directory is placed
 HOME_DIR = os.path.dirname(os.path.abspath(__file__))
+
+CONFIG = configparser.ConfigParser()
+CONFIG.read(os.path.join(HOME_DIR, "config", "config.example.ini"))
 
 # Database directory
 DATABASE_FOLDER_PATH = os.path.join(HOME_DIR, "cache", "database")
@@ -46,7 +53,7 @@ VARIABLES
 RAW_QUARTER_TABLE = "{}_RAW"
 
 # Current quarter (in string)
-QUARTERS_TO_SCRAPE = ["SP19", "WI19"]
+QUARTERS_TO_SCRAPE = json.loads(CONFIG["VARS"]["QUARTERS"])
 # Time for timeout for browser
 TIMEOUT = 30
 
