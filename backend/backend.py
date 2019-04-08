@@ -31,7 +31,7 @@ def get_all_classes_in(department, quarter):
     sql = text(
         "SELECT DISTINCT COURSE_NUM, DEPARTMENT, "
         "INSTRUCTOR, TYPE, DESCRIPTION FROM :quarter WHERE DEPARTMENT = :department")
-    result = cursor.execute(sql, department=department).fetchall()
+    result = cursor.execute(sql, quarter=quarter,department=department).fetchall()
     # use dict here for fast lookup
     ret_dict["CLASS_SUMMARY"] = {}
     for row in result:
