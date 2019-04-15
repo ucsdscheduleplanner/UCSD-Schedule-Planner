@@ -1,8 +1,11 @@
-FROM joyzoursky/python-chromedriver:3.7
+FROM ubuntu
+
+# Installing chromium, should put a version on this 
+RUN apt-get -y update
+RUN apt-get -y install chromium-browser
 
 ENV DEBIAN_FRONTEND noninteractive
 
-RUN apt-get update
 RUN apt-get -y install locales 
 RUN sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen && locale-gen
 ENV LANG en_US.UTF-8  
