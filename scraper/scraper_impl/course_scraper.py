@@ -13,7 +13,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.select import Select
 from selenium.webdriver.support.wait import WebDriverWait
 
-from scraper.scraper_util import Browser
+from utils.scraper_util import Browser
 from settings import COURSES_HTML_PATH, QUARTERS_TO_SCRAPE
 from settings import DATABASE_PATH, DATABASE_FOLDER_PATH
 from settings import SCHEDULE_OF_CLASSES_URL

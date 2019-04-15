@@ -6,6 +6,12 @@ from flask_cors import CORS
 from flask_caching import Cache
 from backend import generate_class_json, get_all_classes_in, get_departments
 
+import configparser, os
+
+config = configparser.ConfigParser()
+config.read(os.path.join(os.path.abspath(os.path.dirname(__file__)), "config", "config.example.ini"))
+DEFAULT_QUARTER = config["DB"]["DEFAULT_QUARTER"]
+
 application = Flask(__name__)
 CORS(application)
 Compress(application)
@@ -25,10 +31,12 @@ def return_db_data():
     classes = request_json['classes']
     ret_classes = {}
 
+    quarter = request_json['quarter'] if 'quarter' in request_json else DEFAULT_QUARTER
+
     for Class in classes:
         department, course_num = Class['department'], Class['courseNum']
         full_name = "{} {}".format(department, course_num)
-        ret_classes[full_name] = generate_class_json(department, course_num)
+        ret_classes[full_name] = generate_class_json(department, course_num, quarter)
 
     return jsonify(ret_classes)
 
@@ -44,7 +52,10 @@ def return_department_list():
 @cache.cached(timeout=3600, key_prefix="class_summaries", query_string=True)
 def return_classes():
     department = request.args.get('department')
-    classes = get_all_classes_in(department)
+
+    # quarter = request.args.get('quarter') if 'quarter' in request.args else DEFAULT_QUARTER
+    quarter = request.args.get('quarter', DEFAULT_QUARTER, type=str)
+    classes = get_all_classes_in(department, quarter)
     return jsonify(classes)
 
 
