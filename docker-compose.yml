@@ -6,6 +6,8 @@ services:
     image: mariadb:latest
     environment:
       - "MYSQL_ROOT_PASSWORD=password" 
+      - "MYSQL_USER=user"
+      - "MYSQL_PASSWORD=password"
       - "MYSQL_DATABASE=classes"
     volumes:
       - "sdschedule-data:/var/lib/mysql"
