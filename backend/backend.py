@@ -21,6 +21,7 @@ cursor = create_engine(CONN_STRING,
                        pool_recycle=3600)
 
 # Caching departments and class types
+# TODO: might have to cache different data for different quarters
 departments = []
 class_types = []
 
