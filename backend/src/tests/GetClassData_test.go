@@ -1,7 +1,7 @@
 package tests
 
 import (
-	"backend"
+	"backend/routes"
 	"bytes"
 	"encoding/json"
 	"io/ioutil"
@@ -9,40 +9,6 @@ import (
 	"net/http/httptest"
 	"testing"
 )
-
-func TestGetDepartments(t *testing.T) {
-	req, err := http.NewRequest("GET", "/api_department", nil)
-
-	if err != nil {
-		t.Errorf("Could not create request")
-	}
-
-	response := GetDepartments(req)
-
-	if response.Code != 200 {
-		t.Errorf("Expected a 200 code but got %d", response.Code)
-	}
-
-	body, err := ioutil.ReadAll(response.Body)
-
-	var departments []string
-	err = json.Unmarshal(body, &departments)
-
-	if err != nil {
-		t.Errorf("Server did not send valid JSON")
-	}
-}
-
-func TestGetDepartmentsOnPostFails(t *testing.T) {
-	req, err := http.NewRequest("POST", "/api_department", nil)
-
-	if err != nil {
-		t.Errorf("Could not create request")
-	}
-
-	response := GetDepartments(req)
-	checkResponseCode(t, http.StatusMethodNotAllowed, response.Code)
-}
 
 func TestGetClassData(t *testing.T) {
 	data := map[string]string{
@@ -67,7 +33,7 @@ func TestGetClassData(t *testing.T) {
 	response := GetClassData(req)
 	body, err := ioutil.ReadAll(response.Body)
 
-	var classData []backend.Subclass
+	var classData []routes.Subclass
 	err = json.Unmarshal(body, &classData)
 
 	if len(classData) == 0 {
@@ -87,20 +53,19 @@ func TestGetClassData(t *testing.T) {
 	checkResponseCode(t, http.StatusOK, response.Code)
 }
 
-func GetDepartments(request *http.Request) *httptest.ResponseRecorder {
-	recorder := httptest.NewRecorder()
-	backend.GetDepartments(recorder, request)
-	return recorder
+func TestGetRequestClassDataFails(t *testing.T) {
+	req, err := http.NewRequest("GET", "/api_class_data", nil)
+
+	if err != nil {
+		t.Errorf("Could not create request")
+	}
+
+	response := GetClassData(req)
+	checkResponseCode(t, http.StatusMethodNotAllowed, response.Code)
 }
 
 func GetClassData(request *http.Request) *httptest.ResponseRecorder {
 	recorder := httptest.NewRecorder()
-	backend.GetClassData(recorder, request)
+	routes.GetClassData(recorder, request)
 	return recorder
-}
-
-func checkResponseCode(t *testing.T, expected, actual int) {
-	if expected != actual {
-		t.Errorf("Expected response code %d. Got %d\n", expected, actual)
-	}
 }
