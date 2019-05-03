@@ -16,7 +16,9 @@ func main() {
 
 	http.HandleFunc("/api_departments", routes.GetDepartments)
 	http.HandleFunc("/api_class_data", routes.GetClassData)
-	http.HandleFunc("/api_department_summary", routes.GetDepartmentSummary)
+	http.HandleFunc("/api_course_nums", routes.GetCourseNums)
+	http.HandleFunc("/api_instructors", routes.GetInstructors)
+	http.HandleFunc("/api_types", routes.GetTypes)
 
 	if err := http.ListenAndServe(":8080", nil); err != nil {
 		panic(err)

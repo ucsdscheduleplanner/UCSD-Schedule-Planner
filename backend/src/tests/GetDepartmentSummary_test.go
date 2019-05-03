@@ -10,7 +10,7 @@ import (
 )
 
 func TestGetDepartmentSummary(t *testing.T) {
-	req, err := http.NewRequest("GET", "/api_department_summary?department=CSE&quarter=SP19", nil)
+	req, err := http.NewRequest("GET", "/api_course_nums?department=CSE&quarter=SP19", nil)
 
 	if err != nil {
 		t.Fatal("Could not create the request.")
@@ -36,7 +36,7 @@ func TestGetDepartmentSummary(t *testing.T) {
 }
 
 func TestGetDepartmentSummaryFailsOnPost(t *testing.T) {
-	req, err := http.NewRequest("POST", "/api_department_summary?department=CSE&quarter=SP19", nil)
+	req, err := http.NewRequest("POST", "/api_course_nums?department=CSE&quarter=SP19", nil)
 
 	if err != nil {
 		t.Fatal("Could not create the request.")
@@ -49,6 +49,6 @@ func TestGetDepartmentSummaryFailsOnPost(t *testing.T) {
 
 func GetDepartmentSummary(request *http.Request) *httptest.ResponseRecorder {
 	recorder := httptest.NewRecorder()
-	routes.GetDepartmentSummary(recorder, request)
+	routes.GetCourseNums(recorder, request)
 	return recorder
 }

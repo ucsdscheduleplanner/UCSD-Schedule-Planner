@@ -3,6 +3,7 @@ package routes
 import (
 	"backend"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 )
@@ -37,7 +38,7 @@ type Subclass struct {
 	CourseNum   string `json:"courseNum"`
 	SectionId   string `json:"sectionId"`
 	CourseId    string `json:"courseId"`
-	ClassType   string `json:"classType"`
+	ClassType   string `json:"type"`
 	Days        string `json:"days"`
 	Time        string `json:"time"`
 	Location    string `json:"location"`
@@ -64,9 +65,10 @@ func GetClassData(writer http.ResponseWriter, request *http.Request) {
 		db := backend.New(Config)
 		defer db.Close()
 
-		var ret []Subclass
+		ret := make(map[string][]Subclass)
 		for i := 0; i < len(classesToQuery); i++ {
 			currentClass := classesToQuery[i]
+			classTitle := fmt.Sprintf("%s %s", currentClass.department, currentClass.courseNumber)
 			query := "SELECT * FROM " + currentClass.quarter + " WHERE DEPARTMENT=? AND COURSE_NUM=?"
 			rows := db.Query(currentClass.quarter, query, currentClass.department, currentClass.courseNumber)
 
@@ -94,7 +96,7 @@ func GetClassData(writer http.ResponseWriter, request *http.Request) {
 					http.Error(writer, "Error retrieving data", http.StatusInternalServerError)
 				}
 
-				ret = append(ret, subClass)
+				ret[classTitle] = append(ret[classTitle], subClass)
 			}
 		}
 		retJson, err := json.Marshal(ret)

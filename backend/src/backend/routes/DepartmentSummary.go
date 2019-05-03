@@ -12,7 +12,7 @@ type DepartmentSummary struct {
 	Description string	`json:"description"`
 }
 
-func GetDepartmentSummary(writer http.ResponseWriter, request *http.Request) {
+func GetCourseNums(writer http.ResponseWriter, request *http.Request) {
 	if request.Method == "GET" {
 		keys, ok := request.URL.Query()["department"]
 		department := keys[0]
