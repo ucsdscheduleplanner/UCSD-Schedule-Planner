@@ -9,8 +9,7 @@ import ScheduleGeneratorEventWrapper from "./event/ScheduleGeneratorEventWrapper
 class ScheduleGeneratorContainer extends PureComponent {
 
     componentDidUpdate(prevProps) {
-        if (this.props.selectedClasses !== prevProps.selectedClasses) {
-            this.props.getCleanClassData().then(() => {
+        if (this.props.selectedClasses !== prevProps.selectedClasses) { this.props.getCleanClassData().then(() => {
                 this.props.getSchedule();
             });
         }

@@ -34,7 +34,7 @@ describe("ClassInput actions such as adding, editing and removing classes", () =
 
     beforeEach((done) => {
         store = createStore(reducers, applyMiddleware(thunk));
-        DataFetcher.fetchClassSummaryFor = (department) => {
+        DataFetcher.fetchCourseNums = (department) => {
             return new Promise((resolve, reject) => {
                 resolve(
                     {
@@ -153,7 +153,7 @@ describe("ClassInput actions such as adding, editing and removing classes", () =
     describe("Editing classes", () => {
         test('Can edit a simple class correctly', async () => {
             // mock function
-            DataFetcher.fetchClassSummaryFor = (department) => {
+            DataFetcher.fetchCourseNums = (department) => {
                 return new Promise((resolve, reject) => {
                     resolve(
                         {
@@ -231,7 +231,7 @@ describe("ClassInput actions such as adding, editing and removing classes", () =
             // giving wrong results - should not occur in production however
 
             // mock function
-            DataFetcher.fetchClassSummaryFor = (department) => {
+            DataFetcher.fetchCourseNums = (department) => {
                 return new Promise((resolve, reject) => {
                     resolve(
                         {
@@ -287,9 +287,9 @@ describe("ClassInput actions such as adding, editing and removing classes", () =
         });
 
         test('Instructors options change correctly after editing a class and trying to edit other classes', async () => {
-            let prev = DataFetcher.fetchClassSummaryFor;
+            let prev = DataFetcher.fetchCourseNums;
 
-            DataFetcher.fetchClassSummaryFor = (department) => {
+            DataFetcher.fetchCourseNums = (department) => {
                 return new Promise((resolve, reject) => {
                     resolve(
                         {
@@ -327,7 +327,7 @@ describe("ClassInput actions such as adding, editing and removing classes", () =
             const state = store.getState().ClassInput;
             chaiExpect(state.instructors).to.have.members(["Joseph Politz", "Rick Ord"]);
 
-            DataFetcher.fetchClassSummaryFor = prev;
+            DataFetcher.fetchCourseNums = prev;
         });
 
         test('Verifies that a class is valid before allowing edit', async () => {
@@ -386,7 +386,7 @@ describe("ClassInput actions such as adding, editing and removing classes", () =
             store.dispatch(setCourseNums(["11", "12"]));
             store.dispatch(setTypes(["LE", "DI"]));
 
-            DataFetcher.fetchClassSummaryFor = (department) => {
+            DataFetcher.fetchCourseNums = (department) => {
                 return new Promise((resolve, reject) => {
                     resolve(
                         {

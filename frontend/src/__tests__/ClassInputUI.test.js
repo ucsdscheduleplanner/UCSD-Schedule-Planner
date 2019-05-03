@@ -74,7 +74,7 @@ describe("Ensuring ClassInputHandler can handle changes in the autocomplete fiel
         let inputHandler = getInputHandler(store);
 
         // mock function
-        DataFetcher.fetchClassSummaryFor = (department) => {
+        DataFetcher.fetchCourseNums = (department) => {
             return new Promise((resolve, reject) => {
                 resolve(
                     {
@@ -169,7 +169,7 @@ describe("Ensuring ClassInputHandler can handle changes in the autocomplete fiel
             inputHandler.handleAdd();
 
             // mock function
-            DataFetcher.fetchClassSummaryFor = (department) => {
+            DataFetcher.fetchCourseNums = (department) => {
                 return new Promise((resolve, reject) => {
                     resolve(
                         {

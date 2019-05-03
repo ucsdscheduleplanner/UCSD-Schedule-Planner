@@ -14,10 +14,11 @@ export const InstructorPrefWidget = (props) => {
     let instructorButtons = props.instructors.map((instructor, index) => {
         return (
             <HighlightButton className="instructor-pref__button"
-                             key={props.Class.classTitle + index.toString()}
+                             // might have to add class title here to make more unique
+                             key={props.classTitle + instructor}
                              onSelect={() => props.inputHandler.onInstructorChange(instructor)}
                              onDeselect={() => props.inputHandler.onInstructorChange(null)}
-                             highlighted={props.Class.instructor === instructor}
+                             highlighted={props.isSelected(instructor)}
                              value={instructor}/>
         );
     });
@@ -27,7 +28,7 @@ export const InstructorPrefWidget = (props) => {
     return (
         <div className="class-input__panel__pref">
             <Accordion>
-                <AccordionPanel label={props.Class.classTitle} {...props}>
+                <AccordionPanel label={props.classTitle} {...props}>
                     <AccordionLabel>
                         <div className="class-input__panel__part__body__header">
                             <div/>
@@ -51,5 +52,7 @@ export const InstructorPrefWidget = (props) => {
 };
 
 InstructorPrefWidget.propTypes = {
-    instructors: PropTypes.array.isRequired
+    instructors: PropTypes.array.isRequired,
+    classTitle: PropTypes.string.isRequired,
+    isSelected: PropTypes.func.isRequired
 };

@@ -54,7 +54,9 @@ String.prototype.formatUnicorn = String.prototype.formatUnicorn ||
     };
 
 
-const CLASS_SUMMARY_CACHE_STR = '{0}_summary';
+const COURSE_NUM_CACHE_STR = '{0}_course_nums';
+const INSTRUCTOR_CACHE_STR = '{0}_{1}_instructor';
+const TYPE_CACHE_STR = '{0}_{1}_type';
 
 function addToSet(set, iterable) {
     for (const el of iterable) {
@@ -72,7 +74,13 @@ export class DataFetcher {
             if (isCached) {
                 cachedClasses.push(Class.classTitle);
             } else {
-                classesToFetch.push(Class);
+                classesToFetch.push(
+                    {
+                        quarter: "SP19",
+                        department: Class.department,
+                        courseNum: Class.courseNum
+                    }
+                );
             }
         }
 
@@ -82,8 +90,8 @@ export class DataFetcher {
         // we can finish if all our classes were cached
         if (classesToFetch.length === 0) return ret;
 
-        let fetchBody = JSON.stringify({classes: classesToFetch});
-        let response = await fetch(`${BACKEND_URL}/api_data`, {
+        let fetchBody = JSON.stringify(classesToFetch);
+        let response = await fetch(`${BACKEND_URL}/api_class_data`, {
             headers: {
                 Accept: 'application/json',
                 'Content-Type': 'application/json',
@@ -114,40 +122,36 @@ export class DataFetcher {
             return await CacheManager.get().getFromCache('departments');
         }
 
-        let response = await fetch(`${BACKEND_URL}/api_department`, {
+        let response = await fetch(`${BACKEND_URL}/api_departments`, {
             headers: {
                 Accept: 'application/json',
                 'Content-Type': 'application/json',
             },
             method: 'get',
         });
-        let responseJSON = await response.json();
-        let departments = Object.values(responseJSON).map(
-            resObj => resObj['DEPT_CODE'],
-        );
+        let departments = await response.json();
         await CacheManager.get().cache('departments', departments);
         return departments;
     }
 
     /**
-     * Gets the course numbers, the instructors and the
+     * Gets the course numbers for the given department
      */
-    static async fetchClassSummaryFor(department) {
+    static async fetchCourseNums(department) {
         // no fetch if in cache
-        console.log("STARTED");
         let isCached = await CacheManager.get().isCached(
-            CLASS_SUMMARY_CACHE_STR.formatUnicorn(department),
+            COURSE_NUM_CACHE_STR.formatUnicorn(department),
         );
 
         if (isCached) {
             console.log(`Hit caching level for department ${department}`);
             return await CacheManager.get().getFromCache(
-                CLASS_SUMMARY_CACHE_STR.formatUnicorn(department),
+                COURSE_NUM_CACHE_STR.formatUnicorn(department),
             );
         }
 
         let response = await fetch(
-            `${BACKEND_URL}/api_classes?department=${department}`,
+            `${BACKEND_URL}/api_course_nums?department=${department}&quarter=SP19`,
             {
                 headers: {
                     Accept: 'application/json',
@@ -157,51 +161,8 @@ export class DataFetcher {
             },
         );
 
-
         let responseJSON = await response.json();
-        let classSummaryData = responseJSON['CLASS_SUMMARY'];
-        // putting the response inside unsorted list
-        let unsorted = new Set();
-        let classTypesPerClass = {};
-        let instructorsPerClass = {};
-        let descriptionsPerClass = {};
-
-        // classArrKey is the course num
-        for (let classArrKey of Object.keys(classSummaryData)) {
-            // classArr holds an array of all the subsections of each class
-            // for each class subsection, meaning for cse 11 lecture then lab...
-            let classArr = classSummaryData[classArrKey];
-            instructorsPerClass[classArrKey] = new Set();
-            classTypesPerClass[classArrKey] = new Set();
-            unsorted.add(classArrKey);
-
-            for (let Class of classArr) {
-                let instructors = [...Class['INSTRUCTOR'].split('\n\n')];
-                // filter them first before adding
-                // just in case we have multiple instructors on one line
-                instructors = instructors
-                    .filter(instructor => instructor.length > 0)
-                    .map(instructor => instructor.trim());
-                // adding to set
-                addToSet(instructorsPerClass[classArrKey], instructors);
-
-                // should really only be one description per class
-                descriptionsPerClass[classArrKey] = Class['DESCRIPTION'].substring(
-                    0,
-                    Class['DESCRIPTION'].indexOf('('),
-                );
-
-                const classType = Class['TYPE'];
-                // adding to set
-                classTypesPerClass[classArrKey].add(classType);
-            }
-
-            // converting back into set
-            instructorsPerClass[classArrKey] = [...instructorsPerClass[classArrKey]];
-            classTypesPerClass[classArrKey] = [...classTypesPerClass[classArrKey]]
-                .sort((a, b) => codeKeyToVal[a] - codeKeyToVal[b]);
-        }
-
+        let unsorted = responseJSON.map(obj => obj.courseNum);
         // sorting based on comparator for the course nums
         let sortedCourseNums = [...unsorted].sort((element1, element2) => {
             // match numerically
@@ -216,25 +177,13 @@ export class DataFetcher {
             return 0;
         });
 
-        for (let key of Object.keys(instructorsPerClass)) {
-            instructorsPerClass[key] = [...instructorsPerClass[key]];
-        }
-
-        let ret = {
-            descriptionsPerClass: descriptionsPerClass,
-            courseNums: sortedCourseNums,
-            classTypesPerClass: classTypesPerClass,
-            instructorsPerClass: instructorsPerClass,
-        };
-
         // cache for the next time we want to query
         await CacheManager.get().cache(
-            CLASS_SUMMARY_CACHE_STR.formatUnicorn(department),
-            ret,
+            COURSE_NUM_CACHE_STR.formatUnicorn(department),
+            sortedCourseNums,
         );
 
-        console.log("FINISHED");
-        return ret;
+        return sortedCourseNums;
     }
 
     static async getDataFromCache(ret, cachedClasses) {
@@ -245,5 +194,73 @@ export class DataFetcher {
                 cachedClassKey,
             );
         }
+    }
+
+    static async fetchInstructors(department, courseNum) {
+        // no fetch if in cache
+        let isCached = await CacheManager.get().isCached(
+            INSTRUCTOR_CACHE_STR.formatUnicorn(department, courseNum),
+        );
+
+        if (isCached) {
+            console.log(`Cache hit for instructors for class ${department} ${courseNum}`);
+            return await CacheManager.get().getFromCache(
+                INSTRUCTOR_CACHE_STR.formatUnicorn(department, courseNum),
+            );
+        }
+
+        let response = await fetch(
+            `${BACKEND_URL}/api_instructors?department=${department}&courseNum=${courseNum}&quarter=SP19`,
+            {
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                },
+                method: 'get',
+            },
+        );
+
+        let instructors = await response.json();
+        // cache for the next time we want to query
+        await CacheManager.get().cache(
+            INSTRUCTOR_CACHE_STR.formatUnicorn(department),
+            instructors
+        );
+
+        return instructors;
+    }
+
+    static async fetchTypes(department, courseNum) {
+        // no fetch if in cache
+        let isCached = await CacheManager.get().isCached(
+            TYPE_CACHE_STR.formatUnicorn(department, courseNum),
+        );
+
+        if (isCached) {
+            console.log(`Cache hit for instructors for class ${department} ${courseNum}`);
+            return await CacheManager.get().getFromCache(
+                TYPE_CACHE_STR.formatUnicorn(department, courseNum),
+            );
+        }
+
+        let response = await fetch(
+            `${BACKEND_URL}/api_types?department=${department}&courseNum=${courseNum}&quarter=SP19`,
+            {
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                },
+                method: 'get',
+            },
+        );
+
+        let types = await response.json();
+        // cache for the next time we want to query
+        await CacheManager.get().cache(
+            TYPE_CACHE_STR.formatUnicorn(department),
+            types
+        );
+
+        return types;
     }
 }

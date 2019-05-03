@@ -12,6 +12,7 @@ export class DataCleaner {
         // ret is a list of classes
         let ret = [];
 
+        console.log(data);
         for (let courseName of Object.keys(data)) {
             let currentClass = new Class();
             currentClass.title = courseName;
@@ -23,11 +24,11 @@ export class DataCleaner {
             let copyCourseData = data[courseName].slice();
 
             // using this as a delimiter to know the end
-            copyCourseData.push({"SECTION_ID": null});
+            copyCourseData.push({"sectionId": null});
 
             while (fastPtr < copyCourseData.length) {
-                let slowSectionID = copyCourseData[slowPtr]["SECTION_ID"];
-                let fastSectionID = copyCourseData[fastPtr]["SECTION_ID"];
+                let slowSectionID = copyCourseData[slowPtr]["sectionId"];
+                let fastSectionID = copyCourseData[fastPtr]["sectionId"];
 
                 if (slowSectionID !== fastSectionID) {
                     // this means we have found a new section of a class
@@ -64,9 +65,9 @@ export class DataCleaner {
     static _initSection(currentSection, subsection) {
         // due to a screw up here with Cameron, section id is actually which NUMBER the section is (our own counting)
         // and course_id is the section ID
-        let {SECTION_ID, COURSE_ID} = subsection;
-        DataCleaner._setSectionProperty(currentSection, "sectionNum", SECTION_ID);
-        DataCleaner._setSectionProperty(currentSection, "id", COURSE_ID);
+        let {sectionId, courseId} = subsection;
+        DataCleaner._setSectionProperty(currentSection, "sectionNum", sectionId);
+        DataCleaner._setSectionProperty(currentSection, "id", courseId);
     }
 
     /**
@@ -75,12 +76,12 @@ export class DataCleaner {
      * @param subsection
      */
     static _initClass(currentClass, subsection) {
-        let {DEPARTMENT, COURSE_NUM, DESCRIPTION} = subsection;
+        let {department, courseNum, description} = subsection;
 
         console.log(`Setting class ${currentClass.title} with data.`);
-        DataCleaner._setClassProperty(currentClass, "department", DEPARTMENT);
-        DataCleaner._setClassProperty(currentClass, "number", COURSE_NUM);
-        DataCleaner._setClassProperty(currentClass, "description", DESCRIPTION);
+        DataCleaner._setClassProperty(currentClass, "department", department);
+        DataCleaner._setClassProperty(currentClass, "number", courseNum);
+        DataCleaner._setClassProperty(currentClass, "description", description);
     }
 
     static _setClassProperty(currentClass, property, newVal) {

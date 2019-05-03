@@ -20,7 +20,7 @@ describe("View Class Types components and logic surrounding it", () => {
     let store;
     beforeEach((done) => {
         store = createStore(reducers, applyMiddleware(thunk));
-        DataFetcher.fetchClassSummaryFor = (department) => {
+        DataFetcher.fetchCourseNums = (department) => {
             return new Promise((resolve, reject) => {
                 resolve(
                     {

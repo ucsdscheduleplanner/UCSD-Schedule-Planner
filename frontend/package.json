@@ -45,7 +45,7 @@
     "aws-deploy": "npm run build && aws s3 sync ./build s3://sdschedule.com --delete",
     "webpack-analyze": "react-scripts build --stats && webpack-bundle-analyzer build/bundle-stats.json -m static -r build/bundle-stats.html -O"
   },
-  "proxy": "http://sdschedule-backend:5000/",
+  "proxy": "http://localhost:8080/",
   "devDependencies": {
     "chai": "^4.2.0",
     "chai-enzyme": "^1.0.0-beta.1",

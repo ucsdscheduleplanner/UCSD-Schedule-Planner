@@ -9,6 +9,7 @@ import {
 } from "./ClassInputMutator";
 import {setProgress} from "../schedule/generation/ScheduleGenerationActions";
 import {getInputHandler} from "./ClassInputHandler";
+import {storeInstructors, storeTypes} from "../class_registry/ClassRegistryActions";
 
 export const ADD_CLASS = "ADD_CLASS";
 export const EDIT_CLASS = "EDIT_CLASS";
@@ -51,7 +52,7 @@ export function toggleEditMode(transactionID) {
         const prevTransactionID = getState().ClassInput.transactionID;
 
         // nothing changed, so should close it
-        if(prevTransactionID === transactionID) {
+        if (prevTransactionID === transactionID) {
             dispatch(setTransactionID(null));
             dispatch(enterInputMode());
         } else
@@ -96,14 +97,30 @@ export function enterInputMode() {
     }
 }
 
-export function populateSectionData(department) {
+export function loadCourseNums(department) {
     return async function (dispatch) {
-        console.log("Populating data for " + department);
-        let {courseNums, instructorsPerClass, classTypesPerClass, descriptionsPerClass} =
-            await DataFetcher.fetchClassSummaryFor(department);
+        console.log("Fetching course numbers for " + department);
+        let courseNums = await DataFetcher.fetchCourseNums(department);
 
         dispatch(setCourseNums(courseNums));
-        dispatch(populateDataPerClass(instructorsPerClass, descriptionsPerClass, classTypesPerClass));
+    }
+}
+
+export function loadInstructors(department, courseNum) {
+    return async function (dispatch) {
+        console.log(`Fetching instructors for ${department} ${courseNum}`);
+        let instructors = await DataFetcher.fetchInstructors(department, courseNum);
+
+        dispatch(storeInstructors(department, courseNum, instructors));
+    }
+}
+
+export function loadTypes(department, courseNum) {
+    return async function (dispatch) {
+        console.log(`Fetching class types for ${department} ${courseNum}`);
+        let types = await DataFetcher.fetchTypes(department, courseNum);
+
+        dispatch(storeTypes(department, courseNum, types));
     }
 }
 

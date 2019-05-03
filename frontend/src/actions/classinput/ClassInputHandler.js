@@ -9,11 +9,20 @@ import {
     setTransactionID,
     setTypes
 } from "./ClassInputMutator";
-import {addClass, editClass, enterInputMode, populateSectionData, removeClass} from "./ClassInputActions";
+import {
+    addClass,
+    editClass,
+    enterInputMode,
+    loadCourseNums,
+    loadInstructors,
+    loadTypes,
+    removeClass
+} from "./ClassInputActions";
 import {SchedulePreferenceInputHandler} from "../schedulepreference/SchedulePreferenceInputHandler";
 import {ignoreClassTypeCodes} from "../class_types/ignore/IgnoreClassTypesActions";
 import {getSchedule} from "../schedule/generation/ScheduleGenerationActions";
 import {TESTING_viewClassTypeCodes} from "../class_types/view/ViewClassTypesActions";
+import SelectedClass from "./SelectedClass";
 
 /**
  * Is responsible for handling all ClassInput actions, which includes running business logic when changing fields to adding
@@ -28,7 +37,7 @@ export class ClassInputHandler {
     /**
      * Edits the department and runs business rule validation on it
      */
-    onDepartmentChange(rawDepartment, triggers = true) {
+    async onDepartmentChange(rawDepartment, triggers = true) {
         if (!rawDepartment) {
             this.dispatch(setDepartment(null));
             return;
@@ -43,78 +52,63 @@ export class ClassInputHandler {
         if (!triggers)
             return;
 
-        // don't alter anything if the department isn't even valid
-        if (!state.departments.includes(department))
+        // don't alter anything if the department isn't valid
+        if (!state.departments.includes(department)) {
+            console.error("Invalid department");
             return;
+        }
 
-        // set all other fields to blank
         this.dispatch(setCourseNum(null));
-        this.dispatch(setInstructor(null));
-        // will autoconvert to empty list
-        this.dispatch(setPriority(null));
 
-        // if (state.editMode)
-        //     this.autosave(true);
-        // populate the course nums and the data
-        return this.dispatch(populateSectionData(department));
+        await this.dispatch(loadCourseNums(department));
     }
 
-
-    onCourseNumChange(rawCourseNum, triggers = true) {
+    async onCourseNumChange(rawCourseNum, triggers = true) {
         if (!rawCourseNum) {
             this.dispatch(setCourseNum(null));
             return;
         }
 
         const state = this.getState().ClassInput;
-        let courseNum = rawCourseNum.trim();
+        const department = state.department;
+        const courseNum = rawCourseNum.trim();
         this.dispatch(setCourseNum(courseNum));
 
-        if (!triggers)
+        if (!state.departments.includes(department)) {
+            console.error("Invalid department");
             return;
+        }
 
-        if (!state.courseNums.includes(courseNum))// && state.courseNums.length > 0)
+        if (!state.courseNums.includes(courseNum)) {
+            console.error("Invalid course number");
             return;
+        }
 
-        const instructors = state.instructorsPerClass[courseNum];
-        if (!instructors)
-            console.warn(`Instructors are undefined for course num ${courseNum}`);
-
-        const types = state.classTypesPerClass[courseNum];
-        if (!types)
-            console.warn(`Class Types are undefined for course num ${courseNum}`);
-
-        // must clear out the fields
-        this.dispatch(setInstructor(null));
-        this.dispatch(setPriority(null));
-        this.dispatch(setTypes(types));
-        this.dispatch(setInstructors(instructors));
-
-        // autosave after everything else has been set
-        // if (state.editMode)
-        //     this.autosave(true);
+        await this.dispatch(loadInstructors(department, courseNum));
+        await this.dispatch(loadTypes(department, courseNum));
     }
 
     onInstructorChange(rawInstructor) {
         const state = this.getState().ClassInput;
-        if (!rawInstructor) {
-            this.dispatch(setInstructor(null));
-            if (state.editMode)
-                this.autosave(true);
+        const classInput = this.getState().ClassInput;
+        const classList = this.getState().ClassList;
+        const currentClass = classList.selectedClasses[classInput.transactionID];
+
+        if (currentClass === null || currentClass === undefined) {
+            console.error("Cannot edit the instructor for a class that has not been added.")
             return;
         }
 
-        let instructor = rawInstructor.trim();
-        this.dispatch(setInstructor(instructor));
+        const copyClass = Object.assign({}, currentClass);
+        const instructor = rawInstructor.trim();
 
-        if (!state.instructors.includes(instructor))
-            return;
+        if (!instructor) {
+            copyClass.instructor = null;
+        } else {
+            copyClass.instructor = instructor;
+        }
 
-        // only record valid edits
-        if (state.editMode)
-            this.autosave(true);
-
-        this.dispatch(setPriority(null));
+        this.dispatch(editClass(state.transactionID, copyClass));
     }
 
     onIgnoreClassTypes(types) {
@@ -133,21 +127,7 @@ export class ClassInputHandler {
 
     buildClassFromInput() {
         const state = this.getState().ClassInput;
-        // should refactor this into ClassSkeleton
-        return Object.assign({},
-            {
-                classTitle: `${state.department} ${state.courseNum}`,
-                courseNum: state.courseNum,
-                department: state.department,
-                instructor: state.instructor,
-                priority: state.priority,
-
-                instructors: state.instructors,
-                types: state.types,
-
-                transactionID: state.transactionID
-            }
-        );
+        return new SelectedClass(state.department, state.courseNum, state.transactionID);
     }
 
     isValidAdd(newClass) {
