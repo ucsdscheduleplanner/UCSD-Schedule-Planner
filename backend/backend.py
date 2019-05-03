@@ -21,17 +21,18 @@ cursor = create_engine(CONN_STRING,
                        pool_recycle=3600)
 
 # Caching departments and class types
+# TODO: might have to cache different data for different quarters
 departments = []
 class_types = []
 
 
-def get_all_classes_in(department):
+def get_all_classes_in(department, quarter):
     # Must order this one separately because doing it lexically won't work
     ret_dict = {}
     sql = text(
         "SELECT DISTINCT COURSE_NUM, DEPARTMENT, "
-        "INSTRUCTOR, TYPE, DESCRIPTION FROM CLASS_DATA WHERE DEPARTMENT = :department")
-    result = cursor.execute(sql, department=department).fetchall()
+        "INSTRUCTOR, TYPE, DESCRIPTION FROM :quarter WHERE DEPARTMENT = :department")
+    result = cursor.execute(sql, quarter=quarter,department=department).fetchall()
     # use dict here for fast lookup
     ret_dict["CLASS_SUMMARY"] = {}
     for row in result:
@@ -52,7 +53,7 @@ def get_departments():
     return departments
 
 
-def generate_class_json(department, course_num):
+def generate_class_json(department, course_num, quarter):
     """
     Generates a set of classes of the same version and ID.
     For example returns all the CSE 20 classes given that ID.
@@ -60,8 +61,8 @@ def generate_class_json(department, course_num):
     :param department: the department
     :return: returns all the classes with the same ID in a list
     """
-    sql = text("SELECT * FROM CLASS_DATA WHERE DEPARTMENT = :department AND COURSE_NUM = :course_num")
-    result = cursor.execute(sql, department=department, course_num=course_num).fetchall()
+    sql = text("SELECT * FROM :quarter WHERE DEPARTMENT = :department AND COURSE_NUM = :course_num")
+    result = cursor.execute(sql, quarter=quarter, department=department, course_num=course_num).fetchall()
     class_versions = [dict(row) for row in result]
     # The different sections of the given class
     return class_versions

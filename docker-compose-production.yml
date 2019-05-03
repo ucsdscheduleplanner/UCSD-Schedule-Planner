@@ -6,10 +6,19 @@ services:
     image: mariadb:latest
     environment:
       - "MYSQL_ROOT_PASSWORD=password" 
+      - "MYSQL_USER=user"
+      - "MYSQL_PASSWORD=password"
       - "MYSQL_DATABASE=classes"
     volumes:
       - "sdschedule-data:/var/lib/mysql"
     restart: always
+  sdschedule-scraper:
+    container_name: sdschedule-scraper
+    build: scraper
+    depends_on: 
+      - "sdschedule-database"
+    environment:
+      - "PYTHONUNBUFFERED=0"
   sdschedule-backend:
     container_name: sdschedule-backend
     build: backend 
