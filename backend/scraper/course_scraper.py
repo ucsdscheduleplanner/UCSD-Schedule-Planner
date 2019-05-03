@@ -19,6 +19,7 @@ from settings import DATABASE_PATH, DATABASE_FOLDER_PATH
 from settings import SCHEDULE_OF_CLASSES_URL
 from settings import TIMEOUT, DEPT_SEARCH_TIMEOUT
 
+# TODO FIX hard-coded WI19 and use this script
 QUARTER_INSERT_SCRIPT = """let select = document.getElementById("selectedTerm");
             let opt = document.createElement('option');
             opt.value = "WI19";

@@ -44,7 +44,7 @@ CAPES_URL = 'http://cape.ucsd.edu/responses/Results.aspx?CourseNumber='
 VARIABLES
 """
 # Current quarter (in string)
-QUARTER = "WI19"
+QUARTER = "FA19"
 # Time for timeout for browser
 TIMEOUT = 30
 
