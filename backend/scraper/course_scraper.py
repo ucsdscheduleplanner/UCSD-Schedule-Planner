@@ -18,15 +18,17 @@ from settings import COURSES_HTML_PATH
 from settings import DATABASE_PATH, DATABASE_FOLDER_PATH
 from settings import SCHEDULE_OF_CLASSES_URL
 from settings import TIMEOUT, DEPT_SEARCH_TIMEOUT
+from settings import QUARTER
 
-# TODO FIX hard-coded WI19 and use this script
+# TODO FIX hard-coded quarter later and use this script
+# TODO FIX hack about partial formating
 QUARTER_INSERT_SCRIPT = """let select = document.getElementById("selectedTerm");
             let opt = document.createElement('option');
-            opt.value = "WI19";
+            opt.value = "{}";
             opt.innerHTML = "bad";
             select.appendChild(opt);
-            document.getElementById("selectedTerm").value = "{}";
-            """
+            document.getElementById("selectedTerm").value = "{{}}";
+            """.format(QUARTER)
 
 
 class LazyWriter:

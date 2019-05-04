@@ -142,7 +142,12 @@ class TimeIntervalCollection:
             for hour_time in t_interval.split('-'):
                 # Add 'm' to convert it to Python recognizable format
                 hour_time += 'm'
-                formatted_interval = datetime.strptime(hour_time, '%I:%M%p')
+                try:
+                    formatted_interval = datetime.strptime(hour_time, '%I:%M%p')
+                except ValueError:
+                    print("[timeutils] Error interval when coverting to python time object: " + str(hour_time))
+                    # Using the str before "am" or "pm"
+                    formatted_interval = datetime.strptime(hour_time[:-2], '%H:%M')
                 # Converting to my timezone
                 formatted_interval = pytz.utc.localize(formatted_interval)
                 # Add the interval to the returned interval
