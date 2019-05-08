@@ -1,7 +1,7 @@
 import {applyMiddleware, createStore} from "redux";
 import reducers from "../reducers";
 import thunk from "redux-thunk";
-import {setDisplayed} from "../actions/schedulepreference/SchedulePreferenceUIHandler";
+import {setDisplayed} from "../actions/preference/schedule/SchedulePreferenceUIHandler";
 
 
 describe("The functionality in which the SchedulePreferenceComponent is shown on the browser", () => {

@@ -13,10 +13,11 @@ export class ClassInputPanelPartBody extends PureComponent {
 
     render() {
         //<IgnoreClassTypeWidgetContainer Class={this.props.Class} inputHandler={this.props.inputHandler} types={this.props.Class.types}/>
-        //<ViewClassTypeWidgetContainer Class={this.props.Class} inputHandler={this.props.inputHandler} types={this.props.Class.types}/>
+        const classTitle = this.props.Class.classTitle;
         return (
             <div>
-                <InstructorPrefWidgetContainer Class={this.props.Class} inputHandler={this.props.inputHandler} instructors={this.props.Class.instructors}/>
+                <InstructorPrefWidgetContainer classTitle={classTitle} selectedInstructor={this.props.Class.instructor} inputHandler={this.props.inputHandler} />
+                <ViewClassTypeWidgetContainer classTitle={classTitle} inputHandler={this.props.inputHandler} />
                 <ClassInputPanelPartBodySection label={"CAPES"}/>
                 <ClassInputPanelPartBodySection label={"Course Description"}/>
                 <RemoveClassWidget inputHandler={this.props.inputHandler}/>

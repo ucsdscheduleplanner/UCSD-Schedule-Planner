@@ -5,9 +5,9 @@ import {
     setGlobalPref,
     setStartPref
 } from "./SchedulePreferenceMutator";
-import {GlobalPreference} from "../../utils/preferences/GlobalPreference";
-import {ClassSpecificPreference} from "../../utils/preferences/ClassSpecificPreference";
-import {DayTime} from "../../utils/time/TimeUtils";
+import {GlobalPreference} from "../../../utils/preferences/GlobalPreference";
+import {ClassSpecificPreference} from "../../../utils/preferences/ClassSpecificPreference";
+import {DayTime} from "../../../utils/time/TimeUtils";
 
 export class SchedulePreferenceInputHandler {
 

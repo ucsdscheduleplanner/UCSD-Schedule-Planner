@@ -11,7 +11,6 @@ export class ClassInputForm extends PureComponent {
 
     onAdd() {
         this.props.inputHandler.handleAdd();
-        //this.props.getSchedule();
     }
 
     render() {

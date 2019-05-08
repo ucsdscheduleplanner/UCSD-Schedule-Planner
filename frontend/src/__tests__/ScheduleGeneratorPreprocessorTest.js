@@ -3,7 +3,7 @@ import {ScheduleGeneratorPreprocessor} from "../actions/schedule/generation/Sche
 import {applyMiddleware, createStore} from "redux";
 import reducers from "../reducers";
 import thunk from "redux-thunk";
-import {setClassSpecificPref} from "../actions/schedulepreference/SchedulePreferenceMutator";
+import {setClassSpecificPref} from "../actions/preference/schedule/SchedulePreferenceMutator";
 import {addClass} from "../actions/classinput/ClassInputActions";
 import {ignoreClassTypeCodes} from "../actions/class_types/ignore/IgnoreClassTypesActions";
 

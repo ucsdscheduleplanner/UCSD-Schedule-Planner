@@ -14,9 +14,9 @@ export function SGWorker() {
 
         let {classData, classTypesToIgnore, preferences, totalNumPossibleSchedule} = data;
         // have to convert from JSON preferences to preference objects
-        let {specificPref, globalPref} = initPreferences(preferences);
+        let {instructorPref, globalPref} = initPreferences(preferences);
 
-        let worker = new ScheduleGenerator(classData, classTypesToIgnore, specificPref, globalPref, totalNumPossibleSchedule);
+        let worker = new ScheduleGenerator(classData, classTypesToIgnore, instructorPref, globalPref, totalNumPossibleSchedule);
         let results = worker.generate();
 
         // returns a promise
@@ -47,10 +47,10 @@ export function SGWorker() {
 
     /**
      * Testing seam
-     * @returns {SpecificPref}
+     * @returns {InstructorPref}
      */
     this.getSpecificPref = function (specificPref) {
-        return new SpecificPref(specificPref);
+        return new InstructorPref(specificPref);
     };
 
     /**
@@ -62,28 +62,30 @@ export function SGWorker() {
         let {classData, classTypesToIgnore, preferences} = data;
 
         // have to convert from JSOn preferences to preference objects
-
-        let {specificPref, globalPref} = initPreferences(preferences);
+        let {instructorPref, globalPref} = initPreferences(preferences);
         // very high total num possible schedules to prevent increment progress from being run
         // because when increment progress is run then because test is not using a web worker will fail
-        let worker = new ScheduleGenerator(classData, classTypesToIgnore, specificPref, globalPref, 500);
+        let worker = new ScheduleGenerator(classData, classTypesToIgnore, instructorPref, globalPref, 500);
 
         return worker.generate();
     };
 
     function initPreferences(preferences) {
-        let {globalPref, classSpecificPref} = preferences;
+        let {globalPref, instructorPref} = preferences;
+        console.log("Logging init preferences");
+        console.log(globalPref);
+        console.log(instructorPref);
         let gPref = new GlobalPref(globalPref);
-        let sPref = new SpecificPref(classSpecificPref);
+        let sPref = new InstructorPref(instructorPref);
 
 
-        return {globalPref: gPref, specificPref: sPref};
+        return {globalPref: gPref, instructorPref: sPref};
     }
 
-    function SpecificPref(specificPref) {
+    function InstructorPref(specificPref) {
         this.specificPref = specificPref;
 
-        SpecificPref.prototype.evaluateInstructor = function (subsection, classTitle) {
+        InstructorPref.prototype.evaluateInstructor = function (subsection, classTitle) {
             if (!this.specificPref) {
                 return 0;
             }
@@ -96,7 +98,7 @@ export function SGWorker() {
                 return -99;
             }
 
-            let instructorPref = this.specificPref[classTitle].instructorPref;
+            let instructorPref = this.specificPref[classTitle];
             if (!instructorPref)
                 return 0;
 
@@ -106,7 +108,7 @@ export function SGWorker() {
             return 0;
         };
 
-        SpecificPref.prototype.evaluate = function (section) {
+        InstructorPref.prototype.evaluate = function (section) {
             // testing for null or undefined section, specificPref or empty specificPref object
             if (!section || !this.specificPref || Object.keys(this.specificPref).length === 0)
                 return 0;

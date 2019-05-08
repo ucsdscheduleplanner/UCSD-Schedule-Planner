@@ -62,7 +62,11 @@ export function toggleEditMode(transactionID) {
 
 export function enterEditMode(id) {
     return async function (dispatch, getState) {
+        dispatch(setTransactionID(id));
+        console.log("Entering edit mode");
+        console.log(id);
         const otherClass = getState().ClassList.selectedClasses[id];
+        console.log(otherClass);
 
         let inputHandler = getInputHandler(dispatch, getState);
 
@@ -71,8 +75,6 @@ export function enterEditMode(id) {
         inputHandler.onInstructorChange(otherClass.instructor);
 
         dispatch(setEditMode(true));
-        // setting current class id
-        dispatch(setTransactionID(id));
     }
 }
 

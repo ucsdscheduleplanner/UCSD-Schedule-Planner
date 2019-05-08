@@ -42,7 +42,7 @@ export const ViewClassTypeWidget = (props) => {
             isSelected={type => props.displayedClassTypes.includes(type)}
             className="type-pref__container"
             stylePerButton={["type-pref__button"]}
-            keyPrefix={props.Class.classTitle}
+            keyPrefix={props.classTitle}
             getDisplayValue={type => codeToClassType[type]}
             onClick={(selectedTypes) => {
                 props.inputHandler.onViewClassTypes(selectedTypes)
@@ -50,11 +50,11 @@ export const ViewClassTypeWidget = (props) => {
             values={props.types}/>
     ) : (<div> No class types </div>);
 
-    console.log(props.Class.classTitle);
+    console.log(props.classTitle);
     return (
         <div className="class-input__panel__pref">
             <Accordion>
-                <AccordionPanel label={props.Class.classTitle} {...props}>
+                <AccordionPanel label={props.classTitle} {...props}>
                     <AccordionLabel>
                         <div className="class-input__panel__part__body__header">
                             <div/>
@@ -77,6 +77,7 @@ export const ViewClassTypeWidget = (props) => {
 };
 
 ViewClassTypeWidget.propTypes = {
+    classTitle: PropTypes.string.isRequired,
     inputHandler: PropTypes.object.isRequired,
     types: PropTypes.array.isRequired,
     displayedClassTypes: PropTypes.array.isRequired

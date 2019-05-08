@@ -4,9 +4,9 @@ import {makeTimeInterval} from "../utils/time/TimeUtils";
 import {applyMiddleware, createStore} from "redux";
 import reducers from "../reducers";
 import thunk from "redux-thunk";
-import {setStartPref} from "../actions/schedulepreference/SchedulePreferenceMutator";
+import {setStartPref} from "../actions/preference/schedule/SchedulePreferenceMutator";
 import moment from "moment";
-import {SchedulePreferenceInputHandler} from "../actions/schedulepreference/SchedulePreferenceInputHandler";
+import {SchedulePreferenceInputHandler} from "../actions/preference/schedule/SchedulePreferenceInputHandler";
 
 
 function getGlobalPref(globalPref) {

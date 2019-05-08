@@ -3,7 +3,6 @@ import PropTypes from "prop-types";
 
 import "./InstructorPrefWidget.css";
 import {InstructorPrefWidget} from "./InstructorPrefWidget";
-import SelectedClass from "../../../../../../actions/classinput/SelectedClass";
 import {connect} from "react-redux";
 
 class InstructorPrefWidgetContainer extends React.PureComponent {
@@ -14,33 +13,34 @@ class InstructorPrefWidgetContainer extends React.PureComponent {
         return (
             <InstructorPrefWidget instructors={instructors}
                                   inputHandler={this.props.inputHandler}
-                                  classTitle={this.props.Class.classTitle}
-                                  isSelected={this.isSelected.bind(this)} />
+                                  classTitle={this.classTitle}
+                                  isSelected={this.isSelected.bind(this)}/>
         )
     }
 
     getInstructors() {
-                console.log(this.props);
-        const instructors = this.props.instructorRegistry[this.props.Class.classTitle];
+        const instructors = this.props.instructorRegistry[this.props.classTitle];
         return instructors ? instructors : [];
     }
 
     isSelected(instructor) {
-        return this.props.Class.instructor === instructor;
+        const selectedInstructor = this.props.instructorPreferences[this.props.classTitle];
+        return selectedInstructor === instructor;
     }
 }
 
 InstructorPrefWidgetContainer.propTypes = {
     instructors: PropTypes.array.isRequired,
-    Class: PropTypes.instanceOf(SelectedClass).isRequired,
+    selectedInstructor: PropTypes.string.isRequired,
+    classTitle: PropTypes.string.isRequired,
     inputHandler: PropTypes.object.isRequired
 };
 
 
 function mapStateToProps(state) {
-    console.log(state);
     return {
-        instructorRegistry: state.ClassRegistry.instructors
+        instructorRegistry: state.ClassRegistry.instructors,
+        instructorPreferences: state.InstructorPreference.instructors
     }
 }
 

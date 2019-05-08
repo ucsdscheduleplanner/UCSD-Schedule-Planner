@@ -6,8 +6,8 @@ import {
     SET_END_PREF,
     SET_GLOBAL_PREF,
     SET_START_PREF
-} from "../actions/schedulepreference/SchedulePreferenceMutator";
-import {SET_DISPLAYED} from "../actions/schedulepreference/SchedulePreferenceUIHandler";
+} from "../actions/preference/schedule/SchedulePreferenceMutator";
+import {SET_DISPLAYED} from "../actions/preference/schedule/SchedulePreferenceUIHandler";
 import {TimeBuilder} from "../utils/time/TimeUtils";
 
 const momentDefaultStart = moment("1970-01-01 17:00Z");

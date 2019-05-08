@@ -18,11 +18,12 @@ import {
     loadTypes,
     removeClass
 } from "./ClassInputActions";
-import {SchedulePreferenceInputHandler} from "../schedulepreference/SchedulePreferenceInputHandler";
+import {SchedulePreferenceInputHandler} from "../preference/schedule/SchedulePreferenceInputHandler";
 import {ignoreClassTypeCodes} from "../class_types/ignore/IgnoreClassTypesActions";
 import {getSchedule} from "../schedule/generation/ScheduleGenerationActions";
 import {TESTING_viewClassTypeCodes} from "../class_types/view/ViewClassTypesActions";
 import SelectedClass from "./SelectedClass";
+import {setInstructorPref} from "../preference/instructor/InstructorPreferenceActions";
 
 /**
  * Is responsible for handling all ClassInput actions, which includes running business logic when changing fields to adding
@@ -63,52 +64,36 @@ export class ClassInputHandler {
         await this.dispatch(loadCourseNums(department));
     }
 
-    async onCourseNumChange(rawCourseNum, triggers = true) {
+    onCourseNumChange(rawCourseNum, triggers = true) {
         if (!rawCourseNum) {
             this.dispatch(setCourseNum(null));
             return;
         }
-
-        const state = this.getState().ClassInput;
-        const department = state.department;
         const courseNum = rawCourseNum.trim();
         this.dispatch(setCourseNum(courseNum));
-
-        if (!state.departments.includes(department)) {
-            console.error("Invalid department");
-            return;
-        }
-
-        if (!state.courseNums.includes(courseNum)) {
-            console.error("Invalid course number");
-            return;
-        }
-
-        await this.dispatch(loadInstructors(department, courseNum));
-        await this.dispatch(loadTypes(department, courseNum));
     }
 
     onInstructorChange(rawInstructor) {
-        const state = this.getState().ClassInput;
+        if (!rawInstructor)
+            return;
+
         const classInput = this.getState().ClassInput;
         const classList = this.getState().ClassList;
         const currentClass = classList.selectedClasses[classInput.transactionID];
 
-        if (currentClass === null || currentClass === undefined) {
-            console.error("Cannot edit the instructor for a class that has not been added.")
+        if (!currentClass) {
+            console.error("Cannot edit the instructor for a class that has not been added.");
             return;
         }
 
-        const copyClass = Object.assign({}, currentClass);
         const instructor = rawInstructor.trim();
+        const copyClass = Object.assign({}, currentClass, {instructor: instructor});
 
-        if (!instructor) {
-            copyClass.instructor = null;
-        } else {
-            copyClass.instructor = instructor;
-        }
 
-        this.dispatch(editClass(state.transactionID, copyClass));
+        this.dispatch(setInstructorPref(currentClass.classTitle, instructor));
+
+        // TODO replace with a better way to reload calendar
+        this.dispatch(editClass(classInput.transactionID, copyClass));
     }
 
     onIgnoreClassTypes(types) {
@@ -137,6 +122,7 @@ export class ClassInputHandler {
                 valid: false,
                 reason: `Class ${state.department} ${state.courseNum} has already been added!`
             };
+
         return this.isValid(newClass);
     }
 
@@ -178,14 +164,6 @@ export class ClassInputHandler {
                 valid: false,
                 reason: "Course Num is not valid"
             };
-        if (newClass.instructor && !state.instructors.includes(newClass.instructor))
-            return {
-                valid: false,
-                reason: "Instructor is not valid"
-            };
-        if (this.isDuplicate(newClass)) {
-
-        }
 
         return {
             valid: true
@@ -267,9 +245,13 @@ export class ClassInputHandler {
     }
 
     setDefaultValues(newClass) {
-        const state = this.getState().ClassInput;
-        this.dispatch(ignoreClassTypeCodes(newClass.classTitle, state.types));
-        this.dispatch(TESTING_viewClassTypeCodes(newClass.classTitle, state.types));
+        const state = this.getState().ClassRegistry;
+        const types = state.types[newClass.classTitle];
+
+        console.log(state);
+
+        this.dispatch(ignoreClassTypeCodes(newClass.classTitle, types));
+        this.dispatch(TESTING_viewClassTypeCodes(newClass.classTitle, types));
     }
 
     clearInputs() {
@@ -282,9 +264,12 @@ export class ClassInputHandler {
 
     handleAdd() {
         const state = this.getState().ClassInput;
+        const department = state.department;
+        const courseNum = state.courseNum;
+
         // gotta have course num and department to do anything
         // checking for both null and undefined
-        if (!state.courseNum || !state.department)
+        if (!courseNum || !department)
             return;
 
         let newClass = this.buildClassFromInput();
@@ -295,7 +280,14 @@ export class ClassInputHandler {
             return;
         }
 
-        this.setDefaultValues(newClass);
+        // loading both the instructors and the types and setting the default values for the classes after loading
+        Promise.all(
+            [this.dispatch(loadInstructors(department, courseNum)), this.dispatch(loadTypes(department, courseNum))])
+            .then(() => {
+                console.log("Loading default values");
+                this.setDefaultValues(newClass);
+            });
+
         // using the addClass method from the reducer
         this.dispatch(addClass(newClass, state.transactionID));
         this.savePreferences();

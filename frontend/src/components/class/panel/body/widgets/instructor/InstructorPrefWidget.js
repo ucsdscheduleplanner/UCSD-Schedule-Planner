@@ -11,7 +11,7 @@ import {HighlightButton} from "../../../../../../utils/button/highlight/Highligh
 
 export const InstructorPrefWidget = (props) => {
     const plusMinusNames = classNames("class-input__panel__part__body__header__icon", {"active": props.isOpen});
-    let instructorButtons = props.instructors.map((instructor, index) => {
+    let instructorButtons = props.instructors.map((instructor) => {
         return (
             <HighlightButton className="instructor-pref__button"
                              // might have to add class title here to make more unique

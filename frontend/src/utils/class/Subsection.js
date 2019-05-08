@@ -6,7 +6,6 @@ export class Subsection {
   // has information about the specific subsection, LE, DI
 
     constructor(subsection) {
-        console.log(subsection)
         const {days, time, instructor, location, room, type} = subsection;
         this.day = days;
         this.timeInterval = makeTimeInterval(time, this.day);
