@@ -149,7 +149,7 @@ class Cleaner:
                 section_count[department][course_num] = 0
             id = department + course_num
             for section in class_section:
-                # setting id based on sectionn
+                # setting id based on section
                 section["SECTION_ID"] = id + "$" + str(section_count[department][course_num])
                 subsections = self.split_into_subsections(section)
 
@@ -168,10 +168,23 @@ class Cleaner:
         """
 
         ret = []
+
         # TimeIntervalCollection functions will parse days and times correctly into lists
-        days = TimeIntervalCollection.get_days(section['DAYS'])
+        try:
+            days = TimeIntervalCollection.get_days(section['DAYS'])
+        except ValueError as ex:
+            print(ex)
+            print("Error parsing days {0} for section {1}".format(str(section['DAYS']), str(section)))
+            return ret
+
         # times is a list of TimeInterval objects, want to convert to string
-        times = TimeIntervalCollection.get_times(section['TIME'])
+        try:
+            times = TimeIntervalCollection.get_times(section['TIME'])
+        except ValueError as ex:
+            print(ex)
+            print("Error parsing times {0} for section {1}".format(str(section['TIME']), str(section)))
+            return ret
+
         for i in range(0, len(times)):
             # both datetime objects
             start_time = times[i].start_time

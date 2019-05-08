@@ -3,6 +3,7 @@ import sqlite3
 import requests
 import sys
 import traceback 
+import shutil
 
 from threading import Thread, Lock
 from requests.exceptions import Timeout 
