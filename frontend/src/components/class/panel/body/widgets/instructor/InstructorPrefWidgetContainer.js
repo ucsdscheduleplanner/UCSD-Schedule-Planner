@@ -40,7 +40,7 @@ InstructorPrefWidgetContainer.propTypes = {
 function mapStateToProps(state) {
     return {
         instructorRegistry: state.ClassRegistry.instructors,
-        instructorPreferences: state.InstructorPreference.instructors
+        instructorPreferences: state.InstructorPreference
     }
 }
 

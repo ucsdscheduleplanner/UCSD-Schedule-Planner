@@ -18,7 +18,6 @@ import {
     loadTypes,
     removeClass
 } from "./ClassInputActions";
-import {SchedulePreferenceInputHandler} from "../preference/schedule/SchedulePreferenceInputHandler";
 import {ignoreClassTypeCodes} from "../class_types/ignore/IgnoreClassTypesActions";
 import {getSchedule} from "../schedule/generation/ScheduleGenerationActions";
 import {TESTING_viewClassTypeCodes} from "../class_types/view/ViewClassTypesActions";
@@ -313,8 +312,7 @@ export class ClassInputHandler {
      */
     savePreferences() {
         // TODO this is terrible gotta fix this, why create an object like this?
-        let inputHandler = new SchedulePreferenceInputHandler(this.dispatch, this.getState);
-        inputHandler.setClassSpecificPref();
+        // yeah you right dude I'm getting rid of it
     }
 }
 

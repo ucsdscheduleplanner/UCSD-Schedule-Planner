@@ -12,11 +12,7 @@ export function SGWorker() {
         console.log("Data for this run is:");
         console.log(data);
 
-        let {classData, classTypesToIgnore, preferences, totalNumPossibleSchedule} = data;
-        // have to convert from JSON preferences to preference objects
-        let {instructorPref, globalPref} = initPreferences(preferences);
-
-        let worker = new ScheduleGenerator(classData, classTypesToIgnore, instructorPref, globalPref, totalNumPossibleSchedule);
+        let worker = this.getScheduleGenerator(data);
         let results = worker.generate();
 
         // returns a promise
@@ -32,9 +28,10 @@ export function SGWorker() {
      * @returns {ScheduleGenerator}
      */
     this.getScheduleGenerator = function (data) {
-        // consider changing this so ScheduleGenerator can just handle data
-        let {classData, conflicts, specificPref, globalPref, totalNumPossibleSchedule} = data;
-        return new ScheduleGenerator(classData, conflicts, specificPref, globalPref, totalNumPossibleSchedule);
+        let {classData, classTypesToIgnore, preferences, totalNumPossibleSchedule} = data;
+        // have to convert from JSON preferences to preference objects
+        let preferenceObjs = initPreferences(preferences);
+        return new ScheduleGenerator(classData, classTypesToIgnore, preferenceObjs, totalNumPossibleSchedule);
     };
 
     /**
@@ -71,15 +68,10 @@ export function SGWorker() {
     };
 
     function initPreferences(preferences) {
-        let {globalPref, instructorPref} = preferences;
-        console.log("Logging init preferences");
-        console.log(globalPref);
-        console.log(instructorPref);
-        let gPref = new GlobalPref(globalPref);
-        let sPref = new InstructorPref(instructorPref);
-
-
-        return {globalPref: gPref, instructorPref: sPref};
+        const ret = [];
+        let {instructorPref} = preferences;
+        ret.push(new InstructorPref(instructorPref));
+        return ret;
     }
 
     function InstructorPref(specificPref) {
@@ -93,7 +85,7 @@ export function SGWorker() {
             // TODO consider altering the data in the database such that sectionNum is an underscore delimited quantity e.g CSE_11$0 so can easily
             // TODO replace the underscore with a space and use it here
 
-            if(!subsection.instructor) {
+            if (!subsection.instructor) {
                 console.warn("Instructor for subsection is null or undefined");
                 return -99;
             }
@@ -334,12 +326,11 @@ export function SGWorker() {
      *
      * @param classData
      * @param classTypesToIgnore a mapping from class title to types to ignore
-     * @param specificPref
-     * @param globalPref
+     * @param preferences
      * @param totalNumPossibleSchedule
      * @constructor
      */
-    function ScheduleGenerator(classData = [], classTypesToIgnore = {}, specificPref = {}, globalPref = {}, totalNumPossibleSchedule = 1) {
+    function ScheduleGenerator(classData = [], classTypesToIgnore = {}, preferences = [], totalNumPossibleSchedule = 1) {
         // error map represents an undirected graph where (u,v) exists in edge set E iff u is incompatible with v
         // key is u, value is list of v in which above relationship holds
         this.errorMap = {};
@@ -350,8 +341,7 @@ export function SGWorker() {
 
         this.classData = classData;
         this.classTypesToIgnore = classTypesToIgnore;
-        this.specificPref = specificPref;
-        this.globalPref = globalPref;
+        this.preferences = preferences;
         this.totalNumPossibleSchedule = totalNumPossibleSchedule;
 
         // an interval tree for generating schedules
@@ -448,10 +438,9 @@ export function SGWorker() {
             // sectionNum is like CSE11$0 and CSE12$1
             for (let sectionNum of schedule) {
                 let section = this.getSectionFor(sectionNum);
-                if(this.specificPref)
-                    score += this.specificPref.evaluate(section);
-                if(this.globalPref)
-                    score += this.globalPref.evaluate(section);
+                for(let preference of preferences) {
+                    score += preference.evaluate(section);
+                }
             }
             console.log("Score after evaluation for schedule " + schedule + " is: " + score);
             return score;

@@ -1,5 +1,5 @@
 import {combineReducers} from 'redux';
-import SchedulePreferences from './SchedulePreferencesReducer';
+import DayTimePreferenceReducer from './DayTimePreferenceReducer';
 import ClassInputReducer from './ClassInputReducer';
 import GenerateReducer from "./ScheduleGenerationReducer";
 import ClassListReducer from "./ClassListReducer";
@@ -11,7 +11,7 @@ import ClassRegistryReducer from "./ClassRegistryReducer";
 import InstructorPreferenceReducer from "./InstructorPreferenceReducer";
 
 const reducers = combineReducers({
-    SchedulePreferences: SchedulePreferences,
+    DayTimePreference: DayTimePreferenceReducer,
     ClassInput: ClassInputReducer,
     ScheduleGenerate: GenerateReducer,
     ClassList: ClassListReducer,

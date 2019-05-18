@@ -14,7 +14,6 @@ export default function ClassRegistry(state = {
 
     let copy = null;
 
-    console.log(action);
     switch (action.type) {
         case STORE_TYPES:
             department = action.department;
@@ -28,12 +27,9 @@ export default function ClassRegistry(state = {
 
             return Object.assign({}, state, {types: copy});
         case STORE_INSTRUCTORS:
-            console.log("GOT HERE");
             department = action.department;
             courseNum = action.courseNum;
             classTitle = `${department} ${courseNum}`;
-
-            console.log(action);
 
             let instructors = action.instructors;
 

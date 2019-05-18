@@ -104,21 +104,20 @@ export class ScheduleGeneratorPreprocessor {
     }
 
     processPreferences() {
-        console.log("Processing preference")
-        console.log(this.getState());
-        let schedulePreferences = this.getState().SchedulePreferences;
-        let instructorPreferences = this.getState().InstructorPreference.instructors;
+        console.log("Processing preference");
 
-        let {globalPref} = schedulePreferences;
+        // let's not deal with this for now
+        //let dayTimePreference = this.getState().DayTimePreference;
+
 
         // filtering class specific preferences based on those the user selected
         // this is because when removing a class, instead of having to deal with removing preferences, just let them be
         // Yo good comment Cameron!
-        instructorPreferences = this.handleClassSpecificPreferences(this.selectedClasses, instructorPreferences);
+        let instructorPreference = this.getState().InstructorPreference;
+        instructorPreference = this.filterBySelectedClasses(this.selectedClasses, instructorPreference);
 
         this.preferences = {
-            globalPref: globalPref,
-            instructorPref: instructorPreferences
+            instructorPref: instructorPreference
         }
     }
 
@@ -148,11 +147,8 @@ export class ScheduleGeneratorPreprocessor {
         }, 1);
     }
 
-    handleClassSpecificPreferences(selectedClasses, classSpecificPref) {
-        console.log("logging class epcfiic pref")
-        console.log(classSpecificPref);
+    filterBySelectedClasses(selectedClasses, classSpecificPref) {
         let classTitles = selectedClasses.map(e => e.classTitle);
-
         return classTitles.reduce((accum, cur) => {
             return {
                 ...accum,
