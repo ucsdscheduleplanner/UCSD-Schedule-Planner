@@ -93,3 +93,14 @@ web/log/*
 
 # ssl
 web/letsencrypt/*
+
+# vscode
+.vscode
+
+# Compiled
+*.com
+*.class
+*.dll
+*.exe
+*.o
+*.so
