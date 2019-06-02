@@ -1,12 +1,13 @@
 package tests
 
 import (
-	"backend/routes"
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
 	"testing"
+
+	"github.com/ucsdscheduleplanner/UCSD-Schedule-Planner/backend/routes"
 )
 
 func TestGetTypes(t *testing.T) {
