@@ -1,6 +1,10 @@
 // Package db provides a simple way to communicate with database
 package db
 
+// TODO: if necessary, covert the db struct to a Env struct
+// that stores environment of the whole server, e.g. *DB, port, hostname, config, etc.
+// Env will be constructed in main() and passed to all other handlers
+
 import (
 	"database/sql"
 	"encoding/json"
@@ -36,7 +40,17 @@ func New(config *ini.File) (*DatabaseStruct, error) {
 
 	tableNames = append(tableNames, "DEPARTMENT")
 
-	db, err := sql.Open("mysql", fmt.Sprintf("%s:%s@/%s%s", username, password, endpoint, databaseName))
+	// TODEL: must delete, for back compatibility temporarily
+	tableNames = append(tableNames, "CLASS_DATA")
+
+	db, err := sql.Open("mysql", fmt.Sprintf("%s:%s@tcp(%s)/%s", username, password, endpoint, databaseName))
+	// db, err := sql.Open("mysql", fmt.Sprintf("%s:%s@/%s%s", username, password, endpoint, databaseName))
+
+	if err != nil {
+		return nil, err
+	}
+
+	err = db.Ping() // validate the connection
 
 	if err != nil {
 		return nil, err
@@ -61,14 +75,18 @@ func (ds *DatabaseStruct) Close() {
 
 // Query using the input SQL query
 func (ds *DatabaseStruct) Query(tableName string, sqlQuery string, params ...interface{}) (*sql.Rows, error) {
+
 	if !ds.isValidTable(tableName) {
 		return nil, fmt.Errorf("Table name '%s' is not valid, cannot continue query", tableName)
 	}
+
 	// Query will creates a connection and automatically release it
 	// ref: https://golang.org/src/database/sql/sql.go?s=40984:41081#L1522
 	results, err := ds.db.Query(sqlQuery, params...)
+
 	if err != nil {
 		return nil, errors.New(err.Error())
 	}
+
 	return results, nil
 }

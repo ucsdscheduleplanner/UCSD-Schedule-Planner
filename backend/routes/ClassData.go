@@ -5,16 +5,14 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"net/http"
 
 	"github.com/ucsdscheduleplanner/UCSD-Schedule-Planner/backend/db"
 )
 
-// TODO create some error checking functions to handle duplicated error checking codes
 const logTagClassData = "[ClassData]"
 
-// TODO make this graceful
+// TODO: make this graceful, maybe an Env var or config
 // set default quarter to SP19
 const defaultQuarter = "SP19"
 
@@ -58,19 +56,18 @@ type Subclass struct {
 	Description string `json:"description"`
 }
 
-// GetClassData is a pre-http.HandlerFunc for class data route ready to be a closure with *DatabaseStruct
+// GetClassData is a pre-http.HandlerFunc for class data route and will become a closure with *DatabaseStruct
 func GetClassData(writer http.ResponseWriter, request *http.Request, ds *db.DatabaseStruct) {
 
 	if request.Method != "POST" {
-		http.Error(writer, "Unsupported request type", http.StatusMethodNotAllowed)
+		errInvalidMethod(logTagClassData, writer, request)
 		return
 	}
 
 	body, err := ioutil.ReadAll(request.Body)
 
 	if err != nil {
-		http.Error(writer, "Error handling POST request", http.StatusBadRequest)
-		log.Printf("%s Failed to read request to %q from %q: %s", logTagClassData, request.RequestURI, request.RemoteAddr, err.Error())
+		errRequestBodyPost(logTagClassData, err, writer, request)
 		return
 	}
 
@@ -78,12 +75,12 @@ func GetClassData(writer http.ResponseWriter, request *http.Request, ds *db.Data
 	err = json.Unmarshal(body, &classesToQuery)
 
 	if err != nil {
-		http.Error(writer, "Failed to parse request", http.StatusInternalServerError)
-		log.Printf("%s Failed to parse request to %q from %q: %s", logTagClassData, request.RequestURI, request.RemoteAddr, err.Error())
+		errRequestBodyParse(logTagClassData, err, writer, request)
 		return
 	}
 
 	// TODO: reduce to one query?
+
 	ret := make(map[string][]Subclass)
 	for i := 0; i < len(classesToQuery); i++ {
 		currentClass := classesToQuery[i]
@@ -92,16 +89,12 @@ func GetClassData(writer http.ResponseWriter, request *http.Request, ds *db.Data
 		rows, err := ds.Query(currentClass.quarter, query, currentClass.department, currentClass.courseNumber)
 
 		if err != nil {
-			http.Error(writer, "Error querying for class data", http.StatusInternalServerError)
-			// TODO think about better ways to log the query, and fix all the other such logs in other files
-			log.Printf("%s Failed to query data with %q from %q: %s", logTagClassData, query+" "+currentClass.department+" "+currentClass.courseNumber, request.RemoteAddr, err.Error())
+			errQuery(logTagClassData, err, writer, request, query, currentClass.department, currentClass.courseNumber)
 			return
 		}
 
-		// TODO this might not be an error, better error message?
 		if rows == nil {
-			http.Error(writer, "Error querying for class data", http.StatusInternalServerError)
-			log.Printf("%s Empty query data with %q from %q: %s", logTagClassData, query+" "+currentClass.department+" "+currentClass.courseNumber, request.RemoteAddr, err.Error())
+			errEmptyQuery(logTagClassData, writer, request, query, currentClass.department, currentClass.courseNumber)
 			return
 		}
 
@@ -122,8 +115,7 @@ func GetClassData(writer http.ResponseWriter, request *http.Request, ds *db.Data
 				&subClass.Description)
 
 			if err != nil {
-				http.Error(writer, "Error retrieving data", http.StatusInternalServerError)
-				log.Printf("%s Failed to query data with %q from %q: %s", logTagClassData, query+" "+currentClass.department+" "+currentClass.courseNumber, request.RemoteAddr, err.Error())
+				errParseQueryResult(logTagClassData, err, writer, request)
 				return
 			}
 
@@ -133,18 +125,16 @@ func GetClassData(writer http.ResponseWriter, request *http.Request, ds *db.Data
 
 	retJSON, err := json.Marshal(ret)
 
-	// TODO use a function to deal with same error checks for the routes
 	if err != nil {
-		http.Error(writer, "Error retrieving data", http.StatusInternalServerError)
-		log.Printf("%s Failed to read data from ret in response to %q: %s", logTagClassData, request.RemoteAddr, err.Error())
+		errCreateResponse(logTagClassData, err, writer, request)
 		return
 	}
 
-	_, err = writer.Write(retJSON)
+	status, err := writer.Write(retJSON)
 
 	if err != nil {
-		http.Error(writer, "Failed to send response", http.StatusInternalServerError)
-		log.Printf("%s Failed to write data in response to %q: %s", logTagClassData, request.RemoteAddr, err.Error()) // log JSON?
+		errWriteResponse(logTagClassData, err, writer, request, status)
 		return
 	}
+
 }

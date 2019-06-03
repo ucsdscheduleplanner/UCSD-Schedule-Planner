@@ -12,14 +12,19 @@ import (
 	"github.com/ucsdscheduleplanner/UCSD-Schedule-Planner/backend/routes"
 )
 
+// TODO: make this config-able
 const port = 8080
 
+// create closure for http handler func
 func makeHandler(f func(http.ResponseWriter, *http.Request, *db.DatabaseStruct), ds *db.DatabaseStruct) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) { f(w, r, ds) }
 }
 
 func main() {
+
 	var config, err = ini.Load(filepath.Join(".", "config", "config.example.ini"))
+
+	// var config, err = ini.Load(filepath.Join(".", "config", "config.dev.ini"))
 
 	if err != nil {
 		panic("Error reading config file: " + err.Error())
@@ -35,6 +40,7 @@ func main() {
 		panic("Failed to init db: " + err.Error())
 	}
 
+	// only for the completeness of the code
 	defer ds.Close()
 
 	log.Printf("Starting server on port: %v\n", port)
@@ -45,6 +51,9 @@ func main() {
 	http.HandleFunc("/api_instructors", makeHandler(routes.GetInstructors, ds))
 	http.HandleFunc("/api_types", makeHandler(routes.GetTypes, ds))
 
-	// close db no matter what
-	log.Panic(http.ListenAndServe(":"+strconv.Itoa(port), nil))
+	// not fatal to close db (defer above)
+	err = http.ListenAndServe(":"+strconv.Itoa(port), nil)
+	if err != nil {
+		log.Panic(err)
+	}
 }

@@ -4,9 +4,11 @@ services:
   sdschedule-database:
     container_name: sdschedule-database
     image: mariadb:latest
+    ports:
+      - 10800:3306 # TODEL: DEV port
     environment:
       - "MYSQL_ROOT_PASSWORD=password" 
-      - "MYSQL_USER=user"
+      - "MYSQL_USER=dev"
       - "MYSQL_PASSWORD=password"
       - "MYSQL_DATABASE=classes"
     volumes:
