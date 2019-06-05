@@ -1,6 +1,7 @@
 package routes
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 )
@@ -52,7 +53,7 @@ func errWriteResponse(tag string, err error, writer http.ResponseWriter, request
 	log.Printf("%s Failed to write data in response to %q: %v %s", tag, request.RemoteAddr, status, err.Error())
 }
 
-func errMissingInput(tag string, writer http.ResponseWriter, request *http.Request, missing string) {
-	http.Error(writer, "Request does not contain necessary information: "+missing, http.StatusBadRequest)
+func errMissingInput(tag string, writer http.ResponseWriter, request *http.Request, missing []string) {
+	http.Error(writer, fmt.Sprintf("Request does not contain necessary information: %#v", missing), http.StatusBadRequest)
 	// skip logging invalid request for now
 }

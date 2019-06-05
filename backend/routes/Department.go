@@ -1,7 +1,6 @@
 package routes
 
 import (
-	"database/sql"
 	"net/http"
 
 	"github.com/ucsdscheduleplanner/UCSD-Schedule-Planner/backend/db"
@@ -17,12 +16,10 @@ func GetDepartments(writer http.ResponseWriter, request *http.Request, ds *db.Da
 		return
 	}
 
-	queryAndResponse(ds, logTagDepartment, writer, request,
-		func(rows *sql.Rows) (interface{}, error) {
-			var val string
-			err := rows.Scan(&val)
-			return val, err
-		},
-		"SELECT DISTINCT DEPT_CODE FROM DEPARTMENT", "DEPARTMENT")
+	queryAndResponse(
+		ds, logTagDepartment, writer, request,
+		rowScannerOneString,
+		"SELECT DISTINCT DEPT_CODE FROM DEPARTMENT",
+		"DEPARTMENT")
 
 }

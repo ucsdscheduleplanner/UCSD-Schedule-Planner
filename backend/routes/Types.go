@@ -1,7 +1,6 @@
 package routes
 
 import (
-	"database/sql"
 	"net/http"
 
 	"github.com/ucsdscheduleplanner/UCSD-Schedule-Planner/backend/db"
@@ -17,21 +16,17 @@ func GetTypes(writer http.ResponseWriter, request *http.Request, ds *db.Database
 		return
 	}
 
-	department, courseNum, quarter, missing := readDeptCourseNumQuarter(request)
+	department, courseNum, quarter, missing := readURLQueryDeptCourseNumQuarter(request)
 
-	if missing != "" {
+	if len(missing) != 0 {
 		errMissingInput(logTagTypes, writer, request, missing)
 		return
 	}
 
-	query := "SELECT DISTINCT TYPE FROM " + quarter + " WHERE DEPARTMENT=? AND COURSE_NUM=?"
-
-	queryAndResponse(ds, logTagTypes, writer, request,
-		func(rows *sql.Rows) (interface{}, error) {
-			var val string
-			err := rows.Scan(&val)
-			return val, err
-		},
-		query, quarter, department, courseNum)
+	queryAndResponse(
+		ds, logTagTypes, writer, request,
+		rowScannerOneString,
+		"SELECT DISTINCT TYPE FROM "+quarter+" WHERE DEPARTMENT=? AND COURSE_NUM=?",
+		quarter, department, courseNum)
 
 }

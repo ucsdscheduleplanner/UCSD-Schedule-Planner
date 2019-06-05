@@ -62,35 +62,34 @@ func queryAndResponse(ds *db.DatabaseStruct, tag string, writer http.ResponseWri
 
 }
 
-// TODO: have a better name
-func readDeptCourseNumQuarter(request *http.Request) (department, courseNum, quarter, missing string) {
+// rowScannerOneString scans one sql row and return as single string
+func rowScannerOneString(rows *sql.Rows) (interface{}, error) {
+	var val string
+	err := rows.Scan(&val)
+	return val, err
+}
 
-	keys, ok := request.URL.Query()["department"]
+// readURLQuery returns a map of queries and a slice of missing ones
+func readURLQuery(request *http.Request, args []string) (ans map[string]string, missing []string) {
 
-	if !ok {
-		missing = "department"
-		return
+	for _, s := range args {
+		keys, ok := request.URL.Query()[s]
+		if !ok || len(keys[0]) < 1 {
+			missing = append(missing, s)
+		} else {
+			ans[s] = keys[0]
+		}
 	}
-
-	department = keys[0]
-
-	keys, ok = request.URL.Query()["quarter"]
-
-	if !ok {
-		missing = "quarter"
-		return
-	}
-
-	quarter = keys[0]
-
-	keys, ok = request.URL.Query()["courseNum"]
-
-	if !ok {
-		missing = "courseNum"
-		return
-	}
-
-	courseNum = keys[0]
 
 	return // named return
+}
+
+func readURLQueryDeptCourseNumQuarter(request *http.Request) (string, string, string, []string) {
+	ans, missing := readURLQuery(request, []string{"department", "quarter", "courseNum"})
+	return ans["department"], ans["courseNum"], ans["quarter"], missing
+}
+
+func readURLQueryDeptQuarter(request *http.Request) (string, string, []string) {
+	ans, missing := readURLQuery(request, []string{"department", "quarter"})
+	return ans["department"], ans["courseNum"], missing
 }

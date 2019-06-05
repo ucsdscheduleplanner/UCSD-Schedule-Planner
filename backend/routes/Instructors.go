@@ -1,7 +1,6 @@
 package routes
 
 import (
-	"database/sql"
 	"net/http"
 
 	"github.com/ucsdscheduleplanner/UCSD-Schedule-Planner/backend/db"
@@ -17,21 +16,17 @@ func GetInstructors(writer http.ResponseWriter, request *http.Request, ds *db.Da
 		return
 	}
 
-	department, courseNum, quarter, missing := readDeptCourseNumQuarter(request)
+	department, courseNum, quarter, missing := readURLQueryDeptCourseNumQuarter(request)
 
-	if missing != "" {
+	if len(missing) != 0 {
 		errMissingInput(logTagInstructors, writer, request, missing)
 		return
 	}
 
-	query := "SELECT DISTINCT INSTRUCTOR FROM " + quarter + " WHERE DEPARTMENT=? AND COURSE_NUM=?"
-
-	queryAndResponse(ds, logTagInstructors, writer, request,
-		func(rows *sql.Rows) (interface{}, error) {
-			var val string
-			err := rows.Scan(&val)
-			return val, err
-		},
-		query, quarter, department, courseNum)
+	queryAndResponse(
+		ds, logTagInstructors, writer, request,
+		rowScannerOneString,
+		"SELECT DISTINCT INSTRUCTOR FROM "+quarter+" WHERE DEPARTMENT=? AND COURSE_NUM=?",
+		quarter, department, courseNum)
 
 }

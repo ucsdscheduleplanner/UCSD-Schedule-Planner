@@ -16,6 +16,12 @@ type DepartmentSummary struct {
 	Description string `json:"description"`
 }
 
+func rowScannerDepartmentSummary(rows *sql.Rows) (interface{}, error) {
+	val := DepartmentSummary{}
+	err := rows.Scan(&val.Department, &val.CourseNum, &val.Description)
+	return val, err
+}
+
 // GetCourseNums is a pre-http.HandlerFunc for course num route ready and will become a closure with *DatabaseStruct
 func GetCourseNums(writer http.ResponseWriter, request *http.Request, ds *db.DatabaseStruct) {
 
@@ -24,22 +30,17 @@ func GetCourseNums(writer http.ResponseWriter, request *http.Request, ds *db.Dat
 		return
 	}
 
-	// NOTE: hack way to re-use function
-	department, _, quarter, missing := readDeptCourseNumQuarter(request)
+	department, quarter, missing := readURLQueryDeptQuarter(request)
 
-	if missing != "courseNum" {
+	if len(missing) != 0 {
 		errMissingInput(logTagInstructors, writer, request, missing)
 		return
 	}
 
-	query := "SELECT DISTINCT DEPARTMENT, COURSE_NUM, DESCRIPTION FROM " + quarter + " WHERE DEPARTMENT=?"
-
-	queryAndResponse(ds, logTagDepartmentSummary, writer, request,
-		func(rows *sql.Rows) (interface{}, error) {
-			val := DepartmentSummary{}
-			err := rows.Scan(&val.Department, &val.CourseNum, &val.Description)
-			return val, err
-		},
-		query, quarter, department)
+	queryAndResponse(
+		ds, logTagDepartmentSummary, writer, request,
+		rowScannerDepartmentSummary,
+		"SELECT DISTINCT DEPARTMENT, COURSE_NUM, DESCRIPTION FROM "+quarter+" WHERE DEPARTMENT=?",
+		quarter, department)
 
 }
