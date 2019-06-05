@@ -51,9 +51,9 @@ func main() {
 	http.HandleFunc("/api_instructors", makeHandler(routes.GetInstructors, ds))
 	http.HandleFunc("/api_types", makeHandler(routes.GetTypes, ds))
 
-	// not fatal to close db (defer above)
 	err = http.ListenAndServe(":"+strconv.Itoa(port), nil)
+
 	if err != nil {
-		log.Panic(err)
+		log.Panic(err) // not fatal to close db (defer above)
 	}
 }

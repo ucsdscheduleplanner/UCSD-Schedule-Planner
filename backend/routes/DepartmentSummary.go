@@ -33,7 +33,7 @@ func GetCourseNums(writer http.ResponseWriter, request *http.Request, ds *db.Dat
 	department, quarter, missing := readURLQueryDeptQuarter(request)
 
 	if len(missing) != 0 {
-		errMissingInput(logTagInstructors, writer, request, missing)
+		errMissingInput(logTagDepartmentSummary, writer, request, missing)
 		return
 	}
 

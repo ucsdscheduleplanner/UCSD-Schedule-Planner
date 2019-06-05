@@ -75,18 +75,11 @@ func (ds *DatabaseStruct) Close() {
 
 // Query using the input SQL query
 func (ds *DatabaseStruct) Query(tableName string, sqlQuery string, params ...interface{}) (*sql.Rows, error) {
-
 	if !ds.isValidTable(tableName) {
 		return nil, fmt.Errorf("Table name '%s' is not valid, cannot continue query", tableName)
 	}
 
 	// Query will creates a connection and automatically release it
 	// ref: https://golang.org/src/database/sql/sql.go?s=40984:41081#L1522
-	results, err := ds.db.Query(sqlQuery, params...)
-
-	if err != nil {
-		return nil, errors.New(err.Error())
-	}
-
-	return results, nil
+	return ds.db.Query(sqlQuery, params...)
 }

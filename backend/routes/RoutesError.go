@@ -12,6 +12,8 @@ import (
 // Server only: currently only log server-side error, i.e. no logs for invalid input and so on
 // More context in the future: the current logging logs the IP but it might not be enough for troubleshooting
 
+// Principle is to hide details from users but have detailed logs on the server
+
 func errInvalidMethod(tag string, writer http.ResponseWriter, request *http.Request) {
 	http.Error(writer, "Invalid method type", http.StatusMethodNotAllowed)
 }

@@ -9,13 +9,12 @@ import (
 	"github.com/ucsdscheduleplanner/UCSD-Schedule-Planner/backend/db"
 )
 
-/*
-queryAndResponse is a function to
-query using ds
-process rows using rowScanner
-write response
-*/
-func queryAndResponse(ds *db.DatabaseStruct, tag string, writer http.ResponseWriter, request *http.Request,
+// queryAndResponse is a function to
+// query using ds
+// process rows using rowScanner
+// write response
+func queryAndResponse(
+	ds *db.DatabaseStruct, tag string, writer http.ResponseWriter, request *http.Request,
 	rowScanner func(*sql.Rows) (val interface{}, err error),
 	query string, queryTable string, queryParams ...interface{}) {
 
@@ -71,7 +70,6 @@ func rowScannerOneString(rows *sql.Rows) (interface{}, error) {
 
 // readURLQuery returns a map of queries and a slice of missing ones
 func readURLQuery(request *http.Request, args []string) (ans map[string]string, missing []string) {
-
 	for _, s := range args {
 		keys, ok := request.URL.Query()[s]
 		if !ok || len(keys[0]) < 1 {
@@ -80,7 +78,6 @@ func readURLQuery(request *http.Request, args []string) (ans map[string]string, 
 			ans[s] = keys[0]
 		}
 	}
-
 	return // named return
 }
 
