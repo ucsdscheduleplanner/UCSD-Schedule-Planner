@@ -70,6 +70,7 @@ func rowScannerOneString(rows *sql.Rows) (interface{}, error) {
 
 // readURLQuery returns a map of queries and a slice of missing ones
 func readURLQuery(request *http.Request, args []string) (ans map[string]string, missing []string) {
+	ans = make(map[string]string)
 	for _, s := range args {
 		keys, ok := request.URL.Query()[s]
 		if !ok || len(keys[0]) < 1 {
@@ -88,5 +89,5 @@ func readURLQueryDeptCourseNumQuarter(request *http.Request) (string, string, st
 
 func readURLQueryDeptQuarter(request *http.Request) (string, string, []string) {
 	ans, missing := readURLQuery(request, []string{"department", "quarter"})
-	return ans["department"], ans["courseNum"], missing
+	return ans["department"], ans["quarter"], missing
 }

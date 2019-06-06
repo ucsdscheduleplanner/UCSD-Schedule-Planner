@@ -7,6 +7,9 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	"github.com/DATA-DOG/go-sqlmock"
+
+	"github.com/ucsdscheduleplanner/UCSD-Schedule-Planner/backend/db"
 	"github.com/ucsdscheduleplanner/UCSD-Schedule-Planner/backend/routes"
 )
 
@@ -17,7 +20,19 @@ func TestGetDepartments(t *testing.T) {
 		t.Errorf("Could not create request")
 	}
 
-	response := GetDepartments(req)
+	d, mock, err := sqlmock.New()
+	if err != nil {
+		t.Fatalf("an error '%s' was not expected when opening a stub database connection", err)
+	}
+	defer d.Close()
+
+	mock.ExpectQuery(`^SELECT DISTINCT DEPT_CODE FROM DEPARTMENT`).
+		WillReturnRows(sqlmock.NewRows([]string{"DEPT_CODE"}).
+			AddRow("ECE"))
+
+	ds, _ := db.New(d, []string{"DEPARTMENT"})
+
+	response := GetDepartments(req, ds)
 
 	if response.Code != 200 {
 		t.Errorf("Expected a 200 code but got %d", response.Code)
@@ -29,7 +44,7 @@ func TestGetDepartments(t *testing.T) {
 	err = json.Unmarshal(body, &departments)
 
 	if err != nil {
-		t.Errorf("Server did not send valid JSON")
+		t.Errorf("Server did not send valid JSON: " + err.Error())
 	}
 }
 
@@ -40,12 +55,12 @@ func TestGetDepartmentsOnPostFails(t *testing.T) {
 		t.Errorf("Could not create request")
 	}
 
-	response := GetDepartments(req)
+	response := GetDepartments(req, nil)
 	checkResponseCode(t, http.StatusMethodNotAllowed, response.Code)
 }
 
-func GetDepartments(request *http.Request) *httptest.ResponseRecorder {
+func GetDepartments(request *http.Request, ds *db.DatabaseStruct) *httptest.ResponseRecorder {
 	recorder := httptest.NewRecorder()
-	routes.GetDepartments(recorder, request)
+	routes.GetDepartments(recorder, request, ds)
 	return recorder
 }

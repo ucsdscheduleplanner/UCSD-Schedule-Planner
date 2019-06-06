@@ -7,6 +7,9 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	"github.com/DATA-DOG/go-sqlmock"
+
+	"github.com/ucsdscheduleplanner/UCSD-Schedule-Planner/backend/db"
 	"github.com/ucsdscheduleplanner/UCSD-Schedule-Planner/backend/routes"
 )
 
@@ -17,7 +20,20 @@ func TestGetTypes(t *testing.T) {
 		t.Fatal("Could not create the request.")
 	}
 
-	response := GetTypes(req)
+	d, mock, err := sqlmock.New()
+	if err != nil {
+		t.Fatalf("an error '%s' was not expected when opening a stub database connection", err)
+	}
+	defer d.Close()
+
+	mock.ExpectQuery(`^SELECT DISTINCT TYPE FROM (.+)`).
+		WithArgs("CSE", "11").
+		WillReturnRows(sqlmock.NewRows([]string{"TYPE"}).
+			AddRow("Lecture"))
+
+	ds, _ := db.New(d, []string{"SP19"})
+
+	response := GetTypes(req, ds)
 	checkResponseCode(t, http.StatusOK, response.Code)
 
 	body, err := ioutil.ReadAll(response.Body)
@@ -36,8 +52,8 @@ func TestGetTypes(t *testing.T) {
 	}
 }
 
-func GetTypes(request *http.Request) *httptest.ResponseRecorder {
+func GetTypes(request *http.Request, ds *db.DatabaseStruct) *httptest.ResponseRecorder {
 	recorder := httptest.NewRecorder()
-	routes.GetTypes(recorder, request)
+	routes.GetTypes(recorder, request, ds)
 	return recorder
 }

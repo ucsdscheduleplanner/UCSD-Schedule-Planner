@@ -7,6 +7,9 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	"github.com/DATA-DOG/go-sqlmock"
+
+	"github.com/ucsdscheduleplanner/UCSD-Schedule-Planner/backend/db"
 	"github.com/ucsdscheduleplanner/UCSD-Schedule-Planner/backend/routes"
 )
 
@@ -17,7 +20,20 @@ func TestGetDepartmentSummary(t *testing.T) {
 		t.Fatal("Could not create the request.")
 	}
 
-	response := GetDepartmentSummary(req)
+	d, mock, err := sqlmock.New()
+	if err != nil {
+		t.Fatalf("an error '%s' was not expected when opening a stub database connection", err)
+	}
+	defer d.Close()
+
+	mock.ExpectQuery(`^SELECT DISTINCT DEPARTMENT, COURSE_NUM, DESCRIPTION FROM (.+)`).
+		WithArgs("CSE").
+		WillReturnRows(sqlmock.NewRows([]string{"DEPARTMENT", "COURSE_NUM", "DESCRIPTION"}).
+			AddRow("CSE", "11", "Java"))
+
+	ds, _ := db.New(d, []string{"SP19"})
+
+	response := GetDepartmentSummary(req, ds)
 	checkResponseCode(t, http.StatusOK, response.Code)
 
 	body, err := ioutil.ReadAll(response.Body)
@@ -43,13 +59,13 @@ func TestGetDepartmentSummaryFailsOnPost(t *testing.T) {
 		t.Fatal("Could not create the request.")
 	}
 
-	response := GetDepartmentSummary(req)
+	response := GetDepartmentSummary(req, nil)
 
 	checkResponseCode(t, http.StatusMethodNotAllowed, response.Code)
 }
 
-func GetDepartmentSummary(request *http.Request) *httptest.ResponseRecorder {
+func GetDepartmentSummary(request *http.Request, ds *db.DatabaseStruct) *httptest.ResponseRecorder {
 	recorder := httptest.NewRecorder()
-	routes.GetCourseNums(recorder, request)
+	routes.GetCourseNums(recorder, request, ds)
 	return recorder
 }

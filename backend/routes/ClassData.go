@@ -85,7 +85,7 @@ func GetClassData(writer http.ResponseWriter, request *http.Request, ds *db.Data
 	for i := 0; i < len(classesToQuery); i++ {
 		currentClass := classesToQuery[i]
 		classTitle := fmt.Sprintf("%s %s", currentClass.department, currentClass.courseNumber)
-		query := "SELECT * FROM " + currentClass.quarter + " WHERE DEPARTMENT=? AND COURSE_NUM=?"
+		query := "SELECT * FROM " + currentClass.quarter + " WHERE DEPARTMENT=? AND COURSE_NUM=?" // TODO: remove SELECT *
 		rows, err := ds.Query(currentClass.quarter, query, currentClass.department, currentClass.courseNumber)
 
 		if err != nil {
