@@ -22,7 +22,12 @@ type DatabaseStruct struct {
 }
 
 // New returns a pointer to a DatabaseStruct
-func New(user, password, endpoint, database string, tableNames []string) (*DatabaseStruct, error) {
+func New(d *sql.DB, t []string) (*DatabaseStruct, error) {
+	return &DatabaseStruct{db: d, tableNames: t}, nil
+}
+
+// NewConnect returns a pointer to a DatabaseStruct while trying to connect using parameters
+func NewConnect(user, password, endpoint, database string, tableNames []string) (*DatabaseStruct, error) {
 
 	db, err := sql.Open("mysql", fmt.Sprintf("%s:%s@tcp(%s)/%s", user, password, endpoint, database))
 	// db, err := sql.Open("mysql", fmt.Sprintf("%s:%s@/%s%s", user, password, endpoint, database))
@@ -37,7 +42,7 @@ func New(user, password, endpoint, database string, tableNames []string) (*Datab
 		return nil, err
 	}
 
-	return &DatabaseStruct{db: db, tableNames: tableNames}, nil
+	return New(db, tableNames)
 }
 
 // NewIni reads from an ini file and returns a pointer to a DatabaseStruct
@@ -62,7 +67,7 @@ func NewIni(config *ini.File) (*DatabaseStruct, error) {
 	// TODEL: must delete, for back compatibility temporarily
 	tableNames = append(tableNames, "CLASS_DATA")
 
-	return New(username, password, endpoint, databaseName, tableNames)
+	return NewConnect(username, password, endpoint, databaseName, tableNames)
 }
 
 func (ds *DatabaseStruct) isValidTable(tableName string) bool {
