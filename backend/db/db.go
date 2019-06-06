@@ -22,7 +22,26 @@ type DatabaseStruct struct {
 }
 
 // New returns a pointer to a DatabaseStruct
-func New(config *ini.File) (*DatabaseStruct, error) {
+func New(user, password, endpoint, database string, tableNames []string) (*DatabaseStruct, error) {
+
+	db, err := sql.Open("mysql", fmt.Sprintf("%s:%s@tcp(%s)/%s", user, password, endpoint, database))
+	// db, err := sql.Open("mysql", fmt.Sprintf("%s:%s@/%s%s", user, password, endpoint, database))
+
+	if err != nil {
+		return nil, err
+	}
+
+	err = db.Ping() // validate the connection
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &DatabaseStruct{db: db, tableNames: tableNames}, nil
+}
+
+// NewIni reads from an ini file and returns a pointer to a DatabaseStruct
+func NewIni(config *ini.File) (*DatabaseStruct, error) {
 
 	username := config.Section("DB").Key("USERNAME").String()
 	password := config.Section("DB").Key("PASSWORD").String()
@@ -43,20 +62,7 @@ func New(config *ini.File) (*DatabaseStruct, error) {
 	// TODEL: must delete, for back compatibility temporarily
 	tableNames = append(tableNames, "CLASS_DATA")
 
-	db, err := sql.Open("mysql", fmt.Sprintf("%s:%s@tcp(%s)/%s", username, password, endpoint, databaseName))
-	// db, err := sql.Open("mysql", fmt.Sprintf("%s:%s@/%s%s", username, password, endpoint, databaseName))
-
-	if err != nil {
-		return nil, err
-	}
-
-	err = db.Ping() // validate the connection
-
-	if err != nil {
-		return nil, err
-	}
-
-	return &DatabaseStruct{db: db, tableNames: tableNames}, nil
+	return New(username, password, endpoint, databaseName, tableNames)
 }
 
 func (ds *DatabaseStruct) isValidTable(tableName string) bool {

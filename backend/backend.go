@@ -35,7 +35,7 @@ func main() {
 	}
 
 	// open once, close once
-	ds, err := db.New(config)
+	ds, err := db.NewIni(config)
 	if err != nil {
 		panic("Failed to init db: " + err.Error())
 	}
