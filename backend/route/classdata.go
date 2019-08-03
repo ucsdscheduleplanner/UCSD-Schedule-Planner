@@ -1,7 +1,7 @@
-// Package routes includes the route handlers for sd schedule planner
-package routes
+package route
 
 import (
+	"database/sql"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -10,11 +10,8 @@ import (
 	"github.com/ucsdscheduleplanner/UCSD-Schedule-Planner/backend/db"
 )
 
-const logTagClassData = "[ClassData]"
-
-// TODO: make this graceful, maybe an Env var or config
-// set default quarter to SP19
-const defaultQuarter = "SP19"
+// LogPrefixClassData log prefix for ClassData route
+const LogPrefixClassData = "[ClassData]"
 
 // ClassDataRequest stores information from a corresponding request
 type ClassDataRequest struct {
@@ -56,85 +53,81 @@ type Subclass struct {
 	Description string `json:"description"`
 }
 
-// GetClassData is a pre-http.HandlerFunc for class data route and will become a closure with *DatabaseStruct
-func GetClassData(writer http.ResponseWriter, request *http.Request, ds *db.DatabaseStruct) {
+// RowScannerClassData scans one sql row and return as a DepartmentSummary Struct
+func RowScannerClassData(rows *sql.Rows) (interface{}, error) {
+
+	val := Subclass{}
+
+	err := rows.Scan(
+		&val.Department,
+		&val.CourseNum,
+		&val.SectionId,
+		&val.CourseId,
+		&val.ClassType,
+		&val.Days,
+		&val.Time,
+		&val.Location,
+		&val.Room,
+		&val.Instructor,
+		&val.Description)
+
+	return val, err
+}
+
+// GetClassData is a route.HandlerFunc for class data route
+func GetClassData(writer http.ResponseWriter, request *http.Request, ds *db.DatabaseStruct) *ErrorStruct {
 
 	if request.Method != "POST" {
-		errInvalidMethod(logTagClassData, writer, request)
-		return
+		return &ErrorStruct{Type: ErrHTTPMethodInvalid}
 	}
 
 	body, err := ioutil.ReadAll(request.Body)
 
 	if err != nil {
-		errRequestBodyPost(logTagClassData, err, writer, request)
-		return
+		return &ErrorStruct{Type: ErrPostRead, Error: err}
 	}
 
 	var classesToQuery []ClassDataRequest
 	err = json.Unmarshal(body, &classesToQuery)
 
 	if err != nil {
-		errRequestBodyParse(logTagClassData, err, writer, request)
-		return
+		return &ErrorStruct{Type: ErrPostParse, Error: err}
 	}
 
 	// TODO: reduce to one query?
+
+	// query := "SELECT * FROM " + currentClass.quarter + "WHERE DEPARTMENT"
 
 	ret := make(map[string][]Subclass)
 	for i := 0; i < len(classesToQuery); i++ {
 		currentClass := classesToQuery[i]
 		classTitle := fmt.Sprintf("%s %s", currentClass.department, currentClass.courseNumber)
-		query := "SELECT * FROM " + currentClass.quarter + " WHERE DEPARTMENT=? AND COURSE_NUM=?" // TODO: remove SELECT *
+		// TODO: remove SELECT *
+		query := "SELECT * FROM " + currentClass.quarter + " WHERE DEPARTMENT=? AND COURSE_NUM=?"
 		rows, err := ds.Query(currentClass.quarter, query, currentClass.department, currentClass.courseNumber)
 
 		if err != nil {
-			errQuery(logTagClassData, err, writer, request, query, currentClass.department, currentClass.courseNumber)
-			return
+			return &ErrorStruct{Type: ErrQuery, Error: err,
+				Query: query, QueryParams: []interface{}{currentClass.department, currentClass.courseNumber}}
 		}
 
 		if rows == nil {
-			errEmptyQuery(logTagClassData, writer, request, query, currentClass.department, currentClass.courseNumber)
-			return
+			return &ErrorStruct{Type: ErrQueryEmpty,
+				Query: query, QueryParams: []interface{}{currentClass.department, currentClass.courseNumber}}
 		}
 
 		for rows.Next() {
-			subClass := Subclass{}
 
-			err := rows.Scan(
-				&subClass.Department,
-				&subClass.CourseNum,
-				&subClass.SectionId,
-				&subClass.CourseId,
-				&subClass.ClassType,
-				&subClass.Days,
-				&subClass.Time,
-				&subClass.Location,
-				&subClass.Room,
-				&subClass.Instructor,
-				&subClass.Description)
+			row, err := RowScannerClassData(rows)
 
 			if err != nil {
-				errParseQueryResult(logTagClassData, err, writer, request)
-				return
+				return &ErrorStruct{Type: ErrQueryScan, Error: err}
 			}
 
-			ret[classTitle] = append(ret[classTitle], subClass)
+			ret[classTitle] = append(ret[classTitle], row.(Subclass))
 		}
 	}
 
-	retJSON, err := json.Marshal(ret)
-
-	if err != nil {
-		errCreateResponse(logTagClassData, err, writer, request)
-		return
-	}
-
-	status, err := writer.Write(retJSON)
-
-	if err != nil {
-		errWriteResponse(logTagClassData, err, writer, request, status)
-		return
-	}
+	return response(writer, request, ret)
 
 }

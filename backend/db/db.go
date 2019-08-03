@@ -22,12 +22,12 @@ type DatabaseStruct struct {
 }
 
 // New returns a pointer to a DatabaseStruct
-func New(d *sql.DB, t []string) (*DatabaseStruct, error) {
-	return &DatabaseStruct{db: d, tableNames: t}, nil
+func New(d *sql.DB, t []string) (*DatabaseStruct) {
+	return &DatabaseStruct{db: d, tableNames: t}
 }
 
-// NewConnect returns a pointer to a DatabaseStruct while trying to connect using parameters
-func NewConnect(user, password, endpoint, database string, tableNames []string) (*DatabaseStruct, error) {
+// Connect returns a pointer to a DatabaseStruct while trying to connect using parameters
+func Connect(user, password, endpoint, database string, tableNames []string) (*DatabaseStruct, error) {
 
 	db, err := sql.Open("mysql", fmt.Sprintf("%s:%s@tcp(%s)/%s", user, password, endpoint, database))
 	// db, err := sql.Open("mysql", fmt.Sprintf("%s:%s@/%s%s", user, password, endpoint, database))
@@ -42,7 +42,7 @@ func NewConnect(user, password, endpoint, database string, tableNames []string) 
 		return nil, err
 	}
 
-	return New(db, tableNames)
+	return New(db, tableNames), nil
 }
 
 // NewIni reads from an ini file and returns a pointer to a DatabaseStruct
@@ -67,7 +67,7 @@ func NewIni(config *ini.File) (*DatabaseStruct, error) {
 	// TODEL: must delete, for back compatibility temporarily
 	tableNames = append(tableNames, "CLASS_DATA")
 
-	return NewConnect(username, password, endpoint, databaseName, tableNames)
+	return Connect(username, password, endpoint, databaseName, tableNames)
 }
 
 func (ds *DatabaseStruct) isValidTable(tableName string) bool {
