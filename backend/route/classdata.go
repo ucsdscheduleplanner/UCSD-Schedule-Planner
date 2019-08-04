@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"strings"
 
 	"github.com/ucsdscheduleplanner/UCSD-Schedule-Planner/backend/db"
 )
@@ -13,11 +14,14 @@ import (
 // LogPrefixClassData log prefix for ClassData route
 const LogPrefixClassData = "[ClassData]"
 
+// columns to select from db
+const classDataColumns = "DEPARTMENT, COURSE_NUM, SECTION_ID, COURSE_ID, TYPE, DAYS, TIME, LOCATION, ROOM, INSTRUCTOR, DESCRIPTION"
+
 // ClassDataRequest stores information from a corresponding request
 type ClassDataRequest struct {
-	quarter      string
-	department   string
-	courseNumber string
+	quarter    string
+	department string
+	courseNum  string
 }
 
 // UnmarshalJSON populates a ClassDataRequest with the data from a JSON byte slice
@@ -34,7 +38,15 @@ func (o *ClassDataRequest) UnmarshalJSON(data []byte) error {
 	}
 
 	o.department = v["department"]
-	o.courseNumber = v["courseNum"]
+	if o.department == "" {
+		return fmt.Errorf("Failed to parse class data request json: empty department")
+	}
+
+	o.courseNum = v["courseNum"]
+	if o.courseNum == "" {
+		return fmt.Errorf("Failed to parse class data request json: empty courseNum")
+	}
+
 	return nil
 }
 
@@ -55,7 +67,6 @@ type Subclass struct {
 
 // RowScannerClassData scans one sql row and return as a DepartmentSummary Struct
 func RowScannerClassData(rows *sql.Rows) (interface{}, error) {
-
 	val := Subclass{}
 
 	err := rows.Scan(
@@ -76,7 +87,6 @@ func RowScannerClassData(rows *sql.Rows) (interface{}, error) {
 
 // GetClassData is a route.HandlerFunc for class data route
 func GetClassData(writer http.ResponseWriter, request *http.Request, ds *db.DatabaseStruct) *ErrorStruct {
-
 	if request.Method != "POST" {
 		return &ErrorStruct{Type: ErrHTTPMethodInvalid}
 	}
@@ -94,40 +104,85 @@ func GetClassData(writer http.ResponseWriter, request *http.Request, ds *db.Data
 		return &ErrorStruct{Type: ErrPostParse, Error: err}
 	}
 
-	// TODO: reduce to one query?
-
-	// query := "SELECT * FROM " + currentClass.quarter + "WHERE DEPARTMENT"
-
-	ret := make(map[string][]Subclass)
-	for i := 0; i < len(classesToQuery); i++ {
-		currentClass := classesToQuery[i]
-		classTitle := fmt.Sprintf("%s %s", currentClass.department, currentClass.courseNumber)
-		// TODO: remove SELECT *
-		query := "SELECT * FROM " + currentClass.quarter + " WHERE DEPARTMENT=? AND COURSE_NUM=?"
-		rows, err := ds.Query(currentClass.quarter, query, currentClass.department, currentClass.courseNumber)
-
-		if err != nil {
-			return &ErrorStruct{Type: ErrQuery, Error: err,
-				Query: query, QueryParams: []interface{}{currentClass.department, currentClass.courseNumber}}
-		}
-
-		if rows == nil {
-			return &ErrorStruct{Type: ErrQueryEmpty,
-				Query: query, QueryParams: []interface{}{currentClass.department, currentClass.courseNumber}}
-		}
-
-		for rows.Next() {
-
-			row, err := RowScannerClassData(rows)
-
-			if err != nil {
-				return &ErrorStruct{Type: ErrQueryScan, Error: err}
-			}
-
-			ret[classTitle] = append(ret[classTitle], row.(Subclass))
-		}
+	if len(classesToQuery) == 0 {
+		return &ErrorStruct{Type: ErrPostRead, Error: fmt.Errorf("Empty post: Require an array of ClassDataRequest in JSON")}
 	}
 
-	return response(writer, request, ret)
+	// Build query
+	/*
+		Example:
+		SELECT
+			DEPARTMENT, COURSE_NUM, SECTION_ID, COURSE_ID, TYPE, DAYS, TIME, LOCATION, ROOM, INSTRUCTOR, DESCRIPTION
+		FROM
+		  FA20
+		WHERE
+			(DEPARTMENT, COURSE_NUM) IN ((?,?),(?,?))
+		UNION ALL
+		(SELECT
+			DEPARTMENT, COURSE_NUM, SECTION_ID, COURSE_ID, TYPE, DAYS, TIME, LOCATION, ROOM, INSTRUCTOR, DESCRIPTION
+		FROM
+			SP_19
+		WHERE
+			(DEPARTMENT, COURSE_NUM) IN((?,?))
+		)
 
+		together with a queryParams slice with size 6
+	*/
+
+	queryMap := make(map[string][]ClassDataRequest)
+	for _, class := range classesToQuery {
+		queryMap[class.quarter] = append(queryMap[class.quarter], class)
+	}
+
+	var queryBuilder strings.Builder
+	var quarters []string
+	var queryParams []interface{}
+
+	isFirstQuarter := true
+	for quarter, classes := range queryMap {
+		quarters = append(quarters, quarter)
+		if !isFirstQuarter {
+			fmt.Fprintf(&queryBuilder, " UNION ALL (")
+		}
+		fmt.Fprintf(&queryBuilder, "SELECT %s FROM %s WHERE (DEPARTMENT, COURSE_NUM) IN(", classDataColumns, quarter)
+		for iClass, class := range classes {
+			if iClass != 0 {
+				fmt.Fprintf(&queryBuilder, ",")
+			}
+			fmt.Fprintf(&queryBuilder, "(?,?)")
+			queryParams = append(queryParams, []interface{}{class.department, class.courseNum}...)
+		}
+		fmt.Fprintf(&queryBuilder, ")")
+		if !isFirstQuarter {
+			fmt.Fprintf(&queryBuilder, ")")
+		}
+		isFirstQuarter = false
+	}
+
+	res, es := query(
+		ds,
+		QueryStruct{
+			RowScanner:  RowScannerClassData,
+			Query:       queryBuilder.String(),
+			QueryTables: quarters,
+			QueryParams: queryParams,
+		},
+	)
+
+	if es != nil {
+		return es
+	}
+
+	ret := make(map[string][]Subclass)
+
+	// construct the json to return using a map
+	for _, classData := range res {
+		subclass := classData.(Subclass)
+		classTitle := fmt.Sprintf("%s %s", subclass.Department, subclass.CourseNum)
+		ret[classTitle] = append(ret[classTitle], subclass)
+	}
+
+	writer.Header().Set("Content-Type", "application/json")
+
+	return response(writer, request, ret)
 }

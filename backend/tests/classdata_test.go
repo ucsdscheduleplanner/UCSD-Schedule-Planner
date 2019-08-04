@@ -11,7 +11,7 @@ import (
 	"github.com/DATA-DOG/go-sqlmock"
 
 	"github.com/ucsdscheduleplanner/UCSD-Schedule-Planner/backend/db"
-	"github.com/ucsdscheduleplanner/UCSD-Schedule-Planner/backend/routes"
+	"github.com/ucsdscheduleplanner/UCSD-Schedule-Planner/backend/route"
 )
 
 var getClassDataColumns = []string{
@@ -61,12 +61,15 @@ func TestGetClassData(t *testing.T) {
 		WillReturnRows(sqlmock.NewRows(getClassDataColumns).
 			AddRow("CSE", "11", "a", "a", "a", "a", "a", "a", "a", "a", "a"))
 
-	ds, _ := db.New(d, []string{"SP19"})
+	ds := db.New(d, map[string]bool{"SP19": true})
 
 	response := GetClassData(req, ds)
 	body, err := ioutil.ReadAll(response.Body)
 
-	var classData []routes.Subclass
+	t.Errorf("response: %v", response)
+	t.Errorf("response.Body: %v", response.Body)
+
+	var classData []route.Subclass
 	err = json.Unmarshal(body, &classData)
 
 	if err != nil {
@@ -103,6 +106,6 @@ func TestGetRequestClassDataFails(t *testing.T) {
 
 func GetClassData(request *http.Request, ds *db.DatabaseStruct) *httptest.ResponseRecorder {
 	recorder := httptest.NewRecorder()
-	routes.GetClassData(recorder, request, ds)
+	route.MakeHandler(route.GetClassData, ds, route.LogPrefixClassData)(recorder, request)
 	return recorder
 }

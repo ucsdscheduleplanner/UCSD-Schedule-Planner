@@ -10,7 +10,7 @@ import (
 	"github.com/DATA-DOG/go-sqlmock"
 
 	"github.com/ucsdscheduleplanner/UCSD-Schedule-Planner/backend/db"
-	"github.com/ucsdscheduleplanner/UCSD-Schedule-Planner/backend/routes"
+	"github.com/ucsdscheduleplanner/UCSD-Schedule-Planner/backend/route"
 )
 
 func TestGetDepartments(t *testing.T) {
@@ -30,7 +30,7 @@ func TestGetDepartments(t *testing.T) {
 		WillReturnRows(sqlmock.NewRows([]string{"DEPT_CODE"}).
 			AddRow("ECE"))
 
-	ds, _ := db.New(d, []string{"DEPARTMENT"})
+	ds := db.New(d, map[string]bool{"DEPARTMENT": true, "SP19": true})
 
 	response := GetDepartments(req, ds)
 
@@ -61,6 +61,6 @@ func TestGetDepartmentsOnPostFails(t *testing.T) {
 
 func GetDepartments(request *http.Request, ds *db.DatabaseStruct) *httptest.ResponseRecorder {
 	recorder := httptest.NewRecorder()
-	routes.GetDepartments(recorder, request, ds)
+	route.MakeHandler(route.GetDepartments, ds, route.LogPrefixDepartment)(recorder, request)
 	return recorder
 }

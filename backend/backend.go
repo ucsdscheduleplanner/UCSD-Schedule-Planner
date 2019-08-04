@@ -17,9 +17,9 @@ const port = 8080
 
 func main() {
 
-	var config, err = ini.Load(filepath.Join(".", "config", "config.example.ini"))
+	// var config, err = ini.Load(filepath.Join(".", "config", "config.example.ini"))
 
-	// var config, err = ini.Load(filepath.Join(".", "config", "config.dev.ini"))
+	var config, err = ini.Load(filepath.Join(".", "config", "config.dev.ini"))
 
 	if err != nil {
 		panic("Error reading config file: " + err.Error())
@@ -31,10 +31,10 @@ func main() {
 
 	// open once, close once
 	ds, err := db.NewIni(config)
-	defer ds.Close()
 	if err != nil {
 		panic("Failed to init db: " + err.Error())
 	}
+	defer ds.Close()
 
 	// only for the completeness of the code
 

@@ -17,17 +17,17 @@ import (
 
 // DatabaseStruct stores a DB* and a slice of tables names
 type DatabaseStruct struct {
-	db         *sql.DB
-	tableNames []string
+	db       *sql.DB
+	tableSet map[string]bool
 }
 
 // New returns a pointer to a DatabaseStruct
-func New(d *sql.DB, t []string) (*DatabaseStruct) {
-	return &DatabaseStruct{db: d, tableNames: t}
+func New(d *sql.DB, t map[string]bool) *DatabaseStruct {
+	return &DatabaseStruct{db: d, tableSet: t}
 }
 
 // Connect returns a pointer to a DatabaseStruct while trying to connect using parameters
-func Connect(user, password, endpoint, database string, tableNames []string) (*DatabaseStruct, error) {
+func Connect(user, password, endpoint, database string, tableSet map[string]bool) (*DatabaseStruct, error) {
 
 	db, err := sql.Open("mysql", fmt.Sprintf("%s:%s@tcp(%s)/%s", user, password, endpoint, database))
 	// db, err := sql.Open("mysql", fmt.Sprintf("%s:%s@/%s%s", user, password, endpoint, database))
@@ -42,7 +42,7 @@ func Connect(user, password, endpoint, database string, tableNames []string) (*D
 		return nil, err
 	}
 
-	return New(db, tableNames), nil
+	return New(db, tableSet), nil
 }
 
 // NewIni reads from an ini file and returns a pointer to a DatabaseStruct
@@ -53,30 +53,36 @@ func NewIni(config *ini.File) (*DatabaseStruct, error) {
 	endpoint := config.Section("DB").Key("ENDPOINT").String()
 	databaseName := config.Section("DB").Key("DB_NAME").String()
 
-	var tableNames []string
+	var tables []string
 
 	quartersJSON := []byte(config.Section("VARS").Key("QUARTERS").String())
-	err := json.Unmarshal(quartersJSON, &tableNames)
+	err := json.Unmarshal(quartersJSON, &tables)
 
 	if err != nil {
 		return nil, errors.New("Failed to read quarters from config file: " + err.Error())
 	}
 
-	tableNames = append(tableNames, "DEPARTMENT")
+	tables = append(tables, "DEPARTMENT")
 
 	// TODEL: must delete, for back compatibility temporarily
-	tableNames = append(tableNames, "CLASS_DATA")
+	tables = append(tables, "CLASS_DATA")
 
-	return Connect(username, password, endpoint, databaseName, tableNames)
+	tableSet := make(map[string]bool)
+
+	for _, name := range tables {
+		tableSet[name] = true
+	}
+
+	return Connect(username, password, endpoint, databaseName, tableSet)
 }
 
-func (ds *DatabaseStruct) isValidTable(tableName string) bool {
-	for _, e := range ds.tableNames {
-		if e == tableName {
-			return true
+func (ds *DatabaseStruct) invalidTables(tableNames []string) (invalidTables []string) {
+	for _, name := range tableNames {
+		if !ds.tableSet[name] {
+			invalidTables = append(invalidTables, name)
 		}
 	}
-	return false
+	return
 }
 
 // Close the DB
@@ -85,9 +91,9 @@ func (ds *DatabaseStruct) Close() {
 }
 
 // Query using the input SQL query
-func (ds *DatabaseStruct) Query(tableName string, sqlQuery string, params ...interface{}) (*sql.Rows, error) {
-	if !ds.isValidTable(tableName) {
-		return nil, fmt.Errorf("Table name '%s' is not valid, cannot continue query", tableName)
+func (ds *DatabaseStruct) Query(tableNames []string, sqlQuery string, params ...interface{}) (*sql.Rows, error) {
+	if invalidTables := ds.invalidTables(tableNames); invalidTables != nil {
+		return nil, fmt.Errorf("Invalid table names: '%v'", invalidTables)
 	}
 
 	// Query will creates a connection and automatically release it

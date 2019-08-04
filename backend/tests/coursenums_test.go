@@ -10,7 +10,7 @@ import (
 	"github.com/DATA-DOG/go-sqlmock"
 
 	"github.com/ucsdscheduleplanner/UCSD-Schedule-Planner/backend/db"
-	"github.com/ucsdscheduleplanner/UCSD-Schedule-Planner/backend/routes"
+	"github.com/ucsdscheduleplanner/UCSD-Schedule-Planner/backend/route"
 )
 
 func TestGetDepartmentSummary(t *testing.T) {
@@ -31,14 +31,14 @@ func TestGetDepartmentSummary(t *testing.T) {
 		WillReturnRows(sqlmock.NewRows([]string{"DEPARTMENT", "COURSE_NUM", "DESCRIPTION"}).
 			AddRow("CSE", "11", "Java"))
 
-	ds, _ := db.New(d, []string{"SP19"})
+	ds := db.New(d, map[string]bool{"SP19": true})
 
 	response := GetDepartmentSummary(req, ds)
 	checkResponseCode(t, http.StatusOK, response.Code)
 
 	body, err := ioutil.ReadAll(response.Body)
 
-	var departmentSummary []routes.DepartmentSummary
+	var departmentSummary []route.DepartmentSummary
 	err = json.Unmarshal(body, &departmentSummary)
 
 	if len(departmentSummary) == 0 {
@@ -66,6 +66,6 @@ func TestGetDepartmentSummaryFailsOnPost(t *testing.T) {
 
 func GetDepartmentSummary(request *http.Request, ds *db.DatabaseStruct) *httptest.ResponseRecorder {
 	recorder := httptest.NewRecorder()
-	routes.GetCourseNums(recorder, request, ds)
+	route.MakeHandler(route.GetCourseNums, ds, route.LogPrefixCourseNums)(recorder, request)
 	return recorder
 }

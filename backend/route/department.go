@@ -1,6 +1,7 @@
 package route
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/ucsdscheduleplanner/UCSD-Schedule-Planner/backend/db"
@@ -11,7 +12,6 @@ const LogPrefixDepartment = "[Department]"
 
 // GetDepartments is a route.HandlerFunc for department route
 func GetDepartments(writer http.ResponseWriter, request *http.Request, ds *db.DatabaseStruct) *ErrorStruct {
-
 	if request.Method != "GET" {
 		return &ErrorStruct{Type: ErrHTTPMethodInvalid}
 	}
@@ -19,15 +19,17 @@ func GetDepartments(writer http.ResponseWriter, request *http.Request, ds *db.Da
 	res, es := query(
 		ds,
 		QueryStruct{
-			RowScanner: RowScannerOneString,
-			Query:      "SELECT DISTINCT DEPT_CODE FROM DEPARTMENT",
-			QueryTable: "DEPARTMENT",
-		})
+			RowScanner:  RowScannerOneString,
+			Query:       fmt.Sprintf("SELECT DISTINCT DEPT_CODE FROM DEPARTMENT"),
+			QueryTables: []string{"DEPARTMENT"},
+		},
+	)
 
 	if es != nil {
 		return es
 	}
 
-	return response(writer, request, res)
+	writer.Header().Set("Content-Type", "application/json")
 
+	return response(writer, request, res)
 }

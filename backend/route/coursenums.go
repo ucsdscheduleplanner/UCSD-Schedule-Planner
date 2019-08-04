@@ -2,6 +2,7 @@ package route
 
 import (
 	"database/sql"
+	"fmt"
 	"net/http"
 
 	"github.com/ucsdscheduleplanner/UCSD-Schedule-Planner/backend/db"
@@ -26,30 +27,33 @@ func RowScannerCourseNums(rows *sql.Rows) (interface{}, error) {
 
 // GetCourseNums is a route.HandlerFunc for course num route
 func GetCourseNums(writer http.ResponseWriter, request *http.Request, ds *db.DatabaseStruct) *ErrorStruct {
-
 	if request.Method != "GET" {
 		return &ErrorStruct{Type: ErrHTTPMethodInvalid}
 	}
 
-	department, quarter, missing := readURLQueryDeptQuarter(request)
+	ans, missing := readURLQuery(request, []string{"department", "quarter"})
 
 	if len(missing) != 0 {
 		return &ErrorStruct{Type: ErrInputMissing, Missing: missing}
 	}
 
+	department, quarter := ans["department"], ans["quarter"]
+
 	res, es := query(
 		ds,
 		QueryStruct{
 			RowScanner:  RowScannerCourseNums,
-			Query:       "SELECT DISTINCT DEPARTMENT, COURSE_NUM, DESCRIPTION FROM " + quarter + " WHERE DEPARTMENT=?",
-			QueryTable:  quarter,
+			Query:       fmt.Sprintf("SELECT DISTINCT DEPARTMENT, COURSE_NUM, DESCRIPTION FROM %s WHERE DEPARTMENT=?", quarter),
+			QueryTables: []string{quarter},
 			QueryParams: []interface{}{department},
-		})
+		},
+	)
 
 	if es != nil {
 		return es
 	}
 
-	return response(writer, request, res)
+	writer.Header().Set("Content-Type", "application/json")
 
+	return response(writer, request, res)
 }

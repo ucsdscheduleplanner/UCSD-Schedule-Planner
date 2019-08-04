@@ -10,7 +10,7 @@ import (
 	"github.com/DATA-DOG/go-sqlmock"
 
 	"github.com/ucsdscheduleplanner/UCSD-Schedule-Planner/backend/db"
-	"github.com/ucsdscheduleplanner/UCSD-Schedule-Planner/backend/routes"
+	"github.com/ucsdscheduleplanner/UCSD-Schedule-Planner/backend/route"
 )
 
 func TestGetInstructors(t *testing.T) {
@@ -31,7 +31,7 @@ func TestGetInstructors(t *testing.T) {
 		WillReturnRows(sqlmock.NewRows([]string{"INSTRUCTOR"}).
 			AddRow("Professor"))
 
-	ds, _ := db.New(d, []string{"SP19"})
+	ds := db.New(d, map[string]bool{"SP19": true})
 
 	response := GetInstructors(req, ds)
 	checkResponseCode(t, http.StatusOK, response.Code)
@@ -54,6 +54,6 @@ func TestGetInstructors(t *testing.T) {
 
 func GetInstructors(request *http.Request, ds *db.DatabaseStruct) *httptest.ResponseRecorder {
 	recorder := httptest.NewRecorder()
-	routes.GetInstructors(recorder, request, ds)
+	route.MakeHandler(route.GetInstructors, ds, route.LogPrefixInstructors)(recorder, request)
 	return recorder
 }

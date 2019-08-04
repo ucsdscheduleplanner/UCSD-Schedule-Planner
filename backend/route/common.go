@@ -28,6 +28,7 @@ const (
 	ErrHTTPMethodInvalid           // invalid http method
 	ErrPostRead                    // http.post fail to read body
 	ErrPostParse                   // http.post fail to parse post body as json
+	ErrPostEmpty                   // http.post empty post json body
 	ErrQuery                       // fail to query
 	ErrQueryEmpty                  // query returns nothing
 	ErrQueryScan                   // fail to scan sql.rows
@@ -58,6 +59,7 @@ func MakeHandler(f HandlerFunc, ds *db.DatabaseStruct, tag string) http.HandlerF
 		// More context in the future: the current logging logs the IP but it might not be enough for troubleshooting
 
 		// Rule is to hide details from users but have detailed logs on the server
+		// TODO: formalize error based on https://tools.ietf.org/html/rfc7807
 
 		if es := f(w, r, ds); es != nil {
 			switch es.Type {
@@ -69,12 +71,15 @@ func MakeHandler(f HandlerFunc, ds *db.DatabaseStruct, tag string) http.HandlerF
 			case ErrPostParse:
 				http.Error(w, "Failed to parse request", http.StatusInternalServerError)
 				log.Printf("%s Failed to parse request to %q from %q: %v", tag, r.RequestURI, r.RemoteAddr, es.Error)
+			case ErrPostEmpty:
+				http.Error(w, fmt.Sprintf("Empty post request: %v", es.Error), http.StatusInternalServerError)
+				// non server-side error
 			case ErrQuery:
 				http.Error(w, "Error query", http.StatusInternalServerError)
-				log.Printf("%s Failed to query data requested by %q with %q and params %#v: %v", tag, r.RemoteAddr, es.Query, es.QueryParams, es.Error)
+				log.Printf("%s Failed to query data requested by %q with %q and params %v: %v", tag, r.RemoteAddr, es.Query, es.QueryParams, es.Error)
 			case ErrQueryEmpty:
 				http.Error(w, "Empty query", http.StatusNoContent)
-				log.Printf("%s Empty query data requested by %q with %q and params %#v", tag, r.RemoteAddr, es.Query, es.QueryParams)
+				log.Printf("%s Empty query data requested by %q with %q and params %v", tag, r.RemoteAddr, es.Query, es.QueryParams)
 			case ErrQueryScan:
 				http.Error(w, "Could not scan data", http.StatusInternalServerError)
 				log.Printf("%s Failed to parse returned rows: %v", tag, es.Error)
@@ -86,11 +91,11 @@ func MakeHandler(f HandlerFunc, ds *db.DatabaseStruct, tag string) http.HandlerF
 				http.Error(w, "Failed to send response", http.StatusInternalServerError)
 				log.Printf("%s Failed to write data in response to %q: %v %v", tag, r.RemoteAddr, es.Status, es.Error)
 			case ErrInputMissing:
-				http.Error(w, fmt.Sprintf("Request does not contain necessary information: %#v", es.Missing), http.StatusBadRequest)
+				http.Error(w, fmt.Sprintf("Request does not contain necessary information: %v", es.Missing), http.StatusBadRequest)
 				// skip logging invalid request since it's not server-side error
 			default:
-				// ErrorType is not in the enum list, impossible
-				http.Error(w, "Unsupported error type", http.StatusInternalServerError)
+				// ErrorType is not in the enum list, impossible, but still catch it here
+				http.Error(w, "Unsupported error type, internal backend error", http.StatusInternalServerError)
 				log.Printf("%s Unsupported error type: %q from %q to %q", tag, es.Type, r.RemoteAddr, r.RequestURI)
 			}
 		}
@@ -105,7 +110,7 @@ type RowScanner func(*sql.Rows) (val interface{}, err error)
 type QueryStruct struct {
 	RowScanner  RowScanner
 	Query       string
-	QueryTable  string
+	QueryTables []string
 	QueryParams []interface{}
 }
 
@@ -113,7 +118,7 @@ type QueryStruct struct {
 // 2. process rows using RowScanner
 func query(ds *db.DatabaseStruct, qs QueryStruct) ([]interface{}, *ErrorStruct) {
 
-	rows, err := ds.Query(qs.QueryTable, qs.Query, qs.QueryParams...)
+	rows, err := ds.Query(qs.QueryTables, qs.Query, qs.QueryParams...)
 
 	if err != nil {
 		return nil, &ErrorStruct{Type: ErrQuery, Error: err, Query: qs.Query, QueryParams: qs.QueryParams}
@@ -141,6 +146,8 @@ func query(ds *db.DatabaseStruct, qs QueryStruct) ([]interface{}, *ErrorStruct) 
 
 func response(w http.ResponseWriter, r *http.Request, res interface{}) *ErrorStruct {
 	resJSON, err := json.Marshal(res)
+
+	fmt.Printf("res: %v", res)
 
 	if err != nil {
 		return &ErrorStruct{Type: ErrResponseCreate, Error: err}
@@ -173,15 +180,5 @@ func readURLQuery(request *http.Request, args []string) (ans map[string]string, 
 			ans[s] = keys[0]
 		}
 	}
-	return // named return
-}
-
-func readURLQueryDeptCourseNumQuarter(request *http.Request) (string, string, string, []string) {
-	ans, missing := readURLQuery(request, []string{"department", "quarter", "courseNum"})
-	return ans["department"], ans["courseNum"], ans["quarter"], missing
-}
-
-func readURLQueryDeptQuarter(request *http.Request) (string, string, []string) {
-	ans, missing := readURLQuery(request, []string{"department", "quarter"})
-	return ans["department"], ans["quarter"], missing
+	return
 }
