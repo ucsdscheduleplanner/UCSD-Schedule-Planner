@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"path/filepath"
@@ -8,47 +9,58 @@ import (
 
 	"gopkg.in/ini.v1"
 
-	"github.com/ucsdscheduleplanner/UCSD-Schedule-Planner/backend/db"
+	"github.com/ucsdscheduleplanner/UCSD-Schedule-Planner/backend/ctx"
 	"github.com/ucsdscheduleplanner/UCSD-Schedule-Planner/backend/route"
+	"github.com/ucsdscheduleplanner/UCSD-Schedule-Planner/backend/store"
 )
 
-// TODO: make this config-able
-const port = 8080
-
-func main() {
-
-	// var config, err = ini.Load(filepath.Join(".", "config", "config.example.ini"))
-
-	var config, err = ini.Load(filepath.Join(".", "config", "config.dev.ini"))
+func readConfig(configFile string) (config *ini.File, err error) {
+	config, err = ini.Load(configFile)
 
 	if err != nil {
-		panic("Error reading config file: " + err.Error())
+		return nil, fmt.Errorf("Error reading config file: %v", err)
 	}
 
 	if config == nil {
-		panic("Could not find configuration file, shutting down")
+		return nil, fmt.Errorf("Could not find config file: %v", configFile)
 	}
 
-	// open once, close once
-	ds, err := db.NewIni(config)
+	return
+}
+
+func main() {
+
+	// config, err := readConfig(filepath.Join(".", "config", "config.example.ini"))
+	config, err := readConfig(filepath.Join(".", "config", "config.dev.ini"))
+
+	if err != nil {
+		panic("Failed to load config: " + err.Error())
+	}
+
+	db, err := store.NewDBConfig(config)
 	if err != nil {
 		panic("Failed to init db: " + err.Error())
 	}
-	defer ds.Close()
+	defer db.Close()
 
-	// only for the completeness of the code
+	env, err := ctx.NewEnvConfig(db, config)
+	if err != nil {
+		panic("Failed to init env: " + err.Error())
+	}
 
-	log.Printf("Starting server on port: %v\n", port)
+	log.Printf("Start server on port: %v\n", env.Port)
 
-	http.HandleFunc("/api_course_nums", route.MakeHandler(route.GetCourseNums, ds, route.LogPrefixCourseNums))
-	http.HandleFunc("/api_departments", route.MakeHandler(route.GetDepartments, ds, route.LogPrefixDepartment))
-	http.HandleFunc("/api_instructors", route.MakeHandler(route.GetInstructors, ds, route.LogPrefixInstructors))
-	http.HandleFunc("/api_types", route.MakeHandler(route.GetTypes, ds, route.LogPrefixTypes))
-	http.HandleFunc("/api_class_data", route.MakeHandler(route.GetClassData, ds, route.LogPrefixClassData))
+	// TODO: use env in handlers
+	// TODO: make a handler factory
+	http.HandleFunc("/api_course_nums", route.MakeHandler(route.GetCourseNums, db, route.LogPrefixCourseNums))
+	http.HandleFunc("/api_departments", route.MakeHandler(route.GetDepartments, db, route.LogPrefixDepartment))
+	http.HandleFunc("/api_instructors", route.MakeHandler(route.GetInstructors, db, route.LogPrefixInstructors))
+	http.HandleFunc("/api_types", route.MakeHandler(route.GetTypes, db, route.LogPrefixTypes))
+	http.HandleFunc("/api_class_data", route.MakeHandler(route.GetClassData, db, route.LogPrefixClassData))
 
-	err = http.ListenAndServe(":"+strconv.Itoa(port), nil)
+	err = http.ListenAndServe(":"+strconv.Itoa(env.Port), nil)
 
 	if err != nil {
-		log.Panic(err) // not fatal to close db (defer above)
+		log.Panic(err) // non-fatal to run deferred calls
 	}
 }

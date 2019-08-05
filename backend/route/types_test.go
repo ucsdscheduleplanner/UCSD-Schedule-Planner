@@ -1,4 +1,4 @@
-package tests
+package route
 
 import (
 	"encoding/json"
@@ -9,8 +9,7 @@ import (
 
 	"github.com/DATA-DOG/go-sqlmock"
 
-	"github.com/ucsdscheduleplanner/UCSD-Schedule-Planner/backend/db"
-	"github.com/ucsdscheduleplanner/UCSD-Schedule-Planner/backend/route"
+	"github.com/ucsdscheduleplanner/UCSD-Schedule-Planner/backend/store"
 )
 
 func TestGetTypes(t *testing.T) {
@@ -31,9 +30,9 @@ func TestGetTypes(t *testing.T) {
 		WillReturnRows(sqlmock.NewRows([]string{"TYPE"}).
 			AddRow("Lecture"))
 
-	ds := db.New(d, map[string]bool{"SP19": true})
+	db := store.NewDB(d, map[string]bool{"SP19": true})
 
-	response := GetTypes(req, ds)
+	response := mockGetTypes(req, db)
 	checkResponseCode(t, http.StatusOK, response.Code)
 
 	body, err := ioutil.ReadAll(response.Body)
@@ -52,8 +51,8 @@ func TestGetTypes(t *testing.T) {
 	}
 }
 
-func GetTypes(request *http.Request, ds *db.DatabaseStruct) *httptest.ResponseRecorder {
+func mockGetTypes(request *http.Request, db *store.DB) *httptest.ResponseRecorder {
 	recorder := httptest.NewRecorder()
-	route.MakeHandler(route.GetTypes, ds, route.LogPrefixTypes)(recorder, request)
+	MakeHandler(GetTypes, db, LogPrefixTypes)(recorder, request)
 	return recorder
 }

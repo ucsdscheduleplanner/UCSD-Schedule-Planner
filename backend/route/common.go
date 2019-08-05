@@ -9,7 +9,7 @@ import (
 
 	"database/sql"
 
-	"github.com/ucsdscheduleplanner/UCSD-Schedule-Planner/backend/db"
+	"github.com/ucsdscheduleplanner/UCSD-Schedule-Planner/backend/store"
 )
 
 // TODO: make this graceful, maybe an Env var or config
@@ -17,7 +17,7 @@ import (
 const defaultQuarter = "SP19"
 
 // HandlerFunc handles each route and returns *route.ErrorStruct, returns nil if no error
-type HandlerFunc func(http.ResponseWriter, *http.Request, *db.DatabaseStruct) *ErrorStruct
+type HandlerFunc func(http.ResponseWriter, *http.Request, *store.DB) *ErrorStruct
 
 // ErrorType error enum
 type ErrorType int
@@ -50,7 +50,7 @@ type ErrorStruct struct {
 }
 
 // MakeHandler creates closure for http handler func and handles the error
-func MakeHandler(f HandlerFunc, ds *db.DatabaseStruct, tag string) http.HandlerFunc {
+func MakeHandler(f HandlerFunc, db *store.DB, tag string) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		// Notes
 
@@ -61,7 +61,7 @@ func MakeHandler(f HandlerFunc, ds *db.DatabaseStruct, tag string) http.HandlerF
 		// Rule is to hide details from users but have detailed logs on the server
 		// TODO: formalize error based on https://tools.ietf.org/html/rfc7807
 
-		if es := f(w, r, ds); es != nil {
+		if es := f(w, r, db); es != nil {
 			switch es.Type {
 			case ErrHTTPMethodInvalid:
 				http.Error(w, "Invalid method type", http.StatusMethodNotAllowed)
@@ -114,11 +114,11 @@ type QueryStruct struct {
 	QueryParams []interface{}
 }
 
-// 1. query using ds
+// Query with qs and return the scanned results
+// 1. query using db
 // 2. process rows using RowScanner
-func query(ds *db.DatabaseStruct, qs QueryStruct) ([]interface{}, *ErrorStruct) {
-
-	rows, err := ds.Query(qs.QueryTables, qs.Query, qs.QueryParams...)
+func Query(db *store.DB, qs QueryStruct) ([]interface{}, *ErrorStruct) {
+	rows, err := db.Query(qs.QueryTables, qs.Query, qs.QueryParams...)
 
 	if err != nil {
 		return nil, &ErrorStruct{Type: ErrQuery, Error: err, Query: qs.Query, QueryParams: qs.QueryParams}
@@ -144,14 +144,15 @@ func query(ds *db.DatabaseStruct, qs QueryStruct) ([]interface{}, *ErrorStruct) 
 	return res, nil
 }
 
-func response(w http.ResponseWriter, r *http.Request, res interface{}) *ErrorStruct {
+// Response a json
+func Response(w http.ResponseWriter, r *http.Request, res interface{}) *ErrorStruct {
 	resJSON, err := json.Marshal(res)
-
-	fmt.Printf("res: %v", res)
 
 	if err != nil {
 		return &ErrorStruct{Type: ErrResponseCreate, Error: err}
 	}
+
+	w.Header().Set("Content-Type", "application/json")
 
 	status, err := w.Write(resJSON)
 

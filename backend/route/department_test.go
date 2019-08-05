@@ -1,4 +1,4 @@
-package tests
+package route
 
 import (
 	"encoding/json"
@@ -9,8 +9,7 @@ import (
 
 	"github.com/DATA-DOG/go-sqlmock"
 
-	"github.com/ucsdscheduleplanner/UCSD-Schedule-Planner/backend/db"
-	"github.com/ucsdscheduleplanner/UCSD-Schedule-Planner/backend/route"
+	"github.com/ucsdscheduleplanner/UCSD-Schedule-Planner/backend/store"
 )
 
 func TestGetDepartments(t *testing.T) {
@@ -30,9 +29,9 @@ func TestGetDepartments(t *testing.T) {
 		WillReturnRows(sqlmock.NewRows([]string{"DEPT_CODE"}).
 			AddRow("ECE"))
 
-	ds := db.New(d, map[string]bool{"DEPARTMENT": true, "SP19": true})
+	db := store.NewDB(d, map[string]bool{"DEPARTMENT": true, "SP19": true})
 
-	response := GetDepartments(req, ds)
+	response := mockGetDepartments(req, db)
 
 	if response.Code != 200 {
 		t.Errorf("Expected a 200 code but got %d", response.Code)
@@ -55,12 +54,12 @@ func TestGetDepartmentsOnPostFails(t *testing.T) {
 		t.Errorf("Could not create request")
 	}
 
-	response := GetDepartments(req, nil)
+	response := mockGetDepartments(req, nil)
 	checkResponseCode(t, http.StatusMethodNotAllowed, response.Code)
 }
 
-func GetDepartments(request *http.Request, ds *db.DatabaseStruct) *httptest.ResponseRecorder {
+func mockGetDepartments(request *http.Request, db *store.DB) *httptest.ResponseRecorder {
 	recorder := httptest.NewRecorder()
-	route.MakeHandler(route.GetDepartments, ds, route.LogPrefixDepartment)(recorder, request)
+	MakeHandler(GetDepartments, db, LogPrefixDepartment)(recorder, request)
 	return recorder
 }

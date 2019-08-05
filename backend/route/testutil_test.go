@@ -1,4 +1,6 @@
-package tests
+package route
+
+// _test suffix to prevent it from being compiled with build
 
 import "testing"
 

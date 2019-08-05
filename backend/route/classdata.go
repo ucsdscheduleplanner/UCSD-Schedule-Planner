@@ -8,7 +8,7 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/ucsdscheduleplanner/UCSD-Schedule-Planner/backend/db"
+	"github.com/ucsdscheduleplanner/UCSD-Schedule-Planner/backend/store"
 )
 
 // LogPrefixClassData log prefix for ClassData route
@@ -19,9 +19,9 @@ const classDataColumns = "DEPARTMENT, COURSE_NUM, SECTION_ID, COURSE_ID, TYPE, D
 
 // ClassDataRequest stores information from a corresponding request
 type ClassDataRequest struct {
-	quarter    string
-	department string
-	courseNum  string
+	Quarter    string
+	Department string
+	CourseNum  string
 }
 
 // UnmarshalJSON populates a ClassDataRequest with the data from a JSON byte slice
@@ -32,18 +32,18 @@ func (o *ClassDataRequest) UnmarshalJSON(data []byte) error {
 	}
 
 	if val, ok := v["quarter"]; ok {
-		o.quarter = val
+		o.Quarter = val
 	} else {
-		o.quarter = defaultQuarter
+		o.Quarter = defaultQuarter
 	}
 
-	o.department = v["department"]
-	if o.department == "" {
+	o.Department = v["department"]
+	if o.Department == "" {
 		return fmt.Errorf("Failed to parse class data request json: empty department")
 	}
 
-	o.courseNum = v["courseNum"]
-	if o.courseNum == "" {
+	o.CourseNum = v["courseNum"]
+	if o.CourseNum == "" {
 		return fmt.Errorf("Failed to parse class data request json: empty courseNum")
 	}
 
@@ -85,8 +85,68 @@ func RowScannerClassData(rows *sql.Rows) (interface{}, error) {
 	return val, err
 }
 
+/*
+	buildQueryClassData
+	receives: []ClassDataRequest
+	returns:
+	* a sql string
+  * a slice of quarters
+  * a queryParams slice with size 6
+	Example:
+	SELECT
+		DEPARTMENT, COURSE_NUM, SECTION_ID, COURSE_ID, TYPE, DAYS, TIME, LOCATION, ROOM, INSTRUCTOR, DESCRIPTION
+	FROM
+		FA20
+	WHERE
+		(DEPARTMENT, COURSE_NUM) IN ((?,?),(?,?))
+	UNION ALL
+	(SELECT
+		DEPARTMENT, COURSE_NUM, SECTION_ID, COURSE_ID, TYPE, DAYS, TIME, LOCATION, ROOM, INSTRUCTOR, DESCRIPTION
+	FROM
+		SP_19
+	WHERE
+		(DEPARTMENT, COURSE_NUM) IN((?,?))
+	)
+
+	Contract: len(classesToQuery) > 0
+	No order of queries and quarters guaranteed
+*/
+func buildQueryClassData(classesToQuery []ClassDataRequest) (queryString string, quarters []string, queryParams []interface{}) {
+	queryMap := make(map[string][]ClassDataRequest)
+	for _, class := range classesToQuery {
+		queryMap[class.Quarter] = append(queryMap[class.Quarter], class)
+	}
+
+	var queryBuilder strings.Builder
+
+	isFirstQuarter := true
+	for quarter, classes := range queryMap {
+		quarters = append(quarters, quarter)
+		if !isFirstQuarter {
+			fmt.Fprintf(&queryBuilder, " UNION ALL (")
+		}
+		fmt.Fprintf(&queryBuilder, "SELECT %s FROM %s WHERE (DEPARTMENT, COURSE_NUM) IN (", classDataColumns, quarter)
+		for iClass, class := range classes {
+			if iClass != 0 {
+				fmt.Fprintf(&queryBuilder, ",")
+			}
+			fmt.Fprintf(&queryBuilder, "(?,?)")
+			queryParams = append(queryParams, []interface{}{class.Department, class.CourseNum}...)
+		}
+		fmt.Fprintf(&queryBuilder, ")")
+		if !isFirstQuarter {
+			fmt.Fprintf(&queryBuilder, ")")
+		}
+		isFirstQuarter = false
+	}
+
+	queryString = queryBuilder.String()
+
+	return
+}
+
 // GetClassData is a route.HandlerFunc for class data route
-func GetClassData(writer http.ResponseWriter, request *http.Request, ds *db.DatabaseStruct) *ErrorStruct {
+func GetClassData(writer http.ResponseWriter, request *http.Request, db *store.DB) *ErrorStruct {
 	if request.Method != "POST" {
 		return &ErrorStruct{Type: ErrHTTPMethodInvalid}
 	}
@@ -108,63 +168,14 @@ func GetClassData(writer http.ResponseWriter, request *http.Request, ds *db.Data
 		return &ErrorStruct{Type: ErrPostRead, Error: fmt.Errorf("Empty post: Require an array of ClassDataRequest in JSON")}
 	}
 
-	// Build query
-	/*
-		Example:
-		SELECT
-			DEPARTMENT, COURSE_NUM, SECTION_ID, COURSE_ID, TYPE, DAYS, TIME, LOCATION, ROOM, INSTRUCTOR, DESCRIPTION
-		FROM
-		  FA20
-		WHERE
-			(DEPARTMENT, COURSE_NUM) IN ((?,?),(?,?))
-		UNION ALL
-		(SELECT
-			DEPARTMENT, COURSE_NUM, SECTION_ID, COURSE_ID, TYPE, DAYS, TIME, LOCATION, ROOM, INSTRUCTOR, DESCRIPTION
-		FROM
-			SP_19
-		WHERE
-			(DEPARTMENT, COURSE_NUM) IN((?,?))
-		)
+	queryString, queryQuarters, queryParams := buildQueryClassData(classesToQuery)
 
-		together with a queryParams slice with size 6
-	*/
-
-	queryMap := make(map[string][]ClassDataRequest)
-	for _, class := range classesToQuery {
-		queryMap[class.quarter] = append(queryMap[class.quarter], class)
-	}
-
-	var queryBuilder strings.Builder
-	var quarters []string
-	var queryParams []interface{}
-
-	isFirstQuarter := true
-	for quarter, classes := range queryMap {
-		quarters = append(quarters, quarter)
-		if !isFirstQuarter {
-			fmt.Fprintf(&queryBuilder, " UNION ALL (")
-		}
-		fmt.Fprintf(&queryBuilder, "SELECT %s FROM %s WHERE (DEPARTMENT, COURSE_NUM) IN(", classDataColumns, quarter)
-		for iClass, class := range classes {
-			if iClass != 0 {
-				fmt.Fprintf(&queryBuilder, ",")
-			}
-			fmt.Fprintf(&queryBuilder, "(?,?)")
-			queryParams = append(queryParams, []interface{}{class.department, class.courseNum}...)
-		}
-		fmt.Fprintf(&queryBuilder, ")")
-		if !isFirstQuarter {
-			fmt.Fprintf(&queryBuilder, ")")
-		}
-		isFirstQuarter = false
-	}
-
-	res, es := query(
-		ds,
+	res, es := Query(
+		db,
 		QueryStruct{
 			RowScanner:  RowScannerClassData,
-			Query:       queryBuilder.String(),
-			QueryTables: quarters,
+			Query:       queryString,
+			QueryTables: queryQuarters,
 			QueryParams: queryParams,
 		},
 	)
@@ -182,7 +193,5 @@ func GetClassData(writer http.ResponseWriter, request *http.Request, ds *db.Data
 		ret[classTitle] = append(ret[classTitle], subclass)
 	}
 
-	writer.Header().Set("Content-Type", "application/json")
-
-	return response(writer, request, ret)
+	return Response(writer, request, ret)
 }

@@ -1,4 +1,4 @@
-package tests
+package route
 
 import (
 	"encoding/json"
@@ -9,8 +9,7 @@ import (
 
 	"github.com/DATA-DOG/go-sqlmock"
 
-	"github.com/ucsdscheduleplanner/UCSD-Schedule-Planner/backend/db"
-	"github.com/ucsdscheduleplanner/UCSD-Schedule-Planner/backend/route"
+	"github.com/ucsdscheduleplanner/UCSD-Schedule-Planner/backend/store"
 )
 
 func TestGetDepartmentSummary(t *testing.T) {
@@ -31,14 +30,14 @@ func TestGetDepartmentSummary(t *testing.T) {
 		WillReturnRows(sqlmock.NewRows([]string{"DEPARTMENT", "COURSE_NUM", "DESCRIPTION"}).
 			AddRow("CSE", "11", "Java"))
 
-	ds := db.New(d, map[string]bool{"SP19": true})
+	db := store.NewDB(d, map[string]bool{"SP19": true})
 
-	response := GetDepartmentSummary(req, ds)
+	response := mockGetDepartmentSummary(req, db)
 	checkResponseCode(t, http.StatusOK, response.Code)
 
 	body, err := ioutil.ReadAll(response.Body)
 
-	var departmentSummary []route.DepartmentSummary
+	var departmentSummary []DepartmentSummary
 	err = json.Unmarshal(body, &departmentSummary)
 
 	if len(departmentSummary) == 0 {
@@ -59,13 +58,13 @@ func TestGetDepartmentSummaryFailsOnPost(t *testing.T) {
 		t.Fatal("Could not create the request.")
 	}
 
-	response := GetDepartmentSummary(req, nil)
+	response := mockGetDepartmentSummary(req, nil)
 
 	checkResponseCode(t, http.StatusMethodNotAllowed, response.Code)
 }
 
-func GetDepartmentSummary(request *http.Request, ds *db.DatabaseStruct) *httptest.ResponseRecorder {
+func mockGetDepartmentSummary(request *http.Request, db *store.DB) *httptest.ResponseRecorder {
 	recorder := httptest.NewRecorder()
-	route.MakeHandler(route.GetCourseNums, ds, route.LogPrefixCourseNums)(recorder, request)
+	MakeHandler(GetCourseNums, db, LogPrefixCourseNums)(recorder, request)
 	return recorder
 }

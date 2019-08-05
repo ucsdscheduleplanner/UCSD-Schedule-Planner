@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/ucsdscheduleplanner/UCSD-Schedule-Planner/backend/db"
+	"github.com/ucsdscheduleplanner/UCSD-Schedule-Planner/backend/store"
 )
 
 // LogPrefixCourseNums log prefix for CourseNums route
@@ -26,7 +26,7 @@ func RowScannerCourseNums(rows *sql.Rows) (interface{}, error) {
 }
 
 // GetCourseNums is a route.HandlerFunc for course num route
-func GetCourseNums(writer http.ResponseWriter, request *http.Request, ds *db.DatabaseStruct) *ErrorStruct {
+func GetCourseNums(writer http.ResponseWriter, request *http.Request, db *store.DB) *ErrorStruct {
 	if request.Method != "GET" {
 		return &ErrorStruct{Type: ErrHTTPMethodInvalid}
 	}
@@ -39,8 +39,8 @@ func GetCourseNums(writer http.ResponseWriter, request *http.Request, ds *db.Dat
 
 	department, quarter := ans["department"], ans["quarter"]
 
-	res, es := query(
-		ds,
+	res, es := Query(
+		db,
 		QueryStruct{
 			RowScanner:  RowScannerCourseNums,
 			Query:       fmt.Sprintf("SELECT DISTINCT DEPARTMENT, COURSE_NUM, DESCRIPTION FROM %s WHERE DEPARTMENT=?", quarter),
@@ -53,7 +53,5 @@ func GetCourseNums(writer http.ResponseWriter, request *http.Request, ds *db.Dat
 		return es
 	}
 
-	writer.Header().Set("Content-Type", "application/json")
-
-	return response(writer, request, res)
+	return Response(writer, request, res)
 }
