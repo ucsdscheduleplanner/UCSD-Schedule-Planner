@@ -1,4 +1,5 @@
-package ctx
+// package environ manages the environment vars and configs for the backend
+package environ
 
 import (
 	"fmt"

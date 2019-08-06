@@ -9,7 +9,7 @@ import (
 
 	"gopkg.in/ini.v1"
 
-	"github.com/ucsdscheduleplanner/UCSD-Schedule-Planner/backend/ctx"
+	"github.com/ucsdscheduleplanner/UCSD-Schedule-Planner/backend/environ"
 	"github.com/ucsdscheduleplanner/UCSD-Schedule-Planner/backend/route"
 	"github.com/ucsdscheduleplanner/UCSD-Schedule-Planner/backend/store"
 )
@@ -43,7 +43,7 @@ func main() {
 	}
 	defer db.Close()
 
-	env, err := ctx.NewEnvConfig(db, config)
+	env, err := environ.NewEnvConfig(db, config)
 	if err != nil {
 		panic("Failed to init env: " + err.Error())
 	}
