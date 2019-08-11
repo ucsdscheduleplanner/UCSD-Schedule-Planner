@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/ucsdscheduleplanner/UCSD-Schedule-Planner/backend/environ"
 	"github.com/ucsdscheduleplanner/UCSD-Schedule-Planner/backend/store"
 )
 
@@ -11,7 +12,7 @@ import (
 const LogPrefixDepartment = "[Department]"
 
 // GetDepartments is a route.HandlerFunc for department route
-func GetDepartments(writer http.ResponseWriter, request *http.Request, db *store.DB) *ErrorStruct {
+func GetDepartments(writer http.ResponseWriter, request *http.Request, env *environ.Env, db *store.DB) *ErrorStruct {
 	if request.Method != "GET" {
 		return &ErrorStruct{Type: ErrHTTPMethodInvalid}
 	}
@@ -20,7 +21,7 @@ func GetDepartments(writer http.ResponseWriter, request *http.Request, db *store
 		db,
 		QueryStruct{
 			RowScanner:  RowScannerOneString,
-			Query:       fmt.Sprintf("SELECT DISTINCT DEPT_CODE FROM DEPARTMENT"),
+			QueryStr:    fmt.Sprintf("SELECT DISTINCT DEPT_CODE FROM DEPARTMENT"),
 			QueryTables: []string{"DEPARTMENT"},
 		},
 	)

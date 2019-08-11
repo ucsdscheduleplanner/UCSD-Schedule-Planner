@@ -9,6 +9,7 @@ import (
 
 	"github.com/DATA-DOG/go-sqlmock"
 
+	"github.com/ucsdscheduleplanner/UCSD-Schedule-Planner/backend/environ"
 	"github.com/ucsdscheduleplanner/UCSD-Schedule-Planner/backend/store"
 )
 
@@ -65,6 +66,6 @@ func TestGetDepartmentSummaryFailsOnPost(t *testing.T) {
 
 func mockGetDepartmentSummary(request *http.Request, db *store.DB) *httptest.ResponseRecorder {
 	recorder := httptest.NewRecorder()
-	MakeHandler(GetCourseNums, db, LogPrefixCourseNums)(recorder, request)
+	createHandler(GetCourseNums, &environ.Env{}, db, LogPrefixCourseNums)(recorder, request)
 	return recorder
 }

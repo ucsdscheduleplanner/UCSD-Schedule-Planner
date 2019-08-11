@@ -9,6 +9,7 @@ import (
 
 	"github.com/DATA-DOG/go-sqlmock"
 
+	"github.com/ucsdscheduleplanner/UCSD-Schedule-Planner/backend/environ"
 	"github.com/ucsdscheduleplanner/UCSD-Schedule-Planner/backend/store"
 )
 
@@ -53,6 +54,6 @@ func TestGetInstructors(t *testing.T) {
 
 func mockGetInstructors(request *http.Request, db *store.DB) *httptest.ResponseRecorder {
 	recorder := httptest.NewRecorder()
-	MakeHandler(GetInstructors, db, LogPrefixInstructors)(recorder, request)
+	createHandler(GetInstructors, &environ.Env{}, db, LogPrefixInstructors)(recorder, request)
 	return recorder
 }

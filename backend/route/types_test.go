@@ -9,6 +9,7 @@ import (
 
 	"github.com/DATA-DOG/go-sqlmock"
 
+	"github.com/ucsdscheduleplanner/UCSD-Schedule-Planner/backend/environ"
 	"github.com/ucsdscheduleplanner/UCSD-Schedule-Planner/backend/store"
 )
 
@@ -53,6 +54,6 @@ func TestGetTypes(t *testing.T) {
 
 func mockGetTypes(request *http.Request, db *store.DB) *httptest.ResponseRecorder {
 	recorder := httptest.NewRecorder()
-	MakeHandler(GetTypes, db, LogPrefixTypes)(recorder, request)
+	createHandler(GetTypes, &environ.Env{}, db, LogPrefixTypes)(recorder, request)
 	return recorder
 }

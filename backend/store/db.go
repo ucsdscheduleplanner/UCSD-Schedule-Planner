@@ -30,7 +30,8 @@ func NewDBConnect(user, password, endpoint, database string, tableSet map[string
 		return nil, err
 	}
 
-	err = db.Ping() // validate the connection
+	// validate the connection
+	err = db.Ping()
 
 	if err != nil {
 		return nil, err

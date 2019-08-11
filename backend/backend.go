@@ -14,8 +14,14 @@ import (
 	"github.com/ucsdscheduleplanner/UCSD-Schedule-Planner/backend/store"
 )
 
-func readConfig(configFile string) (config *ini.File, err error) {
-	config, err = ini.Load(configFile)
+// Config for the backend
+type Config struct {
+	File *ini.File
+	Port int
+}
+
+func readConfig(configFile string) (*Config, error) {
+	config, err := ini.Load(configFile)
 
 	if err != nil {
 		return nil, fmt.Errorf("Error reading config file: %v", err)
@@ -25,7 +31,12 @@ func readConfig(configFile string) (config *ini.File, err error) {
 		return nil, fmt.Errorf("Could not find config file: %v", configFile)
 	}
 
-	return
+	port, err := config.Section("BACKEND").Key("PORT").Int()
+	if err != nil {
+		return nil, fmt.Errorf("Error reading port number: %v", err.Error())
+	}
+
+	return &Config{File: config, Port: port}, nil
 }
 
 func main() {
@@ -37,28 +48,28 @@ func main() {
 		panic("Failed to load config: " + err.Error())
 	}
 
-	db, err := store.NewDBConfig(config)
+	db, err := store.NewDBConfig(config.File)
 	if err != nil {
 		panic("Failed to init db: " + err.Error())
 	}
 	defer db.Close()
 
-	env, err := environ.NewEnvConfig(db, config)
+	env, err := environ.NewEnvConfig(db, config.File)
 	if err != nil {
 		panic("Failed to init env: " + err.Error())
 	}
 
-	log.Printf("Start server on port: %v\n", env.Port)
+	log.Printf("Start server on port: %v\n", config.Port)
 
-	// TODO: use env in handlers
-	// TODO: make a handler factory
-	http.HandleFunc("/api_course_nums", route.MakeHandler(route.GetCourseNums, db, route.LogPrefixCourseNums))
-	http.HandleFunc("/api_departments", route.MakeHandler(route.GetDepartments, db, route.LogPrefixDepartment))
-	http.HandleFunc("/api_instructors", route.MakeHandler(route.GetInstructors, db, route.LogPrefixInstructors))
-	http.HandleFunc("/api_types", route.MakeHandler(route.GetTypes, db, route.LogPrefixTypes))
-	http.HandleFunc("/api_class_data", route.MakeHandler(route.GetClassData, db, route.LogPrefixClassData))
+	routeFactory := route.HandlerFactory{Env: env}
 
-	err = http.ListenAndServe(":"+strconv.Itoa(env.Port), nil)
+	http.HandleFunc("/api_course_nums", routeFactory.MakeHandler(route.HandlerCourseNum))
+	http.HandleFunc("/api_departments", routeFactory.MakeHandler(route.HandlerDepartment))
+	http.HandleFunc("/api_instructors", routeFactory.MakeHandler(route.HandlerInstructors))
+	http.HandleFunc("/api_types", routeFactory.MakeHandler(route.HandlerTypes))
+	http.HandleFunc("/api_class_data", routeFactory.MakeHandler(route.HandlerClassData))
+
+	err = http.ListenAndServe(":"+strconv.Itoa(config.Port), nil)
 
 	if err != nil {
 		log.Panic(err) // non-fatal to run deferred calls

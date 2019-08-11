@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/ucsdscheduleplanner/UCSD-Schedule-Planner/backend/environ"
 	"github.com/ucsdscheduleplanner/UCSD-Schedule-Planner/backend/store"
 )
 
@@ -34,7 +35,7 @@ func (o *ClassDataRequest) UnmarshalJSON(data []byte) error {
 	if val, ok := v["quarter"]; ok {
 		o.Quarter = val
 	} else {
-		o.Quarter = defaultQuarter
+		o.Quarter = ""
 	}
 
 	o.Department = v["department"]
@@ -146,7 +147,7 @@ func buildQueryClassData(classesToQuery []ClassDataRequest) (queryString string,
 }
 
 // GetClassData is a route.HandlerFunc for class data route
-func GetClassData(writer http.ResponseWriter, request *http.Request, db *store.DB) *ErrorStruct {
+func GetClassData(writer http.ResponseWriter, request *http.Request, env *environ.Env, db *store.DB) *ErrorStruct {
 	if request.Method != "POST" {
 		return &ErrorStruct{Type: ErrHTTPMethodInvalid}
 	}
@@ -168,13 +169,20 @@ func GetClassData(writer http.ResponseWriter, request *http.Request, db *store.D
 		return &ErrorStruct{Type: ErrPostRead, Error: fmt.Errorf("Empty post: Require an array of ClassDataRequest in JSON")}
 	}
 
+	// replace empty quarters with default
+	for _, class := range classesToQuery {
+		if class.Quarter == "" {
+			class.Quarter = env.DefaultQuarter
+		}
+	}
+
 	queryString, queryQuarters, queryParams := buildQueryClassData(classesToQuery)
 
 	res, es := Query(
 		db,
 		QueryStruct{
 			RowScanner:  RowScannerClassData,
-			Query:       queryString,
+			QueryStr:    queryString,
 			QueryTables: queryQuarters,
 			QueryParams: queryParams,
 		},

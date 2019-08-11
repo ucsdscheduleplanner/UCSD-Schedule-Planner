@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/ucsdscheduleplanner/UCSD-Schedule-Planner/backend/environ"
 	"github.com/ucsdscheduleplanner/UCSD-Schedule-Planner/backend/store"
 )
 
@@ -26,7 +27,7 @@ func RowScannerCourseNums(rows *sql.Rows) (interface{}, error) {
 }
 
 // GetCourseNums is a route.HandlerFunc for course num route
-func GetCourseNums(writer http.ResponseWriter, request *http.Request, db *store.DB) *ErrorStruct {
+func GetCourseNums(writer http.ResponseWriter, request *http.Request, env *environ.Env, db *store.DB) *ErrorStruct {
 	if request.Method != "GET" {
 		return &ErrorStruct{Type: ErrHTTPMethodInvalid}
 	}
@@ -43,7 +44,7 @@ func GetCourseNums(writer http.ResponseWriter, request *http.Request, db *store.
 		db,
 		QueryStruct{
 			RowScanner:  RowScannerCourseNums,
-			Query:       fmt.Sprintf("SELECT DISTINCT DEPARTMENT, COURSE_NUM, DESCRIPTION FROM %s WHERE DEPARTMENT=?", quarter),
+			QueryStr:    fmt.Sprintf("SELECT DISTINCT DEPARTMENT, COURSE_NUM, DESCRIPTION FROM %s WHERE DEPARTMENT=?", quarter),
 			QueryTables: []string{quarter},
 			QueryParams: []interface{}{department},
 		},

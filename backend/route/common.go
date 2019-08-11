@@ -9,15 +9,25 @@ import (
 
 	"database/sql"
 
+	"github.com/ucsdscheduleplanner/UCSD-Schedule-Planner/backend/environ"
 	"github.com/ucsdscheduleplanner/UCSD-Schedule-Planner/backend/store"
 )
 
-// TODO: make this graceful, maybe an Env var or config
-// set default quarter to SP19
-const defaultQuarter = "SP19"
-
 // HandlerFunc handles each route and returns *route.ErrorStruct, returns nil if no error
-type HandlerFunc func(http.ResponseWriter, *http.Request, *store.DB) *ErrorStruct
+type HandlerFunc func(http.ResponseWriter, *http.Request, *environ.Env, *store.DB) *ErrorStruct
+
+// Handlers is the enum for each handlers supported by the handler factory
+type Handlers int
+
+// Handlers enum, for factory pattern
+const (
+	_ Handlers = iota
+	HandlerCourseNum
+	HandlerDepartment
+	HandlerInstructors
+	HandlerTypes
+	HandlerClassData
+)
 
 // ErrorType error enum
 type ErrorType int
@@ -42,15 +52,39 @@ type ErrorStruct struct {
 	Type  ErrorType
 	Error error
 
-	Query       string
+	QueryStr    string
 	QueryParams []interface{}
 	Status      int
 	Missing     []string
 	// Response    []byte
 }
 
+// HandlerFactory creates handlers
+type HandlerFactory struct {
+	Env *environ.Env
+}
+
 // MakeHandler creates closure for http handler func and handles the error
-func MakeHandler(f HandlerFunc, db *store.DB, tag string) http.HandlerFunc {
+func (factory *HandlerFactory) MakeHandler(route Handlers) http.HandlerFunc {
+	env := factory.Env
+	switch route {
+	case HandlerClassData:
+		return createHandler(GetClassData, env, env.DB, LogPrefixClassData)
+	case HandlerCourseNum:
+		return createHandler(GetCourseNums, env, env.DB, LogPrefixCourseNums)
+	case HandlerDepartment:
+		return createHandler(GetDepartments, env, env.DB, LogPrefixDepartment)
+	case HandlerInstructors:
+		return createHandler(GetInstructors, env, env.DB, LogPrefixInstructors)
+	case HandlerTypes:
+		return createHandler(GetTypes, env, env.DB, LogPrefixTypes)
+	}
+	// route is not one of the Handlers enum, cannot proceed
+	panic("Error: cannot create an unknown handler")
+}
+
+// newHandler handles the creation of handlers
+func createHandler(f HandlerFunc, env *environ.Env, db *store.DB, tag string) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		// Notes
 
@@ -61,7 +95,7 @@ func MakeHandler(f HandlerFunc, db *store.DB, tag string) http.HandlerFunc {
 		// Rule is to hide details from users but have detailed logs on the server
 		// TODO: formalize error based on https://tools.ietf.org/html/rfc7807
 
-		if es := f(w, r, db); es != nil {
+		if es := f(w, r, env, db); es != nil {
 			switch es.Type {
 			case ErrHTTPMethodInvalid:
 				http.Error(w, "Invalid method type", http.StatusMethodNotAllowed)
@@ -76,10 +110,10 @@ func MakeHandler(f HandlerFunc, db *store.DB, tag string) http.HandlerFunc {
 				// non server-side error
 			case ErrQuery:
 				http.Error(w, "Error query", http.StatusInternalServerError)
-				log.Printf("%s Failed to query data requested by %q with %q and params %v: %v", tag, r.RemoteAddr, es.Query, es.QueryParams, es.Error)
+				log.Printf("%s Failed to query data requested by %q with %q and params %v: %v", tag, r.RemoteAddr, es.QueryStr, es.QueryParams, es.Error)
 			case ErrQueryEmpty:
 				http.Error(w, "Empty query", http.StatusNoContent)
-				log.Printf("%s Empty query data requested by %q with %q and params %v", tag, r.RemoteAddr, es.Query, es.QueryParams)
+				log.Printf("%s Empty query data requested by %q with %q and params %v", tag, r.RemoteAddr, es.QueryStr, es.QueryParams)
 			case ErrQueryScan:
 				http.Error(w, "Could not scan data", http.StatusInternalServerError)
 				log.Printf("%s Failed to parse returned rows: %v", tag, es.Error)
@@ -109,7 +143,7 @@ type RowScanner func(*sql.Rows) (val interface{}, err error)
 // QueryStruct stores information for query
 type QueryStruct struct {
 	RowScanner  RowScanner
-	Query       string
+	QueryStr    string
 	QueryTables []string
 	QueryParams []interface{}
 }
@@ -118,26 +152,22 @@ type QueryStruct struct {
 // 1. query using db
 // 2. process rows using RowScanner
 func Query(db *store.DB, qs QueryStruct) ([]interface{}, *ErrorStruct) {
-	rows, err := db.Query(qs.QueryTables, qs.Query, qs.QueryParams...)
-
+	rows, err := db.Query(qs.QueryTables, qs.QueryStr, qs.QueryParams...)
 	if err != nil {
-		return nil, &ErrorStruct{Type: ErrQuery, Error: err, Query: qs.Query, QueryParams: qs.QueryParams}
+		return nil, &ErrorStruct{Type: ErrQuery, Error: err, QueryStr: qs.QueryStr, QueryParams: qs.QueryParams}
 	}
-
 	if rows == nil {
-		return nil, &ErrorStruct{Type: ErrQueryEmpty, Query: qs.Query, QueryParams: qs.QueryParams}
+		return nil, &ErrorStruct{Type: ErrQueryEmpty, QueryStr: qs.QueryStr, QueryParams: qs.QueryParams}
 	}
 
 	var res []interface{}
 
 	for rows.Next() {
 		row, err := qs.RowScanner(rows)
-
 		// TODO: might consider try again here
 		if err != nil {
 			return nil, &ErrorStruct{Type: ErrQueryScan, Error: err}
 		}
-
 		res = append(res, row)
 	}
 
@@ -147,7 +177,6 @@ func Query(db *store.DB, qs QueryStruct) ([]interface{}, *ErrorStruct) {
 // Response a json
 func Response(w http.ResponseWriter, r *http.Request, res interface{}) *ErrorStruct {
 	resJSON, err := json.Marshal(res)
-
 	if err != nil {
 		return &ErrorStruct{Type: ErrResponseCreate, Error: err}
 	}
@@ -155,7 +184,6 @@ func Response(w http.ResponseWriter, r *http.Request, res interface{}) *ErrorStr
 	w.Header().Set("Content-Type", "application/json")
 
 	status, err := w.Write(resJSON)
-
 	if err != nil {
 		return &ErrorStruct{Type: ErrResponseWrite, Error: err, Status: status}
 	}

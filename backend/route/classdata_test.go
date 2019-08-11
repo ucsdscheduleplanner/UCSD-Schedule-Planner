@@ -13,6 +13,7 @@ import (
 
 	"github.com/DATA-DOG/go-sqlmock"
 
+	"github.com/ucsdscheduleplanner/UCSD-Schedule-Planner/backend/environ"
 	"github.com/ucsdscheduleplanner/UCSD-Schedule-Planner/backend/store"
 )
 
@@ -68,11 +69,8 @@ func TestBuildQueryClassData(t *testing.T) {
 	}
 
 	for i, testRequest := range testRequests {
-
 		expected := expects[i]
-
 		rQuery := regexp.MustCompile(expected.queryRex)
-
 		gotQuery, gotQuarters, gotParams := buildQueryClassData(testRequest)
 
 		if !rQuery.MatchString(gotQuery) {
@@ -102,9 +100,7 @@ func TestBuildQueryClassData(t *testing.T) {
 				t.Errorf("Wrong query params: Want '%v', got '%v' with mismatch at index %v", expected.queryParams, gotParams, j)
 			}
 		}
-
 	}
-
 }
 
 func TestGetClassData(t *testing.T) {
@@ -185,6 +181,6 @@ func TestGetRequestClassDataFails(t *testing.T) {
 
 func mockGetClassData(request *http.Request, db *store.DB) *httptest.ResponseRecorder {
 	recorder := httptest.NewRecorder()
-	MakeHandler(GetClassData, db, LogPrefixClassData)(recorder, request)
+	createHandler(GetClassData, &environ.Env{DefaultQuarter: "SP19"}, db, LogPrefixClassData)(recorder, request)
 	return recorder
 }

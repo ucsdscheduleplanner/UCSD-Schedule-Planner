@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/ucsdscheduleplanner/UCSD-Schedule-Planner/backend/environ"
 	"github.com/ucsdscheduleplanner/UCSD-Schedule-Planner/backend/store"
 )
 
@@ -11,7 +12,7 @@ import (
 const LogPrefixTypes = "[Types]"
 
 // GetTypes is a route.HandlerFunc for types route
-func GetTypes(writer http.ResponseWriter, request *http.Request, db *store.DB) *ErrorStruct {
+func GetTypes(writer http.ResponseWriter, request *http.Request, env *environ.Env, db *store.DB) *ErrorStruct {
 	if request.Method != "GET" {
 		return &ErrorStruct{Type: ErrHTTPMethodInvalid}
 	}
@@ -28,7 +29,7 @@ func GetTypes(writer http.ResponseWriter, request *http.Request, db *store.DB) *
 		db,
 		QueryStruct{
 			RowScanner:  RowScannerOneString,
-			Query:       fmt.Sprintf("SELECT DISTINCT TYPE FROM %s WHERE DEPARTMENT=? AND COURSE_NUM=?", quarter),
+			QueryStr:    fmt.Sprintf("SELECT DISTINCT TYPE FROM %s WHERE DEPARTMENT=? AND COURSE_NUM=?", quarter),
 			QueryTables: []string{quarter},
 			QueryParams: []interface{}{department, courseNum},
 		},
