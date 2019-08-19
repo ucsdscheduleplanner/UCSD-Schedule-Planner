@@ -14,13 +14,31 @@ import (
 	"github.com/ucsdscheduleplanner/UCSD-Schedule-Planner/backend/store"
 )
 
+// list of config files to search in order
+var configFiles = []string{
+	filepath.Join(".", "config", "config.ini"),
+	filepath.Join(".", "config", "config.example.ini"),
+}
+
 // Config for the backend
 type Config struct {
 	File *ini.File
 	Port int
 }
 
-func readConfig(configFile string) (*Config, error) {
+// return the first successful read
+// return error of last failed
+func readConfig() (c *Config, e error) {
+	for _, f := range configFiles {
+		if c, e = doReadConfig(f); e == nil {
+			break
+		}
+	}
+	return
+}
+
+func doReadConfig(configFile string) (*Config, error) {
+
 	config, err := ini.Load(configFile)
 
 	if err != nil {
@@ -41,8 +59,7 @@ func readConfig(configFile string) (*Config, error) {
 
 func main() {
 
-	// config, err := readConfig(filepath.Join(".", "config", "config.example.ini"))
-	config, err := readConfig(filepath.Join(".", "config", "config.dev.ini"))
+	config, err := readConfig()
 
 	if err != nil {
 		panic("Failed to load config: " + err.Error())

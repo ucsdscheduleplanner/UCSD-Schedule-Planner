@@ -4,10 +4,8 @@ services:
   sdschedule-database:
     container_name: sdschedule-database
     image: mariadb:latest
-    ports:
-      - 10800:3306 # TODEL: DEV port
     environment:
-      - "MYSQL_ROOT_PASSWORD=password" 
+      - "MYSQL_ROOT_PASSWORD=password"
       - "MYSQL_USER=splanner"
       - "MYSQL_PASSWORD=password"
       - "MYSQL_DATABASE=classes"
@@ -16,26 +14,35 @@ services:
   sdschedule-scraper:
     container_name: sdschedule-scraper
     build: scraper
-    depends_on: 
+    depends_on:
       - "sdschedule-database"
     environment:
       - "PYTHONUNBUFFERED=0"
   sdschedule-backend:
     container_name: sdschedule-backend
-    build: backend 
+    build:
+      context: ./backend
+      args:
+        BUILD_ARGS: "" # disable striping
     ports:
       - "5000:5000"
-    depends_on: 
+    depends_on:
       - "sdschedule-database"
+    volumes:
+      - "./config:/app/config"
     environment:
       - "ENV=DEV"
-      - "PYTHONUNBUFFERED=0"
+    entrypoint:
+      - /app/wait-for
+      - sdschedule-database:3306
+      - --
+      - /app/backend
   sdschedule-frontend:
     container_name: sdschedule-frontend
     build: frontend
-    ports: 
+    ports:
       - "3000:3000"
-    depends_on: 
+    depends_on:
       - "sdschedule-backend"
     volumes:
       - "./frontend/src:/app/src"

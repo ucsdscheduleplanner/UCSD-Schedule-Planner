@@ -21,15 +21,22 @@ services:
       - "PYTHONUNBUFFERED=0"
   sdschedule-backend:
     container_name: sdschedule-backend
-    build: backend 
-    depends_on: 
+    build:
+      context: ./backend
+    ports:
+      - "5000:5000"
+    depends_on:
       - "sdschedule-database"
     volumes:
+      - "./config:/app/config"
       - "sdschedule-sock:/app/sock"
     environment:
-      - "ENV=PROD"
-      - "PYTHONUNBUFFERED=0"
-      - "SDSCHEDULE_SCRAPE=${SDSCHEDULE_SCRAPE}"
+      - "ENV=DEV"
+    entrypoint:
+      - /app/wait-for
+      - sdschedule-database:3306
+      - --
+      - /app/backend
     restart: always
   sdschedule-frontend:
     container_name: sdschedule-frontend
