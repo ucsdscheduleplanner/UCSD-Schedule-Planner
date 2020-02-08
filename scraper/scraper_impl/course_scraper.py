@@ -24,18 +24,19 @@ QUARTER_INSERT_SCRIPT = """
             """
 
 
+def _write(path, contents, log_msg):
+    # Save specific course HTML in department folder
+    with open(path, 'w') as file_handle:
+        file_handle.write(contents)
+        print(log_msg)
+
+
 class LazyWriter:
     def __init__(self):
         self.pool = thread_library.ThreadPoolExecutor(max_workers=1)
 
     def write(self, path, contents, log_msg):
-        self.pool.submit(self._write, path, contents, log_msg)
-
-    def _write(self, path, contents, log_msg):
-        # Save specific course HTML in department folder
-        with open(path, 'w') as file_handle:
-            file_handle.write(contents)
-            print(log_msg)
+        self.pool.submit(_write, path, contents, log_msg)
 
 
 writer = LazyWriter()

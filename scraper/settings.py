@@ -29,7 +29,7 @@ IMAGE_DIR = os.path.join(HOME_DIR, 'images')
 COURSES_HTML_PATH = os.path.join(HOME_DIR, "cache", "course_pages")
 CAPES_HTML_PATH = os.path.join("cache", "capes_pages")
 
-DRIVER_PATH = os.path.join("driver", "chromedriver_linux")
+DRIVER_PATH = os.path.join("driver", "geckodriver_linux")
 
 """
 MODES

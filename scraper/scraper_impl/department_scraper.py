@@ -6,18 +6,15 @@ from selenium import webdriver
 from settings import DATABASE_PATH, DATABASE_FOLDER_PATH
 from settings import DEPARTMENT_URL
 from settings import DRIVER_PATH
+from utils.scraper_util import get_browser
+
 
 class DepartmentScraper:
     INFO_MAX_INDEX = 4
 
     def __init__(self):
-        options = webdriver.ChromeOptions()
-        options.add_argument('--headless')
-        options.add_argument('--no-sandbox')
-        options.add_argument('--disable-dev-shm-usage')
-
         # Start up the browser
-        self.browser = webdriver.Chrome(chrome_options=options, executable_path=DRIVER_PATH)
+        self.browser = get_browser()
 
         # Add an implicit wait so that the department options load
         self.browser.implicitly_wait(15)
