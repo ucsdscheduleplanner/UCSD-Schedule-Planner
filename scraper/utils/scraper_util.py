@@ -4,7 +4,7 @@ from selenium import webdriver
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
 
-from settings import TIMEOUT, DRIVER_FOLDER, DRIVER_PATH
+from settings import TIMEOUT, DRIVER_DIR, DRIVER_PATH
 
 
 def get_browser():
@@ -28,7 +28,7 @@ def get_browser():
                                 capabilities=caps,
                                 firefox_options=options,
                                 executable_path=DRIVER_PATH,
-                                log_path=os.path.join(DRIVER_FOLDER, "geckodriver.log"))
+                                log_path=os.path.join(DRIVER_DIR, "geckodriver.log"))
     browser.set_page_load_timeout(TIMEOUT)
     browser.implicitly_wait(1)
     return browser

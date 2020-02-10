@@ -3,7 +3,7 @@ import sqlite3
 
 from selenium.webdriver.support.select import Select
 
-from settings import DATABASE_PATH, DATABASE_FOLDER_PATH, QUARTERS_TO_SCRAPE, DEPARTMENT_URL
+from settings import DATABASE_PATH, DATABASE_DIR, QUARTERS_TO_SCRAPE, DEPARTMENT_URL
 from utils.scraper_util import get_browser
 
 
@@ -18,7 +18,7 @@ class DepartmentScraper:
         self.browser.implicitly_wait(15)
 
         # Establish database connection
-        os.makedirs(DATABASE_FOLDER_PATH, exist_ok=True)
+        os.makedirs(DATABASE_DIR, exist_ok=True)
         self.database = sqlite3.connect(DATABASE_PATH)
         self.database.row_factory = sqlite3.Row
         self.cursor = self.database.cursor()

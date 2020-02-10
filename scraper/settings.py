@@ -19,8 +19,8 @@ CONFIG = configparser.ConfigParser()
 CONFIG.read(os.path.join(HOME_DIR, "config", "config.example.ini"))
 
 # Database directory
-DATABASE_FOLDER_PATH = os.path.join(HOME_DIR, "cache", "database")
-DATABASE_PATH = os.path.join(DATABASE_FOLDER_PATH, "data.db")
+DATABASE_DIR = os.path.join(HOME_DIR, "cache", "database")
+DATABASE_PATH = os.path.join(DATABASE_DIR, "data.db")
 
 # Image directory
 IMAGE_DIR = os.path.join(HOME_DIR, 'images')
@@ -29,8 +29,8 @@ IMAGE_DIR = os.path.join(HOME_DIR, 'images')
 COURSES_HTML_PATH = os.path.join(HOME_DIR, "cache", "course_pages")
 CAPES_HTML_PATH = os.path.join("cache", "capes_pages")
 
-DRIVER_FOLDER = os.path.join("driver")
-DRIVER_PATH = os.path.join(DRIVER_FOLDER, "geckodriver_linux")
+DRIVER_DIR = os.path.join("driver")
+DRIVER_PATH = os.path.join(DRIVER_DIR, "geckodriver_linux")
 
 """
 MODES

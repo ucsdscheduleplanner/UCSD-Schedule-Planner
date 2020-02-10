@@ -1,10 +1,32 @@
 import os
 import re
 import sqlite3
+from collections import namedtuple
+from typing import List, Dict
 
 import bs4
 
 from settings import COURSES_HTML_PATH, DATABASE_PATH, RAW_QUARTER_TABLE
+
+
+class ClassRow:
+    def __init__(self, course_id=None, department=None, course_num=None, section_id=None, section_type=None,
+                 days=None, times=None, location=None, room=None, instructor=None, description=None, units=None):
+        self.course_id = course_id
+        self.department = department
+        self.course_num = course_num
+        self.section_id = section_id
+        self.section_type = section_type
+        self.days = days
+        self.times = times
+        self.location = location
+        self.room = room
+        self.instructor = instructor
+        self.description = description
+        self.units = units
+
+    def __repr__(self):
+        return ",".join(("{}={}".format(*i) for i in vars(self).items()))
 
 
 class CourseParser:
@@ -26,18 +48,14 @@ class CourseParser:
         try:
             for quarter in subdirectories:
                 print("Parsing %s" % quarter)
-                ret[quarter] = self._parse(quarter)
+                ret[quarter] = self.parse_data(quarter)
         finally:
             self.close()
 
         print('Finished course parsing.')
         return ret
 
-    def _parse(self, quarter):
-        return self.parse_data(quarter)
-        # self.insert_data(quarter)
-
-    def parse_data(self, quarter):
+    def parse_data(self, quarter) -> List[ClassRow]:
         class_store = []
         quarter_path = os.path.join(COURSES_HTML_PATH, quarter)
         departments = [file.name for file in os.scandir(quarter_path) if file.is_dir()]
@@ -51,25 +69,28 @@ class CourseParser:
             # just to sort based on number
             files.sort(key=lambda x: int(re.findall('[0-9]+', x)[0]))
             for file in files:
-                self.parse_file(os.path.join(department_path, file), department, class_store)
+                class_store.extend(self.parse_file(os.path.join(department_path, file), department))
 
         return class_store
 
-    def parse_file(self, filepath, department, class_store):
+    def parse_file(self, filepath, department) -> List[ClassRow]:
+        ret = []
         with open(filepath) as html:
             # Use lxml for parsing
             soup = bs4.BeautifulSoup(html, 'lxml')
             # Look for table rows
             rows = soup.find_all(name='tr')
             for row in rows:
-                self.parse_row(department, row, class_store)
+                ret.extend(self.parse_row(department, row))
+        return ret
 
     """
     Will get info from the HTML and store it into a format that can be manipulated easily. 
     Then it will validate the information and make sure that it is in a usable format.
     """
 
-    def parse_row(self, department, row, class_store):
+    def parse_row(self, department, row):
+        ret = []
         course_num = row.find_all(name='td', attrs={'class': 'crsheader'})
 
         if course_num:
@@ -85,7 +106,7 @@ class CourseParser:
                 self.units = "N/A"
             # num slots on the top header
             if len(course_num) == 4:
-                class_store.append({"DEPARTMENT": department, "COURSE_NUM": None, "SECTIOND_ID": "START/END OF CLASS"})
+                ret.append(ClassRow(department=department, course_num=None, course_id="START/END OF CLASS"))
 
         info = row.find_all(name='td',
                             attrs={'class': 'brdr'})
@@ -112,21 +133,22 @@ class CourseParser:
             room = copy_dict[8]
             instructor = copy_dict[9]
 
-            info = {
-                "COURSE_ID": course_id,
-                "DEPARTMENT": department,
-                "COURSE_NUM": course_num,
-                "SECTION_TYPE": section_type,
-                "DAYS": days,
-                "TIME": times,
-                "LOCATION": location,
-                "ROOM": room,
-                "INSTRUCTOR": instructor,
-                "DESCRIPTION": self.description,
-                "UNITS": self.units
-            }
+            info = ClassRow(
+                course_id=course_id,
+                department=department,
+                course_num=course_num,
+                section_type=section_type,
+                days=days,
+                times=times,
+                location=location,
+                room=room,
+                instructor=instructor,
+                description=self.description,
+                units=self.units
+            )
 
-            class_store.append(info)
+            ret.append(info)
+        return ret
 
     """
     Method to make final alterations to the dataset. 

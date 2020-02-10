@@ -1,8 +1,10 @@
 import itertools
 import sqlite3
+import copy
 from itertools import groupby
-from typing import List, Dict
+from typing import List, Dict, Tuple, Any
 
+from sd_parser.course_parser import ClassRow
 from settings import DATABASE_PATH, QUARTERS_TO_SCRAPE, RAW_QUARTER_TABLE
 from utils.timeutils import TimeIntervalCollection
 
@@ -34,7 +36,7 @@ class Cleaner:
                                 "SECTION_TYPE TEXT, DAYS TEXT, TIME TEXT, LOCATION TEXT, ROOM TEXT, "
                                 "INSTRUCTOR TEXT, DESCRIPTION TEXT, UNITS TEXT)".format(quarter))
 
-    def begin_processing(self, data: Dict[str, List[Dict]]):
+    def begin_processing(self, data: Dict[str, List[ClassRow]]):
         # getting list of departments
         self.cursor.execute("SELECT * FROM DEPARTMENT")
         departments = [i["DEPT_CODE"] for i in self.cursor.fetchall()]
@@ -44,17 +46,17 @@ class Cleaner:
             quarter_data = data[quarter]
             print("Cleaning quarter {}".format(quarter))
             for department in departments:
-                classes = self.process_department(department, quarter, quarter_data)
+                classes = self.process_department(department, quarter_data)
                 self.save_classes(classes, quarter)
 
     """
     Will store in format with partitions for the courseNums in the same format : i.e CSE3$0 means section 0 of CSE3.
     """
 
-    def process_department(self, department, quarter, data: List[Dict]):
-        visible_classes = [row for row in data if row["DEPARTMENT"] == department]
+    def process_department(self, department, data: List[ClassRow]):
+        visible_classes = [row for row in data if row.department == department]
         # doing this so fast_ptr knows where to stop
-        visible_classes.append({"COURSE_NUM": None})
+        visible_classes.append(ClassRow(course_num=None))
 
         # blank class list for ones to insert
         classes_to_insert = []
@@ -67,14 +69,14 @@ class Cleaner:
             slow_class = visible_classes[slow_ptr]
             fast_class = visible_classes[fast_ptr]
 
-            if slow_class["COURSE_NUM"]:
+            if slow_class.course_num:
                 slow_ptr += 1
 
-            if fast_class["COURSE_NUM"]:
-                course_num = fast_class["COURSE_NUM"]
+            if fast_class.course_num:
+                course_num = fast_class.course_num
 
             # We know we have hit the end of a section
-            if not fast_class["COURSE_NUM"] and slow_ptr != fast_ptr:
+            if not fast_class.course_num and slow_ptr != fast_ptr:
                 try:
                     classes_to_insert.extend(
                         # we want slow_ptr + 1 and fast_ptr to be the lower and upper bounds
@@ -91,62 +93,66 @@ class Cleaner:
             fast_ptr += 1
         return classes_to_insert
 
-    def save_classes(self, classes_to_insert, quarter):
+    def save_classes(self, classes_to_insert: List[ClassRow], quarter):
         sql_str = """\
                       INSERT INTO {}(DEPARTMENT, COURSE_NUM, SECTION_ID, \
                       COURSE_ID, SECTION_TYPE, DAYS, TIME, LOCATION, ROOM, INSTRUCTOR, DESCRIPTION, UNITS)  \
                       VALUES 
-                      (:DEPARTMENT, 
-                      :COURSE_NUM, 
-                      :SECTION_ID, 
-                      :COURSE_ID,
-                      :SECTION_TYPE,
-                      :DAYS,
-                      :TIME, 
-                      :LOCATION,
-                      :ROOM,
-                      :INSTRUCTOR,
-                      :DESCRIPTION,
-                      :UNITS) \
+                      (:department, 
+                      :course_num, 
+                      :section_id, 
+                      :course_id,
+                      :section_type,
+                      :days,
+                      :times, 
+                      :location,
+                      :room,
+                      :instructor,
+                      :description,
+                      :units) \
                     """.format(quarter)
-
         for c in classes_to_insert:
-            self.cursor.execute(sql_str, c)
+            self.cursor.execute(sql_str, vars(c))
 
     def process_current_class_set(self, class_set, section_count, department, course_num):
         ret = []
         class_sections = []
         # sorts so has courseNums with no class_section
-        classes_to_replicate = [c for c in class_set if not c["COURSE_ID"]]
+        classes_to_replicate = [c for c in class_set if not c.course_id]
         classes_to_add = [
             c for c in class_set if c not in classes_to_replicate]
 
         # can only be one unique copy of var$Class per Class because of COURSE_ID uniqueness
         for Class in classes_to_add:
-            type_groups = groupby(classes_to_replicate, lambda x: x["SECTION_TYPE"])
+            type_groups = groupby(classes_to_replicate, lambda x: x.section_type)
+
             cur_class_sections = [[Class]]
             # groups of replicas based on types
             for key, type_group in type_groups:
+                type_group: List[ClassRow]
                 type_group = list(type_group)
+
                 # making temp section for setting later
                 temp_sections = []
                 # adding cartesian product to temp
                 # cur section is a list
                 for cur_section in cur_class_sections:
                     # replica is a section (collection of classes, used replica here for reference to Tales of the Abyss)
+                    replica: List[ClassRow]
                     replica = cur_section.copy()
+
                     # class with type is a class
                     for class_with_type in type_group:
-                        copy = class_with_type.copy()
+                        new_class = copy.copy(class_with_type)
                         # always guaranteed to have at least one element in the list
-                        copy["COURSE_ID"] = replica[0]["COURSE_ID"]
+                        new_class.course_id = replica[0].course_id
                         # handle the passing of variable information through rows here
-                        if not replica[0]["INSTRUCTOR"] and copy["INSTRUCTOR"]:
-                            replica[0]["INSTRUCTOR"] = copy["INSTRUCTOR"]
-                        elif not copy["INSTRUCTOR"]:
-                            copy["INSTRUCTOR"] = replica[0]["INSTRUCTOR"]
+                        if not replica[0].instructor and new_class.instructor:
+                            replica[0].instructor = new_class.instructor
+                        elif not new_class.instructor:
+                            new_class.course_id = replica[0].instructor
 
-                        replica.append(copy)
+                        replica.append(new_class)
                     temp_sections.append(replica)
                 # setting current to temp
                 cur_class_sections = temp_sections
@@ -162,8 +168,8 @@ class Cleaner:
             id = department + course_num
             for section in class_section:
                 # setting id based on sectionn
-                section["SECTION_ID"] = id + "$" + \
-                                        str(section_count[department][course_num])
+                section.section_id = id + "$" + \
+                                     str(section_count[department][course_num])
                 subsections = self.split_into_subsections(section)
 
                 # only add if we could create the subsections
@@ -172,7 +178,7 @@ class Cleaner:
             section_count[department][course_num] += 1
         return ret
 
-    def split_into_subsections(self, section):
+    def split_into_subsections(self, section: ClassRow):
         """
         Takes in a section and splits it into its subsections for easy insertion into rdbms table.
 
@@ -182,9 +188,9 @@ class Cleaner:
 
         ret = []
         # TimeIntervalCollection functions will parse days and times correctly into lists
-        days = TimeIntervalCollection.get_days(section['DAYS'])
+        days = TimeIntervalCollection.get_days(section.days)
         # times is a list of TimeInterval objects, want to convert to string
-        times = TimeIntervalCollection.get_times(section['TIME'])
+        times = TimeIntervalCollection.get_times(section.times)
         for i in range(0, len(times)):
             # both datetime objects
             start_time = times[i].start_time
@@ -206,9 +212,9 @@ class Cleaner:
                                                         len(days) - 1]))
         for entry in day_time_pairs:
             # each subsection has mostly the same info as the section
-            subsection = section.copy()
-            subsection['DAYS'] = entry[0]
-            subsection['TIME'] = entry[1]
+            subsection = copy.copy(section)
+            subsection.days = entry[0]
+            subsection.times = entry[1]
             ret.append(subsection)
         return ret
 

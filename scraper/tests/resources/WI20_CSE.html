@@ -1,0 +1,4128 @@
+<html lang="en"><head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="initial-scale=1">
+<meta name="format-detection" content="telephone=no">
+
+
+<title>Student/Class Info</title>
+<link rel="stylesheet" href="//www.ucsd.edu/common/cwp/active-cherry/base-min.css">
+<style type="text/css">
+#tdr_banner {
+	background: transparent url(//students.ucsd.edu/_resources/current_students/css/images/triton-banner.png) center top no-repeat;
+	height: 52px;
+	margin: 0 auto;
+	max-width: 960px;
+	width: 98%;
+}
+
+body.fluid #tdr_banner {
+	max-width: none;
+}
+</style>
+<style type="text/css">
+#tdr_nav ul #current_students_nav a {
+	background: transparent url(//students.ucsd.edu/_resources/student_global/css/images/current_students_primary_nav.png) 2px 0 no-repeat;
+	background-color: #E3EDF8;
+    background-color: rgba(255, 255, 255, 0.4);
+    text-indent: -9999px;
+    width: 94px;
+}
+
+#tdr_nav ul #current_students_nav a:hover {
+	background-color: #fff;
+    background-color: rgba(255, 255, 255, 0.8);
+}
+
+@media only screen and (max-width: 768px) {
+	#tdr_nav ul #current_students_nav a {
+		width: auto;
+	}
+}
+</style>
+<script type="text/javascript" async="" src="https://ssl.google-analytics.com/ga.js"></script><script src="//www.ucsd.edu/common/cwp/active-cherry/base-min.js"></script>
+<script src="//www.ucsd.edu/common/_emergency-broadcast/message.js"></script>
+
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+
+
+	
+	
+    <script type="text/javascript" src="/scheduleOfClasses/js/submit_form.js"></script>
+    
+<meta name="webapp.name" content="Instruction Tools">
+<meta name="webapp.url" content="http://blink.ucsd.edu/instructors/index.html">
+<meta name="display.crumbs" content="none">
+<meta name="display.search" content="none">
+
+<link href="/scheduleOfClasses/css/sch_classes.css" type="text/css" rel="stylesheet" media="all">
+<link href="//www.ucsd.edu/common/cwp/active-cherry/lib/jquery.dataTables-1.9.0/jquery.dataTables-min.css" media="all" rel="stylesheet" type="text/css">
+<link href="//www.ucsd.edu/common/cwp/active-cherry/lib/jquery-ui-1.8.18/jquery-ui-min.css" media="all" rel="stylesheet" type="text/css">
+
+<script src="//www.ucsd.edu/common/cwp/active-cherry/lib/jquery-ui-1.8.18/jquery-ui-min.js" type="text/javascript"></script>
+<script src="//www.ucsd.edu/common/cwp/active-cherry/lib/jquery.dataTables-1.9.0/jquery.dataTables-min.js" type="text/javascript"></script>
+<style type="text/css">
+td.brdr {
+    border-bottom-style:solid;
+	border-bottom-width:1px;
+	border-bottom-color:#D0D0D0;
+}
+td.ubrdr {
+    border-top-style:solid;
+	border-top-width:1px;
+	border-top-color:#D0D0D0;
+}
+table.tbrdr{
+	border-style:solid;
+	border-width:1px;
+	border-color:#D0D0D0;
+</style>
+
+</head>
+
+<body>
+
+	
+
+
+
+
+<!-- env -->
+
+<!-- emergency -->
+<div id="uc-emergency"></div>
+<!-- skip to content -->
+<a class="skip-link" href="#tdr_content">Skip to content</a>
+<!-- login -->
+
+<div id="tdr_login" style="display: none"></div>
+<script type="text/javascript">
+(function($) {
+    $(document).ready(function() {
+        $.ajax({
+            url: "https://a4.ucsd.edu/tritON/resources/bugscript.jsp?target=https%3A%2F%2Fwww.ucsd.edu&jsoncallback=?",
+            dataType: 'jsonp',
+            jsonpCallback: 'a4sso',
+            success: function(data) {
+                if (data.eduUcsdActLoggedin) {
+                    var url = "<div id=\"tdr_login_content\">You are logged in | <a href=\"/security/student/logout?url=";
+                    url += "http://students.ucsd.edu";
+                    url += "\">Log Out</a></div>";
+                    $("#tdr_login").empty();
+                    $("#tdr_login").append(url);
+                    $("#tdr_login").attr("style", "display:block");
+                }
+            },
+            error: function(jqXHR, textStatus) {
+                console.log("error trying to communicate with a4 sso: " + textStatus);
+            }
+        });
+    });
+})(jQuery);
+</script>
+
+
+	<!-- title -->
+	<div id="tdr_title">
+		<div id="tdr_title_content">
+			<a id="tdr_title_ucsd_title" href="http://www.ucsd.edu">UC San Diego</a>
+			<div id="tdr_title_page_title">
+				<a href="/myTritonlink20">My TritonLink</a>
+			</div>
+			<a id="tdr_title_search_link" class="search-button" style="display: none">Search</a>
+            <a id="tdr_title_menu_link">Menu</a>
+		</div>
+	</div>
+<!-- $Id: academic-student-current.jsp 1078 2019-07-23 23:33:02Z ssekar $ -->
+<div id="tdr_nav" style="display: ">
+    <div id="tdr_nav_content">
+        <ul id="tdr_nav_list" class="sf-js-enabled sf-shadow">
+            <li id="current_students_nav"><a href="http://tritonlink.ucsd.edu">TritonLink</a></li>
+            <li><span>Advising &amp; Grades</span>
+                <ul style="display: none; visibility: hidden;">
+                    <li><a href="/cgi-bin/tritonlink.pl/7/students/transcripts/academic_history.pl">Academic History</a></li>
+                    <li><a href="https://myccr.ucsd.edu/home.htm">Co-Curricular Record</a></li>
+                    <li><a href="/studentDars/select">Degree Audit</a></li>
+                    <li><a href="http://ucsd.edu/catalog/">General Catalog</a></li>
+                    <li><a href="/studentGpa/gpa">GPA Calculator</a></li>
+                    <li><a href="/studentMajorMinorChange/majorminorchange">Major &amp; Minor</a></li>
+                    <li><a href="http://real.ucsd.edu">REAL Portal</a></li>
+                    <li><a href="/studentETranscript/order.htm">Order Official Documents</a></li>
+                    <li><a href="http://vac.ucsd.edu">Virtual Advising Center</a></li>
+                </ul></li>
+            <li><span>Classes &amp; Enrollment</span>
+                <ul style="display: none; visibility: hidden;">
+                    <li><a href=" https://academicaffairs.ucsd.edu/Modules/Students/PreAuth">Enrollment Authorization System (EASy)</a></li>
+                    <li><a href="/studentHolds/holds">Holds</a></li>
+                    <li><a href="/cgi-bin/tritonlink.pl/6/students/academic/classes/schedule_of_classes.pl">Schedule of Classes</a></li>
+                    <li><a href="http://coursefinder.ucsd.edu">TritonEd/Canvas</a></li>
+                    <li><a href="/webreg2">WebReg</a></li>
+                </ul></li>
+            <li><span>Financial Tools</span>
+                <ul style="display: none; visibility: hidden;">
+                    <li><a href="/studentEBill/StudentBilling">Billing and Payment</a></li>
+                    <li><a href="/studentDirectDeposit/DirectDeposit">Students Direct Deposit</a></li>
+                    <li><a href="/studentFinancialAward/entry">Financial Aid</a></li>
+                    <li><a href="/studentShsHealthWaiver/healthwaiverdisplay.htm">Health Fee Waiver</a></li>
+                    <li><a href="/studentHealthWaiver/raft">RAFT</a></li>
+            		<li><a href="https://ucsd-transportation.t2hosted.com/Account/Portal">Parking Permits</a></li>
+                    <li><a href="/cgi-bin/tritonlink.pl/5/students/finances/residency/student_residency.pl">Residency for Tuition Purposes</a></li>
+                </ul>
+            </li>
+            <li><span>Personal Tools</span>
+                <ul style="display: none; visibility: hidden;">
+                    <li><a href="/studentAddresses/addresses">Addresses</a></li>
+                    <li><a href="/studentAddresses/infoRestrictions">Public Information Restriction</a></li>
+                    <li><a href="/studentAddresses2/socialIdentities">Social Identities</a></li>
+                    <li><a href="https://ucsd.joinhandshake.com">Handshake</a></li>
+                </ul></li>
+            <li><span>Student Forms</span>
+                <ul style="display: none; visibility: hidden;">
+                    <li><a href="http://students.ucsd.edu/finances/financial-aid/forms/">Financial Aid Forms</a></li>
+                    <li><a href="http://students.ucsd.edu/my-tritonlink/forms/">All Forms</a></li>
+                </ul>
+            </li>
+            <li><span>Help</span>
+                <ul style="display: none; visibility: hidden;">
+                    <li><a href="http://www.ucsd.edu/current-students/my-tritonlink/tools/tool-help/index.html">MyTritonLink Tools Help</a></li>
+                    <li><a href="//act.ucsd.edu/cwp/feedback/help/tritonlink" onclick="window.open('//act.ucsd.edu/cwp/feedback/help/tritonlink', 'DYGWYW', 'menubar=0,resizable=1,scrollbars=1,width=450,height=650');" target="DYGWYW">Request Assistance</a>
+                    </li>
+                </ul>
+            </li>
+            
+        </ul>
+    </div>
+</div>
+<div id="tdr_search" style="display: none">
+    <div id="tdr_search_content">
+        <form action="//act.ucsd.edu/cwp/tools/search-redir" method="get">
+            <label for="search-scope">Search</label> <select id="search-scope" name="search-scope">
+                <option selected="selected" value="tritonlink">This Site</option>
+                <option value="default_collection">All UCSD Sites</option>
+                <option value="faculty-staff">Faculty/Staff Directory</option>
+            </select> <label for="search-term" id="search-term-label">Search Term</label> <input type="search" id="search-term" name="search-term" size="20"> <input type="submit" class="search-button" value="Search">
+        </form>
+    </div>
+</div>
+<div id="tdr_banner" style="display: block"></div>
+<div id="tdr_crumbs" style="display: none">
+	<div id="tdr_crumbs_content"></div>
+</div>
+<div id="tdr_content" class="tdr_fonts itag_webapp">
+	<div id="tdr_content_content">
+		<!-- $Id: schedule-of-classes-student-result.jsp 293 2017-01-31 19:36:10Z devmcb $ -->
+
+
+
+
+
+
+
+	<div>
+		<h1>Schedule of Classes </h1>
+
+		<form id="socDisplayCVO" action="/scheduleOfClasses/scheduleOfClassesStudentResult.htm?page=3" method="post">
+			
+			
+			  <input type="hidden" id="loggedIn" name="loggedIn" value="false">
+			  
+			 <div class="msg confirm">
+						Your search was : 
+						<br>
+						<ul>
+							
+							<li>Term
+								<ul>
+									<li>Winter Quarter 2020</li>
+								</ul>
+							</li>
+						</ul>
+						
+						
+						<ul>	
+							
+								
+								<li>Course subject	
+									<ul>
+									
+											<li>CSE  - Computer Science &amp; Engineering</li>
+									
+									</ul>
+								</li>	
+							
+						</ul>
+						
+						
+						<ul>
+							
+							
+						</ul>
+						 
+						 
+						 <ul>	
+							
+							
+						  </ul>
+						  
+						  
+						  <ul>	
+							
+							
+						  </ul>
+						  
+						  
+						  <ul>
+							
+							
+						   </ul>
+						   
+						   
+						   <ul>
+							
+							
+						   </ul>
+						   
+						   
+						   <ul>
+							
+							
+						   </ul>
+						   
+						   
+						   <ul>
+							
+							
+						   </ul>
+						   <ul>
+							
+							
+						   </ul>
+						   <ul>
+							
+							
+						</ul>
+					</div>
+					
+					
+		
+		
+		
+				
+			<div>
+			 <table width="100%">
+			 	<tbody>
+				     <tr>
+				     	<td align="left"><a href="/scheduleOfClasses/scheduleOfClassesStudent.htm">Start a new search</a></td>
+				     	<td align="center"><a href="/scheduleOfClasses/scheduleOfClassesStudentResultPrint.htm">Printer Friendly</a></td>
+				        <td align="right">
+				        	Page  (3&nbsp;of&nbsp;36) &nbsp;
+							
+						        <a href="/scheduleOfClasses/scheduleOfClassesStudentResult.htm?page=1">First&nbsp;&nbsp;&nbsp;&nbsp;</a>...
+						    
+				
+				            
+				                
+				                    
+				                    
+				                        <a href="/scheduleOfClasses/scheduleOfClassesStudentResult.htm?page=1">1&nbsp;</a>
+				                    
+				                
+				            
+				                
+				                    
+				                    
+				                        <a href="/scheduleOfClasses/scheduleOfClassesStudentResult.htm?page=2">2&nbsp;</a>
+				                    
+				                
+				            
+				                
+				                    
+				                        3&nbsp;
+				                    
+				                    
+				                
+				            
+				                
+				                    
+				                    
+				                        <a href="/scheduleOfClasses/scheduleOfClassesStudentResult.htm?page=4">4&nbsp;</a>
+				                    
+				                
+				            
+				                
+				                    
+				                    
+				                        <a href="/scheduleOfClasses/scheduleOfClassesStudentResult.htm?page=5">5&nbsp;</a>
+				                    
+				                
+				            
+						 
+						    
+						        &nbsp;...&nbsp;&nbsp;<a href="/scheduleOfClasses/scheduleOfClassesStudentResult.htm?page=36">Last</a>
+						    
+					    </td>
+				    </tr>
+				 </tbody>
+			 </table>
+			</div>
+			<br>
+				<table class="tbrdr" width="100%">
+					<thead>
+						
+					</thead>
+					
+						
+							
+							
+								
+									<tbody><tr>
+										<td colspan="13">
+											<br>
+											<h2> <span class="centeralign">Computer Science &amp; Engineering     </span> </h2>
+											 
+										</td>
+									</tr>
+								
+					
+								
+								
+													
+					
+						
+								
+								
+						
+								
+								
+							
+								
+								
+							
+							
+								
+							
+						
+							
+							
+								
+					
+								
+								
+													
+					
+									<tr>
+										<td colspan="13">
+											<br>
+											<h2>  <span class="centeralign">Computer Science &amp; Engineering (CSE  )</span> </h2>
+											 
+											<span class="centeralign"><span class="bold_text">As of: 02/08/2020, 06:14:00</span></span>
+											<br><br>
+										</td>
+									</tr>
+								
+						
+								
+								
+						
+								
+								
+							
+								
+								
+							
+							
+								
+							
+						
+							
+							
+								
+					
+								
+								
+													
+					
+						
+								
+								
+						
+								
+								
+									<tr>
+										<td class="ubrdr" rowspan="2">R
+										<br>
+										<span onmouseover="" style="cursor: pointer;" class="icon info" onclick="javascript:openNewWindow('http://registrar.ucsd.edu/StudentLink/rstr_codes.html', 'info')" title="info"></span></td>
+										<td class="ubrdr" rowspan="2">Course Number</td>
+										<td class="ubrdr" rowspan="2">Section ID<br><span onmouseover="" style="cursor: pointer;" class="icon info" onclick="javascript:openNewWindow('http://registrar.ucsd.edu/StudentLink/id_crse_codes.html', 'info')" title="info"></span></td>
+										<td class="ubrdr" rowspan="2">Meeting Type<br><span onmouseover="" style="cursor: pointer;" class="icon info" onclick="javascript:openNewWindow('http://registrar.ucsd.edu/StudentLink/instr_codes.html', 'info')" title="info"></span></td>
+										<td class="ubrdr" rowspan="2">Section</td>
+										<td class="ubrdr" rowspan="2">Days</td>
+										<td class="ubrdr" rowspan="2">Time</td>
+										<td class="ubrdr" rowspan="2" colspan="2">Building &amp; Room<br><span onmouseover="" style="cursor: pointer;" class="icon info" onclick="javascript:openNewWindow('http://registrar.ucsd.edu/StudentLink/bldg_codes.html', 'info')" title="info"></span></td>
+										<td class="ubrdr" rowspan="2">Instructor</td>
+										<td class="ubrdr" colspan="2">Seats<span onmouseover="" style="cursor: pointer;" class="icon info" onclick="javascript:openNewWindow('http://registrar.ucsd.edu/StudentLink/avail_limit.html', 'info')" title="info"></span></td>
+										<td class="ubrdr" rowspan="2">&nbsp;</td>
+									</tr>
+									<tr>
+									  
+										<td class="ubrdr">Available</td>
+										<td class="ubrdr">Limit</td>
+									</tr>
+								
+							
+								
+								
+							
+							
+								
+							
+						
+							
+							
+								
+					
+								
+								
+													
+					
+						
+								
+								
+						
+								
+								
+							
+								
+								
+							
+							
+								
+									
+										
+											<tr>
+												<td class="crsheader"></td>	
+												<td class="crsheader" align="">87</td>
+												<td colspan="11" class="crsheader">
+													Freshman Seminar              
+													
+												</td>
+											</tr>
+											<tr>
+												<td class="nonenrtxt" colspan="2" align="right"></td>
+												<td class="nonenrtxt" colspan="11">
+													<span class="ertext"> Visit the <a href="http://ugseminars.ucsd.edu/UGSEM_SeminarListing.asp">
+ Freshman Seminar Program</a> website for seminar
+ description and meeting dates.
+ http://ugseminars.ucsd.edu/UGSEM_SeminarListing.asp
+</span>
+												</td>
+											</tr>
+										
+										
+									
+							
+								
+								
+								
+								
+								
+								
+								
+								
+								
+								
+							
+						
+							
+							
+								
+					
+								
+								
+													
+					
+						
+								
+								
+						
+								
+								
+							
+								
+								
+							
+							
+								
+									
+										
+										
+											
+												
+												
+													
+													<tr>
+													   
+															
+																<td class="crsheader">
+																	
+																			<span id="crsRestCd" title="Open to Freshmen Only">
+																			FR</span><br>
+																		
+																		</td>								
+																<td class="crsheader">87</td>
+															
+															 
+														
+														<td class="crsheader" colspan="5">
+															
+																
+																
+																
+															
+																
+																	
+																	
+																	
+																	
+																	
+																	
+																	
+																	
+																	
+																		
+																	
+																	
+																
+															
+															
+															
+																
+																	<a href="javascript:openNewWindow('http://www.ucsd.edu/catalog/courses/CSE.html#cse87')"><span class="boldtxt">Freshman Seminar              </span> </a>
+																
+																
+																
+															
+															( 1
+															
+															Units)
+															<br>
+															Neural Networks as Mind Models
+															
+															
+														</td>
+														<td class="crsheader" colspan="6" align="right">
+														<span class="boldtxt" onmouseover="" style="cursor: pointer;" onclick="JavaScript:openNewWindow('/scheduleOfClasses/scheduleOfClassesPreReq.htm?termCode=WI20&amp;courseId=CSE87    ');"> Prerequisites  </span> &nbsp;|&nbsp;
+														<span class="boldtxt" onmouseover="" style="cursor: pointer;" onclick="javascript:openNewWindow('http://courses.ucsd.edu/coursemain.asp?section=989484')">Resources</span>&nbsp;|&nbsp;
+														<span class="boldtxt" onmouseover="" style="cursor: pointer;" onclick="javascript:openNewWindow('http://cape.ucsd.edu/responses/Results.aspx?courseNumber=CSE+87','CAPE')"><span title="CAPE - Course and Professor Evaluations">Evaluations</span></span></td>
+													</tr>
+												
+											
+										
+									
+							
+								
+								
+								
+								
+								
+								
+								
+								
+								 
+									
+											
+									
+												
+													
+														<tr class="sectxt">
+															<td class="brdr" border="0"></td>
+															<td class="brdr">
+																
+															</td>					
+															<td class="brdr">
+																
+																	
+																		
+																		
+																			989484
+																		
+																	 
+																
+															</td>
+															<td class="brdr"><span id="insTyp" title="Seminar">SE</span></td>
+															<td class="brdr">A00</td>
+															
+															
+																
+																
+																	
+																		
+																		
+																			<td class="brdr">W      </td>
+																			<td class="brdr">9:00a-10:50a</td>
+																			<td class="brdr">EBU3B</td>
+																			<td class="brdr">B220 </td>
+																		
+																	
+																	
+																		
+																			<td class="brdr">
+																						
+																						
+																							
+																								
+																									<a href="mailto:gcottrel@ucsd.edu">Cottrell, Garrison W               </a>
+																								
+																								
+																							
+																							<br>
+																						
+																					
+																					
+																				
+																			</td>
+																			
+																			    
+																			    
+																			     
+																			    
+																					<td class="brdr">3</td>
+																					<td class="brdr">20</td>
+																			    
+																			
+																			
+																			    
+																			    
+																					<td class="brdr"><span onmouseover="" style="cursor: pointer;" onclick="JavaScript:openNewWindow('https://ucsdbkst.ucsd.edu/wrtx/TextSearch?section=989484&amp;term=WI20&amp;subject=CSE &amp;course=87','bookstore');">
+																						<img src="/scheduleOfClasses/images/book.gif" width="20" height="20">
+																						</span>
+																					</td>	
+																				
+																			
+																		
+																		
+																	
+																
+															
+														</tr>	
+														
+													
+													
+												
+											
+										
+									
+								
+							
+						
+							
+							
+								
+					
+								
+								
+													
+					
+						
+								
+								
+						
+								
+								
+							
+								
+								
+							
+							
+								
+									
+										
+											<tr>
+												<td class="crsheader"></td>	
+												<td class="crsheader" align="">95</td>
+												<td colspan="11" class="crsheader">
+													Tutor Apprentice              
+													
+												</td>
+											</tr>
+											<tr>
+												<td class="nonenrtxt" colspan="2" align="right"></td>
+												<td class="nonenrtxt" colspan="11">
+													<span class="ertext"> CSE 95 is limited to new CSE department tutors. Once
+ you are selected to be a CSE tutor, you'll be required
+ to and will be given clearance to enroll in CSE 95.
+</span>
+												</td>
+											</tr>
+										
+										
+									
+							
+								
+								
+								
+								
+								
+								
+								
+								
+								 
+									
+									
+								
+							
+						
+							
+							
+								
+					
+								
+								
+													
+					
+						
+								
+								
+						
+								
+								
+							
+								
+								
+							
+							
+								
+									
+										
+										
+											
+												
+												
+													
+													<tr>
+													   
+															
+																<td class="crsheader">
+																	
+																			<span id="crsRestCd" title="Department Approval Required">
+																			D</span><br>
+																		
+																		</td>								
+																<td class="crsheader">95</td>
+															
+															 
+														
+														<td class="crsheader" colspan="5">
+															
+																
+																
+																
+															
+																
+																	
+																	
+																	
+																	
+																	
+																	
+																	
+																		
+																	
+																	
+																	
+																	
+																
+															
+															
+															
+																
+																	<a href="javascript:openNewWindow('http://registrar.ucsd.edu/studentlink/cnd.html')"><span class="boldtxt">Tutor Apprentice              </span> </a>
+																
+																
+																
+															
+															( 2
+															
+															Units)
+															<br>
+															                              
+															
+															
+														</td>
+														<td class="crsheader" colspan="6" align="right">
+														<span class="boldtxt" onmouseover="" style="cursor: pointer;" onclick="JavaScript:openNewWindow('/scheduleOfClasses/scheduleOfClassesPreReq.htm?termCode=WI20&amp;courseId=CSE95    ');"> Prerequisites  </span> &nbsp;|&nbsp;
+														<span class="boldtxt" onmouseover="" style="cursor: pointer;" onclick="javascript:openNewWindow('http://courses.ucsd.edu/coursemain.asp?section=995093')">Resources</span>&nbsp;|&nbsp;
+														<span class="boldtxt" onmouseover="" style="cursor: pointer;" onclick="javascript:openNewWindow('http://cape.ucsd.edu/responses/Results.aspx?courseNumber=CSE+95','CAPE')"><span title="CAPE - Course and Professor Evaluations">Evaluations</span></span></td>
+													</tr>
+												
+											
+										
+									
+							
+								
+								
+								
+								
+								
+								
+								
+								
+								 
+									
+											
+									
+												
+													
+														<tr class="sectxt">
+															<td class="brdr" border="0"></td>
+															<td class="brdr">
+																
+															</td>					
+															<td class="brdr">
+																
+																	
+																		
+																		
+																			995093
+																		
+																	 
+																
+															</td>
+															<td class="brdr"><span id="insTyp" title="Practicum">PR</span></td>
+															<td class="brdr">A00</td>
+															
+															
+																
+																
+																	
+																		
+																		
+																			<td class="brdr">W      </td>
+																			<td class="brdr">12:00p-12:50p</td>
+																			<td class="brdr">EBU3B</td>
+																			<td class="brdr">1202 </td>
+																		
+																	
+																	
+																		
+																			<td class="brdr">
+																						
+																						
+																							
+																								
+																									<a href="mailto:gillespi@ucsd.edu">Gillespie, Gary N                  </a>
+																								
+																								
+																							
+																							<br>
+																						
+																					
+																					
+																				
+																			</td>
+																			
+																			    
+																			    
+																			     
+																			    
+																					<td class="brdr">30</td>
+																					<td class="brdr">100</td>
+																			    
+																			
+																			
+																			    
+																			    
+																					<td class="brdr"><span onmouseover="" style="cursor: pointer;" onclick="JavaScript:openNewWindow('https://ucsdbkst.ucsd.edu/wrtx/TextSearch?section=995093&amp;term=WI20&amp;subject=CSE &amp;course=95','bookstore');">
+																						<img src="/scheduleOfClasses/images/book.gif" width="20" height="20">
+																						</span>
+																					</td>	
+																				
+																			
+																		
+																		
+																	
+																
+															
+														</tr>	
+														
+													
+													
+												
+											
+										
+									
+								
+							
+						
+							
+							
+								
+					
+								
+								
+													
+					
+						
+								
+								
+						
+								
+								
+							
+								
+								
+							
+							
+								
+									
+										
+										
+											
+												
+												
+													
+													<tr>
+													   
+															
+																<td class="crsheader">
+																	
+																			<span id="crsRestCd" title="Open to Freshmen Only">
+																			FR</span><br>
+																	
+																			<span id="crsRestCd" title="Open to Sophomores Only">
+																			SO</span><br>
+																	
+																			<span id="crsRestCd" title="Department Approval Required">
+																			D</span><br>
+																		
+																		</td>								
+																<td class="crsheader">99</td>
+															
+															 
+														
+														<td class="crsheader" colspan="5">
+															
+																
+																
+																
+															
+																
+																	
+																	
+																	
+																	
+																	
+																	
+																	
+																	
+																	
+																		
+																	
+																	
+																
+															
+															
+															
+																
+																	<a href="javascript:openNewWindow('http://www.ucsd.edu/catalog/courses/CSE.html#cse99')"><span class="boldtxt">Independent Study in CSE      </span> </a>
+																
+																
+																
+															
+															( 4
+															
+															Units)
+															<br>
+															                              
+															
+															
+														</td>
+														<td class="crsheader" colspan="6" align="right">
+														<span class="boldtxt" onmouseover="" style="cursor: pointer;" onclick="JavaScript:openNewWindow('/scheduleOfClasses/scheduleOfClassesPreReq.htm?termCode=WI20&amp;courseId=CSE99    ');"> Prerequisites  </span> &nbsp;|&nbsp;
+														<span class="boldtxt" onmouseover="" style="cursor: pointer;" onclick="javascript:openNewWindow('http://courses.ucsd.edu/coursemain.asp?section=8357')">Resources</span>&nbsp;|&nbsp;
+														<span class="boldtxt" onmouseover="" style="cursor: pointer;" onclick="javascript:openNewWindow('http://cape.ucsd.edu/responses/Results.aspx?courseNumber=CSE+99','CAPE')"><span title="CAPE - Course and Professor Evaluations">Evaluations</span></span></td>
+													</tr>
+												
+											
+										
+									
+							
+								
+								
+								
+								
+								
+								
+								
+								
+								 
+									
+											
+									
+												
+													
+														<tr class="sectxt">
+															<td class="brdr" border="0"></td>
+															<td class="brdr">
+																
+															</td>					
+															<td class="brdr">
+																
+																	
+																		
+																		
+																			8357
+																		
+																	 
+																
+															</td>
+															<td class="brdr"><span id="insTyp" title="Independent Study">IN</span></td>
+															<td class="brdr">001</td>
+															
+															
+																
+																
+																	
+																		
+																				<td class="brdr" colspan="4" align="center">TBA</td>													
+																		
+																		
+																	
+																	
+																		
+																			<td class="brdr">
+																						
+																						
+																							
+																								
+																									<a href="mailto:dsahoo@ucsd.edu">Sahoo, Debashis                    </a>
+																								
+																								
+																							
+																							<br>
+																						
+																					
+																					
+																				
+																			</td>
+																			
+																			    
+																			    
+																			     
+																			    
+																					<td class="brdr">Unlim</td>
+																					<td class="brdr"></td>
+																			    
+																			
+																			
+																			    
+																			    
+																					<td class="brdr"><span onmouseover="" style="cursor: pointer;" onclick="JavaScript:openNewWindow('https://ucsdbkst.ucsd.edu/wrtx/TextSearch?section=8357&amp;term=WI20&amp;subject=CSE &amp;course=99','bookstore');">
+																						<img src="/scheduleOfClasses/images/book.gif" width="20" height="20">
+																						</span>
+																					</td>	
+																				
+																			
+																		
+																		
+																	
+																
+															
+														</tr>	
+														
+													
+													
+												
+											
+										
+									
+								
+							
+						
+							
+							
+								
+					
+								
+								
+													
+					
+						
+								
+								
+						
+								
+								
+							
+								
+								
+							
+							
+								
+									
+										
+										
+											
+												
+												
+													
+													<tr>
+													   
+															
+																<td class="crsheader">
+																	
+																			<span id="crsRestCd" title="Open to Freshmen Only">
+																			FR</span><br>
+																	
+																			<span id="crsRestCd" title="Open to Sophomores Only">
+																			SO</span><br>
+																	
+																			<span id="crsRestCd" title="Department Approval Required">
+																			D</span><br>
+																		
+																		</td>								
+																<td class="crsheader">99</td>
+															
+															 
+														
+														<td class="crsheader" colspan="5">
+															
+																
+																
+																
+															
+																
+																	
+																	
+																	
+																	
+																	
+																	
+																	
+																	
+																	
+																		
+																	
+																	
+																
+															
+															
+															
+																
+																	<a href="javascript:openNewWindow('http://www.ucsd.edu/catalog/courses/CSE.html#cse99')"><span class="boldtxt">Independent Study in CSE      </span> </a>
+																
+																
+																
+															
+															( 4
+															
+															Units)
+															<br>
+															                              
+															
+															
+														</td>
+														<td class="crsheader" colspan="6" align="right">
+														<span class="boldtxt" onmouseover="" style="cursor: pointer;" onclick="JavaScript:openNewWindow('/scheduleOfClasses/scheduleOfClassesPreReq.htm?termCode=WI20&amp;courseId=CSE99    ');"> Prerequisites  </span> &nbsp;|&nbsp;
+														<span class="boldtxt" onmouseover="" style="cursor: pointer;" onclick="javascript:openNewWindow('http://courses.ucsd.edu/coursemain.asp?section=8598')">Resources</span>&nbsp;|&nbsp;
+														<span class="boldtxt" onmouseover="" style="cursor: pointer;" onclick="javascript:openNewWindow('http://cape.ucsd.edu/responses/Results.aspx?courseNumber=CSE+99','CAPE')"><span title="CAPE - Course and Professor Evaluations">Evaluations</span></span></td>
+													</tr>
+												
+											
+										
+									
+							
+								
+								
+								
+								
+								
+								
+								
+								
+								 
+									
+											
+									
+												
+													
+														<tr class="sectxt">
+															<td class="brdr" border="0"></td>
+															<td class="brdr">
+																
+															</td>					
+															<td class="brdr">
+																
+																	
+																		
+																		
+																			8598
+																		
+																	 
+																
+															</td>
+															<td class="brdr"><span id="insTyp" title="Independent Study">IN</span></td>
+															<td class="brdr">002</td>
+															
+															
+																
+																
+																	
+																		
+																				<td class="brdr" colspan="4" align="center">TBA</td>													
+																		
+																		
+																	
+																	
+																		
+																			<td class="brdr">
+																						
+																						
+																							
+																								
+																									<a href="mailto:jpolitz@ucsd.edu">Politz, Joseph Gibbs               </a>
+																								
+																								
+																							
+																							<br>
+																						
+																					
+																					
+																				
+																			</td>
+																			
+																			    
+																			    
+																			     
+																			    
+																					<td class="brdr">Unlim</td>
+																					<td class="brdr"></td>
+																			    
+																			
+																			
+																			    
+																			    
+																					<td class="brdr"><span onmouseover="" style="cursor: pointer;" onclick="JavaScript:openNewWindow('https://ucsdbkst.ucsd.edu/wrtx/TextSearch?section=8598&amp;term=WI20&amp;subject=CSE &amp;course=99','bookstore');">
+																						<img src="/scheduleOfClasses/images/book.gif" width="20" height="20">
+																						</span>
+																					</td>	
+																				
+																			
+																		
+																		
+																	
+																
+															
+														</tr>	
+														
+													
+													
+												
+											
+										
+									
+								
+							
+						
+							
+							
+								
+					
+								
+								
+													
+					
+						
+								
+								
+						
+								
+								
+							
+								
+								
+							
+							
+								
+									
+										
+											<tr>
+												<td class="crsheader"></td>	
+												<td class="crsheader" align="">100</td>
+												<td colspan="11" class="crsheader">
+													Advanced Data Structures      
+													
+												</td>
+											</tr>
+											<tr>
+												<td class="nonenrtxt" colspan="2" align="right"></td>
+												<td class="nonenrtxt" colspan="11">
+													<span class="ertext"> CSE 100 is equivalent to MATH 176.
+</span>
+												</td>
+											</tr>
+										
+										
+									
+							
+								
+								
+								
+								
+								
+								
+								
+								
+								 
+									
+									
+								
+							
+						
+							
+							
+								
+					
+								
+								
+													
+					
+						
+								
+								
+						
+								
+								
+							
+								
+								
+							
+							
+								
+									
+										
+										
+											
+												
+												
+													
+													<tr>
+													   
+															
+																<td class="crsheader">
+																	
+																			<span id="crsRestCd" title="Open to Freshmen Only">
+																			FR</span><br>
+																	
+																			<span id="crsRestCd" title="Open to Juniors Only">
+																			JR</span><br>
+																	
+																			<span id="crsRestCd" title="Open to Sophomores Only">
+																			SO</span><br>
+																		
+																		</td>								
+																<td class="crsheader">100</td>
+															
+															 
+														
+														<td class="crsheader" colspan="5">
+															
+																
+																
+																
+															
+																
+																	
+																	
+																	
+																	
+																	
+																	
+																	
+																	
+																	
+																		
+																	
+																	
+																
+															
+															
+															
+																
+																	<a href="javascript:openNewWindow('http://www.ucsd.edu/catalog/courses/CSE.html#cse100')"><span class="boldtxt">Advanced Data Structures      </span> </a>
+																
+																
+																
+															
+															( 4
+															
+															Units)
+															<br>
+															                              
+															
+															
+														</td>
+														<td class="crsheader" colspan="6" align="right">
+														<span class="boldtxt" onmouseover="" style="cursor: pointer;" onclick="JavaScript:openNewWindow('/scheduleOfClasses/scheduleOfClassesPreReq.htm?termCode=WI20&amp;courseId=CSE100   ');"> Prerequisites  </span> &nbsp;|&nbsp;
+														<span class="boldtxt" onmouseover="" style="cursor: pointer;" onclick="javascript:openNewWindow('http://courses.ucsd.edu/coursemain.asp?section=995094')">Resources</span>&nbsp;|&nbsp;
+														<span class="boldtxt" onmouseover="" style="cursor: pointer;" onclick="javascript:openNewWindow('http://cape.ucsd.edu/responses/Results.aspx?courseNumber=CSE+100','CAPE')"><span title="CAPE - Course and Professor Evaluations">Evaluations</span></span></td>
+													</tr>
+												
+											
+										
+									
+							
+								
+								
+								
+								
+								
+								
+								
+								
+								 
+									
+											
+									
+												
+													
+														<tr class="sectxt">
+															<td class="brdr" border="0"></td>
+															<td class="brdr">
+																
+															</td>					
+															<td class="brdr">
+																
+															</td>
+															<td class="brdr"><span id="insTyp" title="Lecture">LE</span></td>
+															<td class="brdr">A00</td>
+															
+															
+																
+																
+																	
+																		
+																		
+																			<td class="brdr">MWF    </td>
+																			<td class="brdr">1:00p-1:50p</td>
+																			<td class="brdr">LEDDN</td>
+																			<td class="brdr">AUD  </td>
+																		
+																	
+																	
+																		
+																			<td class="brdr">
+																						
+																						
+																							
+																								
+																									<a href="mailto:yic242@ucsd.edu">Cao, Yingjun                       </a>
+																								
+																								
+																							
+																							<br>
+																						
+																					
+																					
+																				
+																			</td>
+																			
+																			    
+																				 	<td class="brdr"><span class="ertext">&nbsp;</span></td>
+																					<td class="brdr"><span class="ertext">&nbsp;</span></td>
+																			    
+																			    
+																			     
+																			    
+																			
+																			
+																			    
+																				 	<td class="brdr"><span class="ertext">&nbsp;</span></td>
+																			    
+																			    
+																			
+																		
+																		
+																	
+																
+															
+														</tr>	
+														
+													
+													
+												
+											
+									
+												
+													
+														<tr class="sectxt">
+															<td class="brdr" border="0"></td>
+															<td class="brdr">
+																
+															</td>					
+															<td class="brdr">
+																
+																	
+																		
+																		
+																			995095
+																		
+																	 
+																
+															</td>
+															<td class="brdr"><span id="insTyp" title="Discussion">DI</span></td>
+															<td class="brdr">A01</td>
+															
+															
+																
+																
+																	
+																		
+																		
+																			<td class="brdr">M      </td>
+																			<td class="brdr">5:00p-5:50p</td>
+																			<td class="brdr">SOLIS</td>
+																			<td class="brdr">107  </td>
+																		
+																	
+																	
+																		
+																			<td class="brdr">
+																						
+																						
+																							
+																								
+																									<a href="mailto:yic242@ucsd.edu">Cao, Yingjun                       </a>
+																								
+																								
+																							
+																							<br>
+																						
+																					
+																					
+																				
+																			</td>
+																			
+																			    
+																			    
+																			     
+																				 	<td class="brdr"><span class="ertext">FULL<br>
+																				 	Waitlist(26)
+																				 	</span></td>
+																					<td class="brdr">197</td>
+																			    
+																			    
+																			
+																			
+																			    
+																			    
+																					<td class="brdr"><span onmouseover="" style="cursor: pointer;" onclick="JavaScript:openNewWindow('https://ucsdbkst.ucsd.edu/wrtx/TextSearch?section=995095&amp;term=WI20&amp;subject=CSE &amp;course=100','bookstore');">
+																						<img src="/scheduleOfClasses/images/book.gif" width="20" height="20">
+																						</span>
+																					</td>	
+																				
+																			
+																		
+																		
+																	
+																
+															
+														</tr>	
+														
+													
+													
+												
+											
+									
+												
+													
+													
+														<tr class="nonenrtxt">
+														<td class="brdr" colspan="2" border="0"></td>
+																				
+														<td class="brdr">
+															
+														</td>
+														<td class="brdr"><span id="insTyp" title="Final">FI</span></td>
+														<td class="brdr">03/20/2020</td>
+														
+														
+															
+															
+																
+																	
+																	
+																		<td class="brdr">F      </td>
+																		<td class="brdr">11:30a-2:29p</td>
+																		<td class="brdr">TBA</td>
+																		<td class="brdr">TBA</td>
+																	
+																
+																
+																		<td class="brdr">
+																				
+																				
+																					
+																				
+																			
+																		</td>
+																	
+																		
+																	
+																		<td class="brdr" colspan="3">&nbsp;</td>
+																	
+																
+															
+														
+													</tr>	
+													
+													
+												
+											
+										
+									
+								
+							
+						
+							
+							
+								
+					
+								
+								
+													
+					
+						
+								
+								
+						
+								
+								
+							
+								
+								
+							
+							
+								
+									
+										
+										
+											
+												
+												
+													
+													<tr>
+													   
+															
+																<td class="crsheader">
+																	
+																			<span id="crsRestCd" title="Open to Freshmen Only">
+																			FR</span><br>
+																	
+																			<span id="crsRestCd" title="Open to Juniors Only">
+																			JR</span><br>
+																	
+																			<span id="crsRestCd" title="Open to Sophomores Only">
+																			SO</span><br>
+																		
+																		</td>								
+																<td class="crsheader">100</td>
+															
+															 
+														
+														<td class="crsheader" colspan="5">
+															
+																
+																
+																
+															
+																
+																	
+																	
+																	
+																	
+																	
+																	
+																	
+																	
+																	
+																		
+																	
+																	
+																
+															
+															
+															
+																
+																	<a href="javascript:openNewWindow('http://www.ucsd.edu/catalog/courses/CSE.html#cse100')"><span class="boldtxt">Advanced Data Structures      </span> </a>
+																
+																
+																
+															
+															( 4
+															
+															Units)
+															<br>
+															                              
+															
+															
+														</td>
+														<td class="crsheader" colspan="6" align="right">
+														<span class="boldtxt" onmouseover="" style="cursor: pointer;" onclick="JavaScript:openNewWindow('/scheduleOfClasses/scheduleOfClassesPreReq.htm?termCode=WI20&amp;courseId=CSE100   ');"> Prerequisites  </span> &nbsp;|&nbsp;
+														<span class="boldtxt" onmouseover="" style="cursor: pointer;" onclick="javascript:openNewWindow('http://courses.ucsd.edu/coursemain.asp?section=995096')">Resources</span>&nbsp;|&nbsp;
+														<span class="boldtxt" onmouseover="" style="cursor: pointer;" onclick="javascript:openNewWindow('http://cape.ucsd.edu/responses/Results.aspx?courseNumber=CSE+100','CAPE')"><span title="CAPE - Course and Professor Evaluations">Evaluations</span></span></td>
+													</tr>
+												
+											
+										
+									
+							
+								
+								
+								
+								
+								
+								
+								
+								
+								 
+									
+											
+									
+												
+													
+														<tr class="sectxt">
+															<td class="brdr" border="0"></td>
+															<td class="brdr">
+																
+															</td>					
+															<td class="brdr">
+																
+															</td>
+															<td class="brdr"><span id="insTyp" title="Lecture">LE</span></td>
+															<td class="brdr">B00</td>
+															
+															
+																
+																
+																	
+																		
+																		
+																			<td class="brdr">MWF    </td>
+																			<td class="brdr">10:00a-10:50a</td>
+																			<td class="brdr">CENTR</td>
+																			<td class="brdr">216  </td>
+																		
+																	
+																	
+																		
+																			<td class="brdr">
+																						
+																						
+																							
+																								
+																									<a href="mailto:yic242@ucsd.edu">Cao, Yingjun                       </a>
+																								
+																								
+																							
+																							<br>
+																						
+																					
+																					
+																				
+																			</td>
+																			
+																			    
+																				 	<td class="brdr"><span class="ertext">&nbsp;</span></td>
+																					<td class="brdr"><span class="ertext">&nbsp;</span></td>
+																			    
+																			    
+																			     
+																			    
+																			
+																			
+																			    
+																				 	<td class="brdr"><span class="ertext">&nbsp;</span></td>
+																			    
+																			    
+																			
+																		
+																		
+																	
+																
+															
+														</tr>	
+														
+													
+													
+												
+											
+									
+												
+													
+														<tr class="sectxt">
+															<td class="brdr" border="0"></td>
+															<td class="brdr">
+																
+															</td>					
+															<td class="brdr">
+																
+																	
+																		
+																		
+																			995097
+																		
+																	 
+																
+															</td>
+															<td class="brdr"><span id="insTyp" title="Discussion">DI</span></td>
+															<td class="brdr">B01</td>
+															
+															
+																
+																
+																	
+																		
+																		
+																			<td class="brdr">M      </td>
+																			<td class="brdr">8:00p-8:50p</td>
+																			<td class="brdr">CENTR</td>
+																			<td class="brdr">109  </td>
+																		
+																	
+																	
+																		
+																			<td class="brdr">
+																						
+																						
+																							
+																								
+																									<a href="mailto:yic242@ucsd.edu">Cao, Yingjun                       </a>
+																								
+																								
+																							
+																							<br>
+																						
+																					
+																					
+																				
+																			</td>
+																			
+																			    
+																			    
+																			     
+																				 	<td class="brdr"><span class="ertext">FULL<br>
+																				 	Waitlist(22)
+																				 	</span></td>
+																					<td class="brdr">156</td>
+																			    
+																			    
+																			
+																			
+																			    
+																			    
+																					<td class="brdr"><span onmouseover="" style="cursor: pointer;" onclick="JavaScript:openNewWindow('https://ucsdbkst.ucsd.edu/wrtx/TextSearch?section=995097&amp;term=WI20&amp;subject=CSE &amp;course=100','bookstore');">
+																						<img src="/scheduleOfClasses/images/book.gif" width="20" height="20">
+																						</span>
+																					</td>	
+																				
+																			
+																		
+																		
+																	
+																
+															
+														</tr>	
+														
+													
+													
+												
+											
+									
+												
+													
+													
+														<tr class="nonenrtxt">
+														<td class="brdr" colspan="2" border="0"></td>
+																				
+														<td class="brdr">
+															
+														</td>
+														<td class="brdr"><span id="insTyp" title="Final">FI</span></td>
+														<td class="brdr">03/20/2020</td>
+														
+														
+															
+															
+																
+																	
+																	
+																		<td class="brdr">F      </td>
+																		<td class="brdr">8:00a-10:59a</td>
+																		<td class="brdr">TBA</td>
+																		<td class="brdr">TBA</td>
+																	
+																
+																
+																		<td class="brdr">
+																				
+																				
+																					
+																				
+																			
+																		</td>
+																	
+																		
+																	
+																		<td class="brdr" colspan="3">&nbsp;</td>
+																	
+																
+															
+														
+													</tr>	
+													
+													
+												
+											
+										
+									
+								
+							
+						
+							
+							
+								
+					
+								
+								
+													
+					
+						
+								
+								
+						
+								
+								
+							
+								
+								
+							
+							
+								
+									
+										
+											<tr>
+												<td class="crsheader"></td>	
+												<td class="crsheader" align="">101</td>
+												<td colspan="11" class="crsheader">
+													Design &amp; Analysis of Algorithm
+													
+												</td>
+											</tr>
+											<tr>
+												<td class="nonenrtxt" colspan="2" align="right"></td>
+												<td class="nonenrtxt" colspan="11">
+													<span class="ertext"> Students are required to attend a CSE 101 discussion
+ section.
+</span>
+												</td>
+											</tr>
+										
+										
+									
+							
+								
+								
+								
+								
+								
+								
+								
+								
+								 
+									
+									
+								
+							
+						
+							
+							
+								
+					
+								
+								
+													
+					
+						
+								
+								
+						
+								
+								
+							
+								
+								
+							
+							
+								
+									
+										
+										
+											
+												
+												
+													
+													<tr>
+													   
+															
+																<td class="crsheader">
+																	
+																			<span id="crsRestCd" title="Open to Freshmen Only">
+																			FR</span><br>
+																	
+																			<span id="crsRestCd" title="Open to Juniors Only">
+																			JR</span><br>
+																	
+																			<span id="crsRestCd" title="Open to Sophomores Only">
+																			SO</span><br>
+																		
+																		</td>								
+																<td class="crsheader">101</td>
+															
+															 
+														
+														<td class="crsheader" colspan="5">
+															
+																
+																
+																
+															
+																
+																	
+																	
+																	
+																	
+																	
+																	
+																	
+																	
+																	
+																		
+																	
+																	
+																
+															
+															
+															
+																
+																	<a href="javascript:openNewWindow('http://www.ucsd.edu/catalog/courses/CSE.html#cse101')"><span class="boldtxt">Design &amp; Analysis of Algorithm</span> </a>
+																
+																
+																
+															
+															( 4
+															
+															Units)
+															<br>
+															                              
+															
+															
+														</td>
+														<td class="crsheader" colspan="6" align="right">
+														<span class="boldtxt" onmouseover="" style="cursor: pointer;" onclick="JavaScript:openNewWindow('/scheduleOfClasses/scheduleOfClassesPreReq.htm?termCode=WI20&amp;courseId=CSE101   ');"> Prerequisites  </span> &nbsp;|&nbsp;
+														<span class="boldtxt" onmouseover="" style="cursor: pointer;" onclick="javascript:openNewWindow('http://courses.ucsd.edu/coursemain.asp?section=995098')">Resources</span>&nbsp;|&nbsp;
+														<span class="boldtxt" onmouseover="" style="cursor: pointer;" onclick="javascript:openNewWindow('http://cape.ucsd.edu/responses/Results.aspx?courseNumber=CSE+101','CAPE')"><span title="CAPE - Course and Professor Evaluations">Evaluations</span></span></td>
+													</tr>
+												
+											
+										
+									
+							
+								
+								
+								
+								
+								
+								
+								
+								
+								 
+									
+											
+									
+												
+													
+														<tr class="sectxt">
+															<td class="brdr" border="0"></td>
+															<td class="brdr">
+																
+															</td>					
+															<td class="brdr">
+																
+															</td>
+															<td class="brdr"><span id="insTyp" title="Lecture">LE</span></td>
+															<td class="brdr">A00</td>
+															
+															
+																
+																
+																	
+																		
+																		
+																			<td class="brdr">MWF    </td>
+																			<td class="brdr">3:00p-3:50p</td>
+																			<td class="brdr">WLH  </td>
+																			<td class="brdr">2001 </td>
+																		
+																	
+																	
+																		
+																			<td class="brdr">
+																						
+																						
+																							
+																								
+																									<a href="mailto:rajaiswa@ucsd.edu">Jaiswal, Ragesh                    </a>
+																								
+																								
+																							
+																							<br>
+																						
+																					
+																					
+																				
+																			</td>
+																			
+																			    
+																				 	<td class="brdr"><span class="ertext">&nbsp;</span></td>
+																					<td class="brdr"><span class="ertext">&nbsp;</span></td>
+																			    
+																			    
+																			     
+																			    
+																			
+																			
+																			    
+																				 	<td class="brdr"><span class="ertext">&nbsp;</span></td>
+																			    
+																			    
+																			
+																		
+																		
+																	
+																
+															
+														</tr>	
+														
+													
+													
+												
+											
+									
+												
+													
+														<tr class="sectxt">
+															<td class="brdr" border="0"></td>
+															<td class="brdr">
+																
+															</td>					
+															<td class="brdr">
+																
+																	
+																		
+																		
+																			995099
+																		
+																	 
+																
+															</td>
+															<td class="brdr"><span id="insTyp" title="Discussion">DI</span></td>
+															<td class="brdr">A01</td>
+															
+															
+																
+																
+																	
+																		
+																		
+																			<td class="brdr">M      </td>
+																			<td class="brdr">5:00p-5:50p</td>
+																			<td class="brdr">CSB  </td>
+																			<td class="brdr">001  </td>
+																		
+																	
+																	
+																		
+																			<td class="brdr">
+																						
+																						
+																							
+																								
+																									<a href="mailto:rajaiswa@ucsd.edu">Jaiswal, Ragesh                    </a>
+																								
+																								
+																							
+																							<br>
+																						
+																					
+																					
+																				
+																			</td>
+																			
+																			    
+																			    
+																			     
+																			    
+																					<td class="brdr">14</td>
+																					<td class="brdr">75</td>
+																			    
+																			
+																			
+																			    
+																			    
+																					<td class="brdr"><span onmouseover="" style="cursor: pointer;" onclick="JavaScript:openNewWindow('https://ucsdbkst.ucsd.edu/wrtx/TextSearch?section=995099&amp;term=WI20&amp;subject=CSE &amp;course=101','bookstore');">
+																						<img src="/scheduleOfClasses/images/book.gif" width="20" height="20">
+																						</span>
+																					</td>	
+																				
+																			
+																		
+																		
+																	
+																
+															
+														</tr>	
+														
+													
+													
+												
+											
+									
+												
+													
+														<tr class="sectxt">
+															<td class="brdr" border="0"></td>
+															<td class="brdr">
+																
+															</td>					
+															<td class="brdr">
+																
+																	
+																		
+																		
+																			999143
+																		
+																	 
+																
+															</td>
+															<td class="brdr"><span id="insTyp" title="Discussion">DI</span></td>
+															<td class="brdr">A02</td>
+															
+															
+																
+																
+																	
+																		
+																		
+																			<td class="brdr">W      </td>
+																			<td class="brdr">4:00p-4:50p</td>
+																			<td class="brdr">CSB  </td>
+																			<td class="brdr">002  </td>
+																		
+																	
+																	
+																		
+																			<td class="brdr">
+																						
+																						
+																							
+																								
+																									<a href="mailto:rajaiswa@ucsd.edu">Jaiswal, Ragesh                    </a>
+																								
+																								
+																							
+																							<br>
+																						
+																					
+																					
+																				
+																			</td>
+																			
+																			    
+																			    
+																			     
+																			    
+																					<td class="brdr">14</td>
+																					<td class="brdr">75</td>
+																			    
+																			
+																			
+																			    
+																			    
+																					<td class="brdr"><span onmouseover="" style="cursor: pointer;" onclick="JavaScript:openNewWindow('https://ucsdbkst.ucsd.edu/wrtx/TextSearch?section=999143&amp;term=WI20&amp;subject=CSE &amp;course=101','bookstore');">
+																						<img src="/scheduleOfClasses/images/book.gif" width="20" height="20">
+																						</span>
+																					</td>	
+																				
+																			
+																		
+																		
+																	
+																
+															
+														</tr>	
+														
+													
+													
+												
+											
+									
+												
+													
+														<tr class="sectxt">
+															<td class="brdr" border="0"></td>
+															<td class="brdr">
+																
+															</td>					
+															<td class="brdr">
+																
+																	
+																		
+																		
+																			999144
+																		
+																	 
+																
+															</td>
+															<td class="brdr"><span id="insTyp" title="Discussion">DI</span></td>
+															<td class="brdr">A03</td>
+															
+															
+																
+																
+																	
+																		
+																		
+																			<td class="brdr">F      </td>
+																			<td class="brdr">4:00p-4:50p</td>
+																			<td class="brdr">CSB  </td>
+																			<td class="brdr">002  </td>
+																		
+																	
+																	
+																		
+																			<td class="brdr">
+																						
+																						
+																							
+																								
+																									<a href="mailto:rajaiswa@ucsd.edu">Jaiswal, Ragesh                    </a>
+																								
+																								
+																							
+																							<br>
+																						
+																					
+																					
+																				
+																			</td>
+																			
+																			    
+																			    
+																			     
+																			    
+																					<td class="brdr">20</td>
+																					<td class="brdr">75</td>
+																			    
+																			
+																			
+																			    
+																			    
+																					<td class="brdr"><span onmouseover="" style="cursor: pointer;" onclick="JavaScript:openNewWindow('https://ucsdbkst.ucsd.edu/wrtx/TextSearch?section=999144&amp;term=WI20&amp;subject=CSE &amp;course=101','bookstore');">
+																						<img src="/scheduleOfClasses/images/book.gif" width="20" height="20">
+																						</span>
+																					</td>	
+																				
+																			
+																		
+																		
+																	
+																
+															
+														</tr>	
+														
+													
+													
+												
+											
+									
+												
+													
+														<tr class="sectxt">
+															<td class="brdr" border="0"></td>
+															<td class="brdr">
+																
+															</td>					
+															<td class="brdr">
+																
+																	
+																		
+																		
+																			999145
+																		
+																	 
+																
+															</td>
+															<td class="brdr"><span id="insTyp" title="Discussion">DI</span></td>
+															<td class="brdr">A04</td>
+															
+															
+																
+																
+																	
+																		
+																		
+																			<td class="brdr">F      </td>
+																			<td class="brdr">5:00p-5:50p</td>
+																			<td class="brdr">CSB  </td>
+																			<td class="brdr">002  </td>
+																		
+																	
+																	
+																		
+																			<td class="brdr">
+																						
+																						
+																							
+																								
+																									<a href="mailto:rajaiswa@ucsd.edu">Jaiswal, Ragesh                    </a>
+																								
+																								
+																							
+																							<br>
+																						
+																					
+																					
+																				
+																			</td>
+																			
+																			    
+																			    
+																			     
+																			    
+																					<td class="brdr">36</td>
+																					<td class="brdr">75</td>
+																			    
+																			
+																			
+																			    
+																			    
+																					<td class="brdr"><span onmouseover="" style="cursor: pointer;" onclick="JavaScript:openNewWindow('https://ucsdbkst.ucsd.edu/wrtx/TextSearch?section=999145&amp;term=WI20&amp;subject=CSE &amp;course=101','bookstore');">
+																						<img src="/scheduleOfClasses/images/book.gif" width="20" height="20">
+																						</span>
+																					</td>	
+																				
+																			
+																		
+																		
+																	
+																
+															
+														</tr>	
+														
+													
+													
+												
+											
+									
+												
+													
+													
+														<tr class="nonenrtxt">
+														<td class="brdr" colspan="2" border="0"></td>
+																				
+														<td class="brdr">
+															
+														</td>
+														<td class="brdr"><span id="insTyp" title="Midterm">MI</span></td>
+														<td class="brdr">01/31/2020</td>
+														
+														
+															
+															
+																
+																	
+																	
+																		<td class="brdr">F      </td>
+																		<td class="brdr">6:00p-7:50p</td>
+																		<td class="brdr">WLH  </td>
+																		<td class="brdr">2001 </td>
+																	
+																
+																
+																		<td class="brdr">
+																				
+																				
+																					
+																				
+																			
+																		</td>
+																	
+																		
+																	
+																		<td class="brdr" colspan="3">&nbsp;</td>
+																	
+																
+															
+														
+													</tr>	
+													
+													
+												
+											
+									
+												
+													
+													
+														<tr class="nonenrtxt">
+														<td class="brdr" colspan="2" border="0"></td>
+																				
+														<td class="brdr">
+															
+														</td>
+														<td class="brdr"><span id="insTyp" title="Midterm">MI</span></td>
+														<td class="brdr">02/28/2020</td>
+														
+														
+															
+															
+																
+																	
+																	
+																		<td class="brdr">F      </td>
+																		<td class="brdr">6:00p-7:50p</td>
+																		<td class="brdr">WLH  </td>
+																		<td class="brdr">2001 </td>
+																	
+																
+																
+																		<td class="brdr">
+																				
+																				
+																					
+																				
+																			
+																		</td>
+																	
+																		
+																	
+																		<td class="brdr" colspan="3">&nbsp;</td>
+																	
+																
+															
+														
+													</tr>	
+													
+													
+												
+											
+									
+												
+													
+													
+														<tr class="nonenrtxt">
+														<td class="brdr" colspan="2" border="0"></td>
+																				
+														<td class="brdr">
+															
+														</td>
+														<td class="brdr"><span id="insTyp" title="Final">FI</span></td>
+														<td class="brdr">03/18/2020</td>
+														
+														
+															
+															
+																
+																	
+																	
+																		<td class="brdr">W      </td>
+																		<td class="brdr">3:00p-5:59p</td>
+																		<td class="brdr">TBA</td>
+																		<td class="brdr">TBA</td>
+																	
+																
+																
+																		<td class="brdr">
+																				
+																				
+																					
+																				
+																			
+																		</td>
+																	
+																		
+																	
+																		<td class="brdr" colspan="3">&nbsp;</td>
+																	
+																
+															
+														
+													</tr>	
+													
+													
+												
+											
+										
+									
+								
+							
+						
+							
+							
+								
+					
+								
+								
+													
+					
+						
+								
+								
+						
+								
+								
+							
+								
+								
+							
+							
+								
+									
+										
+											<tr>
+												<td class="crsheader"></td>	
+												<td class="crsheader" align="">105</td>
+												<td colspan="11" class="crsheader">
+													Theory of Computation         
+													
+												</td>
+											</tr>
+											<tr>
+												<td class="nonenrtxt" colspan="2" align="right"></td>
+												<td class="nonenrtxt" colspan="11">
+													<span class="ertext"> CSE 105 is equivalent to MATH 166.
+</span>
+												</td>
+											</tr>
+										
+										
+									
+							
+								
+								
+								
+								
+								
+								
+								
+								
+								 
+									
+									
+								
+							
+						
+							
+							
+								
+					
+								
+								
+													
+					
+						
+								
+								
+						
+								
+								
+							
+								
+								
+							
+							
+								
+									
+										
+										
+											
+												
+												
+													
+													<tr>
+													   
+															
+																<td class="crsheader">
+																	
+																			<span id="crsRestCd" title="Open to Juniors Only">
+																			JR</span><br>
+																	
+																			<span id="crsRestCd" title="Open to Sophomores Only">
+																			SO</span><br>
+																	
+																			<span id="crsRestCd" title="Open to Seniors Only">
+																			SR</span><br>
+																		
+																		</td>								
+																<td class="crsheader">105</td>
+															
+															 
+														
+														<td class="crsheader" colspan="5">
+															
+																
+																
+																
+															
+																
+																	
+																	
+																	
+																	
+																	
+																	
+																	
+																	
+																	
+																		
+																	
+																	
+																
+															
+															
+															
+																
+																	<a href="javascript:openNewWindow('http://www.ucsd.edu/catalog/courses/CSE.html#cse105')"><span class="boldtxt">Theory of Computation         </span> </a>
+																
+																
+																
+															
+															( 4
+															
+															Units)
+															<br>
+															                              
+															
+															
+														</td>
+														<td class="crsheader" colspan="6" align="right">
+														<span class="boldtxt" onmouseover="" style="cursor: pointer;" onclick="JavaScript:openNewWindow('/scheduleOfClasses/scheduleOfClassesPreReq.htm?termCode=WI20&amp;courseId=CSE105   ');"> Prerequisites  </span> &nbsp;|&nbsp;
+														<span class="boldtxt" onmouseover="" style="cursor: pointer;" onclick="javascript:openNewWindow('http://courses.ucsd.edu/coursemain.asp?section=997996')">Resources</span>&nbsp;|&nbsp;
+														<span class="boldtxt" onmouseover="" style="cursor: pointer;" onclick="javascript:openNewWindow('http://cape.ucsd.edu/responses/Results.aspx?courseNumber=CSE+105','CAPE')"><span title="CAPE - Course and Professor Evaluations">Evaluations</span></span></td>
+													</tr>
+												
+											
+										
+									
+							
+								
+								
+								
+								
+								
+								
+								
+								
+								 
+									
+											
+									
+												
+													
+														<tr class="sectxt">
+															<td class="brdr" border="0"></td>
+															<td class="brdr">
+																
+															</td>					
+															<td class="brdr">
+																
+															</td>
+															<td class="brdr"><span id="insTyp" title="Lecture">LE</span></td>
+															<td class="brdr">A00</td>
+															
+															
+																
+																
+																	
+																		
+																		
+																			<td class="brdr">MWF    </td>
+																			<td class="brdr">8:00a-8:50a</td>
+																			<td class="brdr">YORK </td>
+																			<td class="brdr">2622 </td>
+																		
+																	
+																	
+																		
+																			<td class="brdr">
+																						
+																						
+																							
+																								
+																									<a href="mailto:mej016@ucsd.edu">Jones, Miles E                     </a>
+																								
+																								
+																							
+																							<br>
+																						
+																					
+																					
+																				
+																			</td>
+																			
+																			    
+																				 	<td class="brdr"><span class="ertext">&nbsp;</span></td>
+																					<td class="brdr"><span class="ertext">&nbsp;</span></td>
+																			    
+																			    
+																			     
+																			    
+																			
+																			
+																			    
+																				 	<td class="brdr"><span class="ertext">&nbsp;</span></td>
+																			    
+																			    
+																			
+																		
+																		
+																	
+																
+															
+														</tr>	
+														
+													
+													
+												
+											
+									
+												
+													
+														<tr class="sectxt">
+															<td class="brdr" border="0"></td>
+															<td class="brdr">
+																
+															</td>					
+															<td class="brdr">
+																
+																	
+																		
+																		
+																			997997
+																		
+																	 
+																
+															</td>
+															<td class="brdr"><span id="insTyp" title="Discussion">DI</span></td>
+															<td class="brdr">A01</td>
+															
+															
+																
+																
+																	
+																		
+																		
+																			<td class="brdr">M      </td>
+																			<td class="brdr">4:00p-4:50p</td>
+																			<td class="brdr">PCYNH</td>
+																			<td class="brdr">109  </td>
+																		
+																	
+																	
+																		
+																			<td class="brdr">
+																						
+																						
+																							
+																								
+																									<a href="mailto:mej016@ucsd.edu">Jones, Miles E                     </a>
+																								
+																								
+																							
+																							<br>
+																						
+																					
+																					
+																				
+																			</td>
+																			
+																			    
+																			    
+																			     
+																			    
+																					<td class="brdr">11</td>
+																					<td class="brdr">192</td>
+																			    
+																			
+																			
+																			    
+																			    
+																					<td class="brdr"><span onmouseover="" style="cursor: pointer;" onclick="JavaScript:openNewWindow('https://ucsdbkst.ucsd.edu/wrtx/TextSearch?section=997997&amp;term=WI20&amp;subject=CSE &amp;course=105','bookstore');">
+																						<img src="/scheduleOfClasses/images/book.gif" width="20" height="20">
+																						</span>
+																					</td>	
+																				
+																			
+																		
+																		
+																	
+																
+															
+														</tr>	
+														
+													
+													
+												
+											
+									
+												
+													
+													
+														<tr class="nonenrtxt">
+														<td class="brdr" colspan="2" border="0"></td>
+																				
+														<td class="brdr">
+															
+														</td>
+														<td class="brdr"><span id="insTyp" title="Final">FI</span></td>
+														<td class="brdr">03/17/2020</td>
+														
+														
+															
+															
+																
+																	
+																	
+																		<td class="brdr">Tu      </td>
+																		<td class="brdr">7:00p-9:59p</td>
+																		<td class="brdr">TBA</td>
+																		<td class="brdr">TBA</td>
+																	
+																
+																
+																		<td class="brdr">
+																				
+																				
+																					
+																				
+																			
+																		</td>
+																	
+																		
+																	
+																		<td class="brdr" colspan="3">&nbsp;</td>
+																	
+																
+															
+														
+													</tr>	
+													
+													
+												
+											
+										
+									
+								
+							
+						
+							
+							
+								
+					
+								
+								
+													
+					
+						
+								
+								
+						
+								
+								
+							
+								
+								
+							
+							
+								
+									
+										
+										
+											
+												
+												
+													
+													<tr>
+													   
+															
+																<td class="crsheader">
+																	
+																			<span id="crsRestCd" title="Open to Juniors Only">
+																			JR</span><br>
+																	
+																			<span id="crsRestCd" title="Open to Sophomores Only">
+																			SO</span><br>
+																	
+																			<span id="crsRestCd" title="Open to Seniors Only">
+																			SR</span><br>
+																		
+																		</td>								
+																<td class="crsheader">105</td>
+															
+															 
+														
+														<td class="crsheader" colspan="5">
+															
+																
+																
+																
+															
+																
+																	
+																	
+																	
+																	
+																	
+																	
+																	
+																	
+																	
+																		
+																	
+																	
+																
+															
+															
+															
+																
+																	<a href="javascript:openNewWindow('http://www.ucsd.edu/catalog/courses/CSE.html#cse105')"><span class="boldtxt">Theory of Computation         </span> </a>
+																
+																
+																
+															
+															( 4
+															
+															Units)
+															<br>
+															                              
+															
+															
+														</td>
+														<td class="crsheader" colspan="6" align="right">
+														<span class="boldtxt" onmouseover="" style="cursor: pointer;" onclick="JavaScript:openNewWindow('/scheduleOfClasses/scheduleOfClassesPreReq.htm?termCode=WI20&amp;courseId=CSE105   ');"> Prerequisites  </span> &nbsp;|&nbsp;
+														<span class="boldtxt" onmouseover="" style="cursor: pointer;" onclick="javascript:openNewWindow('http://courses.ucsd.edu/coursemain.asp?section=997998')">Resources</span>&nbsp;|&nbsp;
+														<span class="boldtxt" onmouseover="" style="cursor: pointer;" onclick="javascript:openNewWindow('http://cape.ucsd.edu/responses/Results.aspx?courseNumber=CSE+105','CAPE')"><span title="CAPE - Course and Professor Evaluations">Evaluations</span></span></td>
+													</tr>
+												
+											
+										
+									
+							
+								
+								
+								
+								
+								
+								
+								
+								
+								 
+									
+											
+									
+												
+													
+														<tr class="sectxt">
+															<td class="brdr" border="0"></td>
+															<td class="brdr">
+																
+															</td>					
+															<td class="brdr">
+																
+															</td>
+															<td class="brdr"><span id="insTyp" title="Lecture">LE</span></td>
+															<td class="brdr">B00</td>
+															
+															
+																
+																
+																	
+																		
+																		
+																			<td class="brdr">MWF    </td>
+																			<td class="brdr">9:00a-9:50a</td>
+																			<td class="brdr">YORK </td>
+																			<td class="brdr">2622 </td>
+																		
+																	
+																	
+																		
+																			<td class="brdr">
+																						
+																						
+																							
+																								
+																									<a href="mailto:mej016@ucsd.edu">Jones, Miles E                     </a>
+																								
+																								
+																							
+																							<br>
+																						
+																					
+																					
+																				
+																			</td>
+																			
+																			    
+																				 	<td class="brdr"><span class="ertext">&nbsp;</span></td>
+																					<td class="brdr"><span class="ertext">&nbsp;</span></td>
+																			    
+																			    
+																			     
+																			    
+																			
+																			
+																			    
+																				 	<td class="brdr"><span class="ertext">&nbsp;</span></td>
+																			    
+																			    
+																			
+																		
+																		
+																	
+																
+															
+														</tr>	
+														
+													
+													
+												
+											
+									
+												
+													
+														<tr class="sectxt">
+															<td class="brdr" border="0"></td>
+															<td class="brdr">
+																
+															</td>					
+															<td class="brdr">
+																
+																	
+																		
+																		
+																			997999
+																		
+																	 
+																
+															</td>
+															<td class="brdr"><span id="insTyp" title="Discussion">DI</span></td>
+															<td class="brdr">B01</td>
+															
+															
+																
+																
+																	
+																		
+																		
+																			<td class="brdr">M      </td>
+																			<td class="brdr">5:00p-5:50p</td>
+																			<td class="brdr">PCYNH</td>
+																			<td class="brdr">109  </td>
+																		
+																	
+																	
+																		
+																			<td class="brdr">
+																						
+																						
+																							
+																								
+																									<a href="mailto:mej016@ucsd.edu">Jones, Miles E                     </a>
+																								
+																								
+																							
+																							<br>
+																						
+																					
+																					
+																				
+																			</td>
+																			
+																			    
+																			    
+																			     
+																			    
+																					<td class="brdr">8</td>
+																					<td class="brdr">192</td>
+																			    
+																			
+																			
+																			    
+																			    
+																					<td class="brdr"><span onmouseover="" style="cursor: pointer;" onclick="JavaScript:openNewWindow('https://ucsdbkst.ucsd.edu/wrtx/TextSearch?section=997999&amp;term=WI20&amp;subject=CSE &amp;course=105','bookstore');">
+																						<img src="/scheduleOfClasses/images/book.gif" width="20" height="20">
+																						</span>
+																					</td>	
+																				
+																			
+																		
+																		
+																	
+																
+															
+														</tr>	
+														
+													
+													
+												
+											
+									
+												
+													
+													
+														<tr class="nonenrtxt">
+														<td class="brdr" colspan="2" border="0"></td>
+																				
+														<td class="brdr">
+															
+														</td>
+														<td class="brdr"><span id="insTyp" title="Final">FI</span></td>
+														<td class="brdr">03/17/2020</td>
+														
+														
+															
+															
+																
+																	
+																	
+																		<td class="brdr">Tu      </td>
+																		<td class="brdr">7:00p-9:59p</td>
+																		<td class="brdr">TBA</td>
+																		<td class="brdr">TBA</td>
+																	
+																
+																
+																		<td class="brdr">
+																				
+																				
+																					
+																				
+																			
+																		</td>
+																	
+																		
+																	
+																		<td class="brdr" colspan="3">&nbsp;</td>
+																	
+																
+															
+														
+													</tr>	
+													
+													
+												
+											
+										
+									
+								
+							
+						
+							
+							
+								
+					
+								
+								
+													
+					
+						
+								
+								
+						
+								
+								
+							
+								
+								
+							
+							
+								
+									
+										
+										
+											
+												
+												
+													
+													<tr>
+													   
+															
+																<td class="crsheader">
+																	
+																			<span id="crsRestCd" title="Open to Juniors Only">
+																			JR</span><br>
+																	
+																			<span id="crsRestCd" title="Open to Seniors Only">
+																			SR</span><br>
+																	
+																			<span id="crsRestCd" title="Open to Majors Only (Non-majors require department approval)">
+																			O</span><br>
+																		
+																		</td>								
+																<td class="crsheader">110</td>
+															
+															 
+														
+														<td class="crsheader" colspan="5">
+															
+																
+																
+																
+															
+																
+																	
+																	
+																	
+																	
+																	
+																	
+																	
+																	
+																	
+																		
+																	
+																	
+																
+															
+															
+															
+																
+																	<a href="javascript:openNewWindow('http://www.ucsd.edu/catalog/courses/CSE.html#cse110')"><span class="boldtxt">Software Engineering          </span> </a>
+																
+																
+																
+															
+															( 4
+															
+															Units)
+															<br>
+															                              
+															
+															
+														</td>
+														<td class="crsheader" colspan="6" align="right">
+														<span class="boldtxt" onmouseover="" style="cursor: pointer;" onclick="JavaScript:openNewWindow('/scheduleOfClasses/scheduleOfClassesPreReq.htm?termCode=WI20&amp;courseId=CSE110   ');"> Prerequisites  </span> &nbsp;|&nbsp;
+														<span class="boldtxt" onmouseover="" style="cursor: pointer;" onclick="javascript:openNewWindow('http://courses.ucsd.edu/coursemain.asp?section=995106')">Resources</span>&nbsp;|&nbsp;
+														<span class="boldtxt" onmouseover="" style="cursor: pointer;" onclick="javascript:openNewWindow('http://cape.ucsd.edu/responses/Results.aspx?courseNumber=CSE+110','CAPE')"><span title="CAPE - Course and Professor Evaluations">Evaluations</span></span></td>
+													</tr>
+												
+											
+										
+									
+							
+								
+								
+								
+								
+								
+								
+								
+								
+								 
+									
+											
+									
+												
+													
+														<tr class="sectxt">
+															<td class="brdr" border="0"></td>
+															<td class="brdr">
+																
+															</td>					
+															<td class="brdr">
+																
+															</td>
+															<td class="brdr"><span id="insTyp" title="Lecture">LE</span></td>
+															<td class="brdr">A00</td>
+															
+															
+																
+																
+																	
+																		
+																		
+																			<td class="brdr">MWF    </td>
+																			<td class="brdr">1:00p-1:50p</td>
+																			<td class="brdr">PCYNH</td>
+																			<td class="brdr">109  </td>
+																		
+																	
+																	
+																		
+																			<td class="brdr">
+																						
+																						
+																							
+																								
+																									<a href="mailto:bgriswol@ucsd.edu">Griswold, William G.               </a>
+																								
+																								
+																							
+																							<br>
+																						
+																					
+																					
+																				
+																			</td>
+																			
+																			    
+																				 	<td class="brdr"><span class="ertext">&nbsp;</span></td>
+																					<td class="brdr"><span class="ertext">&nbsp;</span></td>
+																			    
+																			    
+																			     
+																			    
+																			
+																			
+																			    
+																				 	<td class="brdr"><span class="ertext">&nbsp;</span></td>
+																			    
+																			    
+																			
+																		
+																		
+																	
+																
+															
+														</tr>	
+														
+													
+													
+												
+											
+									
+												
+													
+														<tr class="sectxt">
+															<td class="brdr" border="0"></td>
+															<td class="brdr">
+																
+															</td>					
+															<td class="brdr">
+																
+															</td>
+															<td class="brdr"><span id="insTyp" title="Discussion">DI</span></td>
+															<td class="brdr">A01</td>
+															
+															
+																
+																
+																	
+																		
+																		
+																			<td class="brdr">M      </td>
+																			<td class="brdr">6:00p-6:50p</td>
+																			<td class="brdr">CSB  </td>
+																			<td class="brdr">001  </td>
+																		
+																	
+																	
+																		
+																			<td class="brdr">
+																						
+																						
+																							
+																								
+																									<a href="mailto:bgriswol@ucsd.edu">Griswold, William G.               </a>
+																								
+																								
+																							
+																							<br>
+																						
+																					
+																					
+																				
+																			</td>
+																			
+																			    
+																				 	<td class="brdr"><span class="ertext">&nbsp;</span></td>
+																					<td class="brdr"><span class="ertext">&nbsp;</span></td>
+																			    
+																			    
+																			     
+																			    
+																			
+																			
+																			    
+																				 	<td class="brdr"><span class="ertext">&nbsp;</span></td>
+																			    
+																			    
+																			
+																		
+																		
+																	
+																
+															
+														</tr>	
+														
+													
+													
+												
+											
+									
+												
+													
+														<tr class="sectxt">
+															<td class="brdr" border="0"></td>
+															<td class="brdr">
+																
+															</td>					
+															<td class="brdr">
+																
+															</td>
+															<td class="brdr"><span id="insTyp" title="Discussion">DI</span></td>
+															<td class="brdr">A02</td>
+															
+															
+																
+																
+																	
+																		
+																		
+																			<td class="brdr">M      </td>
+																			<td class="brdr">7:00p-7:50p</td>
+																			<td class="brdr">CSB  </td>
+																			<td class="brdr">001  </td>
+																		
+																	
+																	
+																		
+																			<td class="brdr">
+																						
+																						
+																							
+																								
+																									<a href="mailto:bgriswol@ucsd.edu">Griswold, William G.               </a>
+																								
+																								
+																							
+																							<br>
+																						
+																					
+																					
+																				
+																			</td>
+																			
+																			    
+																				 	<td class="brdr"><span class="ertext">&nbsp;</span></td>
+																					<td class="brdr"><span class="ertext">&nbsp;</span></td>
+																			    
+																			    
+																			     
+																			    
+																			
+																			
+																			    
+																				 	<td class="brdr"><span class="ertext">&nbsp;</span></td>
+																			    
+																			    
+																			
+																		
+																		
+																	
+																
+															
+														</tr>	
+														
+													
+													
+												
+											
+									
+												
+													
+														<tr class="sectxt">
+															<td class="brdr" border="0"></td>
+															<td class="brdr">
+																
+															</td>					
+															<td class="brdr">
+																
+															</td>
+															<td class="brdr"><span id="insTyp" title="Discussion">DI</span></td>
+															<td class="brdr">A03</td>
+															
+															
+																
+																
+																	
+																		
+																		
+																			<td class="brdr">Tu      </td>
+																			<td class="brdr">5:00p-5:50p</td>
+																			<td class="brdr">CSB  </td>
+																			<td class="brdr">002  </td>
+																		
+																	
+																	
+																		
+																			<td class="brdr">
+																						
+																						
+																							
+																								
+																									<a href="mailto:bgriswol@ucsd.edu">Griswold, William G.               </a>
+																								
+																								
+																							
+																							<br>
+																						
+																					
+																					
+																				
+																			</td>
+																			
+																			    
+																				 	<td class="brdr"><span class="ertext">&nbsp;</span></td>
+																					<td class="brdr"><span class="ertext">&nbsp;</span></td>
+																			    
+																			    
+																			     
+																			    
+																			
+																			
+																			    
+																				 	<td class="brdr"><span class="ertext">&nbsp;</span></td>
+																			    
+																			    
+																			
+																		
+																		
+																	
+																
+															
+														</tr>	
+														
+													
+													
+												
+											
+									
+												
+													
+														<tr class="sectxt">
+															<td class="brdr" border="0"></td>
+															<td class="brdr">
+																
+															</td>					
+															<td class="brdr">
+																
+																	
+																		
+																		
+																			995109
+																		
+																	 
+																
+															</td>
+															<td class="brdr"><span id="insTyp" title="Laboratory">LA</span></td>
+															<td class="brdr">A50</td>
+															
+															
+																
+																
+																	
+																		
+																		
+																			<td class="brdr">W      </td>
+																			<td class="brdr">2:00p-2:50p</td>
+																			<td class="brdr">EBU3B</td>
+																			<td class="brdr">B260 </td>
+																		
+																	
+																	
+																		
+																			<td class="brdr">
+																						
+																						
+																							
+																								
+																									<a href="mailto:bgriswol@ucsd.edu">Griswold, William G.               </a>
+																								
+																								
+																							
+																							<br>
+																						
+																					
+																					
+																				
+																			</td>
+																			
+																			    
+																			    
+																			     
+																				 	<td class="brdr"><span class="ertext">FULL<br>
+																				 	Waitlist(4)
+																				 	</span></td>
+																					<td class="brdr">100</td>
+																			    
+																			    
+																			
+																			
+																			    
+																			    
+																					<td class="brdr"><span onmouseover="" style="cursor: pointer;" onclick="JavaScript:openNewWindow('https://ucsdbkst.ucsd.edu/wrtx/TextSearch?section=995109&amp;term=WI20&amp;subject=CSE &amp;course=110','bookstore');">
+																						<img src="/scheduleOfClasses/images/book.gif" width="20" height="20">
+																						</span>
+																					</td>	
+																				
+																			
+																		
+																		
+																	
+																
+															
+														</tr>	
+														
+													
+													
+												
+											
+									
+												
+													
+														<tr class="sectxt">
+															<td class="brdr" border="0"></td>
+															<td class="brdr">
+																
+															</td>					
+															<td class="brdr">
+																
+																	
+																		
+																		
+																			995110
+																		
+																	 
+																
+															</td>
+															<td class="brdr"><span id="insTyp" title="Laboratory">LA</span></td>
+															<td class="brdr">A51</td>
+															
+															
+																
+																
+																	
+																		
+																		
+																			<td class="brdr">W      </td>
+																			<td class="brdr">3:00p-3:50p</td>
+																			<td class="brdr">EBU3B</td>
+																			<td class="brdr">B260 </td>
+																		
+																	
+																	
+																		
+																			<td class="brdr">
+																						
+																						
+																							
+																								
+																									<a href="mailto:bgriswol@ucsd.edu">Griswold, William G.               </a>
+																								
+																								
+																							
+																							<br>
+																						
+																					
+																					
+																				
+																			</td>
+																			
+																			    
+																			    
+																			     
+																				 	<td class="brdr"><span class="ertext">FULL<br>
+																				 	Waitlist(3)
+																				 	</span></td>
+																					<td class="brdr">100</td>
+																			    
+																			    
+																			
+																			
+																			    
+																			    
+																					<td class="brdr"><span onmouseover="" style="cursor: pointer;" onclick="JavaScript:openNewWindow('https://ucsdbkst.ucsd.edu/wrtx/TextSearch?section=995110&amp;term=WI20&amp;subject=CSE &amp;course=110','bookstore');">
+																						<img src="/scheduleOfClasses/images/book.gif" width="20" height="20">
+																						</span>
+																					</td>	
+																				
+																			
+																		
+																		
+																	
+																
+															
+														</tr>	
+														
+													
+													
+												
+											
+									
+												
+													
+													
+														<tr class="nonenrtxt">
+														<td class="brdr" colspan="2" border="0"></td>
+																				
+														<td class="brdr">
+															
+														</td>
+														<td class="brdr"><span id="insTyp" title="Review Session">RE</span></td>
+														<td class="brdr">01/21/2020</td>
+														
+														
+															
+															
+																
+																	
+																	
+																		<td class="brdr">Tu      </td>
+																		<td class="brdr">6:30p-8:20p</td>
+																		<td class="brdr">WLH  </td>
+																		<td class="brdr">2005 </td>
+																	
+																
+																
+																		<td class="brdr">
+																				
+																				
+																					
+																				
+																			
+																		</td>
+																	
+																		
+																	
+																		<td class="brdr" colspan="3">&nbsp;</td>
+																	
+																
+															
+														
+													</tr>	
+													
+													
+												
+											
+									
+												
+													
+													
+														<tr class="nonenrtxt">
+														<td class="brdr" colspan="2" border="0"></td>
+																				
+														<td class="brdr">
+															
+														</td>
+														<td class="brdr"><span id="insTyp" title="Final">FI</span></td>
+														<td class="brdr">03/20/2020</td>
+														
+														
+															
+															
+																
+																	
+																	
+																		<td class="brdr">F      </td>
+																		<td class="brdr">11:30a-2:29p</td>
+																		<td class="brdr">TBA</td>
+																		<td class="brdr">TBA</td>
+																	
+																
+																
+																		<td class="brdr">
+																				
+																				
+																					
+																				
+																			
+																		</td>
+																	
+																		
+																	
+																		<td class="brdr" colspan="3">&nbsp;</td>
+																	
+																
+															
+														
+													</tr>	
+													
+													
+												
+											
+										
+									
+								
+							
+						
+					
+				</tbody></table>
+				<br>
+				<div>
+				 <table width="100%">
+				 	<tbody>
+					     <tr>
+					     	<td align="left"><a href="/scheduleOfClasses/scheduleOfClassesStudent.htm">Start a new search</a></td>
+					     	<td align="center"><a href="/scheduleOfClasses/scheduleOfClassesStudentResultPrint.htm">Printer Friendly</a></td>
+					        <td align="right">
+					        	Page  (3&nbsp;of&nbsp;36) &nbsp;
+								
+							        <a href="/scheduleOfClasses/scheduleOfClassesStudentResult.htm?page=1">First&nbsp;&nbsp;&nbsp;&nbsp;</a>...
+							    
+					
+					            
+					                
+					                    
+					                    
+					                        <a href="/scheduleOfClasses/scheduleOfClassesStudentResult.htm?page=1">1&nbsp;</a>
+					                    
+					                
+					            
+					                
+					                    
+					                    
+					                        <a href="/scheduleOfClasses/scheduleOfClassesStudentResult.htm?page=2">2&nbsp;</a>
+					                    
+					                
+					            
+					                
+					                    
+					                        3&nbsp;
+					                    
+					                    
+					                
+					            
+					                
+					                    
+					                    
+					                        <a href="/scheduleOfClasses/scheduleOfClassesStudentResult.htm?page=4">4&nbsp;</a>
+					                    
+					                
+					            
+					                
+					                    
+					                    
+					                        <a href="/scheduleOfClasses/scheduleOfClassesStudentResult.htm?page=5">5&nbsp;</a>
+					                    
+					                
+					            
+							 
+							    
+							        &nbsp;...&nbsp;&nbsp;<a href="/scheduleOfClasses/scheduleOfClassesStudentResult.htm?page=36">Last</a>
+							    
+						    </td>
+					    </tr>
+					 </tbody>
+				 </table>
+				    
+				</div>
+			
+			
+		
+		
+		
+		<script>
+			function openNewWindow (url, name) {
+				if (navigator.appName == "Microsoft Internet Explorer") {
+						window.open(url, name, "width=640,height=480,scrollbars=yes,resizable=yes,menubar=no,status=yes,location=no,toolbar=no");
+				}
+				else {
+						win = window.open(url, name, "width=640,height=480,scrollbars=yes,resizable=yes,menubar=no,status=yes,location=no,toolbar=no");
+						win.focus();
+				}
+			}
+			(function($) {
+				$(document).ready(function() {
+				
+				
+				//data table
+					$("#socDeptTab").dataTable({
+						"bPaginate" : true,
+						"bLengthChange": false,
+						"bFilter": false,
+						"bInfo": false,
+						"bSort": false,
+						"bJQueryUI": true,
+						"sPaginationType": "full_numbers",
+						"iDisplayLength": 2,
+	
+						"fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
+							 var color1 = 'white';
+							 $(nRow).css('background-color', color1);
+							 $("#socDeptTab thead").remove();
+						}
+					});
+					
+						//data table
+					/*$(".datatable").dataTable({
+						"bPaginate" : true,
+						"bLengthChange": true,
+						"bFilter": false,
+						"bInfo": true,
+						"sPaginationType": "full_numbers",
+						"bJQueryUI": true,
+						"iDisplayLength": 10,
+					});*/
+				});
+			})(jQuery);
+		</script>
+		</form>
+	</div>
+
+	</div>
+</div>
+<!-- footer -->
+<div id="tdr_footer">
+    <div id="tdr_footer_content">
+        <div>UC San Diego 9500 Gilman Dr. La Jolla, CA 92093 (858) 534-2230</div>
+        <div>
+            Copyright ©<span id="tdr_copyright_year">2015</span> Regents of the University of California. All rights reserved.
+        </div>
+        <ul id="tdr_footer_links">
+            <li><a href="http://www.ucsd.edu/_about/legal/index.html">Terms &amp; Conditions</a></li>
+            <li id="tdr_footer_feedback" class="last"><a href="//act.ucsd.edu/cwp/feedback/tool/apps" onclick="window.open('//act.ucsd.edu/cwp/feedback/help/tritonlink', 'DYGWYW', 'menubar=0,resizable=1,scrollbars=1,width=450,height=650');" target="DYGWYW">Feedback</a></li>
+        </ul>
+    </div>
+</div>
+
+<!-- shib timeout -->
+<img src="https://a4.ucsd.edu/tritON/imagebug" alt=" " style="display: none;">
+<!-- google analytic -->
+
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', "UA-24480055-22"]);
+  _gaq.push(['_setDomainName', "ucsd.edu"]);
+  _gaq.push(['_trackPageview']);
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+
+</body></html>

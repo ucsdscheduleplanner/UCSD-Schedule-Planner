@@ -15,7 +15,7 @@ from selenium.webdriver.support.wait import WebDriverWait
 
 from utils.scraper_util import Browser
 from settings import COURSES_HTML_PATH, QUARTERS_TO_SCRAPE
-from settings import DATABASE_PATH, DATABASE_FOLDER_PATH
+from settings import DATABASE_PATH, DATABASE_DIR
 from settings import SCHEDULE_OF_CLASSES_URL
 from settings import TIMEOUT, DEPT_SEARCH_TIMEOUT
 
@@ -162,7 +162,7 @@ class CourseScraperThread(Thread):
 class CourseScraper:
     def __init__(self):
         # Connecting to the database for the list of departments
-        os.makedirs(DATABASE_FOLDER_PATH, exist_ok=True)
+        os.makedirs(DATABASE_DIR, exist_ok=True)
         self.database = sqlite3.connect(DATABASE_PATH)
         self.cursor = self.database.cursor()
 
