@@ -36,11 +36,12 @@ def export_to_mysql():
     print("Creating quarters table if it doesn't exist...")
     mysql_cursor.execute("DROP TABLE IF EXISTS {}".format("QUARTERS"))
     mysql_cursor.execute("CREATE TABLE {}(QUARTERS VARCHAR(40))".format("QUARTERS"))
-    for quarter in QUARTERS_TO_SCRAPE:
-        quarter_sql_str = """\
+    quarter_sql_str = """\
                           INSERT INTO {}(QUARTERS) \
                           VALUES (%s) \
                         """.format("QUARTERS")
+
+    for quarter in QUARTERS_TO_SCRAPE:
         mysql_cursor.execute(quarter_sql_str, (quarter,))
 
     """
@@ -115,8 +116,8 @@ def export_to_mysql():
         row = dict(sql_row)
         mysql_cursor.execute(sql_str, (row["DEPT_CODE"],))
 
-    #capes_index_str = "ALTER TABLE `CAPES_DATA` ADD INDEX (DEPARTMENT(15), COURSE_NUM(150))"
-    #mysql_cursor.execute(capes_index_str)
+    # capes_index_str = "ALTER TABLE `CAPES_DATA` ADD INDEX (DEPARTMENT(15), COURSE_NUM(150))"
+    # mysql_cursor.execute(capes_index_str)
 
     """
     CLOSE DATABASES

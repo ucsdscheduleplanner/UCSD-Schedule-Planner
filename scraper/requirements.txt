@@ -1,4 +1,4 @@
-arrow==0.4.2                                                                                                                                                                             
+arrow==0.4.2
 beautifulsoup4==4.6.3
 blessed==1.15.0
 botocore==1.12.71
@@ -10,6 +10,7 @@ chardet==3.0.4
 colorama==0.3.9
 ics==0.4
 idna==2.6
+pytest==5.3.5
 itsdangerous==1.1.0
 jmespath==0.9.3
 jsonschema==2.6.0

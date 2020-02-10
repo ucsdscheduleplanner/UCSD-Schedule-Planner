@@ -19,7 +19,7 @@ class Cleaner:
         self.database.row_factory = sqlite3.Row
         self.cursor = self.database.cursor()
 
-    def clean(self, data: List[Dict]):
+    def clean(self, data: Dict[str, List[Dict]]):
         print('Begin cleaning database.')
         self.setup_tables()
         self.begin_processing(data)
@@ -34,16 +34,18 @@ class Cleaner:
                                 "SECTION_TYPE TEXT, DAYS TEXT, TIME TEXT, LOCATION TEXT, ROOM TEXT, "
                                 "INSTRUCTOR TEXT, DESCRIPTION TEXT, UNITS TEXT)".format(quarter))
 
-    def begin_processing(self, data: List[Dict]):
+    def begin_processing(self, data: Dict[str, List[Dict]]):
         # getting list of departments
         self.cursor.execute("SELECT * FROM DEPARTMENT")
         departments = [i["DEPT_CODE"] for i in self.cursor.fetchall()]
 
         # handle each department and quarter separately
         for quarter in QUARTERS_TO_SCRAPE:
+            quarter_data = data[quarter]
             print("Cleaning quarter {}".format(quarter))
             for department in departments:
-                self.process_department(department, quarter, data)
+                classes = self.process_department(department, quarter, quarter_data)
+                self.save_classes(classes, quarter)
 
     """
     Will store in format with partitions for the courseNums in the same format : i.e CSE3$0 means section 0 of CSE3.
@@ -73,17 +75,24 @@ class Cleaner:
 
             # We know we have hit the end of a section
             if not fast_class["COURSE_NUM"] and slow_ptr != fast_ptr:
-                classes_to_insert.extend(
-                    # we want slow_ptr + 1 and fast_ptr to be the lower and upper bounds
-                    self.process_current_class_set(visible_classes[slow_ptr + 1: fast_ptr],
-                                                   section_count,
-                                                   department,
-                                                   course_num))
+                try:
+                    classes_to_insert.extend(
+                        # we want slow_ptr + 1 and fast_ptr to be the lower and upper bounds
+                        self.process_current_class_set(visible_classes[slow_ptr + 1: fast_ptr],
+                                                       section_count,
+                                                       department,
+                                                       course_num))
+                except Exception as e:
+                    print("Failed to process %s %s." % (department, course_num))
+                    print(e)
+                    pass
+
                 slow_ptr = fast_ptr
             fast_ptr += 1
+        return classes_to_insert
 
-        for c in classes_to_insert:
-            sql_str = """\
+    def save_classes(self, classes_to_insert, quarter):
+        sql_str = """\
                       INSERT INTO {}(DEPARTMENT, COURSE_NUM, SECTION_ID, \
                       COURSE_ID, SECTION_TYPE, DAYS, TIME, LOCATION, ROOM, INSTRUCTOR, DESCRIPTION, UNITS)  \
                       VALUES 
@@ -100,6 +109,8 @@ class Cleaner:
                       :DESCRIPTION,
                       :UNITS) \
                     """.format(quarter)
+
+        for c in classes_to_insert:
             self.cursor.execute(sql_str, c)
 
     def process_current_class_set(self, class_set, section_count, department, course_num):

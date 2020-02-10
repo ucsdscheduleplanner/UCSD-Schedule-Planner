@@ -1,8 +1,10 @@
+import os
+
 from selenium import webdriver
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
 
-from settings import TIMEOUT, DRIVER_PATH
+from settings import TIMEOUT, DRIVER_FOLDER, DRIVER_PATH
 
 
 def get_browser():
@@ -22,7 +24,11 @@ def get_browser():
     options.add_argument('--disable-dev-shm-usage')
 
     # Directing Python to browser to chrome executable file
-    browser = webdriver.Firefox(firefox_profile=profile, capabilities=caps, firefox_options=options, executable_path=DRIVER_PATH)
+    browser = webdriver.Firefox(firefox_profile=profile,
+                                capabilities=caps,
+                                firefox_options=options,
+                                executable_path=DRIVER_PATH,
+                                log_path=os.path.join(DRIVER_FOLDER, "geckodriver.log"))
     browser.set_page_load_timeout(TIMEOUT)
     browser.implicitly_wait(1)
     return browser

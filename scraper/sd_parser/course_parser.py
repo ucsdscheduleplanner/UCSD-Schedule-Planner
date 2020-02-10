@@ -22,14 +22,16 @@ class CourseParser:
         print('Beginning course parsing...')
         subdirectories = [file.name for file in os.scandir(COURSES_HTML_PATH) if file.is_dir()]
 
+        ret = {}
         try:
             for quarter in subdirectories:
                 print("Parsing %s" % quarter)
-                return self._parse(quarter)
+                ret[quarter] = self._parse(quarter)
         finally:
             self.close()
 
         print('Finished course parsing.')
+        return ret
 
     def _parse(self, quarter):
         return self.parse_data(quarter)
@@ -49,15 +51,18 @@ class CourseParser:
             # just to sort based on number
             files.sort(key=lambda x: int(re.findall('[0-9]+', x)[0]))
             for file in files:
-                with open(os.path.join(department_path, file)) as html:
-                    # Use lxml for parsing
-                    soup = bs4.BeautifulSoup(html, 'lxml')
-                    # Look for table rows
-                    rows = soup.find_all(name='tr')
-                    for row in rows:
-                        self.parse_row(department, row, class_store)
+                self.parse_file(os.path.join(department_path, file), department, class_store)
 
         return class_store
+
+    def parse_file(self, filepath, department, class_store):
+        with open(filepath) as html:
+            # Use lxml for parsing
+            soup = bs4.BeautifulSoup(html, 'lxml')
+            # Look for table rows
+            rows = soup.find_all(name='tr')
+            for row in rows:
+                self.parse_row(department, row, class_store)
 
     """
     Will get info from the HTML and store it into a format that can be manipulated easily. 
@@ -156,4 +161,3 @@ class CourseParser:
     def close(self):
         self.connection.commit()
         self.connection.close()
-

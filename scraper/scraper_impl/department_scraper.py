@@ -1,11 +1,9 @@
 import os
 import sqlite3
 
-from selenium import webdriver
+from selenium.webdriver.support.select import Select
 
-from settings import DATABASE_PATH, DATABASE_FOLDER_PATH
-from settings import DEPARTMENT_URL
-from settings import DRIVER_PATH
+from settings import DATABASE_PATH, DATABASE_FOLDER_PATH, QUARTERS_TO_SCRAPE, DEPARTMENT_URL
 from utils.scraper_util import get_browser
 
 
@@ -27,20 +25,29 @@ class DepartmentScraper:
 
     def create_table(self):
         self.cursor.execute('DROP TABLE IF EXISTS DEPARTMENT')
-        self.cursor.execute('CREATE TABLE IF NOT EXISTS DEPARTMENT (DEPT_CODE TEXT)')
+        self.cursor.execute('CREATE TABLE IF NOT EXISTS DEPARTMENT (QUARTER TEXT, DEPT_CODE TEXT)')
 
     def scrape(self):
         print("Beginning department scraping.")
         self.create_table()
-        self.search()
-        self.get_departments()
+
+        for quarter in QUARTERS_TO_SCRAPE:
+            print("Scraping departments for %s" % quarter)
+            self.search(quarter)
+            departments = self.get_departments()
+            self.insert_departments(quarter, departments)
+            print("Finished scraping departments for %s" % quarter)
+
         self.close()
         print("Finished department scraping.")
 
-    def search(self):
+    def search(self, quarter):
         self.browser.get(DEPARTMENT_URL)
+        select = Select(self.browser.find_element_by_id('selectedTerm'))
+        select.select_by_value(quarter)
 
     def get_departments(self):
+        ret = []
         departments = self.browser.find_element_by_id('selectedSubjects') \
             .find_elements_by_tag_name('option')
         for department in departments:
@@ -48,8 +55,13 @@ class DepartmentScraper:
             # Get first four elements
             department = department[:DepartmentScraper.INFO_MAX_INDEX]
             # Making sure department is in the correct format
-            department = self.normalize_department(department)
-            self.cursor.execute('INSERT INTO DEPARTMENT VALUES(?)', (department,))
+            ret.append(self.normalize_department(department))
+
+        return ret
+
+    def insert_departments(self, quarter, departments):
+        for department in departments:
+            self.cursor.execute('INSERT INTO DEPARTMENT(QUARTER, DEPT_CODE) VALUES(?, ?)', (quarter, department))
 
     def normalize_department(self, department):
         return department.strip()

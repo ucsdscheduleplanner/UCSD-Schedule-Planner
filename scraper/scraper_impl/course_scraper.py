@@ -154,7 +154,8 @@ class CourseScraperThread(Thread):
         if not os.path.exists(department_path):
             os.makedirs(department_path)
         file_path = os.path.join(department_path, str(num_page) + '.html')
-        log_msg = '[T{0}] Saving {1} (Page #{2}) (Quarter {3}) to {4}'.format(self.thread_id, department, num_page, quarter, file_path)
+        log_msg = '[T{0}] Saving {1} (Page #{2}) (Quarter {3}) to {4}'.format(self.thread_id, department, num_page,
+                                                                              quarter, file_path)
         writer.write(file_path, page_contents, log_msg)
 
 
@@ -164,14 +165,14 @@ class CourseScraper:
         os.makedirs(DATABASE_FOLDER_PATH, exist_ok=True)
         self.database = sqlite3.connect(DATABASE_PATH)
         self.cursor = self.database.cursor()
-        self.cursor.execute("SELECT DEPT_CODE FROM DEPARTMENT")
 
         self.department_queue = queue.Queue()
-        # fetching the data returns a tuple with one element,
-        # so using list comprehension to convert the data
-        self.departments = [i[0] for i in self.cursor.fetchall()]
 
         for quarter in QUARTERS_TO_SCRAPE:
+            self.cursor.execute("SELECT DEPT_CODE FROM DEPARTMENT WHERE QUARTER=?", (quarter,))
+            # fetching the data returns a tuple with one element,
+            # so using list comprehension to convert the data
+            self.departments = [i[0] for i in self.cursor.fetchall()]
             for department in self.departments:
                 self.department_queue.put({"department": department, "quarter": quarter})
 
