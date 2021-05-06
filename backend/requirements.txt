@@ -19,7 +19,7 @@ docutils==0.14
 Flask==1.0.2
 Flask-Caching==1.4.0
 Flask-Compress==1.4.0
-Flask-Cors==3.0.7
+Flask-Cors==3.0.9
 ics==0.4
 idna==2.6
 itsdangerous==1.1.0
